@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,13 +16,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity
+public class RegisterActivity extends AppCompatActivity
 {
 
     private Button buttonRegister;
     private EditText editTextEmail;
     private EditText editTextPassword;
-    private TextView textViewSignUp;
+    //private TextView textViewSignUp;
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
 
@@ -58,11 +57,11 @@ public class MainActivity extends AppCompatActivity
                     {
                         if(task.isSuccessful())
                         {
-                            Toast.makeText(MainActivity.this, "Registered Sucessfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Registered Sucessfully", Toast.LENGTH_SHORT).show();
                         }
                         else
                         {
-                            Toast.makeText(MainActivity.this, "Could Not Register. Please Try Again", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Could Not Register. Please Try Again", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
+        //textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
 
 
         buttonRegister.setOnClickListener(new View.OnClickListener()
@@ -93,13 +92,13 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        textViewSignUp.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-            }
-        });
+//        textViewSignUp.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//
+//            }
+//        });
     }
 }
