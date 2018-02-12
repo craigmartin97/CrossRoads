@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class RegisterActivity extends AppCompatActivity
 {
 
+    // WHERE ON THE DEVELOP BRANCH
+
     private Button buttonRegister;
     private EditText editTextEmail;
     private EditText editTextPassword;
