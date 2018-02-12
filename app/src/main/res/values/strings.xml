@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">CrossRoads</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="by_checking_this_box_and_signing_up_you_are_agreeing_to_our_terms_and_conditions_and_privacy_policy">By checking this box and signing up, you are agreeing to our Terms and Conditions and Privacy Policy.</string>
+    <string name="register">Register</string>
+    <string name="lets_get_started">Lets get started</string>
+    <string name="enter_your_email_and_mobile_number_to_verify_your_identity">Enter your email and mobile number to verify your identity!</string>
 </resources>
