@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "796080614311",
+    "firebase_url": "https://crossroads-b1198.firebaseio.com",
+    "project_id": "crossroads-b1198",
+    "storage_bucket": "crossroads-b1198.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796080614311:android:9b6a9e9a23ebc0e4",
+        "android_client_info": {
+          "package_name": "com.kitkat.crossroads"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796080614311-19a892egq4iepl6rdsgde5tv36gfp1iu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVwLh_HjRrL6eI6ggEOk6-NP1SMGdu4Sg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
