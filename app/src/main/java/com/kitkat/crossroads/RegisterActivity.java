@@ -1,6 +1,7 @@
 package com.kitkat.crossroads;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText editTextEmail;
     private EditText editTextPassword;
     private CheckBox checkBox;
-    //private TextView textViewSignUp;
+    private TextView textViewSignUp;
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
 
@@ -51,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (checkBox.isChecked()) {
             //if validation is ok, show progress bar
-            progressDialog.setMessage("Register User...");
+            progressDialog.setMessage("Registering User Please Wait");
             progressDialog.show();
 
             firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -87,8 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
-        //textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
-
+        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
 
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,13 +97,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-//        textViewSignUp.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//
-//            }
-//        });
+        textViewSignUp.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+            }
+        });
     }
 }

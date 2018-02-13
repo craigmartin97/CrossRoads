@@ -5,5 +5,9 @@
     <string name="by_checking_this_box_and_signing_up_you_are_agreeing_to_our_terms_and_conditions_and_privacy_policy">By checking this box and signing up, you are agreeing to our Terms and Conditions and Privacy Policy.</string>
     <string name="register">Register</string>
     <string name="lets_get_started">Lets get started</string>
-    <string name="enter_your_email_and_mobile_number_to_verify_your_identity">Enter your email and mobile number to verify your identity!</string>
+    <string name="enter_your_email_and_mobile_number_to_verify_your_identity">Enter your email and password to verify your identity!</string>
+    <string name="Welcome_back_login">Welcome Back, Please Login</string>
+    <string name="Already_user">Already Registered? Sign In Here</string>
+    <string name="Not_user">Not Registered? Sign Up Here</string>
+    <string name="sign_in">Login</string>
 </resources>
