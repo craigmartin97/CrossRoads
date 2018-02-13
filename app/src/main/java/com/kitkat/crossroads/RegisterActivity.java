@@ -31,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
 
     private void registerUser() {
-        String email = editTextEmail.getText().toString().trim();
+        final String email = editTextEmail.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
 
         // email is too short
@@ -62,6 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 progressDialog.dismiss();
                                 Toast.makeText(RegisterActivity.this, "Registered Sucessfully", Toast.LENGTH_SHORT).show();
+                                firebaseAuth.signInWithEmailAndPassword(email,password);
+                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                             } else if (!task.isSuccessful() && password.length() < 6){
                                 progressDialog.dismiss();
                                 Toast.makeText(RegisterActivity.this, "Could Not Register. Passwords much be at least 6 characters ", Toast.LENGTH_SHORT).show();
@@ -85,8 +87,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
+        editTextPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
 
