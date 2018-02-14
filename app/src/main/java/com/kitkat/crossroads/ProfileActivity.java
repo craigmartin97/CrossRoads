@@ -38,6 +38,8 @@ public class ProfileActivity extends AppCompatActivity {
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
 
 
+
+
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,5 +48,8 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
             }
         });
+
+
+
     }
 }

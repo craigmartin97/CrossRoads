@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".AddJobsActivity" />
+        <activity android:name=".JobsActivity"></activity>
     </application>
 
 </manifest>
