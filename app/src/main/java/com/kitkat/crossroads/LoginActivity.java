@@ -36,20 +36,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        auth = FirebaseAuth.getInstance();
-//
-//        if (auth.getCurrentUser() != null) {
-//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//            finish();
-//        }
-
         inputEmail = (EditText) findViewById(R.id.editTextEmailLogin);
         inputPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
-//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressDialog = new ProgressDialog(this);
         signUp = (TextView) findViewById(R.id.textViewSignUp);
         btnLogin = (Button) findViewById(R.id.buttonSignIn);
-        //btnReset = (Button) findViewById(R.id.btn_password_reset);
 
 
         auth = FirebaseAuth.getInstance();
@@ -65,12 +56,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
-
-//                btnReset.setOnClickListener(new View.OnClickListener(){
-//                    public void onClick(View v) {
-//                         startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
-//                    }
-//                });
 
         btnLogin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
