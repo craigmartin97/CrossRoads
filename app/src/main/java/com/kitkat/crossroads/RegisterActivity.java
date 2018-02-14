@@ -62,8 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 progressDialog.dismiss();
                                 Toast.makeText(RegisterActivity.this, "Registered Sucessfully", Toast.LENGTH_SHORT).show();
-                                firebaseAuth.signInWithEmailAndPassword(email,password);
-                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                finish();
+                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                             } else if (!task.isSuccessful() && password.length() < 6){
                                 progressDialog.dismiss();
                                 Toast.makeText(RegisterActivity.this, "Could Not Register. Passwords much be at least 6 characters ", Toast.LENGTH_SHORT).show();
@@ -75,8 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         }
                     });
-        }
-    }
+        }    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +83,12 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        if(firebaseAuth.getCurrentUser() != null)
+        {
+            finish();
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        }
 
         progressDialog = new ProgressDialog(this);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);

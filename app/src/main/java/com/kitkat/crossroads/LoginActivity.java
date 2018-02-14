@@ -1,5 +1,6 @@
 package com.kitkat.crossroads;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,9 +22,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    private EditText inputEmail, inputPassword;
+    private EditText inputEmail;
+    private EditText inputPassword;
     private FirebaseAuth auth;
-    private ProgressBar progressBar;
+    //private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
     private Button btnLogin;
     private TextView signUp;
 
@@ -31,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
 
 //        auth = FirebaseAuth.getInstance();
 //
@@ -39,19 +43,22 @@ public class LoginActivity extends AppCompatActivity {
 //            finish();
 //        }
 
-
-
-        setContentView(R.layout.activity_login);
-
         inputEmail = (EditText) findViewById(R.id.editTextEmailLogin);
         inputPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressDialog = new ProgressDialog(this);
         signUp = (TextView) findViewById(R.id.textViewSignUp);
         btnLogin = (Button) findViewById(R.id.buttonSignIn);
         //btnReset = (Button) findViewById(R.id.btn_password_reset);
 
 
         auth = FirebaseAuth.getInstance();
+        if(auth.getCurrentUser() != null)
+        {
+            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         signUp.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
@@ -67,8 +74,8 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                String email = inputEmail.getText().toString();
-                final String password = inputPassword.getText().toString();
+                String email = inputEmail.getText().toString().trim();
+                final String password = inputPassword.getText().toString().trim();
 
 
                 if(TextUtils.isEmpty(email)) {
@@ -81,13 +88,14 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                progressBar.setVisibility(View.VISIBLE);
+                progressDialog.setMessage("Logging In Please Wait");
+                progressDialog.show();
 
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        progressBar.setVisibility(View.GONE);
+                        progressDialog.dismiss();
                         if(!task.isSuccessful()) {
                             if(password.length() < 6) {
                                 inputPassword.setError(getString(R.string.minimum_password));
@@ -95,25 +103,15 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                             }
                         } else {
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                             startActivity(intent);
                             finish();
                         }
                     }
                 });
-
             }
         });
-
-
-
     }
-
-
-
-
-
-
 }
 
 
