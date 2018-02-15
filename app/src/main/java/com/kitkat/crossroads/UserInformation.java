@@ -8,10 +8,10 @@ import java.util.Date;
 
 public class UserInformation {
 
-    public String name;
-    public String address;
-    public String dateOfBirth;
-    public String phoneNumber;
+    private String name;
+    private String address;
+    private String dateOfBirth;
+    private String phoneNumber;
 
     public UserInformation(String name, String address, String dateOfBirth, String phoneNumber)
     {
