@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="Name"
+            android:textIsSelectable="false"
+            android:textSize="18dp"
+            android:id="@+id/textViewName"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="80dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Address"
+            android:id="@+id/textViewPostalAddress"
+            android:textIsSelectable="false"
+            android:textSize="18dp"
+            android:layout_marginBottom="50dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Date Of Birth"
+            android:id="@+id/textViewDateOfBirth"
+            android:textIsSelectable="false"
+            android:textSize="18dp"
+            android:layout_marginBottom="50dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Phone Number"
+            android:id="@+id/textViewPhoneNumber"
+            android:textSize="18dp"
+            android:textIsSelectable="false"
+            android:layout_marginBottom="50dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Would You Like To Edit Your Profile?"
+            android:id="@+id/textViewEditProfile"
+            android:textSize="18dp"
+            android:textIsSelectable="true"
+            android:layout_marginBottom="50dp"
+            android:textAlignment="center"
+            android:textColor="#66b3ff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+</ScrollView>
