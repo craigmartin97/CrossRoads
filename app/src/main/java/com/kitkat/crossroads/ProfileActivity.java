@@ -47,10 +47,10 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(new Intent(this,LoginActivity.class));
         }
 
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         FirebaseUser user = auth.getCurrentUser();
-
 
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
         textViewUserEmail.setText("Welcome " + user.getEmail());
@@ -80,7 +80,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void saveUserInformation()
     {
