@@ -91,7 +91,9 @@ public class ProfileActivity extends AppCompatActivity {
         UserInformation userInformation = new UserInformation(name, address, dateOfBirth, phoneNumber);
 
         FirebaseUser user = auth.getCurrentUser();
+
         databaseReference.child("User Information").child(user.getUid()).setValue(userInformation);
+
 
         Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();
     }
