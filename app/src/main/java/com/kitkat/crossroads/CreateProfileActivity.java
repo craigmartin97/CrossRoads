@@ -1,7 +1,6 @@
 package com.kitkat.crossroads;
 
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,9 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Date;
-
-public class ProfileActivity extends AppCompatActivity {
+public class CreateProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private TextView textViewUserEmail;
@@ -37,7 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_create_profile);
 
         auth = FirebaseAuth.getInstance();
 
@@ -69,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 auth.signOut();
                 finish();
-                startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+                startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
             }
         });
 
@@ -96,5 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();
+
+        startActivity(new Intent(CreateProfileActivity.this, ViewProfileActivity.class));
     }
 }
