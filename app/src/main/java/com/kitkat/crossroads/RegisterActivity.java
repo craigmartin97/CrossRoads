@@ -63,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 progressDialog.dismiss();
                                 Toast.makeText(RegisterActivity.this, "Registered Sucessfully", Toast.LENGTH_SHORT).show();
                                 finish();
-                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
                             } else if (!task.isSuccessful() && password.length() < 6){
                                 progressDialog.dismiss();
                                 Toast.makeText(RegisterActivity.this, "Could Not Register. Passwords much be at least 6 characters ", Toast.LENGTH_SHORT).show();
@@ -87,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
         if(firebaseAuth.getCurrentUser() != null)
         {
             finish();
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
         }
 
         progressDialog = new ProgressDialog(this);

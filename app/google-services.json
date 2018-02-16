@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "796080614311-be0rjbe91c9cr7pq2q4pad80b6p6sau1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kitkat.crossroads",
+            "certificate_hash": "4c94116183e0d3ea0b1c905e6bb2ce26102f2947"
+          }
+        },
+        {
+          "client_id": "796080614311-gm69q9p9qt0tqlca02kuq13k70jvg4f4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kitkat.crossroads",
+            "certificate_hash": "63616a2516e1a40516e9893653e2d0bd5da1ca40"
+          }
+        },
+        {
           "client_id": "796080614311-19a892egq4iepl6rdsgde5tv36gfp1iu.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796080614311-19a892egq4iepl6rdsgde5tv36gfp1iu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
