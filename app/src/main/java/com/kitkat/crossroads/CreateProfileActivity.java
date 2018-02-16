@@ -89,7 +89,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         FirebaseUser user = auth.getCurrentUser();
 
-        databaseReference.child("User Information").child(user.getUid()).setValue(userInformation);
+        databaseReference.child("users").child(user.getUid()).setValue(userInformation);
 
 
         Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();

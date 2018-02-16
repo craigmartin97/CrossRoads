@@ -67,7 +67,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         };
 
-        myRef.child("users").addValueEventListener(new ValueEventListener() {
+        myRef.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 showData(dataSnapshot);
@@ -84,9 +84,9 @@ public class ViewProfileActivity extends AppCompatActivity {
     private void showData(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
             UserDetails uInfo = new UserDetails();
-            uInfo.setAddress(ds.child(userID).getValue(UserDetails.class).getAddress()); //set the email
+            uInfo.setAddress(ds.child(userID).getValue(UserDetails.class).getAddress());
             uInfo.setDateOfBirth(ds.child(userID).getValue(UserDetails.class).getDateOfBirth());
-            uInfo.setName(ds.child(userID).getValue(UserDetails.class).getName()); //set the name
+            uInfo.setName(ds.child(userID).getValue(UserDetails.class).getName());
             uInfo.setPhoneNumber(ds.child(userID).getValue(UserDetails.class).getPhoneNumber());
 
 

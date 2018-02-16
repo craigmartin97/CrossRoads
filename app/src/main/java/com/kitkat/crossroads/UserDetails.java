@@ -6,10 +6,24 @@ package com.kitkat.crossroads;
 
 public class UserDetails
 {
+
+
     public String name;
     public String address;
     public String dateOfBirth;
     public String phoneNumber;
+
+    public UserDetails()
+    {
+
+    }
+
+    public UserDetails(String name, String address, String dateOfBirth, String phoneNumber) {
+        this.name = name;
+        this.address = address;
+        this.dateOfBirth = dateOfBirth;
+        this.phoneNumber = phoneNumber;
+    }
 
     public String getName() {
         return name;
