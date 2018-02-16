@@ -1,5 +1,6 @@
 package com.kitkat.crossroads;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.support.annotation.NonNull;
 import android.support.constraint.solver.widgets.Snapshot;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JobsActivity extends AppCompatActivity {
+public class JobsActivity extends Activity {
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
@@ -32,6 +33,8 @@ public class JobsActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
     private DataSnapshot jobReference;
 
+
+    private JobInfoListAdapter adapter;
 
     private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
 
@@ -68,7 +71,7 @@ public class JobsActivity extends AppCompatActivity {
                     jobList.add(j);
                 }
 
-                JobAdapter adapter = new JobAdapter(getBaseContext(), jobList);
+                new JobInfoListAdapter(getApplicationContext(), jobList);
 
                 jobListView.setAdapter(adapter);
 

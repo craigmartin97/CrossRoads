@@ -48,4 +48,28 @@ public class JobInformation {
     public void setJobActive(boolean jobActive) {
         this.jobActive = jobActive;
     }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public String getJobDescription() {
+        return jobDescription;
+    }
+
+    public String getJobTo() {
+        return jobTo;
+    }
+
+    public String getJobFrom() {
+        return jobFrom;
+    }
+
+    public String getJobUserID() {
+        return jobUserID;
+    }
+
+    public boolean isJobActive() {
+        return jobActive;
+    }
 }
