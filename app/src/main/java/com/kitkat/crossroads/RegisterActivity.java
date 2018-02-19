@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -46,8 +47,21 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        if(TextUtils.isEmpty(email) && TextUtils.isEmpty(password))
+        {
+            Toast.makeText(this, "Please Enter An Email Address & Password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (password.length() < 6) {
             Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters", Toast.LENGTH_SHORT);
+            return;
+        }
+
+        if(!password.matches(".+[a-zA-Z+]+[0-9+].+"))
+        {
+            Toast.makeText(this, "Passwords Must Have At Least One Uppercase, One Lowercase & Number", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         if (checkBox.isChecked()) {
@@ -64,18 +78,24 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Registered Sucessfully", Toast.LENGTH_SHORT).show();
                                 finish();
                                 startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
-                            } else if (!task.isSuccessful() && password.length() < 6){
-                                progressDialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, "Could Not Register. Passwords much be at least 6 characters ", Toast.LENGTH_SHORT).show();
                             }
-                            else
+                            else if(task.getException() instanceof FirebaseAuthUserCollisionException)
                             {
                                 progressDialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, "Could Not Register. Please Check Your Details Again And Try Again", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Could Not Register. User with this email already exist. Please Login.", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                finish();
+
+                            }
+                            else {
+                                progressDialog.dismiss();
+                                Toast.makeText(RegisterActivity.this, "Could Not Register. Please check your details and try " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                finish();
                             }
                         }
                     });
-        }    }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
