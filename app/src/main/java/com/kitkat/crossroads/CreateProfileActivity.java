@@ -39,11 +39,13 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        if(auth.getCurrentUser() == null)
-        {
-            finish();
-            startActivity(new Intent(this,LoginActivity.class));
-        }
+        //comment out the code below to test this single activity
+//
+//        if(auth.getCurrentUser() == null)
+//        {
+//            finish();
+//            startActivity(new Intent(this,LoginActivity.class));
+//        }
 
 
         database = FirebaseDatabase.getInstance();
@@ -51,9 +53,6 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         FirebaseUser user = auth.getCurrentUser();
 
-
-        textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
-        textViewUserEmail.setText("Welcome " + user.getEmail());
 
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
         buttonSaveProfile = (Button) findViewById(R.id.buttonSaveProfile);

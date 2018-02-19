@@ -57,13 +57,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         roundedBitmapDrawable.setCircular(true);
         imageView.setImageDrawable(roundedBitmapDrawable);
 
-
-
         textViewName = (TextView) findViewById(R.id.textViewName);
         viewPostalAddress = (TextView) findViewById(R.id.viewPostalAddress);
         viewDateOfBirth = (TextView) findViewById(R.id.viewDateOfBirth);
         viewPhoneNumber = (TextView) findViewById(R.id.viewPhoneNumber);
-
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
