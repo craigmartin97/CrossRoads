@@ -25,4 +25,6 @@
     <string name="address">Address</string>
     <string name="save_profile">Save Profile</string>
     <string name="log_out">Log Out</string>
+    <string name="confirm_password">Confirm Password</string>
+>>>>>>> Validation on register page, edited login and register pages.
 </resources>
