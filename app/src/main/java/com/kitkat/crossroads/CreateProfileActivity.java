@@ -29,7 +29,8 @@ public class CreateProfileActivity extends AppCompatActivity {
     private Button buttonLogout;
 
 
-    private DatabaseReference databaseReference;
+    private DatabaseReference myRef;
+    private FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +46,11 @@ public class CreateProfileActivity extends AppCompatActivity {
         }
 
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance();
+        myRef = FirebaseDatabase.getInstance().getReference();
 
         FirebaseUser user = auth.getCurrentUser();
+
 
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
         textViewUserEmail.setText("Welcome " + user.getEmail());
@@ -89,7 +92,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         FirebaseUser user = auth.getCurrentUser();
 
-        databaseReference.child("User Information").child(user.getUid()).setValue(userInformation);
+        myRef.child("users").child(user.getUid()).setValue(userInformation);
 
 
         Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();

@@ -1,6 +1,7 @@
 package com.kitkat.crossroads;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -67,10 +68,21 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         };
 
-        myRef.child("users").addValueEventListener(new ValueEventListener() {
+        myRef.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                showData(dataSnapshot);
+                String address = dataSnapshot.child("address").getValue(String.class);
+                String dateOfBirth = dataSnapshot.child("dateOfBirth").getValue(String.class);
+                String name = dataSnapshot.child("name").getValue(String.class);
+                String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                Log.d(TAG, "Address Is: " + address);
+                Log.d(TAG, "Date Of Birth Is: " + dateOfBirth);
+                Log.d(TAG, "Name Is: " + name);
+                Log.d(TAG, "Phone Number Is" + phoneNumber);
+
+                textViewName.setText(name);
+
+
             }
 
             @Override
@@ -79,31 +91,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void showData(DataSnapshot dataSnapshot) {
-        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-            UserDetails uInfo = new UserDetails();
-            uInfo.setAddress(ds.child(userID).getValue(UserDetails.class).getAddress()); //set the email
-            uInfo.setDateOfBirth(ds.child(userID).getValue(UserDetails.class).getDateOfBirth());
-            uInfo.setName(ds.child(userID).getValue(UserDetails.class).getName()); //set the name
-            uInfo.setPhoneNumber(ds.child(userID).getValue(UserDetails.class).getPhoneNumber());
-
-
-            //display all the information
-            Log.d(TAG, "showData: name: " + uInfo.getName());
-            Log.d(TAG, "showData: address: " + uInfo.getAddress());
-            Log.d(TAG, "showData: phoneNumber: " + uInfo.getPhoneNumber());
-            Log.d(TAG, "showData: dateOfBirth: " + uInfo.getDateOfBirth());
-
-            ArrayList<String> array = new ArrayList<>();
-            array.add(uInfo.getName());
-            array.add(uInfo.getAddress());
-            array.add(uInfo.getPhoneNumber());
-            array.add(uInfo.getDateOfBirth());
-            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, array);
-            mListView.setAdapter(adapter);
-        }
     }
 
     @Override
