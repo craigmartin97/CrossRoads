@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    tools:context="com.kitkat.crossroads.RegisterActivity"
-    tools:layout_editor_absoluteY="25dp">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
 
     <RelativeLayout
-        android:layout_width="322dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="105dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        android:layout_marginTop="90dp"
+        android:layout_marginLeft="20dp"
+        android:paddingBottom="20dp"
+        android:layout_marginRight="20dp" >
 
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="345dp"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_your_email_and_mobile_number_to_verify_your_identity"
+            android:textAlignment="center"
+            android:layout_marginTop="20dp"
+            android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/textView"
@@ -29,23 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView3"
             android:layout_centerHorizontal="true"
-            android:text="@string/lets_get_started"
             android:textColor="#ffffff"
-            tools:layout_editor_absoluteX="143dp"
-            tools:layout_editor_absoluteY="72dp" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="359dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="14dp"
-            android:text="@string/enter_your_email_and_mobile_number_to_verify_your_identity"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            tools:layout_editor_absoluteX="13dp"
-            tools:layout_editor_absoluteY="92dp" />
+            android:text="@string/lets_get_started" />
 
         <EditText
             android:id="@+id/editTextEmailLogin"
@@ -57,8 +41,9 @@
             android:ems="10"
             android:hint="@string/email_address"
             android:inputType="textEmailAddress"
-            tools:layout_editor_absoluteX="14dp"
-            tools:layout_editor_absoluteY="120dp" />
+            android:textColor="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorPrimaryDark"/>
+
 
         <EditText
             android:id="@+id/editTextPasswordLogin"
@@ -70,20 +55,21 @@
             android:ems="10"
             android:hint="@string/password"
             android:inputType="textPassword"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="175dp" />
+            android:textColor="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorPrimaryDark"/>
+
 
         <CheckBox
             android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/editTextPasswordLogin"
-            android:layout_marginTop="34dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/by_checking_this_box_and_signing_up_you_are_agreeing_to_our_terms_and_conditions_and_privacy_policy"
             android:textColor="@android:color/background_light"
-            tools:layout_editor_absoluteX="176dp"
-            tools:layout_editor_absoluteY="294dp" />
+            android:buttonTint="@color/colorPrimaryDark"/>
 
         <TextView
             android:id="@+id/textViewSignIn"
@@ -91,25 +77,27 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/checkBox"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="19dp"
+            android:layout_marginBottom="20dp"
             android:text="Already Registered? Sign In Here"
             android:textAlignment="center"
             android:textColor="@android:color/holo_blue_dark"
-            android:textColorLink="@color/RichLilac"
-            tools:layout_editor_absoluteX="92dp"
-            tools:layout_editor_absoluteY="354dp" />
+            android:textColorLink="@color/RichLilac" />
 
         <Button
             android:id="@+id/buttonRegister"
             android:layout_width="300sp"
             android:layout_height="wrap_content"
+            android:layout_below="@id/textViewSignIn"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="12dp"
-            android:text="@string/register"
-            tools:layout_editor_absoluteX="148dp"
-            tools:layout_editor_absoluteY="399dp" />
+            android:text="@string/register" />
+
+
+
+
+
+
+
     </RelativeLayout>
 
-</android.support.constraint.ConstraintLayout>
-
+</ScrollView>

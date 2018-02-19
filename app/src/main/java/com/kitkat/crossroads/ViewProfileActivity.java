@@ -1,14 +1,19 @@
 package com.kitkat.crossroads;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,14 +42,28 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private ListView mListView;
     private TextView textViewName;
+    private TextView viewPostalAddress;
+    private TextView viewDateOfBirth;
+    private TextView viewPhoneNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
-        mListView = (ListView) findViewById(R.id.listView);
+        ImageView imageView = (ImageView) findViewById(R.id.profileImage);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.selfie);
+        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+        roundedBitmapDrawable.setCircular(true);
+        imageView.setImageDrawable(roundedBitmapDrawable);
+
+
+
         textViewName = (TextView) findViewById(R.id.textViewName);
+        viewPostalAddress = (TextView) findViewById(R.id.viewPostalAddress);
+        viewDateOfBirth = (TextView) findViewById(R.id.viewDateOfBirth);
+        viewPhoneNumber = (TextView) findViewById(R.id.viewPhoneNumber);
+
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -81,8 +100,9 @@ public class ViewProfileActivity extends AppCompatActivity {
                 Log.d(TAG, "Phone Number Is" + phoneNumber);
 
                 textViewName.setText(name);
-
-
+                viewPostalAddress.setText(address);
+                viewDateOfBirth.setText(dateOfBirth);
+                viewPhoneNumber.setText(phoneNumber);
             }
 
             @Override
@@ -115,4 +135,5 @@ public class ViewProfileActivity extends AppCompatActivity {
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
 }

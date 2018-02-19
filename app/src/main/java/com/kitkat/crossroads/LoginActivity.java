@@ -17,10 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity {
-
-
-
+public class LoginActivity extends AppCompatActivity
+{
     private EditText inputEmail;
     private EditText inputPassword;
     private FirebaseAuth auth;
@@ -28,20 +26,21 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private Button btnLogin;
     private TextView signUp;
+    private Button btnProfileView;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         inputEmail = (EditText) findViewById(R.id.editTextEmailLogin);
         inputPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
         progressDialog = new ProgressDialog(this);
         signUp = (TextView) findViewById(R.id.textViewSignUp);
         btnLogin = (Button) findViewById(R.id.buttonSignIn);
-
-
         auth = FirebaseAuth.getInstance();
         if(auth.getCurrentUser() != null)
         {
@@ -95,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+
     }
 }
 
