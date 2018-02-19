@@ -43,7 +43,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
-        mListView = (ListView) findViewById(R.id.listView);
         textViewName = (TextView) findViewById(R.id.textViewName);
 
         mAuth = FirebaseAuth.getInstance();

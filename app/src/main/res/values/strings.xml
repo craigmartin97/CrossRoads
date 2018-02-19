@@ -12,4 +12,11 @@
     <string name="sign_in">Login</string>
     <string name="minimum_password">Password must be at least 6 characters</string>
     <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
+    <string name="edit_your_profile">Edit Your Profile</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="address">Address</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="log_out">Log Out</string>
 </resources>
