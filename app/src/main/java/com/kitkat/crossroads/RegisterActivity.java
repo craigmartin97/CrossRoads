@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,6 +19,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.regex.Pattern;
 
@@ -32,6 +35,46 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView textViewSignUp;
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+//        if(firebaseAuth.getCurrentUser() != null)
+//        {
+//            finish();
+//            startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
+//        }
+
+        progressDialog = new ProgressDialog(this);
+        buttonRegister = (Button) findViewById(R.id.buttonRegister);
+        editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
+        editTextPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
+        editTextConfirmPassword = (EditText) findViewById(R.id.editTextPasswordConfirmLogin);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
+
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerUser();
+            }
+        });
+
+        textViewSignUp.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+            }
+        });
+
+    }
+
 
     private void registerUser() {
         final String email = editTextEmail.getText().toString().trim();
@@ -68,7 +111,10 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+
+
         if (checkBox.isChecked()) {
+
             //if validation is ok, show progress bar
             progressDialog.setMessage("Registering User Please Wait");
             progressDialog.show();
@@ -77,13 +123,15 @@ public class RegisterActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                progressDialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, "Registered Sucessfully", Toast.LENGTH_SHORT).show();
-                                finish();
-                                startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
 
-                            } 
+                            if (task.isSuccessful()) {
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                user.sendEmailVerification();
+                                progressDialog.dismiss();
+                                Toast.makeText(RegisterActivity.this, "Registered Sucessfully, Check Your Email For Email Verification", Toast.LENGTH_SHORT).show();
+                                finish();
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            }
                             else if(task.getException() instanceof FirebaseAuthUserCollisionException)
                             {
                                 progressDialog.dismiss();
@@ -94,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                             else {
                                 progressDialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, "Could Not Register. Please check your details and try " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Couldn't Register, Please Try Again", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
                         }
@@ -102,42 +150,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
 
-        firebaseAuth = FirebaseAuth.getInstance();
 
-        if(firebaseAuth.getCurrentUser() != null)
-        {
-            finish();
-            startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
-        }
-
-        progressDialog = new ProgressDialog(this);
-        buttonRegister = (Button) findViewById(R.id.buttonRegister);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
-        editTextPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
-        editTextConfirmPassword = (EditText) findViewById(R.id.editTextPasswordConfirmLogin);
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
-        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
-
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerUser();
-            }
-        });
-
-        textViewSignUp.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-            }
-        });
-
-    }
 }

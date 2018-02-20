@@ -16,17 +16,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity
 {
     private EditText inputEmail;
     private EditText inputPassword;
     private FirebaseAuth auth;
-    //private ProgressBar progressBar;
     private ProgressDialog progressDialog;
     private Button btnLogin;
     private TextView signUp;
-    private Button btnProfileView;
+    private TextView resetPassword;
 
 
     @Override
@@ -40,18 +40,27 @@ public class LoginActivity extends AppCompatActivity
         inputPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
         progressDialog = new ProgressDialog(this);
         signUp = (TextView) findViewById(R.id.textViewSignUp);
+        resetPassword = (TextView) findViewById(R.id.textViewResetPassword);
         btnLogin = (Button) findViewById(R.id.buttonSignIn);
+
         auth = FirebaseAuth.getInstance();
-        if(auth.getCurrentUser() != null)
-        {
-            Intent intent = new Intent(LoginActivity.this, CreateProfileActivity.class);
-            startActivity(intent);
-            finish();
-        }
+//        if(auth.getCurrentUser() != null)
+//        {
+//            Intent intent = new Intent(LoginActivity.this, CreateProfileActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
 
         signUp.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            }
+        });
+
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
             }
         });
 
@@ -78,17 +87,24 @@ public class LoginActivity extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
+                        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
                         progressDialog.dismiss();
-                        if(!task.isSuccessful()) {
-                            if(password.length() < 6) {
-                                inputPassword.setError(getString(R.string.minimum_password));
-                            }else {
-                                Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-                            }
-                        } else {
+                        if(task.isSuccessful() && user.isEmailVerified() == true)
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Logged In Successfully", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), CreateProfileActivity.class);
                             startActivity(intent);
                             finish();
+                        }
+                        else if(user.isEmailVerified() == false)
+                        {
+                            Toast.makeText(getApplicationContext(), "You Must Verify Your Email Address. Check Your Mail", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(), "Please Re-enter your details and try again", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
