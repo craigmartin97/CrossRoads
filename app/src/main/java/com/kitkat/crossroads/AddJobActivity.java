@@ -59,6 +59,9 @@ public class AddJobActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveJobInformation();
+
+                finish();
+                startActivity(new Intent(getApplicationContext(), JobsActivity.class));
             }
         });
 

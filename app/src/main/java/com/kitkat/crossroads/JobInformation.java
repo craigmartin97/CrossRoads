@@ -25,29 +25,7 @@ public class JobInformation {
         this.jobUserID = jobUserID;
     }
 
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
 
-    public void setJobDescription(String jobDescription) {
-        this.jobDescription = jobDescription;
-    }
-
-    public void setJobTo(String jobTo) {
-        this.jobTo = jobTo;
-    }
-
-    public void setJobFrom(String jobFrom) {
-        this.jobFrom = jobFrom;
-    }
-
-    public void setJobUserID(String jobUserID) {
-        this.jobUserID = jobUserID;
-    }
-
-    public void setJobActive(boolean jobActive) {
-        this.jobActive = jobActive;
-    }
 
     public String getJobName() {
         return jobName;
