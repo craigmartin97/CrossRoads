@@ -59,6 +59,8 @@ public class AddJobActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveJobInformation();
+                finish();
+                startActivity(new Intent(getApplicationContext(), JobsActivity.class));
             }
         });
 
@@ -79,7 +81,7 @@ public class AddJobActivity extends AppCompatActivity {
 
         JobInformation jobInformation = new JobInformation(jobName, jobDescription, jobTo, jobFrom, jobActive, jobUserID);
 
-        //String newNumber = randomJobID();
+
         databaseReference.child("Jobs").push().setValue(jobInformation);
 
         Toast.makeText(this, "Job Added!", Toast.LENGTH_SHORT).show();
@@ -88,16 +90,6 @@ public class AddJobActivity extends AppCompatActivity {
 
     }
 
-
-//    private String randomJobID()
-//    {
-//        Random rand = new Random();
-//
-//        int n = rand.nextInt(99999) + 1;
-//
-//        return "Job " + n;
-//
-//    }
 
 
 }
