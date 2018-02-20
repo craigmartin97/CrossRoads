@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 public class RegisterActivity extends AppCompatActivity {
 
     // WHERE ON THE DEVELOP BRANCH
-
     private Button buttonRegister;
     private EditText editTextEmail;
     private EditText editTextPassword;
@@ -112,5 +111,6 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
+
     }
 }

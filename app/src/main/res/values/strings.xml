@@ -12,4 +12,10 @@
     <string name="sign_in">Login</string>
     <string name="minimum_password">Password must be at least 6 characters</string>
     <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
+    <string name="Enter_Your_Full_Name"> Enter your full name</string>
+    <string name="Enter_Your_Phone_Number">Enter your phone number</string>
+    <string name="Enter_Your_Postal_Address">Enter your postal address</string>
+    <string name="Enter_Your_Date_Of_Birth">Enter your date of birth</string>
+    <string name="Person_Name_Here"> Name</string>
+    <string name="Profile_Photo_of_user">Profile Picture</string>
 </resources>
