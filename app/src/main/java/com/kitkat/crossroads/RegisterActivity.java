@@ -82,7 +82,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Registered Sucessfully", Toast.LENGTH_SHORT).show();
                                 finish();
                                 startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
-                            }
+
+                            } 
                             else if(task.getException() instanceof FirebaseAuthUserCollisionException)
                             {
                                 progressDialog.dismiss();
