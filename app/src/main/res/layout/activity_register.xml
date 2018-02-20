@@ -99,7 +99,5 @@
             android:layout_centerHorizontal="true"
             android:text="@string/register" />
 
-
     </RelativeLayout>
-
 </ScrollView>
