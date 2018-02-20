@@ -15,13 +15,5 @@
         tools:layout_editor_absoluteX="163dp"
         tools:layout_editor_absoluteY="16dp" />
 
-    <ListView
-        android:id="@+id/listJobs"
-        android:layout_width="352dp"
-        android:layout_height="518dp"
-        android:scrollbars="horizontal"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="42dp" />
-
 
 </LinearLayout>
