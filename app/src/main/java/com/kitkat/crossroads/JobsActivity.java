@@ -1,8 +1,11 @@
 package com.kitkat.crossroads;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ExpandableListActivity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.support.annotation.NonNull;
 import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JobsActivity extends ListActivity {
+public class JobsActivity extends Activity {
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
@@ -43,14 +48,17 @@ public class JobsActivity extends ListActivity {
 
     private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
 
-    private ListView jobListView;
+    private ExpandableListView jobListView;
 
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_jobs);
 
 
+        jobListView = (ExpandableListView) findViewById(R.id.jobListView12345);
 
 
         auth = FirebaseAuth.getInstance();
@@ -74,73 +82,154 @@ public class JobsActivity extends ListActivity {
 
                     jobList.add(j);
 
-                    mAdapter.addItem("Job: " + j.getJobName() + " From: " + j.getJobFrom() + " To: " + j.getJobTo());
+                    mAdapter.addItem(j);
 
                 }
 
-                setListAdapter(mAdapter);
 
+
+                jobListView.setAdapter(mAdapter);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
+
         });
 
 
     }
 
 
-    private class MyCustomAdapter extends BaseAdapter {
+    private class MyCustomAdapter implements ExpandableListAdapter {
 
-        private ArrayList mData = new ArrayList();
+        private ArrayList<JobInformation> mData = new ArrayList();
+
         private LayoutInflater mInflater;
 
         public MyCustomAdapter() {
             mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        public void addItem(final String item) {
+        public void addItem(final JobInformation item) {
             mData.add(item);
-            notifyDataSetChanged();
+
+        }
+
+
+
+        @Override
+        public void registerDataSetObserver(DataSetObserver observer) {
+
         }
 
         @Override
-        public int getCount() {
+        public void unregisterDataSetObserver(DataSetObserver observer) {
+
+        }
+
+        @Override
+        public int getGroupCount() {
             return mData.size();
         }
 
         @Override
-        public String getItem(int position) {
-            return mData.get(position).toString();
+        public int getChildrenCount(int groupPosition) {
+            return 0;
         }
 
         @Override
-        public long getItemId(int position) {
-            return position;
+        public Object getGroup(int groupPosition) {
+            return mData.get(groupPosition);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            System.out.println("getView " + position + " " + convertView);
+        public Object getChild(int groupPosition, int childPosition) {
+            return null;
+        }
+
+        @Override
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return 0;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
+
+        @Override
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+            System.out.println("getView " + groupPosition + " " + convertView);
             ViewHolder holder = null;
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.job_info_list, null);
                 holder = new ViewHolder();
-                holder.textView = (TextView)convertView.findViewById(R.id.text);
+                holder.textViewName = (TextView)convertView.findViewById(R.id.textName);
+                holder.textViewFrom = (TextView)convertView.findViewById(R.id.textFrom);
+                holder.textViewTo = (TextView)convertView.findViewById(R.id.textTo);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
-            holder.textView.setText(mData.get(position).toString());
+            holder.textViewName.setText(mData.get(groupPosition).getJobName());
+            holder.textViewFrom.setText(mData.get(groupPosition).getJobFrom());
+            holder.textViewTo.setText(mData.get(groupPosition).getJobTo());
             return convertView;
         }
 
+        @Override
+        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+            return null;
+        }
+
+        @Override
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return false;
+        }
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public void onGroupExpanded(int groupPosition) {
+
+        }
+
+        @Override
+        public void onGroupCollapsed(int groupPosition) {
+
+        }
+
+        @Override
+        public long getCombinedChildId(long groupId, long childId) {
+            return 0;
+        }
+
+        @Override
+        public long getCombinedGroupId(long groupId) {
+            return 0;
+        }
     }
 
     public static class ViewHolder {
-        public TextView textView;
+        public TextView textViewName;
+        public TextView textViewFrom;
+        public TextView textViewTo;
     }
 }
 
