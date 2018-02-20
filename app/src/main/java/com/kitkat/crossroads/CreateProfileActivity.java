@@ -39,21 +39,18 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
+        //comment out the code below to test this single activity
+
         if(auth.getCurrentUser() == null)
         {
             finish();
             startActivity(new Intent(this,LoginActivity.class));
         }
 
-
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
 
         FirebaseUser user = auth.getCurrentUser();
-
-
-        textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
-        textViewUserEmail.setText("Welcome " + user.getEmail());
 
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
         buttonSaveProfile = (Button) findViewById(R.id.buttonSaveProfile);
@@ -62,7 +59,6 @@ public class CreateProfileActivity extends AppCompatActivity {
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
         editTextPostalAddress = (EditText) findViewById(R.id.editTextPostalAddress);
         editTextDateOfBirth = (EditText) findViewById(R.id.editTextDateOfBirth);
-
 
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
