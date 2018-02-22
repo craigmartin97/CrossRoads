@@ -3,16 +3,14 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/relative_layout_background"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
-        android:paddingBottom="20dp"
+        android:paddingBottom="10dp"
         android:layout_marginRight="20dp" >
-
 
         <TextView
             android:id="@+id/textView3"
@@ -20,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="Create Account"
             android:fontFamily="@font/bebasneueregular"
-            android:textSize="30dp"
+            android:textSize="35dp"
             android:textAlignment="center"
             android:layout_marginTop="20dp"
             android:textColor="#ffffff" />
@@ -84,20 +82,44 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/checkBox"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="Already Registered? Sign In Here"
+            android:layout_marginBottom="14dp"
+            android:text="@string/Already_user"
             android:textAlignment="center"
-            android:textColor="@android:color/holo_blue_dark"
-            android:textColorLink="@color/RichLilac" />
+            android:textColor="#1a8cff"
+            android:textColorLink="#1a8cff" />
 
         <Button
             android:id="@+id/buttonRegister"
             android:layout_width="300sp"
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewSignIn"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
             android:text="@string/register" />
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonRegister"
+            android:layout_marginLeft="40dp"
+            android:text="@string/TermsAndConditions"
+            android:id="@+id/textViewTermsAndConditions"
+            android:visibility="visible"
+            android:textColor="#1a8cff"
+            android:textColorLink="#1a8cff"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonRegister"
+            android:layout_marginLeft="210dp"
+            android:text="@string/PrivacyPolicy"
+            android:id="@+id/textViewPrivacyPolicy"
+            android:visibility="visible"
+            android:textColor="#1a8cff"
+            android:textColorLink="#1a8cff"/>
+
     </RelativeLayout>
+
 </ScrollView>

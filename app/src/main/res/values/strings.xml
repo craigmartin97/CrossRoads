@@ -26,5 +26,8 @@
     <string name="save_profile">Save Profile</string>
     <string name="log_out">Log Out</string>
     <string name="confirm_password">Confirm Password</string>
->>>>>>> Validation on register page, edited login and register pages.
+    <string name="recover_password">Forgot Password? Recover Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="TermsAndConditions">Terms And Conditions</string>
+    <string name="PrivacyPolicy">Privacy Policy</string>
 </resources>
