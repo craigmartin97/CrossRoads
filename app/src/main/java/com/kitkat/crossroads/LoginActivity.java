@@ -44,12 +44,12 @@ public class LoginActivity extends AppCompatActivity
         btnLogin = (Button) findViewById(R.id.buttonSignIn);
 
         auth = FirebaseAuth.getInstance();
-        if(auth.getCurrentUser() != null)
-        {
-            Intent intent = new Intent(LoginActivity.this, CreateProfileActivity.class);
-            startActivity(intent);
-            finish();
-        }
+//        if(auth.getCurrentUser() != null)
+//        {
+//            Intent intent = new Intent(LoginActivity.this, CreateProfileActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
 
         signUp.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {

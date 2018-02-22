@@ -48,13 +48,13 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView textViewTermsAndConditions;
     private TextView textViewPrivacyPolicy;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
 //        storageReference = FirebaseStorage.getInstance().getReference().child("TermsConditions/TermsAndConditions.pdf");
 //        StorageReference termsAndConditionsFile= storageReference.child("TermsConditions/TermsAndConditions.pdf");
 
@@ -65,6 +65,12 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
         }
 
+//        if(firebaseAuth.getCurrentUser() != null)
+//        {
+//            finish();
+//            startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
+//        }
+
         progressDialog = new ProgressDialog(this);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
         editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
@@ -72,6 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextConfirmPassword = (EditText) findViewById(R.id.editTextPasswordConfirmLogin);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
+
         textViewTermsAndConditions = (TextView) findViewById(R.id.textViewTermsAndConditions);
         textViewPrivacyPolicy = (TextView) findViewById(R.id.textViewPrivacyPolicy);
 
@@ -90,6 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
+
 
 //        textViewTermsAndConditions.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -116,7 +124,6 @@ public class RegisterActivity extends AppCompatActivity {
 //        });
 
     }
-
 
 
     private void registerUser() {
