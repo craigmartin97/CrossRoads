@@ -155,6 +155,6 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(CreateProfileActivity.this, ViewProfileActivity.class));
+        startActivity(new Intent(CreateProfileActivity.this, AddJobActivity.class));
     }
 }
