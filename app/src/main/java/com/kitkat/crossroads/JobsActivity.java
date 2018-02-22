@@ -2,38 +2,26 @@ package com.kitkat.crossroads;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ExpandableListActivity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.support.annotation.NonNull;
-import android.support.constraint.solver.widgets.Snapshot;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.SQLOutput;
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class JobsActivity extends Activity {
 
@@ -137,7 +125,7 @@ public class JobsActivity extends Activity {
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            return 0;
+            return 1;
         }
 
         @Override
@@ -147,7 +135,7 @@ public class JobsActivity extends Activity {
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            return null;
+            return mData.get(groupPosition);
         }
 
         @Override
@@ -157,7 +145,7 @@ public class JobsActivity extends Activity {
 
         @Override
         public long getChildId(int groupPosition, int childPosition) {
-            return 0;
+            return groupPosition;
         }
 
         @Override
@@ -168,16 +156,16 @@ public class JobsActivity extends Activity {
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             System.out.println("getView " + groupPosition + " " + convertView);
-            ViewHolder holder = null;
+            GroupViewHolder holder;
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.job_info_list, null);
-                holder = new ViewHolder();
+                holder = new GroupViewHolder();
                 holder.textViewName = (TextView)convertView.findViewById(R.id.textName);
                 holder.textViewFrom = (TextView)convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = (TextView)convertView.findViewById(R.id.textTo);
                 convertView.setTag(holder);
             } else {
-                holder = (ViewHolder)convertView.getTag();
+                holder = (GroupViewHolder)convertView.getTag();
             }
             holder.textViewName.setText(mData.get(groupPosition).getJobName());
             holder.textViewFrom.setText(mData.get(groupPosition).getJobFrom());
@@ -187,7 +175,25 @@ public class JobsActivity extends Activity {
 
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            return null;
+            ChildViewHolder holder;
+            if(convertView == null) {
+                convertView = mInflater.inflate(R.layout.job_expanded_view, null);
+                holder = new ChildViewHolder();
+                holder.textViewName = (TextView)convertView.findViewById(R.id.textViewJobName);
+                holder.textViewDesc = (TextView)convertView.findViewById(R.id.textViewJobDesc);
+                holder.textViewFrom = (TextView)convertView.findViewById(R.id.textViewJobFrom);
+                holder.textViewTo = (TextView)convertView.findViewById(R.id.textViewJobTo);
+                convertView.setTag(holder);
+            } else {
+                holder = (ChildViewHolder)convertView.getTag();
+            }
+
+            holder.textViewName.setText(mData.get(groupPosition).getJobName());
+            holder.textViewDesc.setText(mData.get(groupPosition).getJobDescription());
+            holder.textViewFrom.setText(mData.get(groupPosition).getJobFrom());
+            holder.textViewTo.setText(mData.get(groupPosition).getJobTo());
+
+            return convertView;
         }
 
         @Override
@@ -226,8 +232,16 @@ public class JobsActivity extends Activity {
         }
     }
 
-    public static class ViewHolder {
+    public static class GroupViewHolder {
         public TextView textViewName;
+        public TextView textViewFrom;
+        public TextView textViewTo;
+    }
+
+
+    public static class ChildViewHolder {
+        public TextView textViewName;
+        public TextView textViewDesc;
         public TextView textViewFrom;
         public TextView textViewTo;
     }
