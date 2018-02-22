@@ -3,14 +3,13 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/relative_layout_background"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
-        android:paddingBottom="20dp"
+        android:paddingBottom="10dp"
         android:layout_marginRight="20dp" >
 
         <TextView
@@ -83,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/checkBox"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="14dp"
             android:text="@string/Already_user"
             android:textAlignment="center"
             android:textColor="#1a8cff"
@@ -94,9 +93,33 @@
             android:layout_width="300sp"
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewSignIn"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
             android:text="@string/register" />
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonRegister"
+            android:layout_marginLeft="40dp"
+            android:text="@string/TermsAndConditions"
+            android:id="@+id/textViewTermsAndConditions"
+            android:visibility="visible"
+            android:textColor="#1a8cff"
+            android:textColorLink="#1a8cff"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonRegister"
+            android:layout_marginLeft="210dp"
+            android:text="@string/PrivacyPolicy"
+            android:id="@+id/textViewPrivacyPolicy"
+            android:visibility="visible"
+            android:textColor="#1a8cff"
+            android:textColorLink="#1a8cff"/>
+
     </RelativeLayout>
+
 </ScrollView>

@@ -28,4 +28,6 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="recover_password">Forgot Password? Recover Password</string>
     <string name="reset_password">Reset Password</string>
+    <string name="TermsAndConditions">Terms And Conditions</string>
+    <string name="PrivacyPolicy">Privacy Policy</string>
 </resources>

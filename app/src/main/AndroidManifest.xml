@@ -21,7 +21,6 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".CreateProfileActivity" />
         <activity android:name=".ViewProfileActivity" />
-        <activity android:name=".ProfileActivity" />
         <activity android:name=".AddJobActivity" />
         <activity android:name=".JobsActivity" />
         <activity android:name=".ResetPasswordActivity"></activity>
