@@ -23,11 +23,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.HomeActivity;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
-
 import com.kitkat.crossroads.Jobs.AddJobActivity;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.Jobs.JobsActivity;
 import com.kitkat.crossroads.R;
+import java.io.File;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -174,7 +176,6 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this, "Please Enter You're Details", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
                                 }
-                            }
                             else if(task.getException() instanceof FirebaseAuthUserCollisionException)
                             {
                                 progressDialog.dismiss();
@@ -189,7 +190,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 finish();
                             }
                         }
-                    });
-        }
+                    }
+        });
     }
+}
 }
