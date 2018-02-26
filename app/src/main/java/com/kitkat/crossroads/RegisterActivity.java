@@ -45,8 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private StorageReference storageReference;
 
-    private TextView textViewTermsAndConditions;
-    private TextView textViewPrivacyPolicy;
+    private TextView textViewTermsAndConditionsAndPrivacyPolicy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
 
-        textViewTermsAndConditions = (TextView) findViewById(R.id.textViewTermsAndConditions);
-        textViewPrivacyPolicy = (TextView) findViewById(R.id.textViewPrivacyPolicy);
+        textViewTermsAndConditionsAndPrivacyPolicy = (TextView) findViewById(R.id.textViewTermsAndConditionsAndPrivacyPolicy);
 
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
