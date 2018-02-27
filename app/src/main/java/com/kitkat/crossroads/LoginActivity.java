@@ -1,5 +1,6 @@
 package com.kitkat.crossroads;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +35,6 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         inputEmail = (EditText) findViewById(R.id.editTextEmailLogin);
         inputPassword = (EditText) findViewById(R.id.editTextPasswordLogin);

@@ -18,12 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".LoginActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            />
         <activity android:name=".CreateProfileActivity" />
         <activity android:name=".ViewProfileActivity" />
         <activity android:name=".AddJobActivity" />
         <activity android:name=".JobsActivity" />
-        <activity android:name=".ResetPasswordActivity"></activity>
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".Navigation"></activity>
     </application>
 
 </manifest>

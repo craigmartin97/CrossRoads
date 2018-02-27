@@ -30,4 +30,6 @@
     <string name="reset_password">Reset Password</string>
     <string name="TermsAndConditions">Terms And Conditions</string>
     <string name="PrivacyPolicy">Privacy Policy</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 </resources>
