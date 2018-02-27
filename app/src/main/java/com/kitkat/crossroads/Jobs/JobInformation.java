@@ -1,10 +1,12 @@
 package com.kitkat.crossroads.Jobs;
 
+import java.io.Serializable;
+
 /**
  * Created by s6042911 on 15/02/18.
  */
 
-public class JobInformation {
+public class JobInformation implements Serializable {
 
     public String jobName, jobDescription, jobTo, jobFrom, jobUserID;
     public boolean jobActive;
