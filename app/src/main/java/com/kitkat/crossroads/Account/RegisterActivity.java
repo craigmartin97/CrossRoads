@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.HomeActivity;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
+import com.kitkat.crossroads.Profile.CreateProfileActivity;
+import com.kitkat.crossroads.Jobs.JobsActivity;
 import com.kitkat.crossroads.R;
 
 public class RegisterActivity extends AppCompatActivity {

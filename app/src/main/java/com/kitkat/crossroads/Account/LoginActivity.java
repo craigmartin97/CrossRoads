@@ -18,6 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kitkat.crossroads.HomeActivity;
+
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.R;
 
@@ -114,5 +115,3 @@ public class LoginActivity extends AppCompatActivity
 
     }
 }
-
-
