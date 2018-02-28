@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Profile;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +13,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.R;
+import com.kitkat.crossroads.UserInformation;
 
 public class CreateProfileActivity extends AppCompatActivity {
 
