@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class JobInformation implements Serializable {
 
-    public String jobName, jobDescription, jobTo, jobFrom, jobUserID;
+    public String jobName, jobDescription, jobTo, jobFrom, jobUserID, jobID;
     public boolean jobActive;
 
     public JobInformation()
@@ -27,7 +27,13 @@ public class JobInformation implements Serializable {
         this.jobUserID = jobUserID;
     }
 
+    public void setJobID(String jobID) {
+        this.jobID = jobID;
+    }
 
+    public String getJobID() {
+        return jobID;
+    }
 
     public String getJobName() {
         return jobName;

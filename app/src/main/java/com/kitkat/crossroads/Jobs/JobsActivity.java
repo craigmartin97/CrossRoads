@@ -68,7 +68,7 @@ public class JobsActivity extends Activity {
 
                 for (DataSnapshot ds : jobListSnapShot) {
                     JobInformation j = ds.getValue(JobInformation.class);
-
+                    j.setJobID(ds.getKey());
                     jobList.add(j);
 
                     mAdapter.addItem(j);
