@@ -2,11 +2,8 @@ package com.kitkat.crossroads.Account;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-<<<<<<< HEAD:app/src/main/java/com/kitkat/crossroads/Account/RegisterActivity.java
-=======
 import android.net.Uri;
 import android.os.Environment;
->>>>>>> Attempting to add TermsAndConditions:app/src/main/java/com/kitkat/crossroads/RegisterActivity.java
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +15,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -37,9 +33,10 @@ import com.kitkat.crossroads.Jobs.AddJobActivity;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.Jobs.JobsActivity;
 import com.kitkat.crossroads.R;
+import com.kitkat.crossroads.TermsAndConditions;
+
 import java.io.File;
-import java.io.IOException;
-import java.util.regex.Pattern;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -56,7 +53,8 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView textViewTermsAndConditionsAndPrivacyPolicy;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
@@ -65,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
 //        storageReference = FirebaseStorage.getInstance().getReference().child("TermsConditions/TermsAndConditions.pdf");
 //        StorageReference termsAndConditionsFile= storageReference.child("TermsConditions/TermsAndConditions.pdf");
 
-        if(firebaseAuth.getCurrentUser() != null)
+        if (firebaseAuth.getCurrentUser() != null)
         {
             finish();
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -88,25 +86,23 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        textViewSignUp.setOnClickListener(new View.OnClickListener()
-        {
+        textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
 
-        textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(this, TermsAndConditions.class));
+
+        textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                downloadTC();
+                startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
             }
 
         });
-    protected void textViewTermsAndConditionsAndPrivacyPolicy()
+    }
+    protected void downloadTC()
         {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://crossroads-b1198.appspot.com/");

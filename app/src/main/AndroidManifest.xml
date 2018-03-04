@@ -18,7 +18,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Account.LoginActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -31,9 +30,8 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-
-
         <activity android:name=".Jobs.JobDetailsActivity"></activity>
+        <activity android:name=".TermsAndConditions"></activity>
     </application>
 
 </manifest>
