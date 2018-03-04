@@ -23,7 +23,8 @@
         <activity android:name=".ViewProfileActivity" />
         <activity android:name=".AddJobActivity" />
         <activity android:name=".JobsActivity" />
-        <activity android:name=".ResetPasswordActivity"></activity>
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".TermsAndConditions"></activity>
     </application>
 
 </manifest>

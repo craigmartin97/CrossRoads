@@ -2,7 +2,6 @@ package com.kitkat.crossroads;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,14 +22,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.regex.Pattern;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -48,27 +44,18 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView textViewTermsAndConditionsAndPrivacyPolicy;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-//        storageReference = FirebaseStorage.getInstance().getReference().child("TermsConditions/TermsAndConditions.pdf");
-//        StorageReference termsAndConditionsFile= storageReference.child("TermsConditions/TermsAndConditions.pdf");
 
-
-        if(firebaseAuth.getCurrentUser() != null)
-        {
+        if (firebaseAuth.getCurrentUser() != null) {
             finish();
             startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
         }
-
-//        if(firebaseAuth.getCurrentUser() != null)
-//        {
-//            finish();
-//            startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
-//        }
 
         progressDialog = new ProgressDialog(this);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
@@ -87,25 +74,21 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        textViewSignUp.setOnClickListener(new View.OnClickListener()
-        {
+        textViewSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
 
-        textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener()
-                                                                      {
-                                                                          @override
-                                                                          public void onClick(View v)
-                                                                          {
-                                                                              startActivity(new Intent(RegisterActivity.this.onClick(RegisterActivity.this, TermsAndConditions.class)));
-                                                                          }
+        textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
+            }
 
-                                                                      });
-    protected void textViewTermsAndConditionsAndPrivacyPolicy()
+        });
+    }
+    protected void () //Add method name not sure what I want to add though.
         {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://crossroads-b1198.appspot.com/");
