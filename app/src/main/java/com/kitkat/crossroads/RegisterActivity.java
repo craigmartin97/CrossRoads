@@ -3,6 +3,7 @@ package com.kitkat.crossroads;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,9 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView textViewSignUp;
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
-
     private StorageReference storageReference;
-
     private TextView textViewTermsAndConditionsAndPrivacyPolicy;
 
     @Override
@@ -97,33 +96,42 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener()
+                                                                      {
+                                                                          @override
+                                                                          public void onClick(View v)
+                                                                          {
+                                                                              startActivity(new Intent(RegisterActivity.this.onClick(RegisterActivity.this, TermsAndConditions.class)));
+                                                                          }
 
-//        textViewTermsAndConditions.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try
-//                {
-//                    final File localFile = File.createTempFile("TermsAndConditions", "pdf");
-//                    storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//                            Uri path = Uri.fromFile(localFile);
-//                            Intent intent = new Intent(Intent.ACTION_VIEW);
-//                            intent.setDataAndType(path, "application/pdf");
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(intent);
-//                        }
-//                    });
-//                }
-//                catch (Exception e)
-//                {
-//
-//                }
-//            }
-//        });
+                                                                      });
+    protected void textViewTermsAndConditionsAndPrivacyPolicy()
+        {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://crossroads-b1198.appspot.com/");
+            StorageReference  islandRef = storageRef.child("TermsAndConditions.pdf");
 
-    }
+            File rootPath = new File(Environment.getExternalStorageDirectory(), "TermsAndConditions.pdf");
+            if(!rootPath.exists())
+            {
+                rootPath.mkdirs();
+            }
 
+            final File localFile = new File(rootPath,"TermsAndConditions.pdf");
+
+            islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                    //  updateDb(timestamp,localFile.toString(),position);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.e("firebase ",";local tem file not created  created " +exception.toString());
+                }
+            });
+        }
 
     private void registerUser() {
         final String email = editTextEmail.getText().toString().trim();
