@@ -18,10 +18,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.HomeActivity;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
+
+import com.kitkat.crossroads.Jobs.AddJobActivity;
+import com.kitkat.crossroads.Profile.CreateProfileActivity;
+import com.kitkat.crossroads.Jobs.JobsActivity;
 import com.kitkat.crossroads.R;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -159,6 +164,7 @@ public class RegisterActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+
 
                             if (task.isSuccessful()) {
                                 boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();

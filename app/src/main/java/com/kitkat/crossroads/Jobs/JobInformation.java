@@ -1,12 +1,14 @@
 package com.kitkat.crossroads.Jobs;
 
+import java.io.Serializable;
+
 /**
  * Created by s6042911 on 15/02/18.
  */
 
-public class JobInformation {
+public class JobInformation implements Serializable {
 
-    public String jobName, jobDescription, jobTo, jobFrom, jobUserID;
+    public String jobName, jobDescription, jobTo, jobFrom, jobUserID, jobID;
     public boolean jobActive;
 
     public JobInformation()
@@ -25,7 +27,13 @@ public class JobInformation {
         this.jobUserID = jobUserID;
     }
 
+    public void setJobID(String jobID) {
+        this.jobID = jobID;
+    }
 
+    public String getJobID() {
+        return jobID;
+    }
 
     public String getJobName() {
         return jobName;

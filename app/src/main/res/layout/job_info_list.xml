@@ -10,9 +10,8 @@
 
     <TextView
         android:id="@+id/textName"
-        android:layout_width="125dp"
+        android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="60dp"
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="text"
@@ -35,14 +34,23 @@
         android:id="@+id/textTo"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/textFrom"
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="TextView"
         android:textColor="#FF000000"
         android:visibility="visible" />
 
+    <Button
+        android:id="@+id/detailsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textTo"
+        android:layout_toEndOf="@+id/textTo"
+        android:textSize="10dp"
+        android:text="Details" />
 
-        </RelativeLayout>
+
+</RelativeLayout>
 
