@@ -58,8 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView textViewTermsAndConditionsAndPrivacyPolicy;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
@@ -68,8 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
 //        storageReference = FirebaseStorage.getInstance().getReference().child("TermsConditions/TermsAndConditions.pdf");
 //        StorageReference termsAndConditionsFile= storageReference.child("TermsConditions/TermsAndConditions.pdf");
 
-        if (firebaseAuth.getCurrentUser() != null)
-        {
+        if (firebaseAuth.getCurrentUser() != null) {
             finish();
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
         }
@@ -100,16 +98,13 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
-                                                                          public void onClick(View v) {
-                                                                              String url = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/TermsConditions%2FTermsAndConditions.pdf?alt=media&token=694fc922-5a1a-4ee6-b130-af3f226263fc";
-                                                                              viewTAndC(url);
-                                                                              startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
-                                                                          }
-                                                                      });
-
-
-
-                /*startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));*/
+            public void onClick(View v) {
+                String url = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/TermsConditions%2FTermsAndConditions.pdf?alt=media&token=694fc922-5a1a-4ee6-b130-af3f226263fc";
+                viewTAndC(url);
+                startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
+            }
+        });
+    }
 
     public void viewTAndC(String url)
     {
@@ -121,7 +116,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
         /*protected void downloadTAndC()
->>>>>>> Commit, pdf stuff:app/src/main/java/com/kitkat/crossroads/RegisterActivity.java
         {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://crossroads-b1198.appspot.com/");
