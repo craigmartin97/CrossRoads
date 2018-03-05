@@ -11,19 +11,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterActivity">
+        <activity android:name=".Account.RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".CreateProfileActivity" />
-        <activity android:name=".ViewProfileActivity" />
-        <activity android:name=".AddJobActivity" />
-        <activity android:name=".JobsActivity" />
-        <activity android:name=".ResetPasswordActivity"></activity>
+        <activity
+            android:name=".Account.LoginActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".Profile.CreateProfileActivity" />
+        <activity android:name=".Profile.ViewProfileActivity" />
+        <activity android:name=".Jobs.AddJobActivity" />
+        <activity android:name=".Jobs.JobsActivity" />
+        <activity android:name=".Account.ResetPasswordActivity" />
+        <activity
+            android:name=".HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

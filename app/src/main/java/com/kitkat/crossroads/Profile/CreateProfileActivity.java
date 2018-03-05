@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Profile;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -18,10 +18,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.R;
 
 import java.util.Calendar;
 
-public class CreateProfileActivity extends AppCompatActivity {
+public class CreateProfileActivity extends AppCompatActivity
+{
 
     private FirebaseAuth auth;
 
@@ -40,14 +43,45 @@ public class CreateProfileActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     private FirebaseDatabase database;
 
+//    private DrawerLayout drawerLayout;
+//    private ActionBarDrawerToggle toggle;
+//    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
 
-        auth = FirebaseAuth.getInstance();
+//        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+//        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+//
+//        drawerLayout.addDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //comment out the code below to test this single activity
+//        navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                if(item.getItemId() == (R.id.nav_viewProfile))
+//                {
+//                    startActivity(new Intent(getApplicationContext(),ViewProfileActivity.class));
+//                }
+//                else if(item.getItemId() == (R.id.nav_editProfile))
+//                {
+//                    startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
+//                }
+//                else if(item.getItemId() == R.id.nav_viewJobs)
+//                {
+//                    startActivity(new Intent(getApplicationContext(), JobsActivity.class));
+//                }
+//
+//                return true;
+//            }
+//        });
+
+        auth = FirebaseAuth.getInstance();
 
         if(auth.getCurrentUser() == null)
         {
@@ -155,6 +189,17 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(CreateProfileActivity.this, AddJobActivity.class));
+        FirebaseAuth.getInstance().signOut();
+
+        startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
     }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (toggle.onOptionsItemSelected(item)) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 }
