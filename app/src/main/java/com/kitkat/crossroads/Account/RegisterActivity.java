@@ -24,6 +24,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,6 +39,8 @@ import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.TermsAndConditions;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -95,14 +100,28 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                downloadTC();
-                startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
-            }
+                                                                          public void onClick(View v) {
+                                                                              String url = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/TermsConditions%2FTermsAndConditions.pdf?alt=media&token=694fc922-5a1a-4ee6-b130-af3f226263fc";
+                                                                              viewTAndC(url);
+                                                                              startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
+                                                                          }
+                                                                      });
 
-        });
+
+
+                /*startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));*/
+
+    public void viewTAndC(String url)
+    {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null)
+        {
+            startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
+        }
     }
-    protected void downloadTC()
+        /*protected void downloadTAndC()
+>>>>>>> Commit, pdf stuff:app/src/main/java/com/kitkat/crossroads/RegisterActivity.java
         {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://crossroads-b1198.appspot.com/");
@@ -116,19 +135,24 @@ public class RegisterActivity extends AppCompatActivity {
 
             final File localFile = new File(rootPath,"TermsAndConditions.pdf");
 
-            islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>()
+            {
                 @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
+                {
                     Log.e("firebase ",";local tem file created  created " +localFile.toString());
-                    //  updateDb(timestamp,localFile.toString(),position);
+                    Toast.makeText(getApplicationContext(), "Successfully got file", Toast.LENGTH_SHORT).show();
+
                 }
-            }).addOnFailureListener(new OnFailureListener() {
+            }).addOnFailureListener(new OnFailureListener()
+            {
                 @Override
-                public void onFailure(@NonNull Exception exception) {
+                public void onFailure(@NonNull Exception exception)
+                {
                     Log.e("firebase ",";local tem file not created  created " +exception.toString());
                 }
             });
-        }
+        }*/
 
     private void registerUser() {
         final String email = editTextEmail.getText().toString().trim();
