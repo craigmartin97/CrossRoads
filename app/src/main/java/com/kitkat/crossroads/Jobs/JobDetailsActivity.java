@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kitkat.crossroads.R;
@@ -21,6 +23,7 @@ public class JobDetailsActivity extends AppCompatActivity {
 
 
     private DatabaseReference databaseReference;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class JobDetailsActivity extends AppCompatActivity {
 
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
 
         Intent intent = getIntent();
         JobInformation jobInformation = (JobInformation)intent.getSerializableExtra("JobDetails");
@@ -62,13 +66,20 @@ public class JobDetailsActivity extends AppCompatActivity {
         JobInformation jobInformation = (JobInformation)intent.getSerializableExtra("JobDetails");
 
 
-        String bid = editTextBid.getText().toString().trim();
-        String userID = jobInformation.getJobUserID().toString().trim();
+        String userBid = editTextBid.getText().toString().trim();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        user.getUid();
+
+        String userID = user.getUid();
+
+        
+
         String jobID = jobInformation.getJobID().toString().trim();
 
-        BidInformation bidInformation = new BidInformation(jobID, userID, bid);
+        BidInformation bidInformation = new BidInformation(userID, userBid);
 
-        databaseReference.child("Bids").push().setValue(bidInformation);
+        databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 
         Toast.makeText(this, "Bid Added!", Toast.LENGTH_SHORT).show();
 

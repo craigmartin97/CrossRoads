@@ -6,28 +6,24 @@ package com.kitkat.crossroads.Jobs;
 
 public class BidInformation {
 
-    public String jobID, UserID, Bid;
+    private String userID, userBid;
 
 
 
-    public BidInformation() {
+
+
+    public BidInformation(String userID, String userBid) {
+        this.userID = userID;
+        this.userBid = userBid;
     }
 
-    public BidInformation(String jobID, String userID, String bid) {
-        this.jobID = jobID;
-        this.UserID = userID;
-        this.Bid = bid;
-    }
 
-    public String getJobID() {
-        return jobID;
-    }
 
     public String getUserID() {
-        return UserID;
+        return userID;
     }
 
-    public String getBid() {
-        return Bid;
+    public String getUserBid() {
+        return userBid;
     }
 }
