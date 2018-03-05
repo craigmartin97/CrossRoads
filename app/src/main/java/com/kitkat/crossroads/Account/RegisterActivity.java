@@ -120,15 +120,12 @@ public class RegisterActivity extends AppCompatActivity {
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://crossroads-b1198.appspot.com/");
             StorageReference  islandRef = storageRef.child("TermsAndConditions.pdf");
-
             File rootPath = new File(Environment.getExternalStorageDirectory(), "TermsAndConditions.pdf");
             if(!rootPath.exists())
             {
                 rootPath.mkdirs();
             }
-
             final File localFile = new File(rootPath,"TermsAndConditions.pdf");
-
             islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>()
             {
                 @Override
@@ -136,7 +133,6 @@ public class RegisterActivity extends AppCompatActivity {
                 {
                     Log.e("firebase ",";local tem file created  created " +localFile.toString());
                     Toast.makeText(getApplicationContext(), "Successfully got file", Toast.LENGTH_SHORT).show();
-
                 }
             }).addOnFailureListener(new OnFailureListener()
             {
@@ -207,22 +203,22 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this, "Please Enter You're Details", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
                                 }
-                            else if(task.getException() instanceof FirebaseAuthUserCollisionException)
-                            {
-                                progressDialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, "Could Not Register. User with this email already exist. Please Login.", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                finish();
+                                else if(task.getException() instanceof FirebaseAuthUserCollisionException)
+                                {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(RegisterActivity.this, "Could Not Register. User with this email already exist. Please Login.", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                    finish();
 
-                            }
-                            else {
-                                progressDialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, "Couldn't Register, Please Try Again", Toast.LENGTH_SHORT).show();
-                                finish();
+                                }
+                                else {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(RegisterActivity.this, "Couldn't Register, Please Try Again", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
                             }
                         }
-                    }
-        });
+                    });
+        }
     }
-}
 }

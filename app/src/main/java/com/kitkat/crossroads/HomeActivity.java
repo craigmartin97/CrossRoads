@@ -82,20 +82,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-
-        if (id == R.id.nav_home)
+        if (id == R.id.nav_findAJob)
         {
             fragmentTransaction.replace(R.id.content, new HomeFragment()).commit();
-        } else if (id == R.id.nav_logout)
+        } else if (id == R.id.nav_postAnAdvert)
         {
             fragmentTransaction.replace(R.id.content, new LogoutFragment()).commit();
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_myAdverts) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_myJobs) {
 
         }
 
