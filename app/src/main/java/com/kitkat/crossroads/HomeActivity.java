@@ -38,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, new HomeFragment()).commit();
 
+        // TODO - TEST COMMENT
     }
 
     @Override
