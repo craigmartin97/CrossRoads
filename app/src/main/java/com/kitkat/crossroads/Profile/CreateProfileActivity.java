@@ -15,17 +15,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.R;
-import com.kitkat.crossroads.UserInformation;
+import com.kitkat.crossroads.Profile.UserInformation;
 
-public class CreateProfileActivity extends AppCompatActivity {
+public class CreateProfileActivity extends AppCompatActivity
+{
 
     private FirebaseAuth auth;
     private TextView textViewUserEmail;
-
     private EditText editTextName;
     private EditText editTextPhoneNumber;
     private EditText editTextPostalAddress;
-    private EditText editTextDateOfBirth;
+    private TextView textViewDateOfBirth;
 
 
     private Button buttonSaveProfile;
@@ -36,7 +36,8 @@ public class CreateProfileActivity extends AppCompatActivity {
     private FirebaseDatabase database;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
 
@@ -61,11 +62,13 @@ public class CreateProfileActivity extends AppCompatActivity {
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
         editTextPostalAddress = (EditText) findViewById(R.id.editTextPostalAddress);
-        editTextDateOfBirth = (EditText) findViewById(R.id.editTextDateOfBirth);
+        textViewDateOfBirth = (TextView) findViewById(R.id.textViewDateOfBirth);
 
-        buttonLogout.setOnClickListener(new View.OnClickListener() {
+        buttonLogout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 auth.signOut();
                 finish();
                 startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
@@ -84,7 +87,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     {
         String name = editTextName.getText().toString().trim();
         String address = editTextPostalAddress.getText().toString().trim();
-        String dateOfBirth = editTextDateOfBirth.getText().toString().trim();
+        String dateOfBirth = textViewDateOfBirth.getText().toString().trim();
         String phoneNumber = editTextPhoneNumber.getText().toString().trim();
 
         UserInformation userInformation = new UserInformation(name, address, dateOfBirth, phoneNumber);
@@ -99,3 +102,5 @@ public class CreateProfileActivity extends AppCompatActivity {
         startActivity(new Intent(CreateProfileActivity.this, ViewProfileActivity.class));
     }
 }
+
+
