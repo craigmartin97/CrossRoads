@@ -1,15 +1,12 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Profile;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -21,10 +18,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.R;
 
 import java.util.Calendar;
 
-public class CreateProfileActivity extends AppCompatActivity {
+public class CreateProfileActivity extends AppCompatActivity
+{
 
     private FirebaseAuth auth;
 
@@ -43,21 +43,43 @@ public class CreateProfileActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     private FirebaseDatabase database;
 
-    private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mToggle;
+//    private DrawerLayout drawerLayout;
+//    private ActionBarDrawerToggle toggle;
+//    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+//        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+//        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+//
+//        drawerLayout.addDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mDrawerLayout.addDrawerListener(mToggle);
-        mToggle.syncState();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                if(item.getItemId() == (R.id.nav_viewProfile))
+//                {
+//                    startActivity(new Intent(getApplicationContext(),ViewProfileActivity.class));
+//                }
+//                else if(item.getItemId() == (R.id.nav_editProfile))
+//                {
+//                    startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
+//                }
+//                else if(item.getItemId() == R.id.nav_viewJobs)
+//                {
+//                    startActivity(new Intent(getApplicationContext(), JobsActivity.class));
+//                }
+//
+//                return true;
+//            }
+//        });
 
         auth = FirebaseAuth.getInstance();
 
@@ -167,17 +189,17 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(CreateProfileActivity.this, AddJobActivity.class));
+        FirebaseAuth.getInstance().signOut();
+
+        startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(mToggle.onOptionsItemSelected(item))
-        {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (toggle.onOptionsItemSelected(item)) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 }

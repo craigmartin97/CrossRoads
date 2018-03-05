@@ -1,6 +1,5 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Account;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +17,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kitkat.crossroads.HomeActivity;
+import com.kitkat.crossroads.Profile.CreateProfileActivity;
+import com.kitkat.crossroads.R;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -44,12 +46,12 @@ public class LoginActivity extends AppCompatActivity
         btnLogin = (Button) findViewById(R.id.buttonSignIn);
 
         auth = FirebaseAuth.getInstance();
-//        if(auth.getCurrentUser() != null)
-//        {
-//            Intent intent = new Intent(LoginActivity.this, CreateProfileActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        if(auth.getCurrentUser() != null)
+        {
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         signUp.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
@@ -94,8 +96,7 @@ public class LoginActivity extends AppCompatActivity
                         {
                             progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Logged In Successfully", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), CreateProfileActivity.class);
-                            startActivity(intent);
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                             finish();
                         }
                         else if(user.isEmailVerified() == false)

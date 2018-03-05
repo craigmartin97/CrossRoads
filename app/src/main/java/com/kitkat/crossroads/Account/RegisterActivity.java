@@ -1,13 +1,11 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Account;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,20 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import java.io.File;
-import java.util.regex.Pattern;
+import com.kitkat.crossroads.HomeActivity;
+import com.kitkat.crossroads.Profile.CreateProfileActivity;
+import com.kitkat.crossroads.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -58,18 +51,11 @@ public class RegisterActivity extends AppCompatActivity {
 //        storageReference = FirebaseStorage.getInstance().getReference().child("TermsConditions/TermsAndConditions.pdf");
 //        StorageReference termsAndConditionsFile= storageReference.child("TermsConditions/TermsAndConditions.pdf");
 
-
         if(firebaseAuth.getCurrentUser() != null)
         {
             finish();
-            startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
         }
-
-//        if(firebaseAuth.getCurrentUser() != null)
-//        {
-//            finish();
-//            startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
-//        }
 
         progressDialog = new ProgressDialog(this);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
@@ -175,13 +161,15 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
 
                             if (task.isSuccessful()) {
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                user.sendEmailVerification();
-                                FirebaseAuth.getInstance().signOut();
-                                progressDialog.dismiss();
-                                Toast.makeText(RegisterActivity.this, "Registered Sucessfully, Check Your Email For Email Verification", Toast.LENGTH_SHORT).show();
-                                finish();
-                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+                                if(isNewUser == true)
+                                {
+                                    progressDialog.dismiss();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    user.sendEmailVerification();
+                                    Toast.makeText(RegisterActivity.this, "Please Enter You're Details", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
+                                }
                             }
                             else if(task.getException() instanceof FirebaseAuthUserCollisionException)
                             {

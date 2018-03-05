@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Profile;
 
 /**
  * Created by q5031372 on 15/02/18.
