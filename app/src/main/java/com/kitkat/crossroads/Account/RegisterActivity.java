@@ -18,10 +18,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.HomeActivity;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
+
+import com.kitkat.crossroads.Jobs.AddJobActivity;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.Jobs.JobsActivity;
 import com.kitkat.crossroads.R;
