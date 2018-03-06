@@ -75,12 +75,13 @@ public class AddJobActivity extends AppCompatActivity {
         String jobFrom = editTextJobFrom.getText().toString().trim();
         String jobTo = editTextJobTo.getText().toString().trim();
         Boolean jobActive = true;
+        String courierID = " ";
 
         FirebaseUser user = auth.getCurrentUser();
 
         String jobUserID = user.getUid().toString().trim();
 
-        JobInformation jobInformation = new JobInformation(jobName, jobDescription, jobTo, jobFrom, jobActive, jobUserID);
+        JobInformation jobInformation = new JobInformation(jobName, jobDescription, jobTo, jobFrom, jobActive, jobUserID, courierID);
 
 
         databaseReference.child("Jobs").push().setValue(jobInformation);

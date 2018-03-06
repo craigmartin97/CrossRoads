@@ -73,7 +73,7 @@ public class JobDetailsActivity extends AppCompatActivity {
 
         String userID = user.getUid();
 
-        
+
 
         String jobID = jobInformation.getJobID().toString().trim();
 
