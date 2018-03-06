@@ -5,10 +5,80 @@
     tools:context="com.kitkat.crossroads.PostAnAdvertFragment">
 
 
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/colorPrimaryDark">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/relative_layout_background"
+            android:paddingBottom="20dp" >
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="345dp"
+                android:layout_height="wrap_content"
+                android:text="Post Job"
+                android:fontFamily="@font/bebasneueregular"
+                android:textSize="35dp"
+                android:textAlignment="center"
+                android:layout_marginTop="20dp"
+                android:textColor="#ffffff" />
+
+
+            <EditText
+                android:id="@+id/editTextJobName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView4"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="Job Name"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/editTextJobDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobName"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="Job Description"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                android:id="@+id/editTextJobFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobDescription"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="Job From"
+                android:inputType="textPostalAddress" />
+
+            <EditText
+                android:id="@+id/editTextJobTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobFrom"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="Job To"
+                android:inputType="textPostalAddress" />
+
+            <Button
+                android:id="@+id/buttonAddJob"
+                android:layout_width="300sp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobTo"
+                android:layout_marginTop="16dp"
+                android:layout_centerHorizontal="true"
+                android:text="Add Job" />
+
+        </RelativeLayout>
+    </ScrollView>
 
 </FrameLayout>

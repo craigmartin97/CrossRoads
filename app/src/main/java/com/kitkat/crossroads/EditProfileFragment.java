@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,19 +18,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kitkat.crossroads.Account.LoginActivity;
-import com.kitkat.crossroads.Jobs.JobInformation;
-import com.kitkat.crossroads.Jobs.JobsActivity;
+import com.kitkat.crossroads.Profile.CreateProfileActivity;
+import com.kitkat.crossroads.Profile.UserInformation;
+import com.kitkat.crossroads.Profile.ViewProfileFragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link PostAnAdvertFragment.OnFragmentInteractionListener} interface
+ * {@link EditProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link PostAnAdvertFragment#newInstance} factory method to
+ * Use the {@link EditProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PostAnAdvertFragment extends Fragment {
+public class EditProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -42,17 +44,21 @@ public class PostAnAdvertFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private FirebaseAuth auth;
+    private TextView textViewUserEmail;
+    private EditText editTextName;
+    private EditText editTextPhoneNumber;
+    private EditText editTextPostalAddress;
+    private TextView textViewDateOfBirth;
 
-    private EditText editTextJobName;
-    private EditText editTextJobDescription;
-    private EditText editTextJobTo;
-    private EditText editTextJobFrom;
 
-    private Button buttonAddJob;
+    private Button buttonSaveProfile;
+    private Button buttonLogout;
 
-    private DatabaseReference databaseReference;
 
-    public PostAnAdvertFragment() {
+    private DatabaseReference myRef;
+    private FirebaseDatabase database;
+
+    public EditProfileFragment() {
         // Required empty public constructor
     }
 
@@ -62,11 +68,11 @@ public class PostAnAdvertFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PostAnAdvertFragment.
+     * @return A new instance of fragment EditProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostAnAdvertFragment newInstance(String param1, String param2) {
-        PostAnAdvertFragment fragment = new PostAnAdvertFragment();
+    public static EditProfileFragment newInstance(String param1, String param2) {
+        EditProfileFragment fragment = new EditProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -86,35 +92,47 @@ public class PostAnAdvertFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
-        // Inflate the layout for this fragment
 
+        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         auth = FirebaseAuth.getInstance();
+
+        //comment out the code below to test this single activity
 
         if(auth.getCurrentUser() == null)
         {
             startActivity(new Intent(getActivity(),LoginActivity.class));
         }
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance();
+        myRef = FirebaseDatabase.getInstance().getReference();
 
         FirebaseUser user = auth.getCurrentUser();
 
-        buttonAddJob = (Button) view.findViewById(R.id.buttonAddJob);
+        buttonLogout = (Button) view.findViewById(R.id.buttonLogout);
+        buttonSaveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
 
-        editTextJobName = (EditText) view.findViewById(R.id.editTextJobName);
-        editTextJobDescription = (EditText) view.findViewById(R.id.editTextJobDescription);
-        editTextJobFrom = (EditText) view.findViewById(R.id.editTextJobFrom);
-        editTextJobTo = (EditText) view.findViewById(R.id.editTextJobTo);
+        editTextName = (EditText) view.findViewById(R.id.editTextName);
+        editTextPhoneNumber = (EditText) view.findViewById(R.id.editTextPhoneNumber);
+        editTextPostalAddress = (EditText) view.findViewById(R.id.editTextPostalAddress);
+        textViewDateOfBirth = (TextView) view.findViewById(R.id.textViewDateOfBirth);
 
-        buttonAddJob.setOnClickListener(new View.OnClickListener() {
+        buttonLogout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                saveJobInformation();
-                startActivity(new Intent(getActivity(), JobsActivity.class));
+            public void onClick(View v)
+            {
+                auth.signOut();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
             }
         });
 
+        buttonSaveProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveUserInformation();
+            }
+        });
+        // Inflate the layout for this fragment
         return view;
     }
 
@@ -131,7 +149,6 @@ public class PostAnAdvertFragment extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context, "Logout Fragment Attached", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -156,26 +173,22 @@ public class PostAnAdvertFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void saveJobInformation()
+    private void saveUserInformation()
     {
-        String jobName = editTextJobName.getText().toString().trim();
-        String jobDescription = editTextJobDescription.getText().toString().trim();
-        String jobFrom = editTextJobFrom.getText().toString().trim();
-        String jobTo = editTextJobTo.getText().toString().trim();
-        Boolean jobActive = true;
+        String name = editTextName.getText().toString().trim();
+        String address = editTextPostalAddress.getText().toString().trim();
+        String dateOfBirth = textViewDateOfBirth.getText().toString().trim();
+        String phoneNumber = editTextPhoneNumber.getText().toString().trim();
+
+        UserInformation userInformation = new UserInformation(name, address, dateOfBirth, phoneNumber);
 
         FirebaseUser user = auth.getCurrentUser();
 
-        String jobUserID = user.getUid().toString().trim();
-
-        JobInformation jobInformation = new JobInformation(jobName, jobDescription, jobTo, jobFrom, jobActive, jobUserID);
+        myRef.child("users").child(user.getUid()).setValue(userInformation);
 
 
-        databaseReference.child("Jobs").push().setValue(jobInformation);
+        Toast.makeText(getActivity(), "Information Saved...", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getActivity(), "Job Added!", Toast.LENGTH_SHORT).show();
-
-
-
+        startActivity(new Intent(getActivity(), ViewProfileFragment.class));
     }
 }

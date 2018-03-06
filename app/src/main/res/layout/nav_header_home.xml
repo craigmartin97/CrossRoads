@@ -52,6 +52,7 @@
             android:visibility="visible"
             app:srcCompat="@drawable/ic_edit_pen" />
 
+
         <ImageView
             android:id="@+id/imageViewProfile"
             android:layout_width="42dp"
@@ -71,7 +72,4 @@
             app:srcCompat="@drawable/ic_logout" />
 
     </RelativeLayout>
-
-
-
 </LinearLayout>
