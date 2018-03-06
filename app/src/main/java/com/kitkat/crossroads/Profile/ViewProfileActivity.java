@@ -32,9 +32,9 @@ import java.util.ArrayList;
 
 
 public class ViewProfileActivity extends AppCompatActivity {
+
     private static final String TAG = "ViewProfileActivity";
 
-    //add Firebase Database stuff
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -42,10 +42,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private String userID;
 
     private ListView mListView;
-    private TextView textViewName;
-    private TextView viewPostalAddress;
-    private TextView viewDateOfBirth;
-    private TextView viewPhoneNumber;
+    private TextView textViewName, viewPostalAddress, viewDateOfBirth, viewPhoneNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,12 +122,8 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * customizable toast
-     *
-     * @param message
-     */
-    private void toastMessage(String message) {
+    private void toastMessage(String message)
+    {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 

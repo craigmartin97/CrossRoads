@@ -6,8 +6,8 @@ package com.kitkat.crossroads.Jobs;
 
 public class JobInformation {
 
-    public String jobName, jobDescription, jobTo, jobFrom, jobUserID;
-    public boolean jobActive;
+    private String jobName, jobDescription, jobTo, jobFrom, jobUserID;
+    private boolean jobActive;
 
     public JobInformation()
     {

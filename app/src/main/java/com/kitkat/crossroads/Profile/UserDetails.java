@@ -6,12 +6,7 @@ package com.kitkat.crossroads.Profile;
 
 public class UserDetails
 {
-
-
-    public String name;
-    public String address;
-    public String dateOfBirth;
-    public String phoneNumber;
+    private String name, address, dateOfBirth, phoneNumber;
 
     public UserDetails()
     {
