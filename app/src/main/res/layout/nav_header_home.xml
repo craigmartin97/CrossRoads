@@ -13,23 +13,64 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/navigationImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/navigationName"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="Android Studio"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/navigationEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="android.studio@android.com" />
+        android:layout_gravity="center"
+        android:text="android.studio@android.com"
+        android:layout_marginBottom="10dp"
+        android:visibility="visible" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageEditPen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="right"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_edit_pen" />
+
+
+        <ImageView
+            android:id="@+id/imageViewProfile"
+            android:layout_width="42dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="left"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_view_profile" />
+
+        <ImageView
+            android:id="@+id/imageLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="35dp"
+            android:layout_toStartOf="@+id/imageEditPen"
+            app:srcCompat="@drawable/ic_logout" />
+
+    </RelativeLayout>
 </LinearLayout>

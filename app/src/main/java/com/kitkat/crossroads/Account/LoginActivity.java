@@ -17,9 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.kitkat.crossroads.HomeActivity;
+import com.kitkat.crossroads.CrossRoads;
 
-import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.R;
 
 public class LoginActivity extends AppCompatActivity
@@ -49,7 +48,7 @@ public class LoginActivity extends AppCompatActivity
         auth = FirebaseAuth.getInstance();
         if(auth.getCurrentUser() != null)
         {
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            Intent intent = new Intent(LoginActivity.this, CrossRoads.class);
             startActivity(intent);
             finish();
         }
@@ -97,7 +96,7 @@ public class LoginActivity extends AppCompatActivity
                         {
                             progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Logged In Successfully", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
                             finish();
                         }
                         else if(user.isEmailVerified() == false)

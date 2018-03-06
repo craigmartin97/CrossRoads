@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kitkat.crossroads.FindAJobFragment;
 import com.kitkat.crossroads.R;
 
 public class JobDetailsActivity extends AppCompatActivity {
@@ -55,7 +56,7 @@ public class JobDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 saveBidInformation();
                 finish();
-                startActivity(new Intent(getApplicationContext(), JobsActivity.class));
+                startActivity(new Intent(JobDetailsActivity.this, FindAJobFragment.class));
             }
         });
 

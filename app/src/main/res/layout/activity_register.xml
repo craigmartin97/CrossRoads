@@ -5,7 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/relative_layout_background"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
@@ -16,9 +16,9 @@
             android:id="@+id/textView3"
             android:layout_width="345dp"
             android:layout_height="wrap_content"
-            android:text="Create Account"
+            android:text="@string/create_account"
             android:fontFamily="@font/bebasneueregular"
-            android:textSize="35dp"
+            android:textSize="35sp"
             android:textAlignment="center"
             android:layout_marginTop="20dp"
             android:textColor="#ffffff" />
@@ -99,26 +99,15 @@
 
 
         <TextView
+            android:id="@+id/textViewTermsAndConditionsAndPrivacyPolicy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/buttonRegister"
-            android:layout_marginLeft="40dp"
-            android:text="@string/TermsAndConditions"
-            android:id="@+id/textViewTermsAndConditions"
-            android:visibility="visible"
+            android:layout_alignStart="@+id/checkBox"
+            android:layout_below="@+id/buttonRegister"
+            android:text="@string/TermsAndConditionsAndPrivacyPolicy"
             android:textColor="#1a8cff"
-            android:textColorLink="#1a8cff"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/buttonRegister"
-            android:layout_marginLeft="210dp"
-            android:text="@string/PrivacyPolicy"
-            android:id="@+id/textViewPrivacyPolicy"
-            android:visibility="visible"
-            android:textColor="#1a8cff"
-            android:textColorLink="#1a8cff"/>
+            android:textColorLink="#1a8cff"
+            android:visibility="visible" />
 
     </RelativeLayout>
 
