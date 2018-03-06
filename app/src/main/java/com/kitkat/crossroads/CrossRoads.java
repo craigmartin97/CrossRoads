@@ -56,12 +56,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-
-
-        //////////////////////////////////////////
-
 
         View headerview = navigationView.getHeaderView(0);
         ImageView viewProfile = (ImageView) headerview.findViewById(R.id.imageViewProfile);

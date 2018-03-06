@@ -9,11 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Are You Sure You Want To Log Out?"
+        android:textAlignment="center"
         android:id="@+id/logoutText"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/logoutText"
         android:id="@+id/logoutButton"
         android:text="Logout"/>
@@ -23,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/logoutText"
         android:layout_marginStart="15dp"
+        android:layout_centerHorizontal="true"
         android:layout_toEndOf="@+id/logoutButton"
         android:text="Cancel"
         android:id="@+id/cancelButton"/>
