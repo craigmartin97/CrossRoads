@@ -30,6 +30,8 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".Jobs.JobDetailsActivity"></activity>
+        <activity android:name=".TermsAndConditions"></activity>
     </application>
 
 </manifest>

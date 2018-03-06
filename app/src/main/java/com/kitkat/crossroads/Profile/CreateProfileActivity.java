@@ -1,15 +1,10 @@
 package com.kitkat.crossroads.Profile;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,68 +15,35 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.R;
-
-import java.util.Calendar;
+import com.kitkat.crossroads.Profile.UserInformation;
 
 public class CreateProfileActivity extends AppCompatActivity
 {
 
     private FirebaseAuth auth;
-
-    private static final String TAG = "CreateProfileActivity";
-
+    private TextView textViewUserEmail;
     private EditText editTextName;
     private EditText editTextPhoneNumber;
     private EditText editTextPostalAddress;
     private TextView textViewDateOfBirth;
 
+
     private Button buttonSaveProfile;
     private Button buttonLogout;
 
-    private DatePickerDialog.OnDateSetListener dateSetListener;
 
     private DatabaseReference myRef;
     private FirebaseDatabase database;
 
-//    private DrawerLayout drawerLayout;
-//    private ActionBarDrawerToggle toggle;
-//    private NavigationView navigationView;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
 
-//        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-//        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-//
-//        drawerLayout.addDrawerListener(toggle);
-//        toggle.syncState();
-//
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        navigationView = (NavigationView) findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                if(item.getItemId() == (R.id.nav_viewProfile))
-//                {
-//                    startActivity(new Intent(getApplicationContext(),ViewProfileActivity.class));
-//                }
-//                else if(item.getItemId() == (R.id.nav_editProfile))
-//                {
-//                    startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
-//                }
-//                else if(item.getItemId() == R.id.nav_viewJobs)
-//                {
-//                    startActivity(new Intent(getApplicationContext(), JobsActivity.class));
-//                }
-//
-//                return true;
-//            }
-//        });
-
         auth = FirebaseAuth.getInstance();
+
+        //comment out the code below to test this single activity
 
         if(auth.getCurrentUser() == null)
         {
@@ -102,68 +64,16 @@ public class CreateProfileActivity extends AppCompatActivity
         editTextPostalAddress = (EditText) findViewById(R.id.editTextPostalAddress);
         textViewDateOfBirth = (TextView) findViewById(R.id.textViewDateOfBirth);
 
-        buttonLogout.setOnClickListener(new View.OnClickListener() {
+        buttonLogout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 auth.signOut();
                 finish();
                 startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
             }
         });
-
-
-        textViewDateOfBirth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        CreateProfileActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        dateSetListener,
-                        year,month,day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-
-
-            }
-        });
-
-        dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-                month = month + 1;
-                Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
-
-                if(dayOfMonth >= 1 && dayOfMonth <= 9)
-                {
-                    String newDay = "0" + dayOfMonth;
-                    textViewDateOfBirth.setText(newDay + "/" + month + "/" + year);
-                }
-
-                if(month >= 1 && month <= 9)
-                {
-                    String newMonth = "0" + month;
-                    textViewDateOfBirth.setText(dayOfMonth + "/" + newMonth + "/" + year);
-                }
-
-                if(dayOfMonth >= 1 && dayOfMonth <= 9 && month >= 1 && month <= 9)
-                {
-                    String newDay = "0" + dayOfMonth;
-                    String newMonth = "0" + month;
-                    textViewDateOfBirth.setText(newDay + "/" + newMonth + "/" + year);
-                }
-                else
-                {
-                    textViewDateOfBirth.setText(dayOfMonth + "/" + month + "/" + year);
-                }
-            }
-        };
 
         buttonSaveProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,17 +99,8 @@ public class CreateProfileActivity extends AppCompatActivity
 
         Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();
 
-        FirebaseAuth.getInstance().signOut();
-
-        startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
+        startActivity(new Intent(CreateProfileActivity.this, ViewProfileActivity.class));
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (toggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }
+
+

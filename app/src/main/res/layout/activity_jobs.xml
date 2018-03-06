@@ -33,7 +33,7 @@
                 android:id="@+id/textName"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
-                android:layout_marginLeft="60dp"
+
                 android:fontFamily="@font/bebasneueregular"
                 android:gravity="center_vertical"
                 android:text="Job Name"
@@ -70,9 +70,8 @@
 
         </LinearLayout>
 
-
-        <ExpandableListView
-            android:id="@+id/jobListView12345"
+        <ListView
+            android:id="@+id/jobListView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
