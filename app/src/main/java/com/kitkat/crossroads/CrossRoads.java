@@ -1,10 +1,7 @@
 package com.kitkat.crossroads;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,9 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
-public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import com.kitkat.crossroads.Profile.ViewProfileFragment;
+
+public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +35,31 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, new HomeFragment()).commit();
+        getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+
+
+        //////////////////////////////////////////
+
+
+        View headerview = navigationView.getHeaderView(0);
+        ImageView viewProfile = (ImageView) headerview.findViewById(R.id.imageViewProfile);
+        ImageView editProfile = (ImageView) headerview.findViewById(R.id.imageEditPen);
+
+        viewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                onBackPressed();
+            }
+        });
+
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentTransaction().replace(R.id.content, new EditProfileFragment()).commit();
+                onBackPressed();
+            }
+        });
 
     }
 
@@ -82,25 +104,30 @@ public class HomeActivity extends AppCompatActivity
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-
-        if (id == R.id.nav_home)
+        if (id == R.id.nav_findAJob)
         {
-            fragmentTransaction.replace(R.id.content, new HomeFragment()).commit();
-        } else if (id == R.id.nav_logout)
+            fragmentTransaction.replace(R.id.content, new FindAJobFragment()).commit();
+        }
+        else if (id == R.id.nav_postAnAdvert)
         {
-            fragmentTransaction.replace(R.id.content, new LogoutFragment()).commit();
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+            fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).commit();
+        }
+        else if (id == R.id.nav_myAdverts) {
+        }
+        else if (id == R.id.nav_myJobs) {
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public FragmentTransaction getFragmentTransaction()
+    {
+        final android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        return fragmentTransaction;
     }
 }

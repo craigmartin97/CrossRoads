@@ -1,0 +1,112 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.kitkat.crossroads.Profile.ViewProfileFragment">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:background="@drawable/gradient_background"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="wrap_content"
+                android:layout_height="163dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="35dp"
+                android:adjustViewBounds="false"
+                android:contentDescription="@string/Profile_Photo_of_user"
+                android:src="@drawable/selfie" />
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:textColor="#ffffff"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                tools:text="@string/Person_Name_Here" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/HeadingForPostalAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="130dp"
+                    android:paddingTop="10dp"
+                    android:text="Postal Address:"
+                    />
+
+                <TextView
+                    android:id="@+id/viewPostalAddress"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="130dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="30dp"
+                    android:text="viewPostalAddress" />
+
+                <TextView
+                    android:id="@+id/HeadingForPhoneNumber"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="130dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Phone Number:" />
+
+                <TextView
+                    android:id="@+id/viewPhoneNumber"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="130dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="30dp"
+                    android:text="viewPhoneNumber"/>
+
+                <TextView
+                    android:id="@+id/HeadingForDateOfBirth"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="130dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Date of Birth:"/>
+
+                <TextView
+                    android:id="@+id/viewDateOfBirth"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="130dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="30dp"
+                    android:text="viewDateOfBirth"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>
+
+

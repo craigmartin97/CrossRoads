@@ -1,24 +1,35 @@
 package com.kitkat.crossroads;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Jobs.JobsActivity;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LogoutFragment.OnFragmentInteractionListener} interface
+ * {@link PostAnAdvertFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LogoutFragment#newInstance} factory method to
+ * Use the {@link PostAnAdvertFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LogoutFragment extends Fragment {
+public class PostAnAdvertFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,7 +41,18 @@ public class LogoutFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public LogoutFragment() {
+    private FirebaseAuth auth;
+
+    private EditText editTextJobName;
+    private EditText editTextJobDescription;
+    private EditText editTextJobTo;
+    private EditText editTextJobFrom;
+
+    private Button buttonAddJob;
+
+    private DatabaseReference databaseReference;
+
+    public PostAnAdvertFragment() {
         // Required empty public constructor
     }
 
@@ -40,11 +62,11 @@ public class LogoutFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LogoutFragment.
+     * @return A new instance of fragment PostAnAdvertFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LogoutFragment newInstance(String param1, String param2) {
-        LogoutFragment fragment = new LogoutFragment();
+    public static PostAnAdvertFragment newInstance(String param1, String param2) {
+        PostAnAdvertFragment fragment = new PostAnAdvertFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,8 +86,36 @@ public class LogoutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_logout, container, false);
+
+        auth = FirebaseAuth.getInstance();
+
+        if(auth.getCurrentUser() == null)
+        {
+            startActivity(new Intent(getActivity(),LoginActivity.class));
+        }
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        FirebaseUser user = auth.getCurrentUser();
+
+        buttonAddJob = (Button) view.findViewById(R.id.buttonAddJob);
+
+        editTextJobName = (EditText) view.findViewById(R.id.editTextJobName);
+        editTextJobDescription = (EditText) view.findViewById(R.id.editTextJobDescription);
+        editTextJobFrom = (EditText) view.findViewById(R.id.editTextJobFrom);
+        editTextJobTo = (EditText) view.findViewById(R.id.editTextJobTo);
+
+        buttonAddJob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveJobInformation();
+                startActivity(new Intent(getActivity(), JobsActivity.class));
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -104,5 +154,28 @@ public class LogoutFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void saveJobInformation()
+    {
+        String jobName = editTextJobName.getText().toString().trim();
+        String jobDescription = editTextJobDescription.getText().toString().trim();
+        String jobFrom = editTextJobFrom.getText().toString().trim();
+        String jobTo = editTextJobTo.getText().toString().trim();
+        Boolean jobActive = true;
+
+        FirebaseUser user = auth.getCurrentUser();
+
+        String jobUserID = user.getUid().toString().trim();
+
+        JobInformation jobInformation = new JobInformation(jobName, jobDescription, jobTo, jobFrom, jobActive, jobUserID);
+
+
+        databaseReference.child("Jobs").push().setValue(jobInformation);
+
+        Toast.makeText(getActivity(), "Job Added!", Toast.LENGTH_SHORT).show();
+
+
+
     }
 }
