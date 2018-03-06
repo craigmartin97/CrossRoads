@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.R;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class JobsActivity extends Activity
@@ -76,9 +77,12 @@ public class JobsActivity extends Activity
                     j.setJobID(ds.getKey());
                     jobList.add(j);
 
-                    mAdapter.addItem(j);
+                    //mAdapter.addItem(j);
 
                 }
+
+
+                mAdapter.addArray(jobList);
 
 
                 jobListView.setAdapter(mAdapter);
@@ -115,6 +119,10 @@ public class JobsActivity extends Activity
         {
             mData.add(item);
 
+        }
+
+        public void addArray(final ArrayList<JobInformation> j) {
+            mData = j;
         }
 
 
@@ -214,4 +222,3 @@ public class JobsActivity extends Activity
 
     }
 }
-

@@ -76,11 +76,11 @@ public class JobDetailsActivity extends AppCompatActivity
         String userID = user.getUid();
 
 
-        String jobID = jobInformation.getJobID().toString().trim();
+        //String jobID = jobInformation.getJobID().toString().trim();
 
-        BidInformation bidInformation = new BidInformation(userID, userBid);
+        //BidInformation bidInformation = new BidInformation(userID, userBid);
 
-        databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
+        //databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 
         Toast.makeText(this, "Bid Added!", Toast.LENGTH_SHORT).show();
 

@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 public class JobInformation implements Serializable {
 
-    public String jobName, jobDescription, jobTo, jobFrom, jobUserID, jobID;
+    public String jobName, jobDescription, jobTo, jobFrom, jobUserID, jobID, courierID;
     public boolean jobActive;
 
     public JobInformation()
@@ -19,7 +19,10 @@ public class JobInformation implements Serializable {
 
     }
 
-    public JobInformation(String jobName, String jobDescription, String jobTo, String jobFrom, boolean jobActive, String jobUserID)
+
+
+    public JobInformation(String jobName, String jobDescription, String jobTo, String jobFrom, boolean jobActive, String jobUserID, String courierID)
+
     {
         this.jobName = jobName;
         this.jobDescription = jobDescription;
@@ -27,11 +30,16 @@ public class JobInformation implements Serializable {
         this.jobFrom = jobFrom;
         this.jobActive = jobActive;
         this.jobUserID = jobUserID;
+        this.courierID = courierID;
     }
 
     public void setJobID(String jobID) {
         this.jobID = jobID;
     }
+
+    public void setCourierID(String courierID) { this.courierID = courierID; }
+
+    public String getCourierID() { return courierID; }
 
     public String getJobID() {
         return jobID;
