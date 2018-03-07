@@ -125,17 +125,13 @@ public class PostAnAdvertFragment extends Fragment
         editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
 
 
-
-
-
-
         buttonPostAd.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v)
             {
                 saveJobInformation();
-                startActivity(new Intent(getActivity(), JobsActivity.class));
+                startActivity(new Intent(getActivity(), CrossRoads.class));
             }
         });
 
@@ -211,7 +207,8 @@ public class PostAnAdvertFragment extends Fragment
 
         String posterID = user.getUid().toString().trim();
 
-        JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID, courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobActive);
+        JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
+                courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobActive);
 
 
         databaseReference.child("Jobs").push().setValue(jobInformation);

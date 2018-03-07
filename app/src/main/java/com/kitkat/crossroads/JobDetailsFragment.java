@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,13 +92,19 @@ public class JobDetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-
         View view = inflater.inflate(R.layout.fragment_job_details, container, false);
+
+        Bundle bundle = getArguments();
+        if(bundle != null)
+        {
+            String name = bundle.getString("name");
+            String address = bundle.getString("address");
+            customToastMessage(name + " " + address);
+        }
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        Intent intent = getActivity().getIntent();
-        JobInformation jobInformation = (JobInformation) intent.getSerializableExtra("JobDetails");
+        JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
 
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
@@ -105,10 +113,10 @@ public class JobDetailsFragment extends Fragment
         editTextBid = (EditText) view.findViewById(R.id.editTextBid);
         buttonBid = (Button) view.findViewById(R.id.buttonBid);
 
-        jobName.setText(jobInformation.getJobName().toString());
-        jobDescription.setText(jobInformation.getJobDescription().toString());
-        jobFrom.setText(jobInformation.getJobFrom().toString());
-        jobTo.setText(jobInformation.getJobTo().toString());
+        jobName.setText(jobInformation.getAdvertName().toString());
+        jobDescription.setText(jobInformation.getAdvertDescription().toString());
+        jobFrom.setText(jobInformation.getColTown().toString());
+        jobTo.setText(jobInformation.getDelTown().toString());
 
         buttonBid.setOnClickListener(new View.OnClickListener()
         {
@@ -116,7 +124,6 @@ public class JobDetailsFragment extends Fragment
             public void onClick(View view)
             {
                 saveBidInformation();
-                startActivity(new Intent(getActivity(), FindAJobFragment.class));
             }
         });
 
@@ -169,9 +176,15 @@ public class JobDetailsFragment extends Fragment
 
     private void saveBidInformation()
     {
-        Intent intent = getActivity().getIntent();
-        JobInformation jobInformation = (JobInformation) intent.getSerializableExtra("JobDetails");
+        Bundle bundle = getArguments();
+        if(bundle != null)
+        {
+            String name = bundle.getString("name");
+            String address = bundle.getString("address");
+            customToastMessage(name + " " + address);
+        }
 
+        JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
 
         String userBid = editTextBid.getText().toString().trim();
         mAuth = FirebaseAuth.getInstance();
@@ -188,6 +201,11 @@ public class JobDetailsFragment extends Fragment
         databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 
         customToastMessage("Bid Placed!");
+
+//        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.content, new FindAJobFragment()).commit();
+        startActivity(new Intent(getActivity(), CrossRoads.class));
     }
 
     private void customToastMessage(String message)

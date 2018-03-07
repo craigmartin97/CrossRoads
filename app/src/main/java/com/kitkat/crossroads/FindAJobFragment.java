@@ -126,17 +126,13 @@ public class FindAJobFragment extends Fragment
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
                     jobList.add(j);
-
-
-
-
                 }
 
                 mAdapter.addArray(jobList);
 
-
                 jobListView.setAdapter(mAdapter);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError)
             {
@@ -191,7 +187,7 @@ public class FindAJobFragment extends Fragment
         void onFragmentInteraction(Uri uri);
     }
 
-    private class MyCustomAdapter extends BaseAdapter
+    public class MyCustomAdapter extends BaseAdapter
     {
 
         private ArrayList<JobInformation> mData = new ArrayList();
@@ -200,7 +196,10 @@ public class FindAJobFragment extends Fragment
 
         public MyCustomAdapter()
         {
-            mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (isAdded())
+            {
+                mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            }
         }
 
         public void addItem(final JobInformation item)
@@ -273,14 +272,24 @@ public class FindAJobFragment extends Fragment
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+            {
 
                 @Override
                 public void onClick(View v)
                 {
-                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
-                    intent.putExtra("JobDetails", mData.get(position));
-                    startActivity(intent);
+//                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
+//                    intent.putExtra("JobDetails", mData.get(position));
+//                    startActivity(intent);
+
+                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("Job", mData.get(position));
+                    bundle.putString("name", "Hello");
+                    bundle.putString("address", "123345");
+                    jobDetailsFragment.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
                 }
             });
             return convertView;
