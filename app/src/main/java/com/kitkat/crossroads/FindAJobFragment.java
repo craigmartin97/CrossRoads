@@ -263,25 +263,9 @@ public class FindAJobFragment extends Fragment
                 @Override
                 public void onClick(View v)
                 {
-//                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
-//                    intent.putExtra("JobDetails", mData.get(position));
-//                    startActivity(intent);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("Job", mData.get(position));
-
-
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                    JobDetailsFragment fragment = new JobDetailsFragment();
-                    fragment.setArguments(bundle);
-
-
-
-                    fragmentTransaction.attach(fragment);
-                    fragmentTransaction.replace(R.id.content, fragment);
-                    fragmentTransaction.commit();
+                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
+                    intent.putExtra("JobDetails", mData.get(position));
+                    startActivity(intent);
                 }
             });
             return convertView;

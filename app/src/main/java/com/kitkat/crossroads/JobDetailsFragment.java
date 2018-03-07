@@ -90,15 +90,13 @@ public class JobDetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        Bundle job = getArguments();
-
 
         View view = inflater.inflate(R.layout.fragment_job_details, container, false);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         Intent intent = getActivity().getIntent();
-        JobInformation jobInformation = (JobInformation) job.getParcelable("Job");
+        JobInformation jobInformation = (JobInformation) intent.getSerializableExtra("JobDetails");
 
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
