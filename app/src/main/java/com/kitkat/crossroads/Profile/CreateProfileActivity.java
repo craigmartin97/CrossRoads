@@ -30,16 +30,13 @@ public class CreateProfileActivity extends AppCompatActivity
     private DatePickerDialog.OnDateSetListener dateSetListener;
 
     private FirebaseAuth auth;
-    private TextView textViewUserEmail;
     private EditText editTextName;
     private EditText editTextPhoneNumber;
     private EditText editTextPostalAddress;
     private TextView textViewDateOfBirth;
 
-
     private Button buttonSaveProfile;
     private Button buttonLogout;
-
 
     private DatabaseReference myRef;
     private FirebaseDatabase database;
@@ -51,8 +48,6 @@ public class CreateProfileActivity extends AppCompatActivity
         setContentView(R.layout.activity_create_profile);
 
         auth = FirebaseAuth.getInstance();
-
-        //comment out the code below to test this single activity
 
         if(auth.getCurrentUser() == null)
         {

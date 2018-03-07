@@ -35,8 +35,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
+
+import java.io.File;
+import java.io.IOException;
 
 public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -45,6 +50,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
     private FirebaseAuth auth;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private StorageReference storageReference;
     private DatabaseReference myRef;
     private String userID;
 
@@ -60,6 +66,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         myRef = mFirebaseDatabase.getReference().child("users");
         FirebaseUser user = auth.getCurrentUser();
         userID = user.getUid();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -159,6 +166,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         ImageView viewProfile = (ImageView) headerview.findViewById(R.id.imageViewProfile);
         ImageView editProfile = (ImageView) headerview.findViewById(R.id.imageEditPen);
         ImageView logout = (ImageView) headerview.findViewById(R.id.imageLogout);
+        ImageView profileImage = (ImageView) headerview.findViewById(R.id.navigationImage);
 
         mAuthListener = new FirebaseAuth.AuthStateListener()
         {
