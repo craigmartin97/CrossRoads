@@ -90,8 +90,15 @@ public class JobDetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-
         View view = inflater.inflate(R.layout.fragment_job_details, container, false);
+
+//        Bundle bundle = getArguments();
+//        if(bundle != null)
+//        {
+//            String name = bundle.getString("name");
+//            String address = bundle.getString("address");
+//            customToastMessage(name + " " + address);
+//        }
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
