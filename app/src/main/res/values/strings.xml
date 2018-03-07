@@ -40,4 +40,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="TermsAndConditionsAndPrivacyPolicy">Terms And Conditions and Privacy Policy</string>
     <string name="create_account">Create Account</string>
+    <string name="to">To</string>
+    <string name="jobs">Jobs</string>
+    <string name="job_name">Job Name</string>
+    <string name="from">From</string>
+    <string name="my_adverts">My Adverts</string>
 </resources>
+
+
+
