@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+<<<<<<< HEAD
     <mapping directory="/home/scm-studs/s6042911/AndroidStudioProjects/CrossRoads" vcs="Git" />
+=======
+    <mapping directory="/home/scm-studs/q5063319/AndroidStudioProjects/CrossRoads" vcs="Git" />
+>>>>>>> updae
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
 </project>
