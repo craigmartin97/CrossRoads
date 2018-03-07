@@ -164,8 +164,8 @@ public class EditProfileFragment extends Fragment
 
         if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
-
             progressDialog.setMessage("Uploading Image Please Wait...");
+            progressDialog.show();
 
             Uri uri = data.getData();
             StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
