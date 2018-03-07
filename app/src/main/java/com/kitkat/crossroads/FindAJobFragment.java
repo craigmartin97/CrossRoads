@@ -312,7 +312,5 @@ public class FindAJobFragment extends Fragment
             public TextView textViewTo;
             public Button detailsButton;
         }
-
-
     }
 }
