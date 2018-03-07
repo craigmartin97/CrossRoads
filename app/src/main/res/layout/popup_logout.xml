@@ -1,30 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/relativeLayout">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logoutText"
+        android:text="Are You Sure You Want To LogOut?"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:paddingTop="10dp"
+        android:textColor="#000000"
+        android:paddingBottom="10dp"
+        android:fontFamily="@font/applegaramond"/>
+
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Are You Sure You Want To Log Out?"
-        android:id="@+id/logoutText"/>
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/LinearLayout02"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logoutText"
-        android:id="@+id/logoutButton"
-        android:text="Logout"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/logoutText"
-        android:layout_marginStart="15dp"
-        android:layout_toEndOf="@+id/logoutButton"
-        android:text="Cancel"
-        android:id="@+id/cancelButton"/>
-
-</RelativeLayout>
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Logout">
+        </Button>
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel">
+        </Button>
+    </LinearLayout>
+</LinearLayout>

@@ -15,7 +15,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.R;
 
-public class AddJobActivity extends AppCompatActivity {
+public class AddJobActivity extends AppCompatActivity
+{
 
     private FirebaseAuth auth;
 
@@ -30,19 +31,18 @@ public class AddJobActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
 
 
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_job);
 
         auth = FirebaseAuth.getInstance();
 
-        if(auth.getCurrentUser() == null)
+        if (auth.getCurrentUser() == null)
         {
             finish();
-            startActivity(new Intent(this,LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
         }
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -56,9 +56,11 @@ public class AddJobActivity extends AppCompatActivity {
         editTextJobFrom = (EditText) findViewById(R.id.editTextJobFrom);
         editTextJobTo = (EditText) findViewById(R.id.editTextJobTo);
 
-        buttonAddJob.setOnClickListener(new View.OnClickListener() {
+        buttonAddJob.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 saveJobInformation();
                 finish();
                 startActivity(new Intent(getApplicationContext(), JobsActivity.class));
@@ -88,9 +90,7 @@ public class AddJobActivity extends AppCompatActivity {
         Toast.makeText(this, "Job Added!", Toast.LENGTH_SHORT).show();
 
 
-
     }
-
 
 
 }

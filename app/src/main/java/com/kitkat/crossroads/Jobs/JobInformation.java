@@ -1,5 +1,8 @@
 package com.kitkat.crossroads.Jobs;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
@@ -15,7 +18,6 @@ public class JobInformation implements Serializable {
     {
 
     }
-
 
     public JobInformation(String jobName, String jobDescription, String jobTo, String jobFrom, boolean jobActive, String jobUserID)
     {

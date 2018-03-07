@@ -17,22 +17,29 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.kitkat.crossroads.Account.LoginActivity;
-import com.kitkat.crossroads.Profile.CreateProfileActivity;
-import com.kitkat.crossroads.Profile.UserInformation;
-import com.kitkat.crossroads.Profile.ViewProfileFragment;
+import com.kitkat.crossroads.Jobs.BidInformation;
+import com.kitkat.crossroads.Jobs.JobDetailsActivity;
+import com.kitkat.crossroads.Jobs.JobInformation;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link EditProfileFragment.OnFragmentInteractionListener} interface
+ * {@link JobDetailsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link EditProfileFragment#newInstance} factory method to
+ * Use the {@link JobDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditProfileFragment extends Fragment
+public class JobDetailsFragment extends Fragment
 {
+
+    private TextView jobName, jobDescription, jobFrom, jobTo;
+    private Button buttonBid;
+    private EditText editTextBid;
+
+    private DatabaseReference databaseReference;
+    private FirebaseAuth mAuth;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -44,22 +51,7 @@ public class EditProfileFragment extends Fragment
 
     private OnFragmentInteractionListener mListener;
 
-    private FirebaseAuth auth;
-    private TextView textViewUserEmail;
-    private EditText editTextName;
-    private EditText editTextPhoneNumber;
-    private EditText editTextPostalAddress;
-    private TextView textViewDateOfBirth;
-
-
-    private Button buttonSaveProfile;
-    private Button buttonLogout;
-
-
-    private DatabaseReference myRef;
-    private FirebaseDatabase database;
-
-    public EditProfileFragment()
+    public JobDetailsFragment()
     {
         // Required empty public constructor
     }
@@ -70,12 +62,12 @@ public class EditProfileFragment extends Fragment
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment EditProfileFragment.
+     * @return A new instance of fragment JobDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static EditProfileFragment newInstance(String param1, String param2)
+    public static JobDetailsFragment newInstance(String param1, String param2)
     {
-        EditProfileFragment fragment = new EditProfileFragment();
+        JobDetailsFragment fragment = new JobDetailsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -99,48 +91,35 @@ public class EditProfileFragment extends Fragment
                              Bundle savedInstanceState)
     {
 
-        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-        auth = FirebaseAuth.getInstance();
+        View view = inflater.inflate(R.layout.fragment_job_details, container, false);
 
-        //comment out the code below to test this single activity
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        if (auth.getCurrentUser() == null)
-        {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-        }
+        Intent intent = getActivity().getIntent();
+        JobInformation jobInformation = (JobInformation) intent.getSerializableExtra("JobDetails");
 
-        database = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference();
+        jobName = (TextView) view.findViewById(R.id.textViewJobName1);
+        jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
+        jobFrom = (TextView) view.findViewById(R.id.textViewJobFrom1);
+        jobTo = (TextView) view.findViewById(R.id.textViewJobTo1);
+        editTextBid = (EditText) view.findViewById(R.id.editTextBid);
+        buttonBid = (Button) view.findViewById(R.id.buttonBid);
 
-        FirebaseUser user = auth.getCurrentUser();
+        jobName.setText(jobInformation.getJobName().toString());
+        jobDescription.setText(jobInformation.getJobDescription().toString());
+        jobFrom.setText(jobInformation.getJobFrom().toString());
+        jobTo.setText(jobInformation.getJobTo().toString());
 
-        buttonLogout = (Button) view.findViewById(R.id.buttonLogout);
-        buttonSaveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
-
-        editTextName = (EditText) view.findViewById(R.id.editTextName);
-        editTextPhoneNumber = (EditText) view.findViewById(R.id.editTextPhoneNumber);
-        editTextPostalAddress = (EditText) view.findViewById(R.id.editTextPostalAddress);
-        textViewDateOfBirth = (TextView) view.findViewById(R.id.textViewDateOfBirth);
-
-        buttonLogout.setOnClickListener(new View.OnClickListener()
+        buttonBid.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v)
+            public void onClick(View view)
             {
-                auth.signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                saveBidInformation();
+                startActivity(new Intent(getActivity(), FindAJobFragment.class));
             }
         });
 
-        buttonSaveProfile.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                saveUserInformation();
-            }
-        });
-        // Inflate the layout for this fragment
         return view;
     }
 
@@ -188,22 +167,31 @@ public class EditProfileFragment extends Fragment
         void onFragmentInteraction(Uri uri);
     }
 
-    private void saveUserInformation()
+    private void saveBidInformation()
     {
-        String name = editTextName.getText().toString().trim();
-        String address = editTextPostalAddress.getText().toString().trim();
-        String dateOfBirth = textViewDateOfBirth.getText().toString().trim();
-        String phoneNumber = editTextPhoneNumber.getText().toString().trim();
-
-        UserInformation userInformation = new UserInformation(name, address, dateOfBirth, phoneNumber);
-
-        FirebaseUser user = auth.getCurrentUser();
-
-        myRef.child("users").child(user.getUid()).setValue(userInformation);
+        Intent intent = getActivity().getIntent();
+        JobInformation jobInformation = (JobInformation) intent.getSerializableExtra("JobDetails");
 
 
-        Toast.makeText(getActivity(), "Information Saved...", Toast.LENGTH_SHORT).show();
+        String userBid = editTextBid.getText().toString().trim();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        user.getUid();
 
-        startActivity(new Intent(getActivity(), ViewProfileFragment.class));
+        String userID = user.getUid();
+
+
+        String jobID = jobInformation.getJobID().toString().trim();
+
+        BidInformation bidInformation = new BidInformation(userID, userBid);
+
+        databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
+
+        customToastMessage("Bid Placed!");
+    }
+
+    private void customToastMessage(String message)
+    {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

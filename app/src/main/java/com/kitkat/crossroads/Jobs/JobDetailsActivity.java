@@ -16,27 +16,26 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kitkat.crossroads.FindAJobFragment;
 import com.kitkat.crossroads.R;
 
-public class JobDetailsActivity extends AppCompatActivity {
+public class JobDetailsActivity extends AppCompatActivity
+{
 
     private TextView jobName, jobDescription, jobFrom, jobTo;
     private Button buttonBid;
     private EditText editTextBid;
 
-
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_details);
 
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-
         Intent intent = getIntent();
-        JobInformation jobInformation = (JobInformation)intent.getSerializableExtra("JobDetails");
+        JobInformation jobInformation = (JobInformation) intent.getSerializableExtra("JobDetails");
 
         jobName = (TextView) findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) findViewById(R.id.textViewJobDescription1);
@@ -51,20 +50,22 @@ public class JobDetailsActivity extends AppCompatActivity {
         jobTo.setText(jobInformation.getJobTo().toString());
 
 
-        buttonBid.setOnClickListener(new View.OnClickListener() {
+        buttonBid.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 saveBidInformation();
                 finish();
                 startActivity(new Intent(JobDetailsActivity.this, FindAJobFragment.class));
             }
         });
-
-
     }
-    private void saveBidInformation(){
+
+    private void saveBidInformation()
+    {
         Intent intent = getIntent();
-        JobInformation jobInformation = (JobInformation)intent.getSerializableExtra("JobDetails");
+        JobInformation jobInformation = (JobInformation) intent.getSerializableExtra("JobDetails");
 
 
         String userBid = editTextBid.getText().toString().trim();
@@ -74,7 +75,6 @@ public class JobDetailsActivity extends AppCompatActivity {
 
         String userID = user.getUid();
 
-        
 
         String jobID = jobInformation.getJobID().toString().trim();
 
