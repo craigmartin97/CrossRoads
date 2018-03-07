@@ -20,7 +20,6 @@ public class JobInformation implements Serializable {
 
     }
 
-
     public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, boolean jobActive) {
         this.advertName = advertName;
         this.advertDescription = advertDescription;
