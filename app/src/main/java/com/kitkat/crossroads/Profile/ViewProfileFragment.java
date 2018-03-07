@@ -1,6 +1,7 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.R;
 
 
@@ -55,6 +58,7 @@ public class ViewProfileFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private String userID;
+    private StorageReference storageReference;
 
     private ListView mListView;
     private TextView textViewName, viewPostalAddress, viewDateOfBirth, viewPhoneNumber;
@@ -96,7 +100,22 @@ public class ViewProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
 
+
+
+
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference().child("users");
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        storageReference = FirebaseStorage.getInstance().getReference();
+
         ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
+
+        //TODO - get image from database and then display below
+        
+
+
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.selfie);
         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
         roundedBitmapDrawable.setCircular(true);
@@ -106,12 +125,6 @@ public class ViewProfileFragment extends Fragment {
         viewPostalAddress = (TextView) view.findViewById(R.id.viewPostalAddress);
         viewDateOfBirth = (TextView) view.findViewById(R.id.viewDateOfBirth);
         viewPhoneNumber = (TextView) view.findViewById(R.id.viewPhoneNumber);
-
-        mAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("users");
-        FirebaseUser user = mAuth.getCurrentUser();
-        userID = user.getUid();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
