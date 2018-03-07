@@ -125,9 +125,9 @@ public class FindAJobFragment extends Fragment
                 {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
+
+
                     jobList.add(j);
-
-
 
 
                 }
