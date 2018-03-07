@@ -44,10 +44,10 @@ public class JobDetailsActivity extends AppCompatActivity
         editTextBid = (EditText) findViewById(R.id.editTextBid);
         buttonBid = (Button) findViewById(R.id.buttonBid);
 
-        jobName.setText(jobInformation.getJobName().toString());
-        jobDescription.setText(jobInformation.getJobDescription().toString());
-        jobFrom.setText(jobInformation.getJobFrom().toString());
-        jobTo.setText(jobInformation.getJobTo().toString());
+        jobName.setText(jobInformation.getAdvertName().toString());
+        jobDescription.setText(jobInformation.getAdvertDescription().toString());
+        jobFrom.setText(jobInformation.getJobType().toString());
+        jobTo.setText(jobInformation.getJobSize().toString());
 
 
         buttonBid.setOnClickListener(new View.OnClickListener()
@@ -76,11 +76,11 @@ public class JobDetailsActivity extends AppCompatActivity
         String userID = user.getUid();
 
 
-        String jobID = jobInformation.getJobID().toString().trim();
+        //String jobID = jobInformation.getJobID().toString().trim();
 
-        BidInformation bidInformation = new BidInformation(userID, userBid);
+        //BidInformation bidInformation = new BidInformation(userID, userBid);
 
-        databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
+        //databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 
         Toast.makeText(this, "Bid Added!", Toast.LENGTH_SHORT).show();
 

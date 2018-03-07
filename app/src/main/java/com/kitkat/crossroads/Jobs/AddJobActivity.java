@@ -51,8 +51,8 @@ public class AddJobActivity extends AppCompatActivity
 
         buttonAddJob = (Button) findViewById(R.id.buttonAddJob);
 
-        editTextJobName = (EditText) findViewById(R.id.editTextJobName);
-        editTextJobDescription = (EditText) findViewById(R.id.editTextJobDescription);
+        editTextJobName = (EditText) findViewById(R.id.editTextAdName);
+        editTextJobDescription = (EditText) findViewById(R.id.editTextAdDescription);
         editTextJobFrom = (EditText) findViewById(R.id.editTextJobFrom);
         editTextJobTo = (EditText) findViewById(R.id.editTextJobTo);
 
@@ -77,15 +77,16 @@ public class AddJobActivity extends AppCompatActivity
         String jobFrom = editTextJobFrom.getText().toString().trim();
         String jobTo = editTextJobTo.getText().toString().trim();
         Boolean jobActive = true;
+        String courierID = " ";
 
         FirebaseUser user = auth.getCurrentUser();
 
         String jobUserID = user.getUid().toString().trim();
 
-        JobInformation jobInformation = new JobInformation(jobName, jobDescription, jobTo, jobFrom, jobActive, jobUserID);
+        //JobInformation jobInformation = new JobInformation(jobName, jobDescription, jobTo, jobFrom, jobActive, jobUserID, courierID);
 
 
-        databaseReference.child("Jobs").push().setValue(jobInformation);
+        //databaseReference.child("Jobs").push().setValue(jobInformation);
 
         Toast.makeText(this, "Job Added!", Toast.LENGTH_SHORT).show();
 

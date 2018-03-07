@@ -25,7 +25,7 @@
 
 
         <EditText
-            android:id="@+id/editTextJobName"
+            android:id="@+id/editTextAdName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView4"
@@ -35,10 +35,10 @@
             android:inputType="textPersonName" />
 
         <EditText
-            android:id="@+id/editTextJobDescription"
+            android:id="@+id/editTextAdDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editTextJobName"
+            android:layout_below="@+id/editTextAdName"
             android:layout_marginTop="16dp"
             android:ems="10"
             android:hint="Job Description"
@@ -48,7 +48,7 @@
             android:id="@+id/editTextJobFrom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editTextJobDescription"
+            android:layout_below="@+id/editTextAdDescription"
             android:layout_marginTop="16dp"
             android:ems="10"
             android:hint="Job From"
