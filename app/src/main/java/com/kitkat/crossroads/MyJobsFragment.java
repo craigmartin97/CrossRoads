@@ -1,40 +1,40 @@
 package com.kitkat.crossroads;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import java.util.ArrayList;
-import java.util.Locale;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FindAJobFragment.OnFragmentInteractionListener} interface
+ * {@link MyJobsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FindAJobFragment#newInstance} factory method to
+ * Use the {@link MyJobsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FindAJobFragment extends Fragment implements SearchView.OnQueryTextListener
+public class MyJobsFragment extends Fragment
 {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -46,7 +46,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private MyJobsFragment.OnFragmentInteractionListener mListener;
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
@@ -54,17 +54,13 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private FirebaseAuth.AuthStateListener authStateListener;
     private DataSnapshot jobReference;
 
-    private FindAJobFragment.MyCustomAdapter mAdapter;
+    private MyJobsFragment.MyCustomAdapter mAdapter;
 
     private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
 
     private ListView jobListView;
 
-    private SearchView jobSearch;
-
-
-
-    public FindAJobFragment()
+    public MyJobsFragment()
     {
         // Required empty public constructor
     }
@@ -75,12 +71,12 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FindAJobFragment.
+     * @return A new instance of fragment MyJobsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FindAJobFragment newInstance(String param1, String param2)
+    public static MyJobsFragment newInstance(String param1, String param2)
     {
-        FindAJobFragment fragment = new FindAJobFragment();
+        MyJobsFragment fragment = new MyJobsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -103,10 +99,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        final View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
+        View view = inflater.inflate(R.layout.fragment_job_details, container, false);
 
         jobListView = (ListView) view.findViewById(R.id.jobListView1);
-
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -121,35 +116,23 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
 
-                mAdapter = new FindAJobFragment.MyCustomAdapter();
+                mAdapter = new MyCustomAdapter();
 
                 for (DataSnapshot ds : jobListSnapShot)
                 {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
                     jobList.add(j);
+                    mAdapter.addItem(j);
                 }
-
-                mAdapter.addArray(jobList);
-
                 jobListView.setAdapter(mAdapter);
-
-
-
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError)
             {
 
             }
         });
-
-
-        jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
-        jobSearch.setOnQueryTextListener(this);
-
         return view;
     }
 
@@ -166,9 +149,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
+        if (context instanceof MyJobsFragment.OnFragmentInteractionListener)
         {
-            mListener = (OnFragmentInteractionListener) context;
+            mListener = (MyJobsFragment.OnFragmentInteractionListener) context;
         } else
         {
             Toast.makeText(context, "Home Fragment Attached", Toast.LENGTH_SHORT).show();
@@ -181,23 +164,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         super.onDetach();
         mListener = null;
     }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-
-        String text = newText;
-        mAdapter.filter(text);
-
-
-
-        return false;
-    }
-
 
     /**
      * This interface must be implemented by activities that contain this
@@ -215,36 +181,22 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         void onFragmentInteraction(Uri uri);
     }
 
-
-    public class MyCustomAdapter extends BaseAdapter
+    private class MyCustomAdapter extends BaseAdapter
     {
 
         private ArrayList<JobInformation> mData = new ArrayList();
-        private ArrayList<JobInformation> mDataOrig = new ArrayList();
 
         private LayoutInflater mInflater;
 
         public MyCustomAdapter()
         {
-
-            if (isAdded()) {
-                mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            }
+            mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         public void addItem(final JobInformation item)
         {
             mData.add(item);
-            mDataOrig.add(item);
         }
-
-
-        public void addArray(final ArrayList<JobInformation> j)
-        {
-            mData = j;
-            mDataOrig = j;
-        }
-
 
         @Override
         public void registerDataSetObserver(DataSetObserver observer)
@@ -286,11 +238,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             System.out.println("getView " + position + " " + convertView);
-            FindAJobFragment.MyCustomAdapter.GroupViewHolder holder;
+            MyJobsFragment.MyCustomAdapter.GroupViewHolder holder;
             if (convertView == null)
             {
                 convertView = mInflater.inflate(R.layout.job_info_list, null);
-                holder = new FindAJobFragment.MyCustomAdapter.GroupViewHolder();
+                holder = new MyJobsFragment.MyCustomAdapter.GroupViewHolder();
                 holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
                 holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
@@ -298,27 +250,19 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 convertView.setTag(holder);
             } else
             {
-                holder = (FindAJobFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
+                holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
-
-            holder.textViewName.setText(mData.get(position).getAdvertName());
-            holder.textViewFrom.setText(mData.get(position).getColTown());
-            holder.textViewTo.setText(mData.get(position).getDelTown());
+            holder.textViewName.setText(mData.get(position).getJobName());
+            holder.textViewFrom.setText(mData.get(position).getJobFrom());
+            holder.textViewTo.setText(mData.get(position).getJobTo());
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
-
                 @Override
                 public void onClick(View v)
                 {
-
-                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("Job", mData.get(position));
-                    bundle.putString("name", "Hello");
-                    bundle.putString("address", "123345");
-                    jobDetailsFragment.setArguments(bundle);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
+                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
+                    intent.putExtra("JobDetails", mData.get(position));
+                    startActivity(intent);
                 }
             });
             return convertView;
@@ -336,43 +280,13 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             return false;
         }
 
+
         public class GroupViewHolder
         {
             public TextView textViewName;
             public TextView textViewFrom;
             public TextView textViewTo;
             public Button detailsButton;
-        }
-
-        public void filter(String charText) {
-
-
-            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
-            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
-            charText = charText.toLowerCase(Locale.getDefault());
-
-
-
-            if (charText.length() == 0) {
-                mData = mDataOrig;
-            } else {
-
-                for (JobInformation j : mDataOrig) {
-                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText)) {
-                        jobs.add(j);
-                        jA.add(j);
-                    }
-                    else
-                    {
-                        jA.add(j);
-                    }
-                }
-                mData.clear();
-                mData = jobs;
-                mDataOrig = jA;
-            }
-
-            notifyDataSetChanged();
         }
     }
 }
