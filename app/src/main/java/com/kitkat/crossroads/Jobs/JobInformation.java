@@ -6,7 +6,8 @@ import java.io.Serializable;
  * Created by s6042911 on 15/02/18.
  */
 
-public class JobInformation implements Serializable {
+public class JobInformation implements Serializable
+{
 
     public String jobName, jobDescription, jobTo, jobFrom, jobUserID, jobID;
     public boolean jobActive;
@@ -27,35 +28,43 @@ public class JobInformation implements Serializable {
         this.jobUserID = jobUserID;
     }
 
-    public void setJobID(String jobID) {
+    public void setJobID(String jobID)
+    {
         this.jobID = jobID;
     }
 
-    public String getJobID() {
+    public String getJobID()
+    {
         return jobID;
     }
 
-    public String getJobName() {
+    public String getJobName()
+    {
         return jobName;
     }
 
-    public String getJobDescription() {
+    public String getJobDescription()
+    {
         return jobDescription;
     }
 
-    public String getJobTo() {
+    public String getJobTo()
+    {
         return jobTo;
     }
 
-    public String getJobFrom() {
+    public String getJobFrom()
+    {
         return jobFrom;
     }
 
-    public String getJobUserID() {
+    public String getJobUserID()
+    {
         return jobUserID;
     }
 
-    public boolean isJobActive() {
+    public boolean isJobActive()
+    {
         return jobActive;
     }
 }

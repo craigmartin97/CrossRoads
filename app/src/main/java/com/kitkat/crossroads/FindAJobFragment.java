@@ -6,6 +6,7 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
-import com.kitkat.crossroads.Jobs.JobsActivity;
 
 import java.util.ArrayList;
 
@@ -36,7 +35,8 @@ import java.util.ArrayList;
  * Use the {@link FindAJobFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FindAJobFragment extends Fragment {
+public class FindAJobFragment extends Fragment
+{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,7 +61,8 @@ public class FindAJobFragment extends Fragment {
 
     private ListView jobListView;
 
-    public FindAJobFragment() {
+    public FindAJobFragment()
+    {
         // Required empty public constructor
     }
 
@@ -74,7 +75,8 @@ public class FindAJobFragment extends Fragment {
      * @return A new instance of fragment FindAJobFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FindAJobFragment newInstance(String param1, String param2) {
+    public static FindAJobFragment newInstance(String param1, String param2)
+    {
         FindAJobFragment fragment = new FindAJobFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -84,9 +86,11 @@ public class FindAJobFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null)
+        {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -94,7 +98,8 @@ public class FindAJobFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
 
@@ -106,9 +111,11 @@ public class FindAJobFragment extends Fragment {
         databaseReference = database.getReference();
 
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
 
 
                 jobReference = dataSnapshot.child("Jobs");
@@ -117,7 +124,8 @@ public class FindAJobFragment extends Fragment {
 
                 mAdapter = new FindAJobFragment.MyCustomAdapter();
 
-                for (DataSnapshot ds : jobListSnapShot) {
+                for (DataSnapshot ds : jobListSnapShot)
+                {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
                     jobList.add(j);
@@ -127,14 +135,14 @@ public class FindAJobFragment extends Fragment {
                 }
 
 
-
                 jobListView.setAdapter(mAdapter);
 
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError)
+            {
 
             }
 
@@ -146,24 +154,30 @@ public class FindAJobFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
+    public void onButtonPressed(Uri uri)
+    {
+        if (mListener != null)
+        {
             mListener.onFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnFragmentInteractionListener)
+        {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
+        } else
+        {
             Toast.makeText(context, "Home Fragment Attached", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         mListener = null;
     }
@@ -178,67 +192,76 @@ public class FindAJobFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener
+    {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
 
-
-
-    private class MyCustomAdapter extends BaseAdapter {
+    private class MyCustomAdapter extends BaseAdapter
+    {
 
         private ArrayList<JobInformation> mData = new ArrayList();
 
         private LayoutInflater mInflater;
 
-        public MyCustomAdapter() {
+        public MyCustomAdapter()
+        {
             mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        public void addItem(final JobInformation item) {
+        public void addItem(final JobInformation item)
+        {
             mData.add(item);
 
         }
 
 
         @Override
-        public void registerDataSetObserver(DataSetObserver observer) {
+        public void registerDataSetObserver(DataSetObserver observer)
+        {
 
         }
 
         @Override
-        public void unregisterDataSetObserver(DataSetObserver observer) {
+        public void unregisterDataSetObserver(DataSetObserver observer)
+        {
 
         }
 
         @Override
-        public int getCount() {
+        public int getCount()
+        {
             return mData.size();
         }
 
         @Override
-        public Object getItem(int position) {
+        public Object getItem(int position)
+        {
             return mData.get(position);
         }
 
         @Override
-        public long getItemId(int position) {
+        public long getItemId(int position)
+        {
             return 0;
         }
 
 
-
         @Override
-        public boolean hasStableIds() {
+        public boolean hasStableIds()
+        {
             return false;
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent)
+        {
             System.out.println("getView " + position + " " + convertView);
             FindAJobFragment.MyCustomAdapter.GroupViewHolder holder;
-            if (convertView == null) {
+            if (convertView == null)
+            {
                 convertView = mInflater.inflate(R.layout.job_info_list, null);
                 holder = new FindAJobFragment.MyCustomAdapter.GroupViewHolder();
                 holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
@@ -246,44 +269,49 @@ public class FindAJobFragment extends Fragment {
                 holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
                 holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
-            } else {
+            } else
+            {
                 holder = (FindAJobFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
             holder.textViewName.setText(mData.get(position).getJobName());
             holder.textViewFrom.setText(mData.get(position).getJobFrom());
             holder.textViewTo.setText(mData.get(position).getJobTo());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent(getActivity(), JobDetailsFragment.class);
                     intent.putExtra("JobDetails", mData.get(position));
-                    startActivity(intent);
+                    android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.content, new JobDetailsFragment()).commit();
                 }
             });
             return convertView;
         }
 
 
-
         @Override
-        public boolean areAllItemsEnabled() {
+        public boolean areAllItemsEnabled()
+        {
             return false;
         }
 
         @Override
-        public boolean isEmpty() {
+        public boolean isEmpty()
+        {
             return false;
         }
 
 
-
-        public class GroupViewHolder {
+        public class GroupViewHolder
+        {
             public TextView textViewName;
             public TextView textViewFrom;
             public TextView textViewTo;
             public Button detailsButton;
         }
-
 
 
     }

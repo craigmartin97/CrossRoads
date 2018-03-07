@@ -195,7 +195,6 @@ public class ViewProfileFragment extends Fragment {
     }
 
 
-
     private void toastMessage(String message)
     {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
