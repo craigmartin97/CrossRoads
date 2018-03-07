@@ -218,6 +218,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         void onFragmentInteraction(Uri uri);
     }
 
+
     public class MyCustomAdapter extends BaseAdapter
     {
 
