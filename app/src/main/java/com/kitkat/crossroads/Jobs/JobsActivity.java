@@ -76,9 +76,12 @@ public class JobsActivity extends Activity
                     j.setJobID(ds.getKey());
                     jobList.add(j);
 
-                    mAdapter.addItem(j);
+                    //mAdapter.addItem(j);
 
                 }
+
+
+                mAdapter.addArray(jobList);
 
 
                 jobListView.setAdapter(mAdapter);
@@ -115,6 +118,10 @@ public class JobsActivity extends Activity
         {
             mData.add(item);
 
+        }
+
+        public void addArray(final ArrayList<JobInformation> j) {
+            mData = j;
         }
 
 
@@ -173,11 +180,12 @@ public class JobsActivity extends Activity
             {
                 holder = (GroupViewHolder) convertView.getTag();
             }
-            holder.textViewName.setText(mData.get(position).getJobName());
-            holder.textViewFrom.setText(mData.get(position).getJobFrom());
-            holder.textViewTo.setText(mData.get(position).getJobTo());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener()
-            {
+
+            holder.textViewName.setText(mData.get(position).getAdvertName());
+            holder.textViewFrom.setText(mData.get(position).getJobType());
+            holder.textViewTo.setText(mData.get(position).getJobSize());
+            holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v)
                 {
@@ -214,4 +222,3 @@ public class JobsActivity extends Activity
 
     }
 }
-

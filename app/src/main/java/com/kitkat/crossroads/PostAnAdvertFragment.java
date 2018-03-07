@@ -44,12 +44,13 @@ public class PostAnAdvertFragment extends Fragment
 
     private FirebaseAuth auth;
 
-    private EditText editTextJobName;
-    private EditText editTextJobDescription;
-    private EditText editTextJobTo;
-    private EditText editTextJobFrom;
+    private EditText editTextAdName, editTextAdDescription, editTextJobSize, editTextJobType, editTextColDate, editTextColTime;
+    private EditText editTextColAddL1, editTextColAddL2, editTextColAddTown, editTextColAddPostcode;
+    private EditText editTextDelAddL1, editTextDelAddL2, editTextDelAddTown, editTextDelAddPostcode;
 
-    private Button buttonAddJob;
+
+
+    private Button buttonPostAd;
 
     private DatabaseReference databaseReference;
 
@@ -106,15 +107,30 @@ public class PostAnAdvertFragment extends Fragment
 
         FirebaseUser user = auth.getCurrentUser();
 
-        buttonAddJob = (Button) view.findViewById(R.id.buttonAddJob);
+        buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
 
-        editTextJobName = (EditText) view.findViewById(R.id.editTextJobName);
-        editTextJobDescription = (EditText) view.findViewById(R.id.editTextJobDescription);
-        editTextJobFrom = (EditText) view.findViewById(R.id.editTextJobFrom);
-        editTextJobTo = (EditText) view.findViewById(R.id.editTextJobTo);
+        editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
+        editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
+        editTextJobSize = (EditText) view.findViewById(R.id.editTextJobSize);
+        editTextJobType = (EditText) view.findViewById(R.id.editTextJobType);
+        editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
+        editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
+        editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
+        editTextColAddL2 = (EditText) view.findViewById(R.id.editTextJobColL2);
+        editTextColAddTown = (EditText) view.findViewById(R.id.editTextJobColTown);
+        editTextColAddPostcode = (EditText) view.findViewById(R.id.editTextJobColPostcode);
+        editTextDelAddL1 = (EditText) view.findViewById(R.id.editTextJobDelL1);
+        editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
+        editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
+        editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
 
-        buttonAddJob.setOnClickListener(new View.OnClickListener()
-        {
+
+
+
+
+
+        buttonPostAd.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v)
             {
@@ -173,17 +189,29 @@ public class PostAnAdvertFragment extends Fragment
 
     private void saveJobInformation()
     {
-        String jobName = editTextJobName.getText().toString().trim();
-        String jobDescription = editTextJobDescription.getText().toString().trim();
-        String jobFrom = editTextJobFrom.getText().toString().trim();
-        String jobTo = editTextJobTo.getText().toString().trim();
+        String adName = editTextAdName.getText().toString().trim();
+        String adDescription = editTextAdDescription.getText().toString().trim();
+        String jobSize = editTextJobSize.getText().toString().trim();
+        String jobType = editTextJobType.getText().toString().trim();
+        String colDate = editTextColDate.getText().toString().trim();
+        String colTime = editTextColTime.getText().toString().trim();
+        String colL1 = editTextColAddL1.getText().toString().trim();
+        String colL2 = editTextColAddL2.getText().toString().trim();
+        String colTown = editTextColAddTown.getText().toString().trim();
+        String colPostcode = editTextColAddPostcode.getText().toString().trim();
+        String delL1 = editTextDelAddL1.getText().toString().trim();
+        String delL2 = editTextDelAddL2.getText().toString().trim();
+        String delTown = editTextDelAddTown.getText().toString().trim();
+        String delPostcode = editTextDelAddPostcode.getText().toString().trim();
+
         Boolean jobActive = true;
+        String courierID = " ";
 
         FirebaseUser user = auth.getCurrentUser();
 
-        String jobUserID = user.getUid().toString().trim();
+        String posterID = user.getUid().toString().trim();
 
-        JobInformation jobInformation = new JobInformation(jobName, jobDescription, jobTo, jobFrom, jobActive, jobUserID);
+        JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID, courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobActive);
 
 
         databaseReference.child("Jobs").push().setValue(jobInformation);
