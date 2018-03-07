@@ -44,10 +44,10 @@ public class JobDetailsActivity extends AppCompatActivity
         editTextBid = (EditText) findViewById(R.id.editTextBid);
         buttonBid = (Button) findViewById(R.id.buttonBid);
 
-        jobName.setText(jobInformation.getJobName().toString());
-        jobDescription.setText(jobInformation.getJobDescription().toString());
-        jobFrom.setText(jobInformation.getJobFrom().toString());
-        jobTo.setText(jobInformation.getJobTo().toString());
+        jobName.setText(jobInformation.getAdvertName().toString());
+        jobDescription.setText(jobInformation.getAdvertDescription().toString());
+        jobFrom.setText(jobInformation.getJobType().toString());
+        jobTo.setText(jobInformation.getJobSize().toString());
 
 
         buttonBid.setOnClickListener(new View.OnClickListener()

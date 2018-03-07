@@ -22,7 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class JobsActivity extends Activity
@@ -181,11 +180,12 @@ public class JobsActivity extends Activity
             {
                 holder = (GroupViewHolder) convertView.getTag();
             }
-            holder.textViewName.setText(mData.get(position).getJobName());
-            holder.textViewFrom.setText(mData.get(position).getJobFrom());
-            holder.textViewTo.setText(mData.get(position).getJobTo());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener()
-            {
+
+            holder.textViewName.setText(mData.get(position).getAdvertName());
+            holder.textViewFrom.setText(mData.get(position).getJobType());
+            holder.textViewTo.setText(mData.get(position).getJobSize());
+            holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v)
                 {
