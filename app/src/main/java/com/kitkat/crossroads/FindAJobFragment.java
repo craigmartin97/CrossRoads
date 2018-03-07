@@ -1,13 +1,11 @@
 package com.kitkat.crossroads;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +14,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
-
 import java.util.ArrayList;
 
 
@@ -278,10 +273,6 @@ public class FindAJobFragment extends Fragment
                 @Override
                 public void onClick(View v)
                 {
-//                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
-//                    intent.putExtra("JobDetails", mData.get(position));
-//                    startActivity(intent);
-
                     JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("Job", mData.get(position));
@@ -306,7 +297,6 @@ public class FindAJobFragment extends Fragment
         {
             return false;
         }
-
 
         public class GroupViewHolder
         {
