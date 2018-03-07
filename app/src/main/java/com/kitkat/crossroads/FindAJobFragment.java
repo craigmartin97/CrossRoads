@@ -383,6 +383,5 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
             notifyDataSetChanged();
         }
-
     }
 }
