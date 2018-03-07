@@ -1,12 +1,15 @@
 package com.kitkat.crossroads.Jobs;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by s6042911 on 15/02/18.
  */
 
-public class JobInformation implements Serializable
+public class JobInformation implements Parcelable
 {
 
     public String jobName, jobDescription, jobTo, jobFrom, jobUserID, jobID;
@@ -16,6 +19,7 @@ public class JobInformation implements Serializable
     {
 
     }
+
 
 
     public JobInformation(String jobName, String jobDescription, String jobTo, String jobFrom, boolean jobActive, String jobUserID)
@@ -67,4 +71,18 @@ public class JobInformation implements Serializable
     {
         return jobActive;
     }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+
+    }
+
+
 }
