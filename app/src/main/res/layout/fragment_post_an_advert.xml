@@ -15,28 +15,39 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="60dp"
             android:background="@drawable/relative_layout_background"
-            android:paddingBottom="20dp" >
+            android:paddingBottom="70dp" >
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="345dp"
                 android:layout_height="wrap_content"
-                android:text="Post Job"
-                android:fontFamily="@font/bebasneueregular"
-                android:textSize="35dp"
-                android:textAlignment="center"
                 android:layout_marginTop="20dp"
-                android:textColor="#ffffff" />
+                android:fontFamily="@font/bebasneueregular"
+                android:text="Add Job"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="35dp" />
 
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="345dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/bebasneueregular"
+                android:text="Delivery Details"
+                android:layout_below="@+id/textView4"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/editTextJobName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView4"
-                android:layout_marginTop="16dp"
+                android:layout_below="@+id/textView5"
+                android:layout_marginTop="10dp"
                 android:ems="10"
-                android:hint="Job Name"
+                android:hint="Advert Name"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -44,39 +55,167 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobName"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:ems="10"
-                android:hint="Job Description"
+                android:hint="Advert Description"
                 android:inputType="textMultiLine" />
 
             <EditText
-                android:id="@+id/editTextJobFrom"
+                android:id="@+id/editTextJobSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobDescription"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:ems="10"
-                android:hint="Job From"
+                android:hint="Job Size"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                android:id="@+id/editTextJobType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobSize"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Job Type"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                android:id="@+id/editTextJobColDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobType"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Collection Date"
                 android:inputType="textPostalAddress" />
 
             <EditText
-                android:id="@+id/editTextJobTo"
+                android:id="@+id/editTextJobColTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/editTextJobFrom"
-                android:layout_marginTop="16dp"
+                android:layout_below="@+id/editTextJobColDate"
+                android:layout_marginTop="10dp"
                 android:ems="10"
-                android:hint="Job To"
+                android:hint="Collection Time"
                 android:inputType="textPostalAddress" />
+
+            <TextView
+                android:id="@+id/textViewCollection"
+                android:layout_width="345dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/bebasneueregular"
+                android:layout_below="@+id/editTextJobColTime"
+                android:text="Collection Address"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/editTextJobColL1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewCollection"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Address Line 1"
+                android:inputType="textPostalAddress" />
+
+            <EditText
+                android:id="@+id/editTextJobColL2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobColL1"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Address Line 2"
+                android:inputType="textPostalAddress" />
+
+            <EditText
+                android:id="@+id/editTextJobColTown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobColL2"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Town"
+                android:inputType="textPostalAddress" />
+
+            <EditText
+                android:id="@+id/editTextJobColPostcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobColTown"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Postcode"
+                android:inputType="textPostalAddress" />
+
+
+
+            <TextView
+                android:id="@+id/textViewDelivery"
+                android:layout_width="345dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/bebasneueregular"
+                android:layout_below="@+id/editTextJobColPostcode"
+                android:text="Delivery Address"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/editTextJobDelL1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewDelivery"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Address Line 1"
+                android:inputType="textPostalAddress" />
+
+            <EditText
+                android:id="@+id/editTextJobDelL2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobDelL1"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Address Line 2"
+                android:inputType="textPostalAddress" />
+
+            <EditText
+                android:id="@+id/editTextJobDelTown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobDelL2"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Town"
+                android:inputType="textPostalAddress" />
+
+            <EditText
+                android:id="@+id/editTextJobDelPostcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobDelTown"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Postcode"
+                android:inputType="textPostalAddress" />
+
 
             <Button
                 android:id="@+id/buttonAddJob"
                 android:layout_width="300sp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/editTextJobTo"
-                android:layout_marginTop="16dp"
+                android:layout_below="@+id/editTextJobDelPostcode"
                 android:layout_centerHorizontal="true"
-                android:text="Add Job" />
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="40dp"
+                android:text="Post Advert" />
 
         </RelativeLayout>
     </ScrollView>
