@@ -132,6 +132,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).commit();
         } else if (id == R.id.nav_myAdverts)
         {
+            fragmentTransaction.replace(R.id.content, new MyAdvertsFragment()).commit();
         } else if (id == R.id.nav_myJobs)
         {
 
