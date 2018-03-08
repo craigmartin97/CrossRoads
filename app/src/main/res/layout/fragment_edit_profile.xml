@@ -79,22 +79,21 @@
                 android:inputType="date" />
 
             <Button
-                android:id="@+id/buttonSaveProfile"
+                android:id="@+id/buttonUploadImage"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewDateOfBirth"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="14dp"
-                android:text="@string/save_profile" />
+                android:text="@string/upload_image" />
 
             <Button
-                android:id="@+id/buttonLogout"
+                android:id="@+id/buttonSaveProfile"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/buttonSaveProfile"
+                android:layout_below="@+id/buttonUploadImage"
                 android:layout_centerHorizontal="true"
-                android:text="@string/log_out" />
-
+                android:layout_marginTop="14dp"
+                android:text="@string/save_profile" />
         </RelativeLayout>
 
     </ScrollView>

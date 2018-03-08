@@ -16,9 +16,10 @@
         android:id="@+id/navigationImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/ic_launcher_round" />
+        android:adjustViewBounds="false"
+        app:srcCompat="@mipmap/profileimage" />
 
     <TextView
         android:id="@+id/navigationName"
