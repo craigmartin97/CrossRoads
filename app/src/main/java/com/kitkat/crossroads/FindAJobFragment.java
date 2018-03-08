@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +27,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 /**
@@ -37,7 +40,7 @@ import java.util.ArrayList;
  * Use the {@link FindAJobFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FindAJobFragment extends Fragment
+public class FindAJobFragment extends Fragment implements SearchView.OnQueryTextListener
 {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -62,6 +65,10 @@ public class FindAJobFragment extends Fragment
     private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
 
     private ListView jobListView;
+
+    private SearchView jobSearch;
+
+
 
     public FindAJobFragment()
     {
@@ -102,9 +109,10 @@ public class FindAJobFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
+        final View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
 
         jobListView = (ListView) view.findViewById(R.id.jobListView1);
+
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -131,6 +139,10 @@ public class FindAJobFragment extends Fragment
                 mAdapter.addArray(jobList);
 
                 jobListView.setAdapter(mAdapter);
+
+
+
+
             }
 
             @Override
@@ -139,6 +151,11 @@ public class FindAJobFragment extends Fragment
 
             }
         });
+
+
+        jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
+        jobSearch.setOnQueryTextListener(this);
+
         return view;
     }
 
@@ -171,6 +188,23 @@ public class FindAJobFragment extends Fragment
         mListener = null;
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+        String text = newText;
+        mAdapter.filter(text);
+
+
+
+        return false;
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -191,13 +225,14 @@ public class FindAJobFragment extends Fragment
     {
 
         private ArrayList<JobInformation> mData = new ArrayList();
+        private ArrayList<JobInformation> mDataOrig = new ArrayList();
 
         private LayoutInflater mInflater;
 
         public MyCustomAdapter()
         {
-            if (isAdded())
-            {
+
+            if (isAdded()) {
                 mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
         }
@@ -205,12 +240,14 @@ public class FindAJobFragment extends Fragment
         public void addItem(final JobInformation item)
         {
             mData.add(item);
+            mDataOrig.add(item);
         }
 
 
         public void addArray(final ArrayList<JobInformation> j)
         {
             mData = j;
+            mDataOrig = j;
         }
 
 
@@ -315,5 +352,37 @@ public class FindAJobFragment extends Fragment
             public TextView textViewTo;
             public Button detailsButton;
         }
+
+        public void filter(String charText) {
+
+
+            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
+            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
+            charText = charText.toLowerCase(Locale.getDefault());
+
+
+
+            if (charText.length() == 0) {
+                mData = mDataOrig;
+            } else {
+
+                for (JobInformation j : mDataOrig) {
+                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText)) {
+                        jobs.add(j);
+                        jA.add(j);
+                    }
+                    else
+                    {
+                        jA.add(j);
+                    }
+                }
+                mData.clear();
+                mData = jobs;
+                mDataOrig = jA;
+            }
+
+            notifyDataSetChanged();
+        }
+
     }
 }

@@ -25,8 +25,11 @@
         <SearchView
             android:id="@+id/searchViewJob"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:queryHint="Name, Location, Size, etc." />
+            android:layout_height="wrap_content"
+            android:queryHint="Name, Location, Size, etc."
+            android:iconifiedByDefault="false"/>
+
+        <requestFocus/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,23 +64,17 @@
                 android:id="@+id/textTo"
                 android:layout_width="100dp"
                 android:layout_height="50dp"
-                android:fontFamily="@font/bebasneueregular"
-                android:textSize="15dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
+                android:fontFamily="@font/bebasneueregular"
                 android:gravity="center_vertical"
                 android:text="To"
                 android:textColor="#FF000000"
+                android:textSize="15dp"
                 android:visibility="visible" />
 
 
-
-
         </LinearLayout>
-
-
-
-
 
 
         <ListView
