@@ -105,10 +105,10 @@ public class JobDetailsFragment extends Fragment
         editTextBid = (EditText) view.findViewById(R.id.editTextBid);
         buttonBid = (Button) view.findViewById(R.id.buttonBid);
 
-        jobName.setText(jobInformation.getJobName().toString());
-        jobDescription.setText(jobInformation.getJobDescription().toString());
-        jobFrom.setText(jobInformation.getJobFrom().toString());
-        jobTo.setText(jobInformation.getJobTo().toString());
+        jobName.setText(jobInformation.getAdvertName().toString());
+        jobDescription.setText(jobInformation.getAdvertDescription().toString());
+        jobFrom.setText(jobInformation.getColTown().toString());
+        jobTo.setText(jobInformation.getDelTown().toString());
 
         buttonBid.setOnClickListener(new View.OnClickListener()
         {
