@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kitkat.crossroads.CrossRoads;
 import com.kitkat.crossroads.R;
 
 
@@ -97,11 +98,8 @@ public class ViewProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
-
-
-
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -110,21 +108,22 @@ public class ViewProfileFragment extends Fragment {
         userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
 
-        //TODO - get image from database and then display below
-        
-
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.selfie);
-        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-        roundedBitmapDrawable.setCircular(true);
-        imageView.setImageDrawable(roundedBitmapDrawable);
 
         textViewName = (TextView) view.findViewById(R.id.textViewName);
         viewPostalAddress = (TextView) view.findViewById(R.id.viewPostalAddress);
         viewDateOfBirth = (TextView) view.findViewById(R.id.viewDateOfBirth);
         viewPhoneNumber = (TextView) view.findViewById(R.id.viewPhoneNumber);
+        ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
+
+        Bundle bundle = getArguments();
+        if(bundle != null)
+        {
+            Bitmap bitmapImage = bundle.getParcelable("ProfileImage");
+            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmapImage);
+            roundedBitmapDrawable.setCircular(true);
+            imageView.setImageDrawable(roundedBitmapDrawable);
+        }
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
