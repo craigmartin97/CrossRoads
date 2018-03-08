@@ -273,6 +273,7 @@ public class FindAJobFragment extends Fragment
                 @Override
                 public void onClick(View v)
                 {
+
                     JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("Job", mData.get(position));

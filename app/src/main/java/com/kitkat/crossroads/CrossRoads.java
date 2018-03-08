@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -53,11 +54,12 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
     private StorageReference storageReference;
     private DatabaseReference myRef;
     private String userID;
+    private ImageView profileImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -140,6 +142,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).commit();
         } else if (id == R.id.nav_myAdverts)
         {
+
         } else if (id == R.id.nav_myJobs)
         {
 
@@ -166,7 +169,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         ImageView viewProfile = (ImageView) headerview.findViewById(R.id.imageViewProfile);
         ImageView editProfile = (ImageView) headerview.findViewById(R.id.imageEditPen);
         ImageView logout = (ImageView) headerview.findViewById(R.id.imageLogout);
-        ImageView profileImage = (ImageView) headerview.findViewById(R.id.navigationImage);
+        profileImage = (ImageView) headerview.findViewById(R.id.navigationImage);
 
         mAuthListener = new FirebaseAuth.AuthStateListener()
         {
@@ -218,8 +221,12 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             }
         });
 
+
+
         editProfile.setOnClickListener(new View.OnClickListener()
         {
+
+
             @Override
             public void onClick(View v)
             {
@@ -272,4 +279,6 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
     {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+
 }
