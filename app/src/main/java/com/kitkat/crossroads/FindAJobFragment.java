@@ -128,8 +128,6 @@ public class FindAJobFragment extends Fragment
 
 
                     jobList.add(j);
-                    mAdapter.addItem(j);
-
 
                 }
 
