@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity
                         } else if (user.isEmailVerified() == false)
                         {
                             dismissDialog();
-                            customToastMessage("You Must Verify Your Email Address Beofre Logging In. Please Check Your Email.");
+                            customToastMessage("You Must Verify Your Email Address Before Logging In. Please Check Your Email.");
                         } else
                         {
                             dismissDialog();

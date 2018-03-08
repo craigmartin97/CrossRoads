@@ -6,8 +6,6 @@
     android:id="@+id/list_items">
 
 
-
-
     <TextView
         android:id="@+id/textName"
         android:layout_width="100dp"
@@ -15,6 +13,7 @@
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="text"
+        android:textAlignment="center"
         android:textColor="#FF000000"
         android:visibility="visible" />
 
@@ -27,6 +26,7 @@
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="TextView"
+        android:textAlignment="center"
         android:textColor="#FF000000"
         android:visibility="visible" />
 
@@ -39,6 +39,7 @@
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="TextView"
+        android:textAlignment="center"
         android:textColor="#FF000000"
         android:visibility="visible" />
 
@@ -48,8 +49,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/textTo"
         android:layout_toEndOf="@+id/textTo"
-        android:textSize="10dp"
-        android:text="Details" />
+        android:text="Details"
+        android:textSize="10dp" />
 
 
 </RelativeLayout>
