@@ -1,22 +1,37 @@
 package com.kitkat.crossroads.Jobs;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.FindAJobFragment;
 import com.kitkat.crossroads.R;
 
+import org.w3c.dom.Text;
 
-public class MyAdvertsActivity extends Activity{
+import java.util.ArrayList;
+
+public class MyAdvertsActivity extends Activity
+{
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
@@ -24,112 +39,178 @@ public class MyAdvertsActivity extends Activity{
     private FirebaseAuth.AuthStateListener authStateListener;
     private DataSnapshot jobReference;
 
+   private MyCustomAdapter mAdapter;
+
+    private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
+
+    private ListView jobListView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_adverts);
+        setContentView(R.layout.activity_my_adverts);
+
+        jobListView = (ListView) findViewById(R.id.jobListView1);
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
+
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                jobReference = dataSnapshot.child("Jobs");
+
+                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+
+                mAdapter = new MyCustomAdapter();
+
+                for (DataSnapshot ds : jobListSnapShot)
+                {
+                    JobInformation j = ds.getValue(JobInformation.class);
+                    j.setJobID(ds.getKey());
+
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                    if (j.getPosterID() == currentUser.getUid()) {
+                    jobList.add(j);
+
+                    }
+                }
+
+                mAdapter.addArray(jobList);
+                jobListView.setAdapter(mAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
     }
 
-    /**
-     * A simple {@link Fragment} subclass.
-     * Activities that contain this fragment must implement the
-     * {@link OnFragmentInteractionListener} interface
-     * to handle interaction events.
-     * Use the {@link MyAdvertsFragment#newInstance} factory method to
-     * create an instance of this fragment.
-     */
-    public static class MyAdvertsFragment extends Fragment {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private static final String ARG_PARAM1 = "param1";
-        private static final String ARG_PARAM2 = "param2";
+    private class MyCustomAdapter extends BaseAdapter
+    {
+        private ArrayList<JobInformation> mData = new ArrayList();
 
-        // TODO: Rename and change types of parameters
-        private String mParam1;
-        private String mParam2;
+        private LayoutInflater mInflater;
 
-        private OnFragmentInteractionListener mListener;
-
-        public MyAdvertsFragment() {
-            // Required empty public constructor
+        public MyCustomAdapter()
+        {
+            mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyAdvertsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        public static MyAdvertsFragment newInstance(String param1, String param2) {
-            MyAdvertsFragment fragment = new MyAdvertsFragment();
-            Bundle args = new Bundle();
-            args.putString(ARG_PARAM1, param1);
-            args.putString(ARG_PARAM2, param2);
-            fragment.setArguments(args);
-            return fragment;
+        public void addItem(final JobInformation item)
+        {
+            mData.add(item);
+        }
+
+        public void addArray(final ArrayList<JobInformation> j)
+        {
+            mData = j;
         }
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            if (getArguments() != null) {
-                mParam1 = getArguments().getString(ARG_PARAM1);
-                mParam2 = getArguments().getString(ARG_PARAM2);
-            }
+        public void registerDataSetObserver(DataSetObserver observer)
+        {
+
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.fragment_my_adverts, container, false);
-        }
+        public void unregisterDataSetObserver(DataSetObserver observer)
+        {
 
-        // TODO: Rename method, update argument and hook method into UI event
-        public void onButtonPressed(Uri uri) {
-            if (mListener != null) {
-                mListener.onFragmentInteraction(uri);
-            }
         }
 
         @Override
-        public void onAttach(Context context) {
-            super.onAttach(context);
-            if (context instanceof OnFragmentInteractionListener) {
-                mListener = (OnFragmentInteractionListener) context;
-            } else {
-                throw new RuntimeException(context.toString()
-                        + " must implement OnFragmentInteractionListener");
-            }
+        public int getCount()
+        {
+            return mData.size();
         }
 
         @Override
-        public void onDetach() {
-            super.onDetach();
-            mListener = null;
+        public Object getItem(int position)
+        {
+            return mData.get(position);
         }
 
-        /**
-         * This interface must be implemented by activities that contain this
-         * fragment to allow an interaction in this fragment to be communicated
-         * to the activity and potentially other fragments contained in that
-         * activity.
-         * <p>
-         * See the Android Training lesson <a href=
-         * "http://developer.android.com/training/basics/fragments/communicating.html"
-         * >Communicating with Other Fragments</a> for more information.
-         */
-        public interface OnFragmentInteractionListener {
-            // TODO: Update argument type and name
-            void onFragmentInteraction(Uri uri);
+        @Override
+        public long getItemId(int position)
+        {
+            return 0;
+        }
+
+
+        @Override
+        public boolean hasStableIds()
+        {
+            return false;
+        }
+
+        @Override
+        public  View getView (final int position, View convertView, ViewGroup parent)
+        {
+            System.out.println("getView " + position + " " + convertView);
+            GroupViewHolder holder;
+            if (convertView == null)
+            {
+                convertView = mInflater.inflate(R.layout.job_info_list, null);
+                holder = new GroupViewHolder();
+                holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
+                holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
+                holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
+                holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
+                convertView.setTag(holder);
+            } else
+                {
+                    holder = (GroupViewHolder) convertView.getTag();
+                }
+
+            holder.textViewName.setText(mData.get(position).getAdvertName());
+            holder.textViewFrom.setText(mData.get(position).getJobType());
+            holder.textViewTo.setText(mData.get(position).getJobSize());
+            holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MyAdvertsActivity.this, JobDetailsActivity.class);
+                    intent.putExtra("JobDetails", mData.get(position));
+                    startActivity(intent);
+
+                }
+            });
+            return convertView;
+        }
+
+        @Override
+        public boolean areAllItemsEnabled()
+        {
+            return false;
+        }
+
+        @Override
+        public boolean isEmpty()
+        {
+            return false;
+        }
+
+        public class GroupViewHolder
+        {
+            public  TextView textViewName;
+            public  TextView textViewFrom;
+            public  TextView textViewTo;
+            public  Button detailsButton;
+        }
+
         }
     }
-}
+
+
+

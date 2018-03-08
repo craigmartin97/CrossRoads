@@ -3,14 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/list_items"
-
-    >
+    android:id="@+id/list_items" >
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-
         android:padding="15dp"
         android:orientation="vertical">
 
@@ -74,6 +71,7 @@
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="text"
+        android:textAlignment="center"
         android:textColor="#FF000000"
         android:paddingLeft="10dp"
 
@@ -89,11 +87,9 @@
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="TextView"
-        android:paddingLeft="10dp"
+        android:textAlignment="center"
         android:textColor="#FF000000"
         android:visibility="visible" />
-
-
 
     <TextView
         android:id="@+id/textTo"
@@ -105,12 +101,11 @@
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="TextView"
+        android:textAlignment="center"
         android:textColor="#FF000000"
         android:visibility="visible" />
 
     </LinearLayout>
-
-
     </LinearLayout>
 
     <Button
@@ -121,7 +116,5 @@
         android:text="View Details" />
 
 </LinearLayout>
-
-
 </RelativeLayout>
 
