@@ -171,7 +171,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             mListener = (OnFragmentInteractionListener) context;
         } else
         {
-            Toast.makeText(context, "Home Fragment Attached", Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -192,8 +192,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         String text = newText;
         mAdapter.filter(text);
-
-
 
         return false;
     }
@@ -313,8 +311,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                     JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("Job", mData.get(position));
-                    bundle.putString("name", "Hello");
-                    bundle.putString("address", "123345");
                     jobDetailsFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
@@ -345,12 +341,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         public void filter(String charText) {
 
-
             ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
             ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
             charText = charText.toLowerCase(Locale.getDefault());
-
-
 
             if (charText.length() == 0) {
                 mData = mDataOrig;
