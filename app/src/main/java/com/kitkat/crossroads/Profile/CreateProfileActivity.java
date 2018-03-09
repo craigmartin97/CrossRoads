@@ -150,9 +150,6 @@ public class CreateProfileActivity extends AppCompatActivity
 
         myRef.child("users").child(user.getUid()).setValue(userInformation);
 
-
-        Toast.makeText(this, "Information Saved...", Toast.LENGTH_SHORT).show();
-
         FirebaseUser userEmail = FirebaseAuth.getInstance().getCurrentUser();
         userEmail.sendEmailVerification();
         FirebaseAuth.getInstance().signOut();

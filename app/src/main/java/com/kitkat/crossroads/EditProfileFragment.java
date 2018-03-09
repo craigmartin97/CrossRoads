@@ -1,23 +1,29 @@
 package com.kitkat.crossroads;
 
+import android.app.DatePickerDialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,8 +48,10 @@ import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -66,6 +74,7 @@ public class EditProfileFragment extends Fragment
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private DatePickerDialog.OnDateSetListener dateSetListener;
 
     private FirebaseAuth auth;
     private EditText editTextName;
@@ -139,13 +148,61 @@ public class EditProfileFragment extends Fragment
         editTextPostalAddress = (EditText) view.findViewById(R.id.editTextPostalAddress);
         textViewDateOfBirth = (TextView) view.findViewById(R.id.textViewDateOfBirth);
 
+        textViewDateOfBirth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        getActivity(),
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        dateSetListener,
+                        year,month,day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+
+        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                month = month + 1;
+                Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
+
+                if(dayOfMonth >= 1 && dayOfMonth <= 9)
+                {
+                    String newDay = "0" + dayOfMonth;
+                    textViewDateOfBirth.setText(newDay + "/" + month + "/" + year);
+                }
+
+                if(month >= 1 && month <= 9)
+                {
+                    String newMonth = "0" + month;
+                    textViewDateOfBirth.setText(dayOfMonth + "/" + newMonth + "/" + year);
+                }
+
+                if(dayOfMonth >= 1 && dayOfMonth <= 9 && month >= 1 && month <= 9)
+                {
+                    String newDay = "0" + dayOfMonth;
+                    String newMonth = "0" + month;
+                    textViewDateOfBirth.setText(newDay + "/" + newMonth + "/" + year);
+                }
+                else
+                {
+                    textViewDateOfBirth.setText(dayOfMonth + "/" + month + "/" + year);
+                }
+            }
+        };
+
         buttonUploadImage = (Button) view.findViewById(R.id.buttonUploadImage);
         buttonSaveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
 
         NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-
-
 
         ImageView profileImage = (ImageView) headerView.findViewById(R.id.navigationImage);
 
@@ -298,6 +355,8 @@ public class EditProfileFragment extends Fragment
 
         Toast.makeText(getActivity(), "Information Saved...", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(getActivity(), ViewProfileFragment.class));
+        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, new ViewProfileFragment()).commit();
     }
 }

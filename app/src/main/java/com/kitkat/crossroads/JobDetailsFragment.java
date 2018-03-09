@@ -95,12 +95,6 @@ public class JobDetailsFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_job_details, container, false);
 
         Bundle bundle = getArguments();
-        if(bundle != null)
-        {
-            String name = bundle.getString("name");
-            String address = bundle.getString("address");
-            customToastMessage(name + " " + address);
-        }
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -177,12 +171,6 @@ public class JobDetailsFragment extends Fragment
     private void saveBidInformation()
     {
         Bundle bundle = getArguments();
-        if(bundle != null)
-        {
-            String name = bundle.getString("name");
-            String address = bundle.getString("address");
-            customToastMessage(name + " " + address);
-        }
 
         JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
 
@@ -200,11 +188,6 @@ public class JobDetailsFragment extends Fragment
 
         databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 
-        customToastMessage("Bid Placed!");
-
-//        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.content, new FindAJobFragment()).commit();
         startActivity(new Intent(getActivity(), CrossRoads.class));
     }
 
