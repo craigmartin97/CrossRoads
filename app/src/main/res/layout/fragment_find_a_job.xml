@@ -2,13 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kitkat.crossroads.FindAJobFragment">
+    tools:context="com.kitkat.crossroads.FindAJobFragment"
+    >
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <requestFocus />>
 
 
         <TextView
@@ -27,54 +31,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:queryHint="Name, Location, Size, etc."
-            android:iconifiedByDefault="false"/>
+            android:iconifiedByDefault="false"
+
+            />
 
         <requestFocus/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/textName"
-                android:layout_width="125dp"
-                android:layout_height="50dp"
 
-                android:fontFamily="@font/bebasneueregular"
-                android:gravity="center_vertical"
-                android:text="Job Name"
-                android:textSize="15dp"
-                android:textColor="#FF000000"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/textFrom"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:fontFamily="@font/bebasneueregular"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/textName"
-                android:gravity="center_vertical"
-                android:text="From"
-                android:textSize="15dp"
-                android:textColor="#FF000000"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/textTo"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:fontFamily="@font/bebasneueregular"
-                android:gravity="center_vertical"
-                android:text="To"
-                android:textColor="#FF000000"
-                android:textSize="15dp"
-                android:visibility="visible" />
-
-
-        </LinearLayout>
 
 
         <ListView

@@ -35,7 +35,7 @@ import com.kitkat.crossroads.Jobs.JobInformation;
 public class JobDetailsFragment extends Fragment
 {
 
-    private TextView jobName, jobDescription, jobFrom, jobTo;
+    private TextView jobName, jobDescription, jobSize, jobType, jobColDate, jobColTime, jobFrom, jobTo;
     private Button buttonBid;
     private EditText editTextBid;
 
@@ -102,6 +102,10 @@ public class JobDetailsFragment extends Fragment
 
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
+        jobSize = (TextView) view.findViewById(R.id.textViewJobSize1);
+        jobType = (TextView) view.findViewById(R.id.textViewJobType1);
+        jobColDate = (TextView) view.findViewById(R.id.textViewJobColDate1);
+        jobColTime = (TextView) view.findViewById(R.id.textViewJobColTime1);
         jobFrom = (TextView) view.findViewById(R.id.textViewJobFrom1);
         jobTo = (TextView) view.findViewById(R.id.textViewJobTo1);
         editTextBid = (EditText) view.findViewById(R.id.editTextBid);
@@ -109,6 +113,10 @@ public class JobDetailsFragment extends Fragment
 
         jobName.setText(jobInformation.getAdvertName().toString());
         jobDescription.setText(jobInformation.getAdvertDescription().toString());
+        jobSize.setText(jobInformation.getJobSize().toString());
+        jobType.setText(jobInformation.getJobType().toString());
+        jobColDate.setText(jobInformation.getCollectionDate());
+        jobColTime.setText(jobInformation.getCollectionTime());
         jobFrom.setText(jobInformation.getColTown().toString());
         jobTo.setText(jobInformation.getDelTown().toString());
 

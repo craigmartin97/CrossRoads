@@ -10,7 +10,10 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="90dp"
         android:background="@drawable/relative_layout_background"
-        android:paddingBottom="20dp">
+        android:paddingBottom="20dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <requestFocus />>
 
 
         <TextView
