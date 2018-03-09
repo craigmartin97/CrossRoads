@@ -123,7 +123,9 @@ public class MyAdvertsFragment extends Fragment {
 
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                    if (j.getPosterID() == currentUser.getUid()) {
+
+
+                    if (j.getPosterID().equals(currentUser.getUid())) {
                         jobList.add(j);
 
                     }
@@ -131,7 +133,6 @@ public class MyAdvertsFragment extends Fragment {
                     mAdapter.addArray(jobList);
                     jobListView.setAdapter(mAdapter);
                 }
-
             }
 
             @Override

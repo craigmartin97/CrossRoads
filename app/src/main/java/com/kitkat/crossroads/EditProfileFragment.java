@@ -1,26 +1,49 @@
 package com.kitkat.crossroads;
 
+import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -45,19 +68,24 @@ public class EditProfileFragment extends Fragment
     private OnFragmentInteractionListener mListener;
 
     private FirebaseAuth auth;
-    private TextView textViewUserEmail;
     private EditText editTextName;
     private EditText editTextPhoneNumber;
     private EditText editTextPostalAddress;
     private TextView textViewDateOfBirth;
+    private ImageView profileImage;
 
+    private static final int GALLERY_INTENT = 2;
 
     private Button buttonSaveProfile;
-    private Button buttonLogout;
+    private Button buttonUploadImage;
 
+    private ProgressDialog progressDialog;
 
     private DatabaseReference myRef;
     private FirebaseDatabase database;
+    private StorageReference storageReference;
+
+
 
     public EditProfileFragment()
     {
@@ -102,33 +130,37 @@ public class EditProfileFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         auth = FirebaseAuth.getInstance();
 
-        //comment out the code below to test this single activity
-
-        if (auth.getCurrentUser() == null)
-        {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-        }
-
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
-
-        FirebaseUser user = auth.getCurrentUser();
-
-        buttonLogout = (Button) view.findViewById(R.id.buttonLogout);
-        buttonSaveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         editTextName = (EditText) view.findViewById(R.id.editTextName);
         editTextPhoneNumber = (EditText) view.findViewById(R.id.editTextPhoneNumber);
         editTextPostalAddress = (EditText) view.findViewById(R.id.editTextPostalAddress);
         textViewDateOfBirth = (TextView) view.findViewById(R.id.textViewDateOfBirth);
 
-        buttonLogout.setOnClickListener(new View.OnClickListener()
+        buttonSaveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
+
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+
+
+
+        ImageView profileImage = (ImageView) headerView.findViewById(R.id.navigationImage);
+
+        this.profileImage = profileImage;
+
+        progressDialog = new ProgressDialog(getActivity());
+
+        buttonUploadImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                auth.signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent,GALLERY_INTENT);
             }
         });
 
@@ -140,8 +172,69 @@ public class EditProfileFragment extends Fragment
                 saveUserInformation();
             }
         });
-        // Inflate the layout for this fragment
+
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        FirebaseUser user = auth.getCurrentUser();
+
+        if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
+        {
+            progressDialog.setMessage("Uploading Image Please Wait...");
+            progressDialog.show();
+
+            final Uri uri = data.getData();
+            final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
+            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+            {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                {
+                    progressDialog.dismiss();
+                    try
+                    {
+                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+
+                        //////////////////NAV//////////////////
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                        Bitmap bitmap2 = bitmap.createScaledBitmap(bitmap, 200,200,true);
+                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap2);
+                        roundedBitmapDrawable.setCircular(true);
+                        //profileImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 250,250,true));
+                        profileImage.setImageDrawable(roundedBitmapDrawable);
+
+
+                        ////////////////////////////////////////
+
+                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("ProfileImage",bitmap);
+                        viewProfileFragment.setArguments(bundle);
+                        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).commit();
+
+                    } catch(IOException e)
+                    {
+                        Toast.makeText(getActivity(), "Unexpected Error Has Occurred", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).addOnFailureListener(new OnFailureListener()
+            {
+                @Override
+                public void onFailure(@NonNull Exception e)
+                {
+                    progressDialog.dismiss();
+                    Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
