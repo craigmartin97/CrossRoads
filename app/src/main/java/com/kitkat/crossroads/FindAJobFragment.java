@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -92,6 +93,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null)
         {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -148,6 +150,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
 
         jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
+        jobSearch.setIconified(false);
+        jobSearch.clearFocus();
+
         jobSearch.setOnQueryTextListener(this);
 
         return view;
