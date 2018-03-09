@@ -252,9 +252,9 @@ public class MyJobsFragment extends Fragment
             {
                 holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
-            holder.textViewName.setText(mData.get(position).getJobName());
-            holder.textViewFrom.setText(mData.get(position).getJobFrom());
-            holder.textViewTo.setText(mData.get(position).getJobTo());
+            holder.textViewName.setText(mData.get(position).getAdvertName());
+            holder.textViewFrom.setText(mData.get(position).getColTown());
+            holder.textViewTo.setText(mData.get(position).getDelTown());
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
