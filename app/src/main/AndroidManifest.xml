@@ -37,7 +37,7 @@
         <activity android:name=".Account.ResetPasswordActivity" />
         <activity
             android:name=".CrossRoads"
-            android:label="@string/title_activity_home"
+            android:label=" "
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation|screenSize">
         </activity>

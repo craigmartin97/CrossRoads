@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +110,7 @@ public class JobDetailsFragment extends Fragment
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
+        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
 
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
@@ -129,14 +132,27 @@ public class JobDetailsFragment extends Fragment
         jobFrom.setText(jobInformation.getColTown().toString());
         jobTo.setText(jobInformation.getDelTown().toString());
 
+
         buttonBid.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                saveBidInformation();
+                if(TextUtils.isEmpty(editTextBid.getText()))
+                {
+                    editTextBid.setHint("Please enter a bid!");
+                    editTextBid.setHintTextColor(Color.RED);
+                }
+                else {
+
+                    saveBidInformation();
+                }
             }
         });
+
+
+
+
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -155,23 +171,24 @@ public class JobDetailsFragment extends Fragment
 
                 for (DataSnapshot ds : jobListSnapShot)
                 {
-                    Iterable<DataSnapshot> bidListSnapShot = ds.getChildren();
+                    if(ds.getKey().toString().equals(jobInformation.getJobID())) {
 
-                    for(DataSnapshot ds1 : bidListSnapShot)
-                    {
-                        BidInformation b = ds1.getValue(BidInformation.class);
+                        Iterable<DataSnapshot> bidListSnapShot = ds.getChildren();
 
-                        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        for (DataSnapshot ds1 : bidListSnapShot) {
+                            BidInformation b = ds1.getValue(BidInformation.class);
 
-                        if(b.getUserID().equals(currentUser))
-                        {
-                            buttonBid.setClickable(false);
-                            buttonBid.setHighlightColor(Color.GRAY);
-                            editTextBid.setText("Bid already placed!");
-                            editTextBid.setClickable(false);
-                            editTextBid.setKeyListener(null);
+                            String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                            if (b.getUserID().equals(currentUser)) {
+                                buttonBid.setClickable(false);
+                                buttonBid.setHighlightColor(Color.GRAY);
+                                editTextBid.setText("Bid already placed!");
+                                editTextBid.setClickable(false);
+                                editTextBid.setKeyListener(null);
+                            }
+
                         }
-
                     }
                 }
 
@@ -188,6 +205,8 @@ public class JobDetailsFragment extends Fragment
 
             }
         });
+
+
 
 
 
