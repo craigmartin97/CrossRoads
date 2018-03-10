@@ -363,9 +363,10 @@
                     android:layout_marginTop="24dp"
                     android:ems="10"
                     android:hint="Bid"
-                    android:inputType="textPersonName"
+                    android:inputType="number"
                     app:layout_constraintTop_toBottomOf="@+id/textViewJobTo1"
-                    tools:layout_editor_absoluteX="84dp" />
+                    tools:layout_editor_absoluteX="84dp"
+                    />
 
                 <Button
                     android:id="@+id/buttonBid"

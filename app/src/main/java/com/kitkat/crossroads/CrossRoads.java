@@ -1,7 +1,10 @@
 package com.kitkat.crossroads;
 
+import android.support.v7.app.ActionBar;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -62,6 +65,13 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
+
+
+
+
+
 
 
 
