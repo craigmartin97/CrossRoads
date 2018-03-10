@@ -2,6 +2,7 @@ package com.kitkat.crossroads;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,8 +18,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
@@ -38,6 +42,11 @@ public class JobDetailsFragment extends Fragment
     private TextView jobName, jobDescription, jobSize, jobType, jobColDate, jobColTime, jobFrom, jobTo;
     private Button buttonBid;
     private EditText editTextBid;
+
+    private FirebaseAuth auth;
+    private FirebaseDatabase database;
+    private DataSnapshot bidReference;
+
 
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
@@ -128,6 +137,60 @@ public class JobDetailsFragment extends Fragment
                 saveBidInformation();
             }
         });
+
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference();
+
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                bidReference = dataSnapshot.child("Bids");
+
+                Iterable<DataSnapshot> jobListSnapShot = bidReference.getChildren();
+
+
+
+                for (DataSnapshot ds : jobListSnapShot)
+                {
+                    Iterable<DataSnapshot> bidListSnapShot = ds.getChildren();
+
+                    for(DataSnapshot ds1 : bidListSnapShot)
+                    {
+                        BidInformation b = ds1.getValue(BidInformation.class);
+
+                        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        if(b.getUserID().equals(currentUser))
+                        {
+                            buttonBid.setClickable(false);
+                            buttonBid.setHighlightColor(Color.GRAY);
+                            editTextBid.setText("Bid already placed!");
+                            editTextBid.setClickable(false);
+                            editTextBid.setKeyListener(null);
+                        }
+
+                    }
+                }
+
+
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
+
+
 
         return view;
     }
