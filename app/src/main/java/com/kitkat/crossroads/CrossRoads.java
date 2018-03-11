@@ -66,18 +66,9 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
-
-
-
-
-
-
-
-
         auth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("users");
+        myRef = mFirebaseDatabase.getReference().child("Users");
         FirebaseUser user = auth.getCurrentUser();
         userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -208,7 +199,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String name = dataSnapshot.child("name").getValue(String.class);
+                String name = dataSnapshot.child("fullName").getValue(String.class);
                 Log.d(TAG, "Name Is: " + name);
 
                 navigationName.setText(name);
@@ -291,6 +282,4 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
     {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-
-
 }
