@@ -121,7 +121,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
-
         jobListView = view.findViewById(R.id.jobListView1);
 
 
@@ -145,14 +144,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
+
+                    // If it's the current user who has bid.
+
                     BidInformation j = ds.getValue(BidInformation.class);
                     j.setUserID(ds.getKey());
                     String currentUser = auth.getUid();
-                    String bidId = j.getUserID();
-                    if(bidId.equals(currentUser))
-                    {
-                        jobList.add(j);
-                    }
+                    String jobId = j.getUserID();
+                    userBidId.add(jobId);
+
                 }
 
 
@@ -180,7 +180,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     String jobId = j.getJobID();
                     userJobId.add(jobId);
 
-                    if (userBidId.contains(jobId)) {
+                    if (userBidId.contains(jobId))
+                    {
+
                         jobList.add(j);
                     }
                 }
@@ -286,7 +288,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             }
         }
 
-        public void addItem(final BidInformation item)
+        public void addItem(final JobInformation item)
         {
             mData.add(item);
             mDataOrig.add(item);
@@ -360,7 +362,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColL1());
             holder.textViewTo.setText(mData.get(position).getDelL1());
-
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
 
