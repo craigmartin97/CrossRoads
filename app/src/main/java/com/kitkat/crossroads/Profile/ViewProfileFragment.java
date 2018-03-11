@@ -103,7 +103,7 @@ public class ViewProfileFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("users");
+        myRef = mFirebaseDatabase.getReference().child("Users");
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -144,9 +144,9 @@ public class ViewProfileFragment extends Fragment {
         myRef.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String address = dataSnapshot.child("address").getValue(String.class);
+                String address = dataSnapshot.child("addressOne").getValue(String.class);
                 String dateOfBirth = dataSnapshot.child("dateOfBirth").getValue(String.class);
-                String name = dataSnapshot.child("name").getValue(String.class);
+                String name = dataSnapshot.child("fullName").getValue(String.class);
                 String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
                 Log.d(TAG, "Address Is: " + address);
                 Log.d(TAG, "Date Of Birth Is: " + dateOfBirth);
