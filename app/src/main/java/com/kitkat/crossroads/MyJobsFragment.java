@@ -68,7 +68,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private MyJobsFragment.MyCustomAdapter mAdapter;
 
 
-    private ArrayList<BidInformation> jobList = new ArrayList<>();
+    private ArrayList<JobInformation> jobList = new ArrayList<>();
 
 
 
@@ -122,7 +122,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
-
         jobListView = view.findViewById(R.id.jobListView1);
 
 
@@ -146,14 +145,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
+
+                    // If it's the current user who has bid.
+
                     BidInformation j = ds.getValue(BidInformation.class);
                     j.setUserID(ds.getKey());
                     String currentUser = auth.getUid();
-                    String bidId = j.getUserID();
-                    if(bidId.equals(currentUser))
-                    {
-                        jobList.add(j);
-                    }
+                    String jobId = j.getUserID();
+                    userBidId.add(jobId);
+
                 }
 
 
@@ -198,6 +198,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     if (userBidId.contains(jobId))
                     {
 
+                        jobList.add(j);
+                    }
+
+
+                    if (userBidId.contains(jobId))
+                    {
                         jobList.add(j);
                     }
                 }
@@ -293,7 +299,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         private ArrayList<JobInformation> mDataOrig = new ArrayList();
 
 
-
         private LayoutInflater mInflater;
 
         public MyCustomAdapter()
@@ -313,6 +318,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
 
         public void addArray(final ArrayList<JobInformation> j)
+
         {
             mData = j;
             mDataOrig = j;
