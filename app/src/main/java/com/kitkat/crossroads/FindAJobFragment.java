@@ -135,10 +135,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 mAdapter.addArray(jobList);
 
                 jobListView.setAdapter(mAdapter);
-
-
-
-
             }
 
             @Override
@@ -147,7 +143,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
             }
         });
-
 
         jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
         jobSearch.setIconified(false);
