@@ -177,7 +177,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
         } else if (id == R.id.nav_myJobs)
         {
-
+            fragmentTransaction.replace(R.id.content, new MyJobsFragment()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
