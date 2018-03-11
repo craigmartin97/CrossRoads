@@ -122,6 +122,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
+
         jobListView = view.findViewById(R.id.jobListView1);
 
 
@@ -155,6 +156,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     userBidId.add(jobId);
 
                 }
+
+
 
 
                 for (DataSnapshot ds : bidListSnapShot)
@@ -201,12 +204,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                         jobList.add(j);
                     }
 
-
-                    if (userBidId.contains(jobId))
-                    {
-                        jobList.add(j);
-                    }
                 }
+
+
+
+
 
                 // check the bidID against the job ID
                 // if "Bids" userID equals the "Jobs" userID. If thats true you want to get ALL the "Job" information that corresponds with the bid
@@ -285,7 +287,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener
+    interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -297,7 +299,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         private ArrayList<JobInformation> mData = new ArrayList();
         private ArrayList<JobInformation> mDataOrig = new ArrayList();
-
 
         private LayoutInflater mInflater;
 
@@ -315,7 +316,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             mData.add(item);
             mDataOrig.add(item);
         }
-
 
         public void addArray(final ArrayList<JobInformation> j)
 
@@ -381,9 +381,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
+
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColL1());
             holder.textViewTo.setText(mData.get(position).getDelL1());
+
 
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
