@@ -68,7 +68,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private MyJobsFragment.MyCustomAdapter mAdapter;
 
 
-    private ArrayList<BidInformation> jobList = new ArrayList<>();
+    private ArrayList<JobInformation> jobList = new ArrayList<>();
 
 
     private ListView jobListView;
@@ -119,10 +119,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                              Bundle savedInstanceState)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 =======
         final View view = inflater.inflate(R.layout.fragment_job_details, container, false);
 >>>>>>> update
+=======
+        final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
+>>>>>>> MyJobsFragment, able to get only jobs that are bidded on - Martin
 
         jobListView = view.findViewById(R.id.jobListView1);
 
@@ -148,17 +152,19 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
+
+                    // If it's the current user who has bid.
+
                     BidInformation j = ds.getValue(BidInformation.class);
                     j.setUserID(ds.getKey());
                     String currentUser = auth.getUid();
-                    String bidId = j.getUserID();
-                    if(bidId.equals(currentUser))
-                    {
-                        jobList.add(j);
-                    }
+                    String jobId = j.getUserID();
+                    userBidId.add(jobId);
+
                 }
 >>>>>>> update
 
+<<<<<<< HEAD
                 for (DataSnapshot ds : bidListSnapShot)
                 {
 
@@ -176,12 +182,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 *          generated a random number. We need to store that data somewhere in order to get to the sub
                 *          children of the bid form.*/
 
+=======
+>>>>>>> MyJobsFragment, able to get only jobs that are bidded on - Martin
                 for (DataSnapshot ds : jobListSnapShot) {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
                     String posterId = j.getPosterID();
                     String jobId = j.getJobID();
                     userJobId.add(jobId);
+<<<<<<< HEAD
 
                     if (userBidId.contains(jobId))
                     {
@@ -192,6 +201,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 =======
 
 >>>>>>> update
+=======
+
+                    if (userBidId.contains(jobId))
+                    {
+                        jobList.add(j);
+                    }
+                }
+>>>>>>> MyJobsFragment, able to get only jobs that are bidded on - Martin
                 // check the bidID against the job ID
                 // if "Bids" userID equals the "Jobs" userID. If thats true you want to get ALL the "Job" information that corresponds with the bid
                 mAdapter.addArray(jobList);
@@ -280,12 +297,17 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         private ArrayList<JobInformation> mData = new ArrayList();
         private ArrayList<JobInformation> mDataOrig = new ArrayList();
 =======
         private ArrayList<BidInformation> mData = new ArrayList();
         private ArrayList<BidInformation> mDataOrig = new ArrayList();
 >>>>>>> update
+=======
+        private ArrayList<JobInformation> mData = new ArrayList();
+        private ArrayList<JobInformation> mDataOrig = new ArrayList();
+>>>>>>> MyJobsFragment, able to get only jobs that are bidded on - Martin
 
         private LayoutInflater mInflater;
 
@@ -298,7 +320,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             }
         }
 
-        public void addItem(final BidInformation item)
+        public void addItem(final JobInformation item)
         {
             mData.add(item);
             mDataOrig.add(item);
@@ -306,10 +328,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         public void addArray(final ArrayList<JobInformation> j)
 =======
         public void addArray(final ArrayList<BidInformation> j)
 >>>>>>> update
+=======
+        public void addArray(final ArrayList<JobInformation> j)
+>>>>>>> MyJobsFragment, able to get only jobs that are bidded on - Martin
         {
             mData = j;
             mDataOrig = j;
@@ -373,6 +399,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColL1());
             holder.textViewTo.setText(mData.get(position).getDelL1());
@@ -381,6 +408,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             holder.textViewFrom.setText(mData.get(position).getJobFrom());
             holder.textViewFrom.setText(mData.get(position).getJobTo);
 >>>>>>> update
+=======
+            holder.textViewName.setText(mData.get(position).getAdvertName());
+            holder.textViewFrom.setText(mData.get(position).getColL1());
+            holder.textViewTo.setText(mData.get(position).getDelL1());
+>>>>>>> MyJobsFragment, able to get only jobs that are bidded on - Martin
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
 
