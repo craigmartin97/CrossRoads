@@ -1,5 +1,6 @@
 package com.kitkat.crossroads;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,19 +9,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -28,16 +31,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.kitkat.crossroads.Account.LoginActivity;
-import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
-
-import java.io.File;
 import java.io.IOException;
-
 import static android.app.Activity.RESULT_OK;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,18 +56,16 @@ public class EditProfileFragment extends Fragment
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private DatePickerDialog.OnDateSetListener dateSetListener;
 
     private FirebaseAuth auth;
-    private EditText editTextName;
-    private EditText editTextPhoneNumber;
-    private EditText editTextPostalAddress;
-    private TextView textViewDateOfBirth;
+    private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
+    private CheckBox checkBoxAdvertiser, checkBoxCourier;
+    private boolean advertiser, courier;
+    private Button saveProfile, uploadProfileImage;
+    private ImageView profileImage;
 
     private static final int GALLERY_INTENT = 2;
-
-    private Button buttonSaveProfile;
-    private Button buttonUploadImage;
-
     private ProgressDialog progressDialog;
 
     private DatabaseReference myRef;
@@ -117,42 +112,104 @@ public class EditProfileFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-
-        auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        editTextName = (EditText) view.findViewById(R.id.editTextName);
-        editTextPhoneNumber = (EditText) view.findViewById(R.id.editTextPhoneNumber);
-        editTextPostalAddress = (EditText) view.findViewById(R.id.editTextPostalAddress);
-        textViewDateOfBirth = (TextView) view.findViewById(R.id.textViewDateOfBirth);
+        FirebaseUser user = auth.getCurrentUser();
 
-        buttonUploadImage = (Button) view.findViewById(R.id.buttonUploadImage);
-        buttonSaveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
+        saveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
+
+        fullName = (EditText) view.findViewById(R.id.editTextFullName);
+        phoneNumber = (EditText) view.findViewById(R.id.editTextPhoneNumber);
+        addressOne = (EditText) view.findViewById(R.id.editTextAddress1);
+        addressTwo = (EditText) view.findViewById(R.id.editTextAddress2);
+        town = (EditText) view.findViewById(R.id.editTextTown);
+        postCode = (EditText) view.findViewById(R.id.editTextPostCode);
+        checkBoxAdvertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
+        checkBoxCourier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
+
+//        textViewDateOfBirth.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Calendar calendar = Calendar.getInstance();
+//                int year = calendar.get(Calendar.YEAR);
+//                int month = calendar.get(Calendar.MONTH);
+//                int day = calendar.get(Calendar.DAY_OF_MONTH);
+//
+//                DatePickerDialog dialog = new DatePickerDialog(
+//                        getActivity(),
+//                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+//                        dateSetListener,
+//                        year,month,day);
+//                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                dialog.show();
+//            }
+//        });
+//
+//        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+//            @Override
+//            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+//
+//                month = month + 1;
+//                Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
+//
+//                if(dayOfMonth >= 1 && dayOfMonth <= 9)
+//                {
+//                    String newDay = "0" + dayOfMonth;
+//                    textViewDateOfBirth.setText(newDay + "/" + month + "/" + year);
+//                }
+//
+//                if(month >= 1 && month <= 9)
+//                {
+//                    String newMonth = "0" + month;
+//                    textViewDateOfBirth.setText(dayOfMonth + "/" + newMonth + "/" + year);
+//                }
+//
+//                if(dayOfMonth >= 1 && dayOfMonth <= 9 && month >= 1 && month <= 9)
+//                {
+//                    String newDay = "0" + dayOfMonth;
+//                    String newMonth = "0" + month;
+//                    textViewDateOfBirth.setText(newDay + "/" + newMonth + "/" + year);
+//                }
+//                else
+//                {
+//                    textViewDateOfBirth.setText(dayOfMonth + "/" + month + "/" + year);
+//                }
+//            }
+//        };
+
+        saveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
+        uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadImage);
+
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+
+        ImageView profileImage = (ImageView) headerView.findViewById(R.id.navigationImage);
+
+        this.profileImage = profileImage;
 
         progressDialog = new ProgressDialog(getActivity());
 
-        buttonUploadImage.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent,GALLERY_INTENT);
-            }
-        });
-
-        buttonSaveProfile.setOnClickListener(new View.OnClickListener()
+        saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 saveUserInformation();
+            }
+        });
+
+        uploadProfileImage.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent,GALLERY_INTENT);
             }
         });
 
@@ -178,8 +235,34 @@ public class EditProfileFragment extends Fragment
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                 {
-                        progressDialog.dismiss();
+                    progressDialog.dismiss();
+                    try
+                    {
                         Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+
+                        //////////////////NAV//////////////////
+
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                        Bitmap bitmap2 = bitmap.createScaledBitmap(bitmap, 200,200,true);
+                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap2);
+                        roundedBitmapDrawable.setCircular(true);
+                        //profileImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 250,250,true));
+                        profileImage.setImageDrawable(roundedBitmapDrawable);
+
+
+                        ////////////////////////////////////////
+
+                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("ProfileImage",bitmap);
+                        viewProfileFragment.setArguments(bundle);
+                        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).commit();
+
+                    } catch(IOException e)
+                    {
+                        Toast.makeText(getActivity(), "Unexpected Error Has Occurred", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }).addOnFailureListener(new OnFailureListener()
             {
@@ -239,20 +322,62 @@ public class EditProfileFragment extends Fragment
 
     private void saveUserInformation()
     {
-        String name = editTextName.getText().toString().trim();
-        String address = editTextPostalAddress.getText().toString().trim();
-        String dateOfBirth = textViewDateOfBirth.getText().toString().trim();
-        String phoneNumber = editTextPhoneNumber.getText().toString().trim();
+        String fullName = this.fullName.getText().toString().trim();
+        String phoneNumber = this.phoneNumber.getText().toString().trim();
+        String addressOne = this.addressOne.getText().toString().trim();
+        String addressTwo = this.addressTwo.getText().toString().trim();
+        String town = this.town.getText().toString().trim();
+        String postCode = this.postCode.getText().toString().trim();
 
-        UserInformation userInformation = new UserInformation(name, address, dateOfBirth, phoneNumber);
+        if (checkBoxAdvertiser.isChecked())
+        {
+            advertiser = true;
+            courier = false;
+            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                    addressTwo, town, postCode, advertiser, courier);
 
-        FirebaseUser user = auth.getCurrentUser();
+            setUserInformation(userInformation);
+            databaseVerification();
+        }
+        else if (checkBoxCourier.isChecked())
+        {
+            advertiser = false;
+            courier = true;
+            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                    addressTwo, town, postCode, advertiser, courier);
 
-        myRef.child("users").child(user.getUid()).setValue(userInformation);
+            setUserInformation(userInformation);
+            databaseVerification();
+        }
+        else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        {
+            advertiser = true;
+            courier = true;
+            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                    addressTwo, town, postCode, advertiser, courier);
+
+            setUserInformation(userInformation);
+            databaseVerification();
+        }
 
 
         Toast.makeText(getActivity(), "Information Saved...", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(getActivity(), ViewProfileFragment.class));
+        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, new ViewProfileFragment()).commit();
+    }
+
+    private void setUserInformation(UserInformation userInformation)
+    {
+        FirebaseUser user = auth.getCurrentUser();
+        myRef.child("Users").child(user.getUid()).setValue(userInformation);
+    }
+
+    private void databaseVerification()
+    {
+        FirebaseUser userEmail = FirebaseAuth.getInstance().getCurrentUser();
+        userEmail.sendEmailVerification();
+        FirebaseAuth.getInstance().signOut();
     }
 }

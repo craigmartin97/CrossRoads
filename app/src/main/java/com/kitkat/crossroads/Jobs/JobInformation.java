@@ -115,4 +115,8 @@ public class JobInformation implements Serializable {
     public boolean isJobActive() {
         return jobActive;
     }
+
+    public String getWholeString() {
+        return advertName + advertDescription + jobSize + jobType + collectionDate + collectionTime + colL1 + colL2 + colTown + colPostcode + delL1 + delL2 + delTown + delPostcode;
+    }
 }

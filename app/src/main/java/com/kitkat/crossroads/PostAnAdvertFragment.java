@@ -156,7 +156,7 @@ public class PostAnAdvertFragment extends Fragment
             mListener = (OnFragmentInteractionListener) context;
         } else
         {
-            Toast.makeText(context, "Logout Fragment Attached", Toast.LENGTH_SHORT).show();
+            
         }
     }
 

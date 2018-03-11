@@ -8,17 +8,25 @@ import java.util.Date;
 
 public class UserInformation {
 
-    public String name;
-    public String address;
-    public String dateOfBirth;
+    public String fullName;
     public String phoneNumber;
+    public String addressOne;
+    public String addressTwo;
+    public String town;
+    public String postCode;
+    public boolean advertiser;
+    public boolean courier;
 
-    public UserInformation(String name, String address, String dateOfBirth, String phoneNumber)
+    public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier)
     {
-        this.name = name;
-        this.address = address;
-        this.dateOfBirth = dateOfBirth;
+        this.fullName = fullName;
         this.phoneNumber = phoneNumber;
+        this.addressOne = addressOne;
+        this.addressTwo = addressTwo;
+        this.town = town;
+        this.postCode = postCode;
+        this.advertiser = advertiser;
+        this.courier = courier;
     }
 
 }

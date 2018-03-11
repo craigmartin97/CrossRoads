@@ -3,38 +3,104 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/list_items">
+    android:id="@+id/list_items"
 
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
 
+        android:padding="15dp"
+        android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical">
 
     <TextView
+        android:id="@+id/viewName"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:background="#FFFFFFFF"
+        android:gravity="center_vertical"
+        android:text=" Job:"
+        android:textAlignment="viewStart"
+        android:textColor="#FF000000"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/viewFrom"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:background="#FFFFFFFF"
+        android:gravity="center_vertical"
+        android:text=" Collection From:"
+        android:textAlignment="viewStart"
+
+        android:textColor="#FF000000"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/viewTo"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:background="#FFFFFFFF"
+        android:text=" Delivery To:"
+        android:textAlignment="viewStart"
+        android:gravity="center_vertical"
+        android:textColor="#FF000000"
+        android:visibility="visible" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical">
+    <TextView
         android:id="@+id/textName"
-        android:layout_width="100dp"
+        android:layout_width="300dp"
         android:layout_height="50dp"
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="text"
         android:textColor="#FF000000"
+        android:paddingLeft="10dp"
+
         android:visibility="visible" />
+
 
     <TextView
         android:id="@+id/textFrom"
-        android:layout_width="100dp"
+        android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/textName"
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
         android:text="TextView"
+        android:paddingLeft="10dp"
         android:textColor="#FF000000"
         android:visibility="visible" />
 
+
+
     <TextView
         android:id="@+id/textTo"
-        android:layout_width="100dp"
+        android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
+        android:paddingLeft="10dp"
         android:layout_toEndOf="@+id/textFrom"
         android:background="#FFFFFFFF"
         android:gravity="center_vertical"
@@ -42,14 +108,19 @@
         android:textColor="#FF000000"
         android:visibility="visible" />
 
+    </LinearLayout>
+
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/detailsButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textTo"
-        android:layout_toEndOf="@+id/textTo"
         android:textSize="10dp"
-        android:text="Details" />
+        android:text="View Details" />
+
+</LinearLayout>
 
 
 </RelativeLayout>

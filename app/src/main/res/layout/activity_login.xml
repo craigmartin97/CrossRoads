@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="#FFFFFF"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="90dp"
-        android:background="@drawable/relative_layout_background"
-        android:paddingBottom="20dp">
+        android:layout_marginTop="20dp"
+        android:paddingBottom="20dp"
+        android:background="#FFFFFF"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <requestFocus />>
+
+        <ImageView
+            android:id="@+id/imageViewCBlack"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/cblack" />
+
+        <ImageView
+            android:id="@+id/imageViewCRGreen"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/imageViewCBlack"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/crgreentext" />
+
 
 
         <TextView
@@ -20,9 +41,10 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@font/bebasneueregular"
             android:text="@string/sign_in"
+            android:layout_below="@id/imageViewCRGreen"
             android:textAlignment="center"
             android:textAllCaps="true"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:textSize="35dp" />
 
         <TextView
@@ -44,6 +66,10 @@
             android:backgroundTint="@color/colorPrimaryDark"
             android:ems="10"
             android:hint="@string/email_address"
+            android:textColorHint="#808080"
+            android:layout_centerInParent="true"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"
             android:inputType="textEmailAddress"
             android:textColor="@color/colorPrimaryDark" />
 
@@ -58,7 +84,11 @@
             android:layout_marginTop="22dp"
             android:backgroundTint="@color/colorPrimaryDark"
             android:ems="10"
+            android:layout_centerInParent="true"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"
             android:hint="@string/password"
+            android:textColorHint="#808080"
             android:inputType="textPassword"
             android:textColor="@color/colorPrimaryDark" />
 
@@ -69,6 +99,8 @@
             android:layout_below="@+id/editTextPasswordLogin"
             android:layout_marginBottom="20dp"
             android:layout_centerHorizontal="true"
+            android:background="#2bbc9b"
+            android:textColor="#FFFFFF"
             android:text="@string/sign_in" />
 
         <TextView

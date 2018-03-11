@@ -7,35 +7,41 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/crossroadslogo"
+        android:icon="@mipmap/ic_cross_roads_logo_c"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Account.RegisterActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation|screenSize"
+            >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Account.LoginActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation|screenSize"
+            />
         <activity
-            android:name=".Profile.CreateProfileActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:name=".Profile.CreateProfileActivity" />
         <activity android:name=".Jobs.AddJobActivity" />
         <activity android:name=".Jobs.JobsActivity" />
         <activity android:name=".Account.ResetPasswordActivity" />
         <activity
             android:name=".CrossRoads"
-            android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label=" "
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize">
+        </activity>
         <activity android:name=".Jobs.JobDetailsActivity"></activity>
-        <activity android:name=".TermsAndConditions"></activity>
+        <activity android:name=".TermsAndConditions"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>

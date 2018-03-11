@@ -2,11 +2,15 @@ package com.kitkat.crossroads;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +21,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
@@ -35,9 +42,14 @@ import com.kitkat.crossroads.Jobs.JobInformation;
 public class JobDetailsFragment extends Fragment
 {
 
-    private TextView jobName, jobDescription, jobFrom, jobTo;
+    private TextView jobName, jobDescription, jobSize, jobType, jobColDate, jobColTime, jobFrom, jobTo;
     private Button buttonBid;
     private EditText editTextBid;
+
+    private FirebaseAuth auth;
+    private FirebaseDatabase database;
+    private DataSnapshot bidReference;
+
 
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
@@ -95,19 +107,17 @@ public class JobDetailsFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_job_details, container, false);
 
         Bundle bundle = getArguments();
-        if(bundle != null)
-        {
-            String name = bundle.getString("name");
-            String address = bundle.getString("address");
-            customToastMessage(name + " " + address);
-        }
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
+        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
 
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
+        jobSize = (TextView) view.findViewById(R.id.textViewJobSize1);
+        jobType = (TextView) view.findViewById(R.id.textViewJobType1);
+        jobColDate = (TextView) view.findViewById(R.id.textViewJobColDate1);
+        jobColTime = (TextView) view.findViewById(R.id.textViewJobColTime1);
         jobFrom = (TextView) view.findViewById(R.id.textViewJobFrom1);
         jobTo = (TextView) view.findViewById(R.id.textViewJobTo1);
         editTextBid = (EditText) view.findViewById(R.id.editTextBid);
@@ -115,17 +125,91 @@ public class JobDetailsFragment extends Fragment
 
         jobName.setText(jobInformation.getAdvertName().toString());
         jobDescription.setText(jobInformation.getAdvertDescription().toString());
+        jobSize.setText(jobInformation.getJobSize().toString());
+        jobType.setText(jobInformation.getJobType().toString());
+        jobColDate.setText(jobInformation.getCollectionDate());
+        jobColTime.setText(jobInformation.getCollectionTime());
         jobFrom.setText(jobInformation.getColTown().toString());
         jobTo.setText(jobInformation.getDelTown().toString());
+
 
         buttonBid.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                saveBidInformation();
+                if(TextUtils.isEmpty(editTextBid.getText()))
+                {
+                    editTextBid.setHint("Please enter a bid!");
+                    editTextBid.setHintTextColor(Color.RED);
+                }
+                else {
+
+                    saveBidInformation();
+                }
             }
         });
+
+
+
+
+
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference();
+
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                bidReference = dataSnapshot.child("Bids");
+
+                Iterable<DataSnapshot> jobListSnapShot = bidReference.getChildren();
+
+
+
+                for (DataSnapshot ds : jobListSnapShot)
+                {
+                    if(ds.getKey().toString().equals(jobInformation.getJobID())) {
+
+                        Iterable<DataSnapshot> bidListSnapShot = ds.getChildren();
+
+                        for (DataSnapshot ds1 : bidListSnapShot) {
+                            BidInformation b = ds1.getValue(BidInformation.class);
+
+                            String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                            if (b.getUserID().equals(currentUser)) {
+                                buttonBid.setClickable(false);
+                                buttonBid.setHighlightColor(Color.GRAY);
+                                editTextBid.setText("Bid already placed!");
+                                editTextBid.setClickable(false);
+                                editTextBid.setKeyListener(null);
+                            }
+
+                        }
+                    }
+                }
+
+
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
+
+
+
+
 
         return view;
     }
@@ -177,12 +261,6 @@ public class JobDetailsFragment extends Fragment
     private void saveBidInformation()
     {
         Bundle bundle = getArguments();
-        if(bundle != null)
-        {
-            String name = bundle.getString("name");
-            String address = bundle.getString("address");
-            customToastMessage(name + " " + address);
-        }
 
         JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
 
@@ -200,11 +278,6 @@ public class JobDetailsFragment extends Fragment
 
         databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 
-        customToastMessage("Bid Placed!");
-
-//        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.content, new FindAJobFragment()).commit();
         startActivity(new Intent(getActivity(), CrossRoads.class));
     }
 

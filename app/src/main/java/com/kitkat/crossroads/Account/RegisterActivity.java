@@ -154,7 +154,6 @@ public class RegisterActivity extends AppCompatActivity
                                 if (isNewUser == true)
                                 {
                                     dismissDialog();
-                                    customToastMessage("Please Enter You're Details");
                                     startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
                                 } else if (task.getException() instanceof FirebaseAuthUserCollisionException)
                                 {

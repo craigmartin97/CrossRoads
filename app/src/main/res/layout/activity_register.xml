@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="#FFFFFF">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/relative_layout_background"
+        android:background="#FFFFFF"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
-        android:paddingBottom="10dp"
-        android:layout_marginRight="20dp" >
+        android:paddingBottom="40dp"
+        android:layout_marginRight="20dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <requestFocus />>
+
+
+        <ImageView
+            android:id="@+id/imageViewCBlack"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/cblack" />
+
+        <ImageView
+            android:id="@+id/imageViewCRGreen"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/imageViewCBlack"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/crgreentext" />
+
 
         <TextView
             android:id="@+id/textView3"
@@ -20,8 +41,9 @@
             android:fontFamily="@font/bebasneueregular"
             android:textSize="35sp"
             android:textAlignment="center"
+            android:layout_below="@id/imageViewCRGreen"
             android:layout_marginTop="20dp"
-            android:textColor="#ffffff" />
+            android:textColor="#000000" />
 
         <EditText
             android:id="@+id/editTextEmailLogin"
@@ -32,7 +54,11 @@
             android:layout_marginTop="19dp"
             android:ems="10"
             android:hint="@string/email_address"
+            android:layout_centerInParent="true"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"
             android:inputType="textEmailAddress"
+            android:textColorHint="#808080"
             android:textColor="@color/colorPrimaryDark"
             android:backgroundTint="@color/colorPrimaryDark"/>
 
@@ -45,7 +71,11 @@
             android:layout_below="@+id/editTextEmailLogin"
             android:layout_marginTop="22dp"
             android:ems="10"
+            android:layout_centerInParent="true"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"
             android:hint="@string/password"
+            android:textColorHint="#808080"
             android:inputType="textPassword"
             android:textColor="@color/colorPrimaryDark"
             android:backgroundTint="@color/colorPrimaryDark"/>
@@ -59,6 +89,10 @@
             android:layout_marginTop="22dp"
             android:ems="10"
             android:hint="@string/confirm_password"
+            android:textColorHint="#808080"
+            android:layout_centerInParent="true"
+            android:ellipsize="start"
+            android:gravity="center_horizontal"
             android:inputType="textPassword"
             android:textColor="@color/colorPrimaryDark"
             android:backgroundTint="@color/colorPrimaryDark"/>
@@ -73,8 +107,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="20dp"
             android:text="@string/by_checking_this_box_and_signing_up_you_are_agreeing_to_our_terms_and_conditions_and_privacy_policy"
-            android:textColor="@android:color/background_light"
-            android:buttonTint="@color/colorPrimaryDark"/>
+            android:textColor="#2bbc9b"
+            android:buttonTint="#2bbc9b"/>
 
         <TextView
             android:id="@+id/textViewSignIn"
@@ -95,6 +129,8 @@
             android:layout_below="@id/textViewSignIn"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
+            android:textColor="#FFFFFF"
+            android:background="#2bbc9b"
             android:text="@string/register" />
 
 

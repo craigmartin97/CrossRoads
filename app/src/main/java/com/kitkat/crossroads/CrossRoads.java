@@ -1,11 +1,15 @@
 package com.kitkat.crossroads;
 
+import android.support.v7.app.ActionBar;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -53,17 +57,18 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
     private StorageReference storageReference;
     private DatabaseReference myRef;
     private String userID;
+    private ImageView profileImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         auth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("users");
+        myRef = mFirebaseDatabase.getReference().child("Users");
         FirebaseUser user = auth.getCurrentUser();
         userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -140,6 +145,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).commit();
         } else if (id == R.id.nav_myAdverts)
         {
+
         } else if (id == R.id.nav_myJobs)
         {
 
@@ -166,7 +172,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         ImageView viewProfile = (ImageView) headerview.findViewById(R.id.imageViewProfile);
         ImageView editProfile = (ImageView) headerview.findViewById(R.id.imageEditPen);
         ImageView logout = (ImageView) headerview.findViewById(R.id.imageLogout);
-        ImageView profileImage = (ImageView) headerview.findViewById(R.id.navigationImage);
+        profileImage = (ImageView) headerview.findViewById(R.id.navigationImage);
 
         mAuthListener = new FirebaseAuth.AuthStateListener()
         {
@@ -193,7 +199,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String name = dataSnapshot.child("name").getValue(String.class);
+                String name = dataSnapshot.child("fullName").getValue(String.class);
                 Log.d(TAG, "Name Is: " + name);
 
                 navigationName.setText(name);
@@ -220,8 +226,12 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             }
         });
 
+
+
         editProfile.setOnClickListener(new View.OnClickListener()
         {
+
+
             @Override
             public void onClick(View v)
             {

@@ -1,9 +1,7 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.kitkat.crossroads.EditProfileFragment;
 import com.kitkat.crossroads.R;
 
 
@@ -98,30 +94,30 @@ public class ViewProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
-
-
-
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("users");
+        myRef = mFirebaseDatabase.getReference().child("Users");
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
-
-        ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
-
-//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.selfie);
-//        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-//        roundedBitmapDrawable.setCircular(true);
-//        imageView.setImageDrawable(roundedBitmapDrawable);
 
         textViewName = (TextView) view.findViewById(R.id.textViewName);
         viewPostalAddress = (TextView) view.findViewById(R.id.viewPostalAddress);
         viewDateOfBirth = (TextView) view.findViewById(R.id.viewDateOfBirth);
         viewPhoneNumber = (TextView) view.findViewById(R.id.viewPhoneNumber);
+        ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
+
+        Bundle bundle = getArguments();
+        if(bundle != null)
+        {
+            Bitmap bitmapImage = bundle.getParcelable("ProfileImage");
+            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmapImage);
+            roundedBitmapDrawable.setCircular(true);
+            imageView.setImageDrawable(roundedBitmapDrawable);
+        }
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -142,9 +138,9 @@ public class ViewProfileFragment extends Fragment {
         myRef.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String address = dataSnapshot.child("address").getValue(String.class);
+                String address = dataSnapshot.child("addressOne").getValue(String.class);
                 String dateOfBirth = dataSnapshot.child("dateOfBirth").getValue(String.class);
-                String name = dataSnapshot.child("name").getValue(String.class);
+                String name = dataSnapshot.child("fullName").getValue(String.class);
                 String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
                 Log.d(TAG, "Address Is: " + address);
                 Log.d(TAG, "Date Of Birth Is: " + dateOfBirth);
