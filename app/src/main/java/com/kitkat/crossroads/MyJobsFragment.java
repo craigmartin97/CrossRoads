@@ -67,7 +67,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private MyJobsFragment.MyCustomAdapter mAdapter;
 
-    private ArrayList<JobInformation> jobList = new ArrayList<>();
+
+    private ArrayList<BidInformation> jobList = new ArrayList<>();
 
 
 
@@ -121,6 +122,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
+
         jobListView = view.findViewById(R.id.jobListView1);
 
 
@@ -140,6 +142,19 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
 
                 mAdapter = new MyJobsFragment.MyCustomAdapter();
+
+
+                for (DataSnapshot ds : bidListSnapShot)
+                {
+                    BidInformation j = ds.getValue(BidInformation.class);
+                    j.setUserID(ds.getKey());
+                    String currentUser = auth.getUid();
+                    String bidId = j.getUserID();
+                    if(bidId.equals(currentUser))
+                    {
+                        jobList.add(j);
+                    }
+                }
 
 
                 for (DataSnapshot ds : bidListSnapShot)
@@ -186,6 +201,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                         jobList.add(j);
                     }
                 }
+
                 // check the bidID against the job ID
                 // if "Bids" userID equals the "Jobs" userID. If thats true you want to get ALL the "Job" information that corresponds with the bid
                 mAdapter.addArray(jobList);
@@ -277,6 +293,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         private ArrayList<JobInformation> mDataOrig = new ArrayList();
 
 
+
         private LayoutInflater mInflater;
 
         public MyCustomAdapter()
@@ -296,7 +313,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
 
         public void addArray(final ArrayList<JobInformation> j)
-
         {
             mData = j;
             mDataOrig = j;
@@ -362,6 +378,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColL1());
             holder.textViewTo.setText(mData.get(position).getDelL1());
+
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
 
