@@ -3,8 +3,10 @@ package com.kitkat.crossroads;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 
 import java.io.File;
+import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -74,6 +77,7 @@ public class EditProfileFragment extends Fragment
     private FirebaseDatabase database;
     private StorageReference storageReference;
 
+
     public EditProfileFragment()
     {
         // Required empty public constructor
@@ -115,8 +119,8 @@ public class EditProfileFragment extends Fragment
     {
 
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-        auth = FirebaseAuth.getInstance();
 
+        auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -167,15 +171,15 @@ public class EditProfileFragment extends Fragment
             progressDialog.setMessage("Uploading Image Please Wait...");
             progressDialog.show();
 
-            Uri uri = data.getData();
-            StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
+            final Uri uri = data.getData();
+            final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
             filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                 {
-                    progressDialog.dismiss();
-                    Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener()
             {

@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kitkat.crossroads.EditProfileFragment;
 import com.kitkat.crossroads.R;
 
 
@@ -112,14 +113,10 @@ public class ViewProfileFragment extends Fragment {
 
         ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
 
-        //TODO - get image from database and then display below
-        
-
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.selfie);
-        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-        roundedBitmapDrawable.setCircular(true);
-        imageView.setImageDrawable(roundedBitmapDrawable);
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.selfie);
+//        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+//        roundedBitmapDrawable.setCircular(true);
+//        imageView.setImageDrawable(roundedBitmapDrawable);
 
         textViewName = (TextView) view.findViewById(R.id.textViewName);
         viewPostalAddress = (TextView) view.findViewById(R.id.viewPostalAddress);

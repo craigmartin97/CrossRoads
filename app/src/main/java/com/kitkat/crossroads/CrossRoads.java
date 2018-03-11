@@ -206,6 +206,8 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             }
         });
 
+
+
         navigationEmail.setText(auth.getCurrentUser().getEmail());
 
         viewProfile.setOnClickListener(new View.OnClickListener()
