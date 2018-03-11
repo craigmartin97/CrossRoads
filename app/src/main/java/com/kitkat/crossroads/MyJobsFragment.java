@@ -169,7 +169,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 }
 
-                /* TODO - Craig's brainwave, when submitting the post form the push method is used which
+        /* TODO - Craig's brainwave, when submitting the post form the push method is used which
                 *          generated a random number. We need to store that data somewhere in order to get to the sub
                 *          children of the bid form.*/
 
