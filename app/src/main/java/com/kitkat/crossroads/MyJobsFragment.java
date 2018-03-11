@@ -17,6 +17,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,9 +62,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private DataSnapshot bidReference;
     private DataSnapshot jobReference;
 
+    private ArrayList<String> userBidId = new ArrayList<String>();
+    private ArrayList<String> userJobId = new ArrayList<String>();
+
     private MyJobsFragment.MyCustomAdapter mAdapter;
 
-    private ArrayList<BidInformation> jobList = new ArrayList<>();
+    private ArrayList<JobInformation> jobList = new ArrayList<>();
 
 
     private ListView jobListView;
@@ -113,7 +117,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        final View view = inflater.inflate(R.layout.fragment_job_details, container, false);
+        final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
         jobListView = view.findViewById(R.id.jobListView1);
 
@@ -137,24 +141,29 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
+
+                    // If it's the current user who has bid.
+
                     BidInformation j = ds.getValue(BidInformation.class);
                     j.setUserID(ds.getKey());
                     String currentUser = auth.getUid();
-                    String bidId = j.getUserID();
-                    if(bidId.equals(currentUser))
+                    String jobId = j.getUserID();
+                    userBidId.add(jobId);
+
+                }
+
+                for (DataSnapshot ds : jobListSnapShot) {
+                    JobInformation j = ds.getValue(JobInformation.class);
+                    j.setJobID(ds.getKey());
+                    String posterId = j.getPosterID();
+                    String jobId = j.getJobID();
+                    userJobId.add(jobId);
+
+                    if (userBidId.contains(jobId))
                     {
                         jobList.add(j);
                     }
                 }
-
-                for (DataSnapshot ds : jobListSnapShot)
-                {
-                    JobInformation j = ds.getValue(JobInformation.class);
-                    j.setJobID(ds.getKey());
-                    jobList.add(j);
-                    mAdapter.addItem(j);
-                }
-
                 // check the bidID against the job ID
                 // if "Bids" userID equals the "Jobs" userID. If thats true you want to get ALL the "Job" information that corresponds with the bid
                 mAdapter.addArray(jobList);
@@ -242,8 +251,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     public class MyCustomAdapter extends BaseAdapter
     {
 
-        private ArrayList<BidInformation> mData = new ArrayList();
-        private ArrayList<BidInformation> mDataOrig = new ArrayList();
+        private ArrayList<JobInformation> mData = new ArrayList();
+        private ArrayList<JobInformation> mDataOrig = new ArrayList();
 
         private LayoutInflater mInflater;
 
@@ -256,14 +265,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             }
         }
 
-        public void addItem(final BidInformation item)
+        public void addItem(final JobInformation item)
         {
             mData.add(item);
             mDataOrig.add(item);
         }
 
 
-        public void addArray(final ArrayList<BidInformation> j)
+        public void addArray(final ArrayList<JobInformation> j)
         {
             mData = j;
             mDataOrig = j;
@@ -326,9 +335,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-            holder.textViewName.setText(mData.get(position).getJobName());
-            holder.textViewFrom.setText(mData.get(position).getJobFrom());
-            holder.textViewFrom.setText(mData.get(position).getJobTo);
+            holder.textViewName.setText(mData.get(position).getAdvertName());
+            holder.textViewFrom.setText(mData.get(position).getColL1());
+            holder.textViewTo.setText(mData.get(position).getDelL1());
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
 
