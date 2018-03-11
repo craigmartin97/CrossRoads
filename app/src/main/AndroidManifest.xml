@@ -20,7 +20,6 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,8 +29,7 @@
             android:configChanges="orientation|screenSize"
             />
         <activity
-            android:name=".Profile.CreateProfileActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:name=".Profile.CreateProfileActivity" />
         <activity android:name=".Jobs.AddJobActivity" />
         <activity android:name=".Jobs.JobsActivity" />
         <activity android:name=".Account.ResetPasswordActivity" />
