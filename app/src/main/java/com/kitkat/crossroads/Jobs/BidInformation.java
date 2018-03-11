@@ -9,6 +9,8 @@ public class BidInformation
 
     private String userID, userBid;
 
+    public BidInformation() {
+    }
 
     public BidInformation(String userID, String userBid)
     {
