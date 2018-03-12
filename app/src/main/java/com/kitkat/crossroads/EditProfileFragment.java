@@ -261,9 +261,6 @@ public class EditProfileFragment extends Fragment
 //                        viewProfileFragment.setArguments(bundle);
 //                        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
 //                        fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).commit();
-
-                        // Need to add the URI into the database, under the usersId.
-                        // Keeping the existing users information.
                     } catch (IOException e)
                     {
                         Toast.makeText(getActivity(), "Unexpected Error Has Occurred", Toast.LENGTH_SHORT).show();
