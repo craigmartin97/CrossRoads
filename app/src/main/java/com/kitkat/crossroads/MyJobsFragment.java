@@ -121,8 +121,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         jobListView = view.findViewById(R.id.jobListView1);
 
-
         final ArrayList<String> jobsListArray = new ArrayList<>();
+
 
 
         auth = FirebaseAuth.getInstance();
@@ -144,7 +144,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
-
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
 
                     for (DataSnapshot ds1 : bidsSnapShot)
@@ -158,14 +157,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                         }
                     }
 
-//                    // If it's the current user who has bid.
-//
-//                    BidInformation j = ds.getValue(BidInformation.class);
-//                    j.setUserID(ds.getKey());
-//                    String currentUser = auth.getUid();
-//                    String jobId = j.getUserID();
-//                    userBidId.add(jobId);
-
                 }
 
                 for(DataSnapshot ds3 : jobListSnapShot)
@@ -178,22 +169,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
 
 
-                /* TODO - Craig's brainwave, when submitting the post form the push method is used which
-                *          generated a random number. We need to store that data somewhere in order to get to the sub
-                *          children of the bid form.*/
 
-//                for (DataSnapshot ds : jobListSnapShot) {
-//                    JobInformation j = ds.getValue(JobInformation.class);
-//                    j.setJobID(ds.getKey());
-//                    String posterId = j.getPosterID();
-//                    String jobId = j.getJobID();
-//                    userJobId.add(jobId);
-//
-//                    if (userBidId.contains(jobId))
-//                    {
-//                        jobList.add(j);
-//                    }
-//                }
                 // check the bidID against the job ID
                 // if "Bids" userID equals the "Jobs" userID. If thats true you want to get ALL the "Job" information that corresponds with the bid
                 mAdapter.addArray(jobList);
@@ -419,6 +395,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             }
             else
             {
+
 
                 for (JobInformation j : mDataOrig)
                 {
