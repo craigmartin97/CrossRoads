@@ -1,40 +1,47 @@
 package com.kitkat.crossroads;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.JobDetailsActivity;
+import com.kitkat.crossroads.Jobs.BidInformation;
+import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.JobInformation;
+
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MyJobsFragment.OnFragmentInteractionListener} interface
+ * {@link MyJobsFragment
+ *.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MyJobsFragment#newInstance} factory method to
+ * Use the {@link MyJobsFragment
+ *#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyJobsFragment extends Fragment
+public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextListener
 {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -46,19 +53,29 @@ public class MyJobsFragment extends Fragment
     private String mParam1;
     private String mParam2;
 
-    private MyJobsFragment.OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private FirebaseDatabase database;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private DataSnapshot bidReference;
     private DataSnapshot jobReference;
+
+    private ArrayList<String> userBidId = new ArrayList<String>();
+    private ArrayList<String> userJobId = new ArrayList<String>();
 
     private MyJobsFragment.MyCustomAdapter mAdapter;
 
-    private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
+    private ArrayList<JobInformation> jobList = new ArrayList<>();
+
+
 
     private ListView jobListView;
+
+    private SearchView jobSearch;
+
+
 
     public MyJobsFragment()
     {
@@ -71,7 +88,8 @@ public class MyJobsFragment extends Fragment
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyJobsFragment.
+     * @return A new instance of fragment MyJobsFragment
+     *.
      */
     // TODO: Rename and change types and number of parameters
     public static MyJobsFragment newInstance(String param1, String param2)
@@ -88,6 +106,7 @@ public class MyJobsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null)
         {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -99,9 +118,13 @@ public class MyJobsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_job_details, container, false);
+        final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
-        jobListView = (ListView) view.findViewById(R.id.jobListView1);
+        jobListView = view.findViewById(R.id.jobListView1);
+
+
+        final ArrayList<String> jobsListArray = new ArrayList<>();
+
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -112,27 +135,60 @@ public class MyJobsFragment extends Fragment
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
+                bidReference = dataSnapshot.child("Bids");
                 jobReference = dataSnapshot.child("Jobs");
 
+                Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
 
-                mAdapter = new MyCustomAdapter();
+                mAdapter = new MyJobsFragment.MyCustomAdapter();
 
-                for (DataSnapshot ds : jobListSnapShot)
-                {
-                    JobInformation j = ds.getValue(JobInformation.class);
-                    j.setJobID(ds.getKey());
-                    jobList.add(j);
-                    mAdapter.addItem(j);
+                for (DataSnapshot ds : bidListSnapShot) {
+
+                    Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
+
+
+                    for (DataSnapshot ds1 : bidsSnapShot)
+                    {
+                        BidInformation bid = ds1.getValue(BidInformation.class);
+
+
+                        if(bid.getUserID().equals(auth.getCurrentUser().getUid()))
+                        {
+                            jobsListArray.add(ds.getKey());
+                        }
+                    }
+
+
                 }
+
+                for(DataSnapshot ds3 : jobListSnapShot)
+                {
+                    if(jobsListArray.contains(ds3.getKey())) {
+                        JobInformation j = ds3.getValue(JobInformation.class);
+                        jobList.add(j);
+                    }
+
+                }
+                // check the bidID against the job ID
+                // if "Bids" userID equals the "Jobs" userID. If thats true you want to get ALL the "Job" information that corresponds with the bid
+                mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError)
             {
 
             }
         });
+
+        jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
+        jobSearch.setIconified(false);
+        jobSearch.clearFocus();
+
+        jobSearch.setOnQueryTextListener(this);
+
         return view;
     }
 
@@ -149,12 +205,13 @@ public class MyJobsFragment extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        if (context instanceof MyJobsFragment.OnFragmentInteractionListener)
+        if (context instanceof OnFragmentInteractionListener)
         {
-            mListener = (MyJobsFragment.OnFragmentInteractionListener) context;
-        } else
+            mListener = (OnFragmentInteractionListener) context;
+        }
+        else
         {
-            Toast.makeText(context, "Home Fragment Attached", Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -164,6 +221,21 @@ public class MyJobsFragment extends Fragment
         super.onDetach();
         mListener = null;
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText)
+    {
+        String text = newText;
+        mAdapter.filter(text);
+
+        return false;
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -175,28 +247,43 @@ public class MyJobsFragment extends Fragment
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener
+    interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
-    private class MyCustomAdapter extends BaseAdapter
+
+    public class MyCustomAdapter extends BaseAdapter
     {
 
         private ArrayList<JobInformation> mData = new ArrayList();
+        private ArrayList<JobInformation> mDataOrig = new ArrayList();
 
         private LayoutInflater mInflater;
 
         public MyCustomAdapter()
         {
-            mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            if (isAdded())
+            {
+                mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            }
         }
 
         public void addItem(final JobInformation item)
         {
             mData.add(item);
+            mDataOrig.add(item);
         }
+
+
+        public void addArray(final ArrayList<JobInformation> j)
+        {
+            mData = j;
+            mDataOrig = j;
+        }
+
 
         @Override
         public void registerDataSetObserver(DataSetObserver observer)
@@ -243,28 +330,33 @@ public class MyJobsFragment extends Fragment
             {
                 convertView = mInflater.inflate(R.layout.job_info_list, null);
                 holder = new MyJobsFragment.MyCustomAdapter.GroupViewHolder();
-                holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
-                holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
-                holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
-                holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
+                holder.textViewName = convertView.findViewById(R.id.textName);
+                holder.textViewFrom = convertView.findViewById(R.id.textFrom);
+                holder.textViewTo = convertView.findViewById(R.id.textTo);
+                holder.detailsButton = convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
-            } else
+            }
+            else
             {
                 holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-
             holder.textViewName.setText(mData.get(position).getAdvertName());
-            holder.textViewFrom.setText(mData.get(position).getColTown());
-            holder.textViewTo.setText(mData.get(position).getDelTown());
+            holder.textViewFrom.setText(mData.get(position).getColL1());
+            holder.textViewTo.setText(mData.get(position).getDelL1());
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
+
                 @Override
                 public void onClick(View v)
                 {
-                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
-                    intent.putExtra("JobDetails", mData.get(position));
-                    startActivity(intent);
+
+                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("Job", mData.get(position));
+                    jobDetailsFragment.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
                 }
             });
             return convertView;
@@ -282,13 +374,46 @@ public class MyJobsFragment extends Fragment
             return false;
         }
 
-
         public class GroupViewHolder
         {
             public TextView textViewName;
             public TextView textViewFrom;
             public TextView textViewTo;
             public Button detailsButton;
+        }
+
+        public void filter(String charText)
+        {
+
+            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
+            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
+            charText = charText.toLowerCase(Locale.getDefault());
+
+            if (charText.length() == 0)
+            {
+                mData = mDataOrig;
+            }
+            else
+            {
+
+                for (JobInformation j : mDataOrig)
+                {
+                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
+                    {
+                        jobs.add(j);
+                        jA.add(j);
+                    }
+                    else
+                    {
+                        jA.add(j);
+                    }
+                }
+                mData.clear();
+                mData = jobs;
+                mDataOrig = jA;
+            }
+
+            notifyDataSetChanged();
         }
     }
 }
