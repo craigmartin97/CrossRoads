@@ -28,4 +28,12 @@ public class BidInformation
     {
         return userBid;
     }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public void setUserBid(String userBid) {
+        this.userBid = userBid;
+    }
 }

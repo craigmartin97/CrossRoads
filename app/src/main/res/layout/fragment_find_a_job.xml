@@ -2,9 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kitkat.crossroads.FindAJobFragment"
-    >
-
+    tools:context="com.kitkat.crossroads.FindAJobFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +17,8 @@
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jobs"
+            android:text="Find A Job"
+
             android:fontFamily="@font/bebasneueregular"
             android:textSize="30dp"
             android:textAlignment="center"
@@ -31,21 +30,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:queryHint="Name, Location, Size, etc."
-            android:iconifiedByDefault="false"
-
-            />
+            android:iconifiedByDefault="false" />
 
         <requestFocus/>
-
-
-
 
         <ListView
             android:id="@+id/jobListView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-
     </LinearLayout>
-
 </FrameLayout>
