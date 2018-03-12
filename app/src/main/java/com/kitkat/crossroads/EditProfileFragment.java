@@ -33,6 +33,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
+
+import java.io.File;
 import java.io.IOException;
 import static android.app.Activity.RESULT_OK;
 
@@ -71,6 +73,8 @@ public class EditProfileFragment extends Fragment
     private DatabaseReference myRef;
     private FirebaseDatabase database;
     private StorageReference storageReference;
+
+    private Uri uri;
 
 
     public EditProfileFragment()
@@ -229,6 +233,7 @@ public class EditProfileFragment extends Fragment
             progressDialog.show();
 
             final Uri uri = data.getData();
+            this.uri = uri;
             final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
             filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
@@ -246,7 +251,6 @@ public class EditProfileFragment extends Fragment
                         Bitmap bitmap2 = bitmap.createScaledBitmap(bitmap, 200,200,true);
                         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap2);
                         roundedBitmapDrawable.setCircular(true);
-                        //profileImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 250,250,true));
                         profileImage.setImageDrawable(roundedBitmapDrawable);
 
 
@@ -368,5 +372,10 @@ public class EditProfileFragment extends Fragment
     {
         FirebaseUser user = auth.getCurrentUser();
         myRef.child("Users").child(user.getUid()).setValue(userInformation);
+    }
+
+    public Uri getUri()
+    {
+        return uri;
     }
 }

@@ -19,6 +19,7 @@
             android:background="@drawable/gradient_background"
             android:orientation="vertical">
 
+
             <ImageView
                 android:id="@+id/profileImage"
                 android:layout_width="wrap_content"
@@ -26,8 +27,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="35dp"
                 android:adjustViewBounds="false"
-                android:contentDescription="@string/Profile_Photo_of_user"
-                android:src="@drawable/selfie" />
+                android:contentDescription="@string/Profile_Photo_of_user" />
 
             <TextView
                 android:id="@+id/textViewName"
