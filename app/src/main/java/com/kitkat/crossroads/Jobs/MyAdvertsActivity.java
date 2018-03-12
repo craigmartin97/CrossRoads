@@ -32,9 +32,7 @@ public class MyAdvertsActivity extends Activity
     private FirebaseDatabase database;
     private FirebaseAuth.AuthStateListener authStateListener;
     private DataSnapshot jobReference;
-
-   private MyCustomAdapter mAdapter;
-
+    private MyCustomAdapter mAdapter;
     private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
 
     private ListView jobListView;
@@ -202,7 +200,4 @@ public class MyAdvertsActivity extends Activity
         }
 
         }
-    }
-
-
-
+}

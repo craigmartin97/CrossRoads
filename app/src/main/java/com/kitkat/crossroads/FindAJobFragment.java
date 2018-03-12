@@ -129,15 +129,16 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
-
-
                     jobList.add(j);
-                    mAdapter.addItem(j);
-
-
                 }
+
                 mAdapter.addArray(jobList);
+
                 jobListView.setAdapter(mAdapter);
+
+
+
+
             }
 
             @Override

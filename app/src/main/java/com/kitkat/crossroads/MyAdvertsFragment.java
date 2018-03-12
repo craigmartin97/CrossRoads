@@ -50,7 +50,6 @@ public class MyAdvertsFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private FirebaseDatabase database;
@@ -97,6 +96,7 @@ public class MyAdvertsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_my_adverts, container, false);
 
         jobListView = (ListView) view.findViewById(R.id.jobListView1);
@@ -139,6 +139,9 @@ public class MyAdvertsFragment extends Fragment {
         });
 
         return view;
+
+        // Inflate the layout for this fragment
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
