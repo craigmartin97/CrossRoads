@@ -109,34 +109,7 @@ public class LoginActivity extends AppCompatActivity
                             dismissDialog();
                             if (task.isSuccessful() && user.isEmailVerified() == true) {
                                 dismissDialog();
-
-                                myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
-                                {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot)
-                                    {
-                                        boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-                                        boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
-
-                                        if(advertiser ==  true && courier == false)
-                                        {
-                                            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
-                                        }
-                                        else if(advertiser == false && courier == true)
-                                        {
-                                            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
-                                        }
-                                        else if(advertiser == true && courier == true)
-                                        {
-                                            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError)
-                                    {
-
-                                    }
-                                });
+                                startActivity(new Intent(getApplicationContext(), CrossRoads.class));
                                 finish();
                             }
                             else if (user.isEmailVerified() == false)
