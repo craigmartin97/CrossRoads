@@ -72,6 +72,7 @@ public class EditProfileFragment extends Fragment
     private FirebaseDatabase database;
     private StorageReference storageReference;
 
+
     public EditProfileFragment()
     {
         // Required empty public constructor
@@ -262,7 +263,6 @@ public class EditProfileFragment extends Fragment
                     {
                         Toast.makeText(getActivity(), "Unexpected Error Has Occurred", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }).addOnFailureListener(new OnFailureListener()
             {
@@ -329,7 +329,7 @@ public class EditProfileFragment extends Fragment
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim();
 
-        if (checkBoxAdvertiser.isChecked())
+        if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = false;
@@ -337,9 +337,8 @@ public class EditProfileFragment extends Fragment
                     addressTwo, town, postCode, advertiser, courier);
 
             setUserInformation(userInformation);
-            databaseVerification();
         }
-        else if (checkBoxCourier.isChecked())
+        else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = false;
             courier = true;
@@ -347,7 +346,6 @@ public class EditProfileFragment extends Fragment
                     addressTwo, town, postCode, advertiser, courier);
 
             setUserInformation(userInformation);
-            databaseVerification();
         }
         else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
@@ -357,9 +355,7 @@ public class EditProfileFragment extends Fragment
                     addressTwo, town, postCode, advertiser, courier);
 
             setUserInformation(userInformation);
-            databaseVerification();
         }
-
 
         Toast.makeText(getActivity(), "Information Saved...", Toast.LENGTH_SHORT).show();
 
@@ -372,12 +368,5 @@ public class EditProfileFragment extends Fragment
     {
         FirebaseUser user = auth.getCurrentUser();
         myRef.child("Users").child(user.getUid()).setValue(userInformation);
-    }
-
-    private void databaseVerification()
-    {
-        FirebaseUser userEmail = FirebaseAuth.getInstance().getCurrentUser();
-        userEmail.sendEmailVerification();
-        FirebaseAuth.getInstance().signOut();
     }
 }

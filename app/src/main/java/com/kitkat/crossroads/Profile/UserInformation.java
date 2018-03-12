@@ -6,8 +6,9 @@ import java.util.Date;
  * Created by q5031372 on 14/02/18.
  */
 
-public class UserInformation {
-
+public class UserInformation
+{
+    // Must be public to be able to serialize on
     public String fullName;
     public String phoneNumber;
     public String addressOne;

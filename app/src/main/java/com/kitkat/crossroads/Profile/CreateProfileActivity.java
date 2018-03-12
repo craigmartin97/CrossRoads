@@ -59,8 +59,6 @@ public class CreateProfileActivity extends AppCompatActivity
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
 
-        FirebaseUser user = auth.getCurrentUser();
-
         saveProfile = (Button) findViewById(R.id.buttonSaveProfile);
 
         fullName = (EditText) findViewById(R.id.editTextFullName);
@@ -141,7 +139,7 @@ public class CreateProfileActivity extends AppCompatActivity
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim();
 
-        if (checkBoxAdvertiser.isChecked())
+        if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = false;
@@ -149,9 +147,8 @@ public class CreateProfileActivity extends AppCompatActivity
                     addressTwo, town, postCode, advertiser, courier);
 
             setUserInformation(userInformation);
-            databaseVerification();
         }
-        if (checkBoxCourier.isChecked())
+        else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = false;
             courier = true;
@@ -159,9 +156,8 @@ public class CreateProfileActivity extends AppCompatActivity
                     addressTwo, town, postCode, advertiser, courier);
 
             setUserInformation(userInformation);
-            databaseVerification();
         }
-        if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = true;
@@ -169,9 +165,9 @@ public class CreateProfileActivity extends AppCompatActivity
                     addressTwo, town, postCode, advertiser, courier);
 
             setUserInformation(userInformation);
-            databaseVerification();
         }
 
+        databaseVerification();
         startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
     }
 

@@ -1,9 +1,7 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,11 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.kitkat.crossroads.CrossRoads;
 import com.kitkat.crossroads.R;
 
 
@@ -61,10 +59,11 @@ public class ViewProfileFragment extends Fragment {
     private String userID;
     private StorageReference storageReference;
 
-    private ListView mListView;
-    private TextView textViewName, viewPostalAddress, viewDateOfBirth, viewPhoneNumber;
+    private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode;
+    private CheckBox advertiser, courier;
 
-    public ViewProfileFragment() {
+    public ViewProfileFragment()
+    {
         // Required empty public constructor
     }
 
@@ -105,16 +104,17 @@ public class ViewProfileFragment extends Fragment {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference().child("Users");
         FirebaseUser user = mAuth.getCurrentUser();
-        userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-
-
-        textViewName = (TextView) view.findViewById(R.id.textViewName);
-        viewPostalAddress = (TextView) view.findViewById(R.id.viewPostalAddress);
-        viewDateOfBirth = (TextView) view.findViewById(R.id.viewDateOfBirth);
-        viewPhoneNumber = (TextView) view.findViewById(R.id.viewPhoneNumber);
         ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
+        fullName = (TextView) view.findViewById(R.id.textViewName);
+        phoneNumber = (TextView) view.findViewById(R.id.textViewPhoneNumber);
+        addressOne = (TextView) view.findViewById(R.id.textViewAddressOne);
+        addressTwo = (TextView) view.findViewById(R.id.textViewAddressTwo);
+        town = (TextView) view.findViewById(R.id.textViewTown);
+        postCode = (TextView) view.findViewById(R.id.textViewPostCode);
+        advertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
+        courier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
 
         Bundle bundle = getArguments();
         if(bundle != null)
@@ -141,24 +141,31 @@ public class ViewProfileFragment extends Fragment {
             }
         };
 
-        myRef.child(userID).addValueEventListener(new ValueEventListener() {
+        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String address = dataSnapshot.child("addressOne").getValue(String.class);
-                String dateOfBirth = dataSnapshot.child("dateOfBirth").getValue(String.class);
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
                 String name = dataSnapshot.child("fullName").getValue(String.class);
-                String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
-                Log.d(TAG, "Address Is: " + address);
-                Log.d(TAG, "Date Of Birth Is: " + dateOfBirth);
-                Log.d(TAG, "Name Is: " + name);
-                Log.d(TAG, "Phone Number Is" + phoneNumber);
+                String number = dataSnapshot.child("phoneNumber").getValue(String.class);
+                String address1 = dataSnapshot.child("addressOne").getValue(String.class);
+                String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
+                String usersTown = dataSnapshot.child("town").getValue(String.class);
+                String postalCode = dataSnapshot.child("postCode").getValue(String.class);
 
-                textViewName.setText(name);
-                viewPostalAddress.setText(address);
-                viewDateOfBirth.setText(dateOfBirth);
-                viewPhoneNumber.setText(phoneNumber);
+                Log.d(TAG, "Full Name: " + name);
+                Log.d(TAG, "Phone Number: " + number);
+                Log.d(TAG, "Address Line One: " + address1);
+                Log.d(TAG, "Address Line Two: " + address2);
+                Log.d(TAG, "Town: " + usersTown);
+                Log.d(TAG, "PostCode: " + postalCode);
+
+                fullName.setText(name);
+                phoneNumber.setText(number);
+                addressOne.setText(address1);
+                addressTwo.setText(address2);
+                town.setText(usersTown);
+                postCode.setText(postalCode);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
