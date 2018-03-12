@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,13 +18,22 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.CrossRoads;
+import com.kitkat.crossroads.PostAnAdvertFragment;
+import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 
 public class LoginActivity extends AppCompatActivity
 {
     private EditText inputEmail, inputPassword;
-    private FirebaseAuth auth;
+    private FirebaseAuth mAuth;
+    public DatabaseReference myRef;
+    public FirebaseDatabase mFirebaseDatabase;
     private ProgressDialog progressDialog;
     private Button btnLogin;
     private TextView signUp, resetPassword;
@@ -39,7 +50,11 @@ public class LoginActivity extends AppCompatActivity
         signUp = (TextView) findViewById(R.id.textViewSignUp);
         resetPassword = (TextView) findViewById(R.id.textViewResetPassword);
         btnLogin = (Button) findViewById(R.id.buttonSignIn);
-        auth = FirebaseAuth.getInstance();
+
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference().child("Users");
+        FirebaseUser user = mAuth.getCurrentUser();
 
         getCurrentUser();
 
@@ -78,7 +93,7 @@ public class LoginActivity extends AppCompatActivity
                 progressDialog.setMessage("Logging In Please Wait...");
                 progressDialog.show();
 
-                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -94,14 +109,43 @@ public class LoginActivity extends AppCompatActivity
                             dismissDialog();
                             if (task.isSuccessful() && user.isEmailVerified() == true) {
                                 dismissDialog();
-                                startActivity(new Intent(getApplicationContext(), CrossRoads.class));
+
+                                myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+                                {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot)
+                                    {
+                                        boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                                        boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+
+                                        if(advertiser ==  true && courier == false)
+                                        {
+                                            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
+                                        }
+                                        else if(advertiser == false && courier == true)
+                                        {
+                                            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
+                                        }
+                                        else if(advertiser == true && courier == true)
+                                        {
+                                            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError)
+                                    {
+
+                                    }
+                                });
                                 finish();
                             }
-                            else if (user.isEmailVerified() == false) {
+                            else if (user.isEmailVerified() == false)
+                            {
                                 dismissDialog();
                                 customToastMessage("You Must Verify Your Email Address Before Logging In. Please Check Your Email.");
                             }
-                            else {
+                            else
+                                {
                                 dismissDialog();
                                 customToastMessage("Please Re-enter Your Details And Try Again");
                             }
@@ -115,7 +159,7 @@ public class LoginActivity extends AppCompatActivity
 
     private void getCurrentUser()
     {
-        if (auth.getCurrentUser() != null)
+        if (mAuth.getCurrentUser() != null)
         {
             Intent intent = new Intent(LoginActivity.this, CrossRoads.class);
             startActivity(intent);
