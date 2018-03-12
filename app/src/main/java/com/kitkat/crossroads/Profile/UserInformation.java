@@ -1,6 +1,6 @@
 package com.kitkat.crossroads.Profile;
 
-import java.util.Date;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * Created by q5031372 on 14/02/18.
@@ -17,8 +17,9 @@ public class UserInformation
     public String postCode;
     public boolean advertiser;
     public boolean courier;
+    public StorageReference profileImage;
 
-    public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier)
+    public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, StorageReference profileImage)
     {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
@@ -28,6 +29,6 @@ public class UserInformation
         this.postCode = postCode;
         this.advertiser = advertiser;
         this.courier = courier;
+        this.profileImage = profileImage;
     }
-
 }

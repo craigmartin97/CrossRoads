@@ -27,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.kitkat.crossroads.EditProfileFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 
@@ -58,11 +57,11 @@ public class ViewProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
-    private String userID;
     private StorageReference storageReference;
 
     private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox advertiser, courier;
+    private ImageView profileImageUri;
 
     public ViewProfileFragment()
     {
@@ -108,7 +107,6 @@ public class ViewProfileFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
         fullName = (TextView) view.findViewById(R.id.textViewName);
         phoneNumber = (TextView) view.findViewById(R.id.textViewPhoneNumber);
         addressOne = (TextView) view.findViewById(R.id.textViewAddressOne);
@@ -117,15 +115,16 @@ public class ViewProfileFragment extends Fragment {
         postCode = (TextView) view.findViewById(R.id.textViewPostCode);
         advertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
         courier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
+        profileImageUri = (ImageView) view.findViewById(R.id.profileImage);
 
-        Bundle bundle = getArguments();
-        if(bundle != null)
-        {
-            Bitmap bitmapImage = bundle.getParcelable("ProfileImage");
-            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmapImage);
-            roundedBitmapDrawable.setCircular(true);
-            imageView.setImageDrawable(roundedBitmapDrawable);
-        }
+//        Bundle bundle = getArguments();
+//        if(bundle != null)
+//        {
+//            Bitmap bitmapImage = bundle.getParcelable("ProfileImage");
+//            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmapImage);
+//            roundedBitmapDrawable.setCircular(true);
+//            imageView.setImageDrawable(roundedBitmapDrawable);
+//        }
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -153,6 +152,7 @@ public class ViewProfileFragment extends Fragment {
                 String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
                 String usersTown = dataSnapshot.child("town").getValue(String.class);
                 String postalCode = dataSnapshot.child("postCode").getValue(String.class);
+                String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
 
                 Log.d(TAG, "Full Name: " + name);
                 Log.d(TAG, "Phone Number: " + number);
@@ -160,6 +160,7 @@ public class ViewProfileFragment extends Fragment {
                 Log.d(TAG, "Address Line Two: " + address2);
                 Log.d(TAG, "Town: " + usersTown);
                 Log.d(TAG, "PostCode: " + postalCode);
+                Log.d(TAG, "ProfileImage: " + profileImage);
 
                 fullName.setText(name);
                 phoneNumber.setText(number);
@@ -167,6 +168,7 @@ public class ViewProfileFragment extends Fragment {
                 addressTwo.setText(address2);
                 town.setText(usersTown);
                 postCode.setText(postalCode);
+                Picasso.get().load(profileImage).into(profileImageUri);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

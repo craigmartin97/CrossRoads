@@ -33,9 +33,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
-
-import java.io.File;
 import java.io.IOException;
+
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -73,9 +72,7 @@ public class EditProfileFragment extends Fragment
     private DatabaseReference myRef;
     private FirebaseDatabase database;
     private StorageReference storageReference;
-
-    private Uri uri;
-
+    private StorageReference filePath;
 
     public EditProfileFragment()
     {
@@ -213,7 +210,7 @@ public class EditProfileFragment extends Fragment
             {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
-                startActivityForResult(intent,GALLERY_INTENT);
+                startActivityForResult(intent, GALLERY_INTENT);
             }
         });
 
@@ -225,16 +222,16 @@ public class EditProfileFragment extends Fragment
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        FirebaseUser user = auth.getCurrentUser();
+        final FirebaseUser user = auth.getCurrentUser();
 
-        if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
+        if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
             progressDialog.setMessage("Uploading Image Please Wait...");
             progressDialog.show();
 
             final Uri uri = data.getData();
-            this.uri = uri;
             final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
+            this.filePath = filePath;
             filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
                 @Override
@@ -248,22 +245,26 @@ public class EditProfileFragment extends Fragment
                         //////////////////NAV//////////////////
 
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                        Bitmap bitmap2 = bitmap.createScaledBitmap(bitmap, 200,200,true);
+                        Bitmap bitmap2 = bitmap.createScaledBitmap(bitmap, 200, 200, true);
                         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap2);
                         roundedBitmapDrawable.setCircular(true);
                         profileImage.setImageDrawable(roundedBitmapDrawable);
 
+                        Uri downloadUri = taskSnapshot.getDownloadUrl();
+                        myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
 
                         ////////////////////////////////////////
 
-                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("ProfileImage",bitmap);
-                        viewProfileFragment.setArguments(bundle);
-                        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).commit();
+//                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
+//                        Bundle bundle = new Bundle();
+//                        bundle.putParcelable("ProfileImage",bitmap);
+//                        viewProfileFragment.setArguments(bundle);
+//                        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+//                        fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).commit();
 
-                    } catch(IOException e)
+                        // Need to add the URI into the database, under the usersId.
+                        // Keeping the existing users information.
+                    } catch (IOException e)
                     {
                         Toast.makeText(getActivity(), "Unexpected Error Has Occurred", Toast.LENGTH_SHORT).show();
                     }
@@ -338,25 +339,23 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, filePath);
 
             setUserInformation(userInformation);
-        }
-        else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, filePath);
 
             setUserInformation(userInformation);
-        }
-        else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, filePath);
 
             setUserInformation(userInformation);
         }
@@ -372,10 +371,5 @@ public class EditProfileFragment extends Fragment
     {
         FirebaseUser user = auth.getCurrentUser();
         myRef.child("Users").child(user.getUid()).setValue(userInformation);
-    }
-
-    public Uri getUri()
-    {
-        return uri;
     }
 }
