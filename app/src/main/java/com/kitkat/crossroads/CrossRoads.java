@@ -82,9 +82,38 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+
+        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+
+                if(advertiser ==  true && courier == false)
+                {
+                    getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+                }
+                else if(advertiser == false && courier == true)
+                {
+                    getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+                }
+                else if(advertiser == true && courier == true)
+                {
+                    getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+//        getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
 
         navigationButtonActions(navigationView);
     }
