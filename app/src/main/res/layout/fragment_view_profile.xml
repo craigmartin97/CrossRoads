@@ -128,7 +128,7 @@
 
                 <TextView
                     android:id="@+id/textViewPostCode"
-                    android:layout_width="match_parent"
+                    android:layout_width="346dp"
                     android:layout_height="wrap_content"
                     android:paddingBottom="30dp"
                     android:paddingLeft="130dp"
@@ -137,44 +137,42 @@
 
                 <TextView
                     android:id="@+id/textViewCheckbox"
-                    android:layout_width="wrap_content"
+
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/editTextPostCode"
                     android:layout_marginEnd="18dp"
                     android:layout_toStartOf="@+id/checkBoxAdvertiser"
+                    android:paddingLeft="30dp"
                     android:text="What Are You Primarily Going To Be Using The App For?"
+                    android:textAlignment="center"
                     android:textColor="#808080"
                     android:textSize="16dp" />
 
                 <CheckBox
                     android:id="@+id/checkBoxAdvertiser"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/editTextPostCode"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_gravity="center"
                     android:buttonTint="#2bbc9b"
+                    android:clickable="false"
                     android:ems="10"
                     android:padding="10dp"
                     android:text="Advertiser"
-
                     android:textColor="#2bbc9b"
                     android:visibility="visible" />
 
                 <CheckBox
                     android:id="@+id/checkBoxCourier"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_alignStart="@+id/checkBoxAdvertiser"
                     android:layout_below="@+id/checkBoxAdvertiser"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_gravity="center"
                     android:buttonTint="#2bbc9b"
+                    android:clickable="false"
                     android:padding="10dp"
                     android:text="Courier"
                     android:textColor="#2bbc9b"
