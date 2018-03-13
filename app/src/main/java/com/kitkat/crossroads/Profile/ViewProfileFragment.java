@@ -1,21 +1,16 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Checkable;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,9 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kitkat.crossroads.CircleTransformation;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 
 /**
@@ -169,7 +164,7 @@ public class ViewProfileFragment extends Fragment {
                 addressTwo.setText(address2);
                 town.setText(usersTown);
                 postCode.setText(postalCode);
-                Picasso.get().load(profileImage).into(profileImageUri);
+                Picasso.get().load(profileImage).resize(300,300).transform(new CircleTransformation()).into(profileImageUri);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
