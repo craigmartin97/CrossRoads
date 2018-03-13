@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Profile.UserInformation;
@@ -144,7 +146,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, null);
 
             setUserInformation(userInformation);
         }
@@ -153,7 +155,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, null);
 
             setUserInformation(userInformation);
         }
@@ -162,7 +164,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, null);
 
             setUserInformation(userInformation);
         }
