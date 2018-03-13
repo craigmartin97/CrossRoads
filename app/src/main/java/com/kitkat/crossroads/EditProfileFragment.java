@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -243,11 +244,6 @@ public class EditProfileFragment extends Fragment
                     Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
                     myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-//                        Bitmap bitmap2 = bitmap.createScaledBitmap(bitmap, 200, 200, true);
-//                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap2);
-//                        roundedBitmapDrawable.setCircular(true);
-//                        profileImage.setImageDrawable(roundedBitmapDrawable);
                 }
             }).addOnFailureListener(new OnFailureListener()
             {
