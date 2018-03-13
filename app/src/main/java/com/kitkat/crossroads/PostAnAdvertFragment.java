@@ -1,17 +1,24 @@
 package com.kitkat.crossroads;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.JobsActivity;
+
+import java.util.Calendar;
 
 
 /**
@@ -43,12 +52,16 @@ public class PostAnAdvertFragment extends Fragment
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private DatePickerDialog.OnDateSetListener dateSetListener;
+    private static final String TAG = "PostAnActivityFragment";
+
 
     private FirebaseAuth auth;
 
-    private EditText editTextAdName, editTextAdDescription, editTextJobSize, editTextJobType, editTextColDate, editTextColTime;
+    private EditText editTextAdName, editTextAdDescription, editTextColDate, editTextColTime;
     private EditText editTextColAddL1, editTextColAddL2, editTextColAddTown, editTextColAddPostcode;
     private EditText editTextDelAddL1, editTextDelAddL2, editTextDelAddTown, editTextDelAddPostcode;
+    private Spinner editTextJobSize, editTextJobType;
 
 
     private Button buttonPostAd;
@@ -112,8 +125,8 @@ public class PostAnAdvertFragment extends Fragment
 
         editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
         editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
-        editTextJobSize = (EditText) view.findViewById(R.id.editTextJobSize);
-        editTextJobType = (EditText) view.findViewById(R.id.editTextJobType);
+        editTextJobSize = (Spinner) view.findViewById(R.id.editTextJobSize);
+        editTextJobType = (Spinner) view.findViewById(R.id.editTextJobType);
         editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
         editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
         editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
@@ -124,6 +137,72 @@ public class PostAnAdvertFragment extends Fragment
         editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
         editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
         editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        editTextJobSize.setAdapter(adapter);
+
+
+
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        editTextJobType.setAdapter(adapter1);
+
+
+        editTextColDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        getActivity(),
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        dateSetListener,
+                        year,month,day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                                month = month + 1;
+                                Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
+
+                               if(dayOfMonth >= 1 && dayOfMonth <= 9)
+                                {
+                                    String newDay = "0" + dayOfMonth;
+                                    editTextColDate.setText(newDay + "/" + month + "/" + year);
+                                }
+
+                                if(month >= 1 && month <= 9)
+                                {
+                                    String newMonth = "0" + month;
+                                    editTextColDate.setText(dayOfMonth + "/" + newMonth + "/" + year);
+                                }
+
+                                if(dayOfMonth >= 1 && dayOfMonth <= 9 && month >= 1 && month <= 9)
+                                {
+                                    String newDay = "0" + dayOfMonth;
+                                    String newMonth = "0" + month;
+                                    editTextColDate.setText(newDay + "/" + newMonth + "/" + year);
+                                }
+                                else
+                                {
+                                    editTextColDate.setText(dayOfMonth + "/" + month + "/" + year);
+                                }
+                            }
+        };
+
 
 
         buttonPostAd.setOnClickListener(new View.OnClickListener()
@@ -191,8 +270,8 @@ public class PostAnAdvertFragment extends Fragment
     {
         String adName = editTextAdName.getText().toString().trim();
         String adDescription = editTextAdDescription.getText().toString().trim();
-        String jobSize = editTextJobSize.getText().toString().trim();
-        String jobType = editTextJobType.getText().toString().trim();
+        String jobSize = editTextJobSize.getSelectedItem().toString().trim();
+        String jobType = editTextJobType.getSelectedItem().toString().trim();
         String colDate = editTextColDate.getText().toString().trim();
         String colTime = editTextColTime.getText().toString().trim();
         String colL1 = editTextColAddL1.getText().toString().trim();

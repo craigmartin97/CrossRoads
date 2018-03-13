@@ -68,10 +68,10 @@
                 android:hint="Advert Description"
                 android:inputType="textMultiLine" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/editTextJobSize"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_below="@+id/editTextAdDescription"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
@@ -81,10 +81,10 @@
                 android:hint="Job Size"
                 android:inputType="textMultiLine" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/editTextJobType"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_below="@+id/editTextJobSize"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
