@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +36,8 @@ import com.squareup.picasso.Picasso;
  * Use the {@link ViewProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ViewProfileFragment extends Fragment {
+public class ViewProfileFragment extends Fragment
+{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -73,7 +75,8 @@ public class ViewProfileFragment extends Fragment {
      * @return A new instance of fragment ViewProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ViewProfileFragment newInstance(String param1, String param2) {
+    public static ViewProfileFragment newInstance(String param1, String param2)
+    {
         ViewProfileFragment fragment = new ViewProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -83,9 +86,11 @@ public class ViewProfileFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null)
+        {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -93,7 +98,8 @@ public class ViewProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
 
         View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
 
@@ -113,24 +119,19 @@ public class ViewProfileFragment extends Fragment {
         courier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
         profileImageUri = (ImageView) view.findViewById(R.id.profileImage);
 
-//        Bundle bundle = getArguments();
-//        if(bundle != null)
-//        {
-//            Bitmap bitmapImage = bundle.getParcelable("ProfileImage");
-//            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmapImage);
-//            roundedBitmapDrawable.setCircular(true);
-//            imageView.setImageDrawable(roundedBitmapDrawable);
-//        }
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        mAuthListener = new FirebaseAuth.AuthStateListener()
+        {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
+            {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                if (user != null)
+                {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
-                } else {
+                } else
+                {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out.");
@@ -138,7 +139,8 @@ public class ViewProfileFragment extends Fragment {
             }
         };
 
-        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+        {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
@@ -164,10 +166,12 @@ public class ViewProfileFragment extends Fragment {
                 addressTwo.setText(address2);
                 town.setText(usersTown);
                 postCode.setText(postalCode);
-                Picasso.get().load(profileImage).resize(300,300).transform(new CircleTransformation()).into(profileImageUri);
+                Picasso.get().load(profileImage).resize(300, 300).transform(new CircleTransformation()).into(profileImageUri);
             }
+
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError)
+            {
 
             }
         });
@@ -176,24 +180,30 @@ public class ViewProfileFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
+    public void onButtonPressed(Uri uri)
+    {
+        if (mListener != null)
+        {
             mListener.onFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnFragmentInteractionListener)
+        {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
+        } else
+        {
             Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT);
         }
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         mListener = null;
     }
@@ -208,7 +218,8 @@ public class ViewProfileFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener
+    {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }

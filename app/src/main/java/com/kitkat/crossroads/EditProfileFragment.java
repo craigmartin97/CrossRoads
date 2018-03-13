@@ -240,33 +240,14 @@ public class EditProfileFragment extends Fragment
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                 {
                     progressDialog.dismiss();
-                    try
-                    {
-                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
-
-                        //////////////////NAV//////////////////
-
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                        Bitmap bitmap2 = bitmap.createScaledBitmap(bitmap, 200, 200, true);
-                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap2);
-                        roundedBitmapDrawable.setCircular(true);
-                        profileImage.setImageDrawable(roundedBitmapDrawable);
-
-                        Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
-
-                        ////////////////////////////////////////
-
-//                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-//                        Bundle bundle = new Bundle();
-//                        bundle.putParcelable("ProfileImage",bitmap);
-//                        viewProfileFragment.setArguments(bundle);
-//                        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-//                        fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).commit();
-                    } catch (IOException e)
-                    {
-                        Toast.makeText(getActivity(), "Unexpected Error Has Occurred", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
+//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+//                        Bitmap bitmap2 = bitmap.createScaledBitmap(bitmap, 200, 200, true);
+//                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap2);
+//                        roundedBitmapDrawable.setCircular(true);
+//                        profileImage.setImageDrawable(roundedBitmapDrawable);
                 }
             }).addOnFailureListener(new OnFailureListener()
             {
