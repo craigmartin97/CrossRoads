@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,10 +36,10 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link MyJobsFragment
- *.OnFragmentInteractionListener} interface
+ * .OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link MyJobsFragment
- *#newInstance} factory method to
+ * #newInstance} factory method to
  * create an instance of this fragment.
  */
 public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextListener
@@ -70,11 +71,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<JobInformation> jobList = new ArrayList<>();
 
 
-
     private ListView jobListView;
 
     private SearchView jobSearch;
-
 
 
     public MyJobsFragment()
@@ -89,7 +88,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
      * @return A new instance of fragment MyJobsFragment
-     *.
+     * .
      */
     // TODO: Rename and change types and number of parameters
     public static MyJobsFragment newInstance(String param1, String param2)
@@ -143,7 +142,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 mAdapter = new MyJobsFragment.MyCustomAdapter();
 
-                for (DataSnapshot ds : bidListSnapShot) {
+                for (DataSnapshot ds : bidListSnapShot)
+                {
 
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
 
@@ -153,25 +153,22 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                         BidInformation bid = ds1.getValue(BidInformation.class);
 
 
-                        if(bid.getUserID().equals(auth.getCurrentUser().getUid()))
+                        if (bid.getUserID().equals(auth.getCurrentUser().getUid()))
                         {
                             jobsListArray.add(ds.getKey());
                         }
                     }
-
-
                 }
 
-                for(DataSnapshot ds3 : jobListSnapShot)
+                for (DataSnapshot ds3 : jobListSnapShot)
                 {
-                    if(jobsListArray.contains(ds3.getKey())) {
+                    if (jobsListArray.contains(ds3.getKey()))
+                    {
                         JobInformation j = ds3.getValue(JobInformation.class);
                         jobList.add(j);
                     }
 
                 }
-                // check the bidID against the job ID
-                // if "Bids" userID equals the "Jobs" userID. If thats true you want to get ALL the "Job" information that corresponds with the bid
                 mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
             }
@@ -208,8 +205,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         if (context instanceof OnFragmentInteractionListener)
         {
             mListener = (OnFragmentInteractionListener) context;
-        }
-        else
+        } else
         {
 
         }
@@ -223,7 +219,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String query)
+    {
         return false;
     }
 
@@ -335,8 +332,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 holder.textViewTo = convertView.findViewById(R.id.textTo);
                 holder.detailsButton = convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
-            }
-            else
+            } else
             {
                 holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
@@ -392,8 +388,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             if (charText.length() == 0)
             {
                 mData = mDataOrig;
-            }
-            else
+            } else
             {
 
                 for (JobInformation j : mDataOrig)
@@ -402,8 +397,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     {
                         jobs.add(j);
                         jA.add(j);
-                    }
-                    else
+                    } else
                     {
                         jA.add(j);
                     }

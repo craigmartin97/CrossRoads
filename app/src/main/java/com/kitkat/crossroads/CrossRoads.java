@@ -69,6 +69,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         auth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference().child("Users");
+
         FirebaseUser user = auth.getCurrentUser();
         userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -91,19 +92,18 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                 boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
                 boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
-                if(advertiser ==  true && courier == false)
+                if (advertiser == true && courier == false)
                 {
                     getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-                }
-                else if(advertiser == false && courier == true)
+                } else if (advertiser == false && courier == true)
                 {
                     getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-                }
-                else if(advertiser == true && courier == true)
+                } else if (advertiser == true && courier == true)
                 {
                     getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError)
             {
@@ -242,7 +242,6 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         });
 
 
-
         navigationEmail.setText(auth.getCurrentUser().getEmail());
 
         viewProfile.setOnClickListener(new View.OnClickListener()
@@ -254,7 +253,6 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                 onBackPressed();
             }
         });
-
 
 
         editProfile.setOnClickListener(new View.OnClickListener()

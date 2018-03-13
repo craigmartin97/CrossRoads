@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Jobs.JobInformation;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -62,7 +64,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private ListView jobListView;
 
     private SearchView jobSearch;
-
 
 
     public FindAJobFragment()
@@ -183,12 +184,14 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String query)
+    {
         return false;
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(String newText)
+    {
 
         String text = newText;
         mAdapter.filter(text);
@@ -225,7 +228,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         public MyCustomAdapter()
         {
 
-            if (isAdded()) {
+            if (isAdded())
+            {
                 mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
         }
@@ -340,22 +344,26 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             public Button detailsButton;
         }
 
-        public void filter(String charText) {
+        public void filter(String charText)
+        {
 
             ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
             ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
             charText = charText.toLowerCase(Locale.getDefault());
 
-            if (charText.length() == 0) {
+            if (charText.length() == 0)
+            {
                 mData = mDataOrig;
-            } else {
+            } else
+            {
 
-                for (JobInformation j : mDataOrig) {
-                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText)) {
+                for (JobInformation j : mDataOrig)
+                {
+                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
+                    {
                         jobs.add(j);
                         jA.add(j);
-                    }
-                    else
+                    } else
                     {
                         jA.add(j);
                     }

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +49,6 @@ public class PostAnAdvertFragment extends Fragment
     private EditText editTextAdName, editTextAdDescription, editTextJobSize, editTextJobType, editTextColDate, editTextColTime;
     private EditText editTextColAddL1, editTextColAddL2, editTextColAddTown, editTextColAddPostcode;
     private EditText editTextDelAddL1, editTextDelAddL2, editTextDelAddTown, editTextDelAddPostcode;
-
 
 
     private Button buttonPostAd;
@@ -125,13 +126,16 @@ public class PostAnAdvertFragment extends Fragment
         editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
 
 
-        buttonPostAd.setOnClickListener(new View.OnClickListener() {
+        buttonPostAd.setOnClickListener(new View.OnClickListener()
+        {
 
             @Override
             public void onClick(View v)
             {
                 saveJobInformation();
-                startActivity(new Intent(getActivity(), CrossRoads.class));
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content, new FindAJobFragment()).commit();
             }
         });
 
@@ -156,7 +160,7 @@ public class PostAnAdvertFragment extends Fragment
             mListener = (OnFragmentInteractionListener) context;
         } else
         {
-            
+
         }
     }
 

@@ -9,7 +9,8 @@ import java.io.Serializable;
  * Created by s6042911 on 15/02/18.
  */
 
-public class JobInformation implements Serializable {
+public class JobInformation implements Serializable
+{
 
     private String advertName, advertDescription, jobSize, jobType, posterID, jobID, courierID, collectionDate, collectionTime;
     private String colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode;
@@ -20,7 +21,8 @@ public class JobInformation implements Serializable {
 
     }
 
-    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, boolean jobActive) {
+    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, boolean jobActive)
+    {
         this.advertName = advertName;
         this.advertDescription = advertDescription;
         this.jobSize = jobSize;
@@ -40,83 +42,108 @@ public class JobInformation implements Serializable {
         this.jobActive = jobActive;
     }
 
-    public void setJobID(String jobID) {
+    public void setJobID(String jobID)
+    {
         this.jobID = jobID;
     }
 
-    public void setCourierID(String courierID) { this.courierID = courierID; }
+    public void setCourierID(String courierID)
+    {
+        this.courierID = courierID;
+    }
 
-    public String getCourierID() { return courierID; }
+    public String getCourierID()
+    {
+        return courierID;
+    }
 
-    public String getJobID() {
+    public String getJobID()
+    {
         return jobID;
     }
 
-    public String getAdvertName() {
+    public String getAdvertName()
+    {
         return advertName;
     }
 
-    public String getAdvertDescription() {
+    public String getAdvertDescription()
+    {
         return advertDescription;
     }
 
-    public String getJobSize() {
+    public String getJobSize()
+    {
         return jobSize;
     }
 
-    public String getJobType() {
+    public String getJobType()
+    {
         return jobType;
     }
 
-    public String getPosterID() {
+    public String getPosterID()
+    {
         return posterID;
     }
 
-    public String getCollectionDate() {
+    public String getCollectionDate()
+    {
         return collectionDate;
     }
 
-    public String getCollectionTime() {
+    public String getCollectionTime()
+    {
         return collectionTime;
     }
 
-    public String getColL1() {
+    public String getColL1()
+    {
         return colL1;
     }
 
-    public String getColL2() {
+    public String getColL2()
+    {
         return colL2;
     }
 
-    public String getColTown() {
+    public String getColTown()
+    {
         return colTown;
     }
 
-    public String getColPostcode() {
+    public String getColPostcode()
+    {
         return colPostcode;
     }
 
-    public String getDelL1() {
+    public String getDelL1()
+    {
         return delL1;
     }
 
-    public String getDelL2() {
+    public String getDelL2()
+    {
         return delL2;
     }
 
-    public String getDelTown() {
+    public String getDelTown()
+    {
         return delTown;
     }
 
-    public String getDelPostcode() {
+    public String getDelPostcode()
+    {
         return delPostcode;
     }
 
-    public boolean isJobActive() {
+    public boolean isJobActive()
+    {
         return jobActive;
     }
 
-    public String getWholeString() {
+    public String getWholeString()
+    {
         return advertName + advertDescription + jobSize + jobType + collectionDate + collectionTime + colL1 + colL2 + colTown + colPostcode + delL1 + delL2 + delTown + delPostcode;
     }
 }

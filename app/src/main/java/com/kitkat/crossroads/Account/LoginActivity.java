@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -75,17 +76,21 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        btnLogin.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
                 String email = inputEmail.getText().toString().trim();
                 final String password = inputPassword.getText().toString().trim();
 
-                if (TextUtils.isEmpty(email)) {
+                if (TextUtils.isEmpty(email))
+                {
                     customToastMessage("Please enter an email address!");
                     return;
                 }
 
-                if (TextUtils.isEmpty(password)) {
+                if (TextUtils.isEmpty(password))
+                {
                     customToastMessage("Please Enter A Password");
                     return;
                 }
@@ -93,32 +98,32 @@ public class LoginActivity extends AppCompatActivity
                 progressDialog.setMessage("Logging In Please Wait...");
                 progressDialog.show();
 
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NonNull Task<AuthResult> task)
+                    {
 
-                        if(!task.isSuccessful())
+                        if (!task.isSuccessful())
                         {
                             dismissDialog();
                             customToastMessage("Please Check Your Details And Try Again");
-                        }
-                        else
+                        } else
                         {
                             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                             dismissDialog();
-                            if (task.isSuccessful() && user.isEmailVerified() == true) {
+                            if (task.isSuccessful() && user.isEmailVerified() == true)
+                            {
                                 dismissDialog();
                                 startActivity(new Intent(getApplicationContext(), CrossRoads.class));
                                 finish();
-                            }
-                            else if (user.isEmailVerified() == false)
+                            } else if (user.isEmailVerified() == false)
                             {
                                 dismissDialog();
                                 customToastMessage("You Must Verify Your Email Address Before Logging In. Please Check Your Email.");
-                            }
-                            else
-                                {
+                            } else
+                            {
                                 dismissDialog();
                                 customToastMessage("Please Re-enter Your Details And Try Again");
                             }
