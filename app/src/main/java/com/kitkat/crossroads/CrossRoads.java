@@ -43,6 +43,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -229,9 +230,13 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 String name = dataSnapshot.child("fullName").getValue(String.class);
+                String profileImageUri = dataSnapshot.child("profileImage").getValue(String.class);
+
                 Log.d(TAG, "Name Is: " + name);
+                Log.d(TAG, "ProfileImage: " + profileImage);
 
                 navigationName.setText(name);
+                Picasso.get().load(profileImageUri).resize(175, 175).transform(new CircleTransformation()).into(profileImage);
             }
 
             @Override
