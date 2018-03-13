@@ -126,7 +126,14 @@ public class PostAnAdvertFragment extends Fragment
         editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
         editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
         editTextJobSize = (Spinner) view.findViewById(R.id.editTextJobSize);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        editTextJobSize.setAdapter(adapter);
         editTextJobType = (Spinner) view.findViewById(R.id.editTextJobType);
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        editTextJobType.setAdapter(adapter1);
         editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
         editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
         editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
@@ -137,22 +144,6 @@ public class PostAnAdvertFragment extends Fragment
         editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
         editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
         editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
-
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        editTextJobSize.setAdapter(adapter);
-
-
-
-        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        editTextJobType.setAdapter(adapter1);
-
 
         editTextColDate.setOnClickListener(new View.OnClickListener() {
             @Override

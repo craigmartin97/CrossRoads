@@ -103,7 +103,11 @@
                 android:layout_marginTop="10dp"
                 android:ellipsize="start"
                 android:ems="10"
+                android:editable="false"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:focusable="false"
+                android:longClickable="false"
                 android:hint="Collection Date"
                 android:inputType="textPostalAddress" />
 
