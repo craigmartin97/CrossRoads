@@ -56,47 +56,81 @@
             android:text="@string/Welcome_back_login"
             android:textColor="#ffffff" />
 
-        <EditText
-            android:id="@+id/editTextEmailLogin"
+        <LinearLayout
+            android:id="@+id/linearLayoutEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textView"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="19dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:ellipsize="start"
-            android:ems="10"
-            android:gravity="center_horizontal"
-            android:hint="@string/email_address"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="#808080" />
+            android:layout_below="@id/textView"
+            android:background="@drawable/edit_text_rounded"
+            android:orientation="horizontal"
+            android:layout_marginVertical="10dp">
 
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/email_icon" />
 
-        <EditText
-            android:id="@+id/editTextPasswordLogin"
+            <EditText
+                android:id="@+id/editTextEmailLogin"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textView"
+                android:background="#FFFFFF"
+                android:ellipsize="start"
+                android:ems="10"
+                android:gravity="center_horizontal"
+                android:inputType="textEmailAddress"
+                android:layout_margin="6dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="#808080"
+                 />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/editTextEmailLogin"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="25dp"
-            android:layout_marginTop="22dp"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:ellipsize="start"
-            android:ems="10"
-            android:gravity="center_horizontal"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="#808080" />
+            android:layout_below="@id/linearLayoutEmail"
+            android:background="@drawable/edit_text_rounded"
+            android:orientation="horizontal"
+            android:layout_marginVertical="10dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/lock_icon" />
+
+            <EditText
+                android:id="@+id/editTextPasswordLogin"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/linearLayoutEmail"
+                android:background="#FFFFFF"
+                android:ellipsize="start"
+                android:ems="10"
+                android:gravity="center_horizontal"
+                android:hint=""
+                android:inputType="textPassword"
+                android:layout_margin="6dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="#808080" />
+
+        </LinearLayout>
+
 
         <Button
+            android:layout_marginTop="10dp"
             android:id="@+id/buttonSignIn"
             android:layout_width="300sp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editTextPasswordLogin"
+            android:layout_below="@+id/linearLayoutPassword"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
             android:background="#2bbc9b"
