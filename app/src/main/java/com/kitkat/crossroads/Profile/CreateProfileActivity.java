@@ -142,51 +142,50 @@ public class CreateProfileActivity extends AppCompatActivity
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
 
-
-        if(TextUtils.isEmpty(fullName))
+        if (TextUtils.isEmpty(fullName))
         {
             customToastMessage("Please Enter Your Name");
             return;
         }
-        if(TextUtils.isEmpty(phoneNumber))
+        if (TextUtils.isEmpty(phoneNumber))
         {
             customToastMessage("Please Enter Your Phone Number");
             return;
         }
-        if(TextUtils.isEmpty(addressOne))
+        if (TextUtils.isEmpty(addressOne))
         {
             customToastMessage("Please Enter Your House Number & Street");
             return;
         }
-        if(TextUtils.isEmpty(addressTwo))
+        if (TextUtils.isEmpty(addressTwo))
         {
             customToastMessage("Please Enter Your Second Address Line");
             return;
         }
-        if(TextUtils.isEmpty(town))
+        if (TextUtils.isEmpty(town))
         {
             customToastMessage("Please Enter Your Town");
             return;
         }
-        if(TextUtils.isEmpty(postCode))
+        if (TextUtils.isEmpty(postCode))
         {
             customToastMessage("Please Enter Your PostCode");
             return;
         }
 
-        if(fullName.length() < 4)
+        if (fullName.length() < 4)
         {
             customToastMessage("Your Full Name Must Be Greater Than Four Characters");
             return;
         }
 
-        if(phoneNumber.length() != 11)
+        if (phoneNumber.length() != 11)
         {
             customToastMessage("Your Phone Number Must Be 11 Numbers Long");
             return;
         }
 
-        if(!postCode.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9 ]+$"))
+        if (!postCode.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9 ]+$"))
         {
             customToastMessage("Post Code Must Have Numbers and Letters");
             return;
@@ -200,8 +199,7 @@ public class CreateProfileActivity extends AppCompatActivity
                     addressTwo, town, postCode, advertiser, courier, null);
 
             setUserInformation(userInformation);
-        }
-        else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = false;
             courier = true;
@@ -209,8 +207,7 @@ public class CreateProfileActivity extends AppCompatActivity
                     addressTwo, town, postCode, advertiser, courier, null);
 
             setUserInformation(userInformation);
-        }
-        else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = true;

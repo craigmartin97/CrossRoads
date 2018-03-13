@@ -63,9 +63,10 @@ public class ViewProfileFragment extends Fragment
     private StorageReference storageReference;
 
     private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode;
-    private CheckBox advertiser, courier;
+    private CheckBox checkBoxAdvertiser, checkBoxCourier;
+    private boolean advertiser, courier;
+
     private ImageView profileImageUri;
-    private File tempFile;
 
     public ViewProfileFragment()
     {
@@ -121,8 +122,8 @@ public class ViewProfileFragment extends Fragment
         addressTwo = (TextView) view.findViewById(R.id.textViewAddressTwo);
         town = (TextView) view.findViewById(R.id.textViewTown);
         postCode = (TextView) view.findViewById(R.id.textViewPostCode);
-        advertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
-        courier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
+        checkBoxAdvertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
+        checkBoxCourier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
         profileImageUri = (ImageView) view.findViewById(R.id.profileImage);
 
         mAuthListener = new FirebaseAuth.AuthStateListener()
@@ -157,6 +158,8 @@ public class ViewProfileFragment extends Fragment
                 String usersTown = dataSnapshot.child("town").getValue(String.class);
                 String postalCode = dataSnapshot.child("postCode").getValue(String.class);
                 String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
                 Log.d(TAG, "Full Name: " + name);
                 Log.d(TAG, "Phone Number: " + number);
@@ -165,6 +168,8 @@ public class ViewProfileFragment extends Fragment
                 Log.d(TAG, "Town: " + usersTown);
                 Log.d(TAG, "PostCode: " + postalCode);
                 Log.d(TAG, "ProfileImage: " + profileImage);
+                Log.d(TAG, "Advertiser: " + advertiser);
+                Log.d(TAG, "Courier: " + courier);
 
                 fullName.setText(name);
                 phoneNumber.setText(number);
@@ -172,6 +177,23 @@ public class ViewProfileFragment extends Fragment
                 addressTwo.setText(address2);
                 town.setText(usersTown);
                 postCode.setText(postalCode);
+
+                if(advertiser == true && courier == false)
+                {
+                    checkBoxAdvertiser.setChecked(true);
+                    checkBoxCourier.setChecked(false);
+                }
+                else if(advertiser == false && courier == true)
+                {
+                    checkBoxAdvertiser.setChecked(false);
+                    checkBoxCourier.setChecked(true);
+                }
+                else if(advertiser == true && courier == true)
+                {
+                    checkBoxAdvertiser.setChecked(true);
+                    checkBoxCourier.setChecked(true);
+                }
+
                 Picasso.get().load(profileImage).rotate(90).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
             }
 

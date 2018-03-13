@@ -15,6 +15,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,13 +30,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
@@ -54,6 +60,7 @@ public class EditProfileFragment extends Fragment
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "EditProfileActivity";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -135,55 +142,62 @@ public class EditProfileFragment extends Fragment
         checkBoxAdvertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
         checkBoxCourier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
 
-//        textViewDateOfBirth.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Calendar calendar = Calendar.getInstance();
-//                int year = calendar.get(Calendar.YEAR);
-//                int month = calendar.get(Calendar.MONTH);
-//                int day = calendar.get(Calendar.DAY_OF_MONTH);
-//
-//                DatePickerDialog dialog = new DatePickerDialog(
-//                        getActivity(),
-//                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-//                        dateSetListener,
-//                        year,month,day);
-//                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//                dialog.show();
-//            }
-//        });
-//
-//        dateSetListener = new DatePickerDialog.OnDateSetListener() {
-//            @Override
-//            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//
-//                month = month + 1;
-//                Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
-//
-//                if(dayOfMonth >= 1 && dayOfMonth <= 9)
-//                {
-//                    String newDay = "0" + dayOfMonth;
-//                    textViewDateOfBirth.setText(newDay + "/" + month + "/" + year);
-//                }
-//
-//                if(month >= 1 && month <= 9)
-//                {
-//                    String newMonth = "0" + month;
-//                    textViewDateOfBirth.setText(dayOfMonth + "/" + newMonth + "/" + year);
-//                }
-//
-//                if(dayOfMonth >= 1 && dayOfMonth <= 9 && month >= 1 && month <= 9)
-//                {
-//                    String newDay = "0" + dayOfMonth;
-//                    String newMonth = "0" + month;
-//                    textViewDateOfBirth.setText(newDay + "/" + newMonth + "/" + year);
-//                }
-//                else
-//                {
-//                    textViewDateOfBirth.setText(dayOfMonth + "/" + month + "/" + year);
-//                }
-//            }
-//        };
+        myRef.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                String name = dataSnapshot.child("fullName").getValue(String.class);
+                String number = dataSnapshot.child("phoneNumber").getValue(String.class);
+                String address1 = dataSnapshot.child("addressOne").getValue(String.class);
+                String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
+                String usersTown = dataSnapshot.child("town").getValue(String.class);
+                String postalCode = dataSnapshot.child("postCode").getValue(String.class);
+                String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+
+                Log.d(TAG, "Full Name: " + name);
+                Log.d(TAG, "Phone Number: " + number);
+                Log.d(TAG, "Address Line One: " + address1);
+                Log.d(TAG, "Address Line Two: " + address2);
+                Log.d(TAG, "Town: " + usersTown);
+                Log.d(TAG, "PostCode: " + postalCode);
+                Log.d(TAG, "ProfileImage: " + profileImage);
+                Log.d(TAG, "Advertiser: " + advertiser);
+                Log.d(TAG, "Courier: " + courier);
+
+                fullName.setText(name);
+                phoneNumber.setText(number);
+                addressOne.setText(address1);
+                addressTwo.setText(address2);
+                town.setText(usersTown);
+                postCode.setText(postalCode);
+
+                if(advertiser == true && courier == false)
+                {
+                    checkBoxAdvertiser.setChecked(true);
+                    checkBoxCourier.setChecked(false);
+                }
+                else if(advertiser == false && courier == true)
+                {
+                    checkBoxAdvertiser.setChecked(false);
+                    checkBoxCourier.setChecked(true);
+                }
+                else if(advertiser == true && courier == true)
+                {
+                    checkBoxAdvertiser.setChecked(true);
+                    checkBoxCourier.setChecked(true);
+                }
+              //  Picasso.get().load(profileImage).rotate(90).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
 
         saveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
         uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadImage);
@@ -308,7 +322,56 @@ public class EditProfileFragment extends Fragment
         String addressOne = this.addressOne.getText().toString().trim();
         String addressTwo = this.addressTwo.getText().toString().trim();
         String town = this.town.getText().toString().trim();
-        String postCode = this.postCode.getText().toString().trim();
+        String postCode = this.postCode.getText().toString().trim().toUpperCase();
+
+        if(TextUtils.isEmpty(fullName))
+        {
+            customToastMessage("Please Enter Your Name");
+            return;
+        }
+        if(TextUtils.isEmpty(phoneNumber))
+        {
+            customToastMessage("Please Enter Your Phone Number");
+            return;
+        }
+        if(TextUtils.isEmpty(addressOne))
+        {
+            customToastMessage("Please Enter Your House Number & Street");
+            return;
+        }
+        if(TextUtils.isEmpty(addressTwo))
+        {
+            customToastMessage("Please Enter Your Second Address Line");
+            return;
+        }
+        if(TextUtils.isEmpty(town))
+        {
+            customToastMessage("Please Enter Your Town");
+            return;
+        }
+        if(TextUtils.isEmpty(postCode))
+        {
+            customToastMessage("Please Enter Your PostCode");
+            return;
+        }
+
+        if(fullName.length() < 4)
+        {
+            customToastMessage("Your Full Name Must Be Greater Than Four Characters");
+            return;
+        }
+
+        if(phoneNumber.length() != 11)
+        {
+            customToastMessage("Your Phone Number Must Be 11 Numbers Long");
+            return;
+        }
+
+        if(!postCode.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9 ]+$"))
+        {
+            customToastMessage("Post Code Must Have Numbers and Letters");
+            return;
+        }
 
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
@@ -336,7 +399,7 @@ public class EditProfileFragment extends Fragment
             setUserInformation(userInformation);
         }
 
-        Toast.makeText(getActivity(), "Information Saved...", Toast.LENGTH_SHORT).show();
+        customToastMessage("Information Saved...");
 
         android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -347,5 +410,10 @@ public class EditProfileFragment extends Fragment
     {
         FirebaseUser user = auth.getCurrentUser();
         myRef.child("Users").child(user.getUid()).setValue(userInformation);
+    }
+
+    private void customToastMessage(String message)
+    {
+        Toast.makeText(getActivity(),message, Toast.LENGTH_SHORT).show();
     }
 }
