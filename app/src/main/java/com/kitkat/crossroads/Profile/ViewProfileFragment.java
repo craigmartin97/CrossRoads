@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kitkat.crossroads.CircleTransformation;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 
@@ -163,7 +164,7 @@ public class ViewProfileFragment extends Fragment {
                 addressTwo.setText(address2);
                 town.setText(usersTown);
                 postCode.setText(postalCode);
-                Picasso.get().load(profileImage).into(profileImageUri);
+                Picasso.get().load(profileImage).resize(300,300).transform(new CircleTransformation()).into(profileImageUri);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
