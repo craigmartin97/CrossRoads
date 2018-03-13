@@ -1,7 +1,9 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -26,6 +28,9 @@ import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.CircleTransformation;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -60,6 +65,7 @@ public class ViewProfileFragment extends Fragment
     private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox advertiser, courier;
     private ImageView profileImageUri;
+    private File tempFile;
 
     public ViewProfileFragment()
     {
@@ -166,7 +172,7 @@ public class ViewProfileFragment extends Fragment
                 addressTwo.setText(address2);
                 town.setText(usersTown);
                 postCode.setText(postalCode);
-                Picasso.get().load(profileImage).resize(300, 300).transform(new CircleTransformation()).into(profileImageUri);
+                Picasso.get().load(profileImage).rotate(90).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
             }
 
             @Override
