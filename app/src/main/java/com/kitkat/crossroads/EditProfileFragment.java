@@ -69,7 +69,7 @@ public class EditProfileFragment extends Fragment
     private OnFragmentInteractionListener mListener;
     private DatePickerDialog.OnDateSetListener dateSetListener;
 
-    private FirebaseAuth auth;
+
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
     private boolean advertiser, courier;
@@ -79,6 +79,7 @@ public class EditProfileFragment extends Fragment
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
 
+    private FirebaseAuth auth;
     private DatabaseReference myRef;
     private FirebaseDatabase database;
     private StorageReference storageReference;
