@@ -46,6 +46,7 @@
     <string name="job_name">Job Name</string>
     <string name="from">From</string>
     <string name="my_adverts">My Adverts</string>
+    <string name="my_jobs">My Jobs</string>
     <string-array name="job_sizes">
         <item>Small</item>
         <item>Medium</item>

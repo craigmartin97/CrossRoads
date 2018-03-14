@@ -17,7 +17,7 @@
             android:fontFamily="@font/bebasneueregular"
             android:text="@string/my_adverts"
             android:textAlignment="center"
-            android:textSize="30dp"
+            android:textSize="30sp"
             tools:layout_editor_absoluteX="163dp"
             tools:layout_editor_absoluteY="16dp" />
 
@@ -36,7 +36,7 @@
                 android:text="@string/job_name"
                 android:textAlignment="center"
                 android:textColor="#FF000000"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:visibility="visible" />
 
             <TextView
@@ -50,7 +50,7 @@
                 android:text="@string/from"
                 android:textAlignment="center"
                 android:textColor="#FF000000"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:visibility="visible" />
 
             <TextView
@@ -64,7 +64,7 @@
                 android:text="@string/to"
                 android:textAlignment="center"
                 android:textColor="#FF000000"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:visibility="visible" />
 
 
@@ -74,6 +74,8 @@
             android:id="@+id/jobListView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+
 
     </LinearLayout>
 
