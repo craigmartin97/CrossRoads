@@ -10,9 +10,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,8 +68,10 @@ public class UploadImageFragment extends Fragment
     private StorageReference storageReference;
     private FirebaseUser user;
 
-    private ImageView profileImage;
     private Uri imageUri;
+    private StorageReference filePath;
+
+    private ImageView profileImage;
 
     private static final int GALLERY_INTENT = 2;
 
@@ -122,6 +127,11 @@ public class UploadImageFragment extends Fragment
         user = auth.getCurrentUser();
 
         // Setting buttons
+        database = FirebaseDatabase.getInstance();
+        myRef = FirebaseDatabase.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();;
+
         profileImage = (ImageView) view.findViewById(R.id.imageViewProfileImage);
         ImageView rotateLeft = (ImageView) view.findViewById(R.id.imageRotateLeft);
         ImageView rotateRight = (ImageView) view.findViewById(R.id.imageRotateRight);
@@ -205,11 +215,11 @@ public class UploadImageFragment extends Fragment
         return view;
     }
 
-    // Get image data and display on page
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        final FirebaseUser user = auth.getCurrentUser();
 
         if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
@@ -219,10 +229,50 @@ public class UploadImageFragment extends Fragment
 
             imageUri = data.getData();
             Picasso.get().load(imageUri).into(profileImage);
-
+            final Uri uri = data.getData();
+            Picasso.get().load(uri).into(profileImage);
             progressDialog.dismiss();
         }
     }
+
+    //    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data)
+//    {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        final FirebaseUser user = auth.getCurrentUser();
+//
+//        if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
+//        {
+//            progressDialog.setMessage("Uploading Image Please Wait...");
+//            progressDialog.show();
+//
+//            final Uri uri = data.getData();
+//            final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
+//            this.filePath = filePath;
+//            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+//            {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+//                {
+//                    progressDialog.dismiss();
+//                    Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+//                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+//                    myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
+//                }
+//            }).addOnFailureListener(new OnFailureListener()
+//            {
+//                @Override
+//                public void onFailure(@NonNull Exception e)
+//                {
+//                    progressDialog.dismiss();
+//                    Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        }
+//    }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri)
