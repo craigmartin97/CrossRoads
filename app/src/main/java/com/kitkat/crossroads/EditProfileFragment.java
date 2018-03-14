@@ -42,6 +42,7 @@ import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
@@ -239,17 +240,18 @@ public class EditProfileFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
         final FirebaseUser user = auth.getCurrentUser();
 
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
+
             progressDialog.setMessage("Uploading Image Please Wait...");
             progressDialog.show();
 
             final Uri uri = data.getData();
             final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
             this.filePath = filePath;
+
             filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
                 @Override
