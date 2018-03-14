@@ -310,6 +310,16 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                 });
             }
         });
+
+        profileImage.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).commit();
+                onBackPressed();
+            }
+        });
     }
 
     private void customToastMessage(String message)
