@@ -3,8 +3,12 @@ package com.kitkat.crossroads;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,6 +28,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -53,9 +59,10 @@ public class UploadImageFragment extends Fragment
     private DatabaseReference myRef;
     private FirebaseDatabase database;
     private StorageReference storageReference;
-    private StorageReference filePath;
+    private FirebaseUser user;
 
     private ImageView profileImage;
+    private Uri imageUri;
 
     private static final int GALLERY_INTENT = 2;
 
@@ -103,36 +110,102 @@ public class UploadImageFragment extends Fragment
 
         View view = inflater.inflate(R.layout.fragment_upload_image, container, false);
 
+        // Creating firebase links etc
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();;
+        storageReference = FirebaseStorage.getInstance().getReference();
+        user = auth.getCurrentUser();
 
+        // Setting buttons
         profileImage = (ImageView) view.findViewById(R.id.imageViewProfileImage);
         ImageView rotateLeft = (ImageView) view.findViewById(R.id.imageRotateLeft);
         ImageView rotateRight = (ImageView) view.findViewById(R.id.imageRotateRight);
         Button uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadProfileImage);
         Button saveProfileImage = (Button) view.findViewById(R.id.buttonSaveProfileImage);
 
+        // Rotate Left is a button
+        rotateLeft.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(profileImage != null)
+                {
+                    // Rotate image 90
+                    Picasso.get().load(imageUri).rotate(90).into(profileImage);
+                }
+            }
+        });
+
+        // Rotate Right is a button
+        rotateRight.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(profileImage != null)
+                {
+                    // Rotate image -90
+                    Picasso.get().load(imageUri).rotate(-90).into(profileImage);
+                }
+            }
+        });
+
         uploadProfileImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                // Send user to gallery
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, GALLERY_INTENT);
             }
         });
+
+        // Save image to storage area
+        saveProfileImage.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                progressDialog.setMessage("Uploading Image Please Wait...");
+                progressDialog.show();
+
+                final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(imageUri.getLastPathSegment());
+                filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                    {
+                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                        Uri downloadUri = taskSnapshot.getDownloadUrl();
+
+                        // Save image uri in the Firebase database under the usersID
+                        myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
+                        progressDialog.dismiss();
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
         return view;
     }
 
+    // Get image data and display on page
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
-        final FirebaseUser user = auth.getCurrentUser();
 
         if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
@@ -140,51 +213,12 @@ public class UploadImageFragment extends Fragment
             progressDialog.setMessage("Displaying Image...");
             progressDialog.show();
 
-            final Uri uri = data.getData();
-            Picasso.get().load(uri).into(profileImage);
+            imageUri = data.getData();
+            Picasso.get().load(imageUri).into(profileImage);
 
             progressDialog.dismiss();
         }
     }
-
-    //    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data)
-//    {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        final FirebaseUser user = auth.getCurrentUser();
-//
-//        if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
-//        {
-//            progressDialog.setMessage("Uploading Image Please Wait...");
-//            progressDialog.show();
-//
-//            final Uri uri = data.getData();
-//            final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
-//            this.filePath = filePath;
-//            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-//            {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-//                {
-//                    progressDialog.dismiss();
-//                    Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
-//                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-//                    myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
-//                }
-//            }).addOnFailureListener(new OnFailureListener()
-//            {
-//                @Override
-//                public void onFailure(@NonNull Exception e)
-//                {
-//                    progressDialog.dismiss();
-//                    Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//        }
-//    }
-
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri)
