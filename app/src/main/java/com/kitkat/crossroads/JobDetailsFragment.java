@@ -147,7 +147,7 @@ public class JobDetailsFragment extends Fragment
 
                     saveBidInformation();
                 }
-            }
+             }
         });
 
 
