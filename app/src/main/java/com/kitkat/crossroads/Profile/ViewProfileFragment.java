@@ -194,7 +194,7 @@ public class ViewProfileFragment extends Fragment
                     checkBoxCourier.setChecked(true);
                 }
 
-                Picasso.get().load(profileImage).rotate(90).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
+                Picasso.get().load(profileImage).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
             }
 
             @Override
