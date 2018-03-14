@@ -6,6 +6,7 @@
 
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/advertScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF">
@@ -101,15 +102,14 @@
                 android:layout_below="@+id/editTextJobType"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:clickable="true"
                 android:ellipsize="start"
                 android:ems="10"
-                android:editable="false"
-                android:clickable="true"
-                android:gravity="center_horizontal"
                 android:focusable="false"
-                android:longClickable="false"
+                android:gravity="center_horizontal"
                 android:hint="Collection Date"
-                android:inputType="textPostalAddress" />
+                android:inputType="date"
+                android:longClickable="false" />
 
             <EditText
                 android:id="@+id/editTextJobColTime"
@@ -118,11 +118,13 @@
                 android:layout_below="@+id/editTextJobColDate"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:clickable="true"
                 android:ellipsize="start"
                 android:ems="10"
+                android:focusable="false"
                 android:gravity="center_horizontal"
                 android:hint="Collection Time"
-                android:inputType="textPostalAddress" />
+                android:inputType="time" />
 
             <TextView
                 android:id="@+id/textViewCollection"
