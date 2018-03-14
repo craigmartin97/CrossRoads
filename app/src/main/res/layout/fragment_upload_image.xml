@@ -6,6 +6,7 @@
     tools:context="com.kitkat.crossroads.UploadImageFragment">
 
     <RelativeLayout
+<<<<<<< HEAD
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -59,13 +60,4 @@
             android:text="Save Profile Image" />
 
     </RelativeLayout>
-
-=======
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
->>>>>>> Create Image Upload Fragment - Craig
-
 </FrameLayout>
