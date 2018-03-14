@@ -1,17 +1,16 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.kitkat.crossroads.FindAJobFragment">
+
+
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <requestFocus />>
+        <requestFocus />
 
         <TextView
             android:id="@+id/textView5"
@@ -21,9 +20,9 @@
             android:fontFamily="@font/bebasneueregular"
 
 
-            android:text="My Jobs"
+            android:text="@string/my_jobs"
             android:textAlignment="center"
-            android:textSize="30dp"
+            android:textSize="30sp"
             tools:layout_editor_absoluteX="163dp"
             tools:layout_editor_absoluteY="16dp" />
 
@@ -43,4 +42,3 @@
 
     </LinearLayout>
 
-</FrameLayout>
