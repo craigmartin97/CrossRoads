@@ -267,7 +267,7 @@ public class MyAdvertsFragment extends Fragment
             MyAdvertsFragment.MyCustomAdapter.GroupViewHolder holder;
             if (convertView == null)
             {
-                convertView = mInflater.inflate(R.layout.job_info_list, null);
+                convertView = mInflater.inflate(R.layout.job_info_list_my_adverts, null);
                 holder = new MyAdvertsFragment.MyCustomAdapter.GroupViewHolder();
                 holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
                 holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
