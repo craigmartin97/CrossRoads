@@ -273,6 +273,7 @@ public class MyAdvertsFragment extends Fragment
                 holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
                 holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
+                holder.viewBidsButton = (Button) convertView.findViewById(R.id.viewBidsButton);
                 convertView.setTag(holder);
             } else
             {
@@ -291,15 +292,22 @@ public class MyAdvertsFragment extends Fragment
 //                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
 //                    intent.putExtra("JobDetails", mData.get(position));
 //                    startActivity(intent);
-//
-//                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("Job", mData.get(position));
-//                    bundle.putString("name", "Hello");
-//                    bundle.putString("address", "123345");
-//                    jobDetailsFragment.setArguments(bundle);
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
+
+                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("Job", mData.get(position));
+                    jobDetailsFragment.setArguments(bundle);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
+                }
+            });
+            holder.viewBidsButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content, new JobBidsFragment()).commit();
                 }
             });
             return convertView;
@@ -324,6 +332,7 @@ public class MyAdvertsFragment extends Fragment
             public TextView textViewFrom;
             public TextView textViewTo;
             public Button detailsButton;
+            public Button viewBidsButton;
         }
     }
 }
