@@ -114,11 +114,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View Details"
-            android:background="#2bbc9b"
-            android:textColor="#FFFFFF"
-            android:textSize="15dp" />
+            android:textSize="10dp" />
 
-
+        <Button
+            android:id="@+id/viewBidsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Bids"
+            android:textSize="10dp" />
 
     </LinearLayout>
 </RelativeLayout>

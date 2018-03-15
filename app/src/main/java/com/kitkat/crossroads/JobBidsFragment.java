@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.JobInformation;
 
 import java.util.ArrayList;
@@ -51,16 +53,17 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private DatabaseReference databaseReference;
     private FirebaseDatabase database;
     private FirebaseAuth.AuthStateListener authStateListener;
+
     private DataSnapshot bidReference;
     private DataSnapshot jobReference;
+    private DataSnapshot usersReference;
 
     private ArrayList<String> userBidId = new ArrayList<String>();
     private ArrayList<String> userJobId = new ArrayList<String>();
 
     private JobBidsFragment.MyCustomAdapter mAdapter;
 
-    private ArrayList<JobInformation> jobList = new ArrayList<>();
-
+    private ArrayList<BidInformation> jobList = new ArrayList<>();
 
     private ListView jobListView;
 
@@ -120,7 +123,27 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
+                bidReference = dataSnapshot.child("Bids");
+                jobReference = dataSnapshot.child("Jobs");
+                usersReference = dataSnapshot.child("Users");
 
+                Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
+                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+                Iterable<DataSnapshot> userListSnapShot = usersReference.getChildren();
+
+                mAdapter = new JobBidsFragment.MyCustomAdapter();
+
+                final ArrayList<BidInformation> bidsListArray = new ArrayList<BidInformation>();
+
+                for(DataSnapshot ds : bidListSnapShot)
+                {
+                    BidInformation b = ds.getValue(BidInformation.class);
+                    b.setUserID(b.getUserID());
+                    jobList.add(b);
+                }
+
+                mAdapter.addArray(jobList);
+                jobListView.setAdapter(mAdapter);
             }
 
             @Override
@@ -198,8 +221,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     public class MyCustomAdapter extends BaseAdapter
     {
 
-        private ArrayList<JobInformation> mData = new ArrayList();
-        private ArrayList<JobInformation> mDataOrig = new ArrayList();
+        private ArrayList<BidInformation> mData = new ArrayList();
+        private ArrayList<BidInformation> mDataOrig = new ArrayList();
 
         private LayoutInflater mInflater;
 
@@ -212,14 +235,14 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             }
         }
 
-        public void addItem(final JobInformation item)
+        public void addItem(final BidInformation item)
         {
             mData.add(item);
             mDataOrig.add(item);
         }
 
 
-        public void addArray(final ArrayList<JobInformation> j)
+        public void addArray(final ArrayList<BidInformation> j)
         {
             mData = j;
             mDataOrig = j;
@@ -281,9 +304,9 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 holder = (JobBidsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-            holder.textViewName.setText(mData.get(position).getAdvertName());
-            holder.textViewFrom.setText(mData.get(position).getColL1());
-            holder.textViewTo.setText(mData.get(position).getDelL1());
+            holder.textViewName.setText(mData.get(position).getUserID());
+            holder.textViewFrom.setText(mData.get(position).getUserBid());
+            // holder.textViewTo.setText(mData.get(position).getDelL1());
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
 
@@ -325,8 +348,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         public void filter(String charText)
         {
 
-            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
-            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
+            ArrayList<BidInformation> jobs = new ArrayList<BidInformation>();
+            ArrayList<BidInformation> jA = new ArrayList<BidInformation>();
             charText = charText.toLowerCase(Locale.getDefault());
 
             if (charText.length() == 0)
@@ -335,7 +358,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             } else
             {
 
-                for (JobInformation j : mDataOrig)
+                for (BidInformation j : mDataOrig)
                 {
                     if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
                     {
