@@ -58,6 +58,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private DataSnapshot jobReference;
     private DataSnapshot usersReference;
 
+    private String jobId;
+
     private ArrayList<String> userBidId = new ArrayList<String>();
     private ArrayList<String> userJobId = new ArrayList<String>();
 
@@ -111,6 +113,10 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_job_bids, container, false);
+        Bundle bundle = this.getArguments();
+        final JobInformation jobInformation =  (JobInformation) bundle.getSerializable("JobId");
+        jobId = jobInformation.getJobID();
+
 
         jobListView = view.findViewById(R.id.jobListView1);
 
@@ -133,13 +139,28 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
                 mAdapter = new JobBidsFragment.MyCustomAdapter();
 
-                final ArrayList<BidInformation> bidsListArray = new ArrayList<BidInformation>();
-
                 for(DataSnapshot ds : bidListSnapShot)
                 {
-                    BidInformation b = ds.getValue(BidInformation.class);
-                    b.setUserID(b.getUserID());
-                    jobList.add(b);
+                    Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
+
+                    if(jobId.equals(ds.getKey()))
+                    {
+                        for(DataSnapshot ds1 : bidsSnapShot)
+                        {
+                            BidInformation bid = ds1.getValue(BidInformation.class);
+                            bid.getUserBid();
+
+                            if(jobId.equals(ds.getKey()))
+                            {
+                                jobList.add(bid);
+                            }
+                        }
+                    }
+                }
+
+                for(DataSnapshot js : jobListSnapShot)
+                {
+                    JobInformation j = js.getValue(JobInformation.class);
                 }
 
                 mAdapter.addArray(jobList);
@@ -304,7 +325,6 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 holder = (JobBidsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-            holder.textViewName.setText(mData.get(position).getUserID());
             holder.textViewFrom.setText(mData.get(position).getUserBid());
             // holder.textViewTo.setText(mData.get(position).getDelL1());
             holder.detailsButton.setOnClickListener(new View.OnClickListener()

@@ -289,9 +289,7 @@ public class MyAdvertsFragment extends Fragment
                 @Override
                 public void onClick(View v)
                 {
-//                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
-//                    intent.putExtra("JobDetails", mData.get(position));
-//                    startActivity(intent);
+
 
                     JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
                     Bundle bundle = new Bundle();
@@ -306,8 +304,13 @@ public class MyAdvertsFragment extends Fragment
                 @Override
                 public void onClick(View v)
                 {
+
+                    JobBidsFragment jobBidsFragment = new JobBidsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("JobId", mData.get(position));
+                    jobBidsFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, new JobBidsFragment()).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).commit();
                 }
             });
             return convertView;
