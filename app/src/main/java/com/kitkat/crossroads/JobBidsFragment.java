@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference myRef;
     private FirebaseDatabase database;
     private FirebaseAuth.AuthStateListener authStateListener;
 
@@ -59,9 +62,9 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private DataSnapshot usersReference;
 
     private String jobId;
-
-    private ArrayList<String> userBidId = new ArrayList<String>();
-    private ArrayList<String> userJobId = new ArrayList<String>();
+    private String usersId;
+    private static final String TAG = "JobsBidsFragment";
+    private String name;
 
     private JobBidsFragment.MyCustomAdapter mAdapter;
 
@@ -123,6 +126,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference().child("Users");
 
         databaseReference.addValueEventListener(new ValueEventListener()
         {
@@ -149,18 +154,45 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                         {
                             BidInformation bid = ds1.getValue(BidInformation.class);
                             bid.getUserBid();
+                            usersId = bid.getUserID();
+//                            myRef = myRef.getRef().child(usersId);
+//
+//                            myRef.addValueEventListener(new ValueEventListener()
+//                            {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot)
+//                                {
+//                                    name = dataSnapshot.child("fullName").getValue(String.class);
+////                                    String number = dataSnapshot.child("phoneNumber").getValue(String.class);
+////                                    String address1 = dataSnapshot.child("addressOne").getValue(String.class);
+////                                    String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
+////                                    String usersTown = dataSnapshot.child("town").getValue(String.class);
+////                                    String postalCode = dataSnapshot.child("postCode").getValue(String.class);
+////                                    String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+////                                    //boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+////                                    //boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+//
+//                                    Log.d(TAG, "Full Name: " + name);
+////                                    Log.d(TAG, "Phone Number: " + number);
+////                                    Log.d(TAG, "Address Line One: " + address1);
+////                                    Log.d(TAG, "Address Line Two: " + address2);
+////                                    Log.d(TAG, "Town: " + usersTown);
+////                                    Log.d(TAG, "PostCode: " + postalCode);
+////                                    Log.d(TAG, "ProfileImage: " + profileImage);
+//                                    //Log.d(TAG, "Advertiser: " + advertiser);
+//                                    //Log.d(TAG, "Courier: " + courier);
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError)
+//                                {
+//
+//                                }
+//                            });
 
-                            if(jobId.equals(ds.getKey()))
-                            {
-                                jobList.add(bid);
-                            }
+                            jobList.add(bid);
                         }
                     }
-                }
-
-                for(DataSnapshot js : jobListSnapShot)
-                {
-                    JobInformation j = js.getValue(JobInformation.class);
                 }
 
                 mAdapter.addArray(jobList);
@@ -313,11 +345,11 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             JobBidsFragment.MyCustomAdapter.GroupViewHolder holder;
             if (convertView == null)
             {
-                convertView = mInflater.inflate(R.layout.job_info_list, null);
+                convertView = mInflater.inflate(R.layout.job_info_list_bid, null);
                 holder = new JobBidsFragment.MyCustomAdapter.GroupViewHolder();
                 holder.textViewName = convertView.findViewById(R.id.textName);
-                holder.textViewFrom = convertView.findViewById(R.id.textFrom);
-                holder.textViewTo = convertView.findViewById(R.id.textTo);
+                holder.textViewBid = convertView.findViewById(R.id.textBid);
+                holder.textViewRating = convertView.findViewById(R.id.textRating);
                 holder.detailsButton = convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
             } else
@@ -325,8 +357,9 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 holder = (JobBidsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-            holder.textViewFrom.setText(mData.get(position).getUserBid());
-            // holder.textViewTo.setText(mData.get(position).getDelL1());
+            holder.textViewName.setText(name);
+            holder.textViewBid.setText(mData.get(position).getUserBid());
+            holder.textViewRating.setText(mData.get(position).getUserID());
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
 
@@ -360,8 +393,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         public class GroupViewHolder
         {
             public TextView textViewName;
-            public TextView textViewFrom;
-            public TextView textViewTo;
+            public TextView textViewBid;
+            public TextView textViewRating;
             public Button detailsButton;
         }
 

@@ -309,6 +309,7 @@ public class MyAdvertsFragment extends Fragment
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("JobId", mData.get(position));
                     jobBidsFragment.setArguments(bundle);
+
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).commit();
                 }
