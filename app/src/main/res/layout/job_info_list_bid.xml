@@ -29,30 +29,30 @@
                     android:layout_height="50dp"
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
-                    android:text=" Job:"
+                    android:text=" Name:"
                     android:textAlignment="viewStart"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
 
                 <TextView
-                    android:id="@+id/viewFrom"
+                    android:id="@+id/viewBid"
                     android:layout_width="110dp"
                     android:layout_height="50dp"
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
-                    android:text=" Collection From:"
+                    android:text=" Bid:"
                     android:textAlignment="viewStart"
 
                     android:textColor="#FF000000"
                     android:visibility="visible" />
 
                 <TextView
-                    android:id="@+id/viewTo"
+                    android:id="@+id/viewRating"
                     android:layout_width="110dp"
                     android:layout_height="50dp"
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
-                    android:text=" Delivery To:"
+                    android:text=" Rating:"
                     android:textAlignment="viewStart"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
@@ -80,7 +80,7 @@
 
 
                 <TextView
-                    android:id="@+id/textFrom"
+                    android:id="@+id/textBid"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
@@ -93,7 +93,7 @@
                     android:visibility="visible" />
 
                 <TextView
-                    android:id="@+id/textTo"
+                    android:id="@+id/textRating"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
@@ -114,11 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View Details"
-            android:background="#2bbc9b"
-            android:textColor="#FFFFFF"
-            android:textSize="15dp" />
-
-
+            android:textSize="10dp" />
 
 
 

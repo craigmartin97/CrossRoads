@@ -59,6 +59,4 @@
             android:text="Save Profile Image" />
 
     </RelativeLayout>
-
-
 </FrameLayout>
