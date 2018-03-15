@@ -2,11 +2,14 @@ package com.kitkat.crossroads;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -14,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +79,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private SearchView jobSearch;
 
+    private TabHost tabHost;
 
     public MyJobsFragment()
     {
@@ -118,6 +123,59 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                              Bundle savedInstanceState)
     {
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
+
+
+        final TabHost host = (TabHost) view.findViewById(R.id.tabHost);
+        host.setup();
+
+
+
+        //Tab 1
+        TabHost.TabSpec spec = host.newTabSpec("Completed Jobs");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("Completed");
+        host.addTab(spec);
+
+        //Tab 2
+        spec = host.newTabSpec("Active");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Active");
+        host.addTab(spec);
+
+        //Tab 3
+        spec = host.newTabSpec("Bid On");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("Bid On");
+        host.addTab(spec);
+
+        for(int i=0;i<host.getTabWidget().getChildCount();i++)
+        {
+            TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(Color.parseColor("#FFFFFF"));
+        }
+
+        host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
+        TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
+        tv.setTextColor(Color.parseColor("#2bbc9b"));
+
+        host.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+
+            @Override
+            public void onTabChanged(String tabId) {
+
+                for (int i = 0; i < host.getTabWidget().getChildCount(); i++) {
+                    host.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2bbc9b")); // unselected
+                    TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
+                    tv.setTextColor(Color.parseColor("#FFFFFF"));
+                }
+
+                host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
+                TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
+                tv.setTextColor(Color.parseColor("#2bbc9b"));
+
+            }
+        });
+
 
         jobListView = view.findViewById(R.id.jobListView1);
 
@@ -234,6 +292,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
 
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -347,12 +407,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 public void onClick(View v)
                 {
 
-                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
+                    BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("Job", mData.get(position));
-                    jobDetailsFragment.setArguments(bundle);
+                    bidDetailsFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).commit();
                 }
             });
             return convertView;
@@ -410,4 +470,23 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             notifyDataSetChanged();
         }
     }
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

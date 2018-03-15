@@ -114,7 +114,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="View Details"
-            android:textSize="10dp" />
+            android:background="#2bbc9b"
+            android:textColor="#FFFFFF"
+            android:textSize="15dp" />
 
     </LinearLayout>
 </RelativeLayout>
