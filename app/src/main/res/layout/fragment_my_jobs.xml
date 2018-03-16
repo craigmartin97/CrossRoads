@@ -1,45 +1,104 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.kitkat.crossroads.FindAJobFragment">
-
-    <LinearLayout
+        <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:focusable="true"
-        android:focusableInTouchMode="true">
-        <requestFocus/>>
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <requestFocus />
 
-            android:text="My Jobs"
+                <TabHost
+                    android:id="@+id/tabHost"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true">
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                        <TabWidget
+                            android:id="@android:id/tabs"
+                            android:layout_width="fill_parent"
+                            android:layout_height="50dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="#2bbc9b">
+                        </TabWidget>
+
+                        <FrameLayout
+                            android:id="@android:id/tabcontent"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginBottom="50dp">
+
+                        <LinearLayout
+                            android:id="@+id/tab1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#FFFFFF"
+                            android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="This is tab 1" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tab2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#FFFFFF"
+                            android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="This is tab 2" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tab3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#FFFFFF"
+                            android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/textView5"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+
+                                    android:fontFamily="@font/bebasneueregular"
 
 
-            android:fontFamily="@font/bebasneueregular"
-            android:textSize="30dp"
-            android:textAlignment="center"
-            tools:layout_editor_absoluteX="163dp"
-            tools:layout_editor_absoluteY="16dp"/>
+                                    android:text="@string/my_bids"
+                                    android:textAlignment="center"
+                                    android:textSize="30sp"
+                                    tools:layout_editor_absoluteX="163dp"
+                                    tools:layout_editor_absoluteY="16dp" />
 
-        <SearchView
-            android:id="@+id/searchViewJob"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:queryHint="Name, Location, Size, etc."
-            android:iconifiedByDefault="false"/>
+                                <SearchView
+                                    android:id="@+id/searchViewJob"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:iconifiedByDefault="false"
+                                    android:queryHint="Name, Location, Size, etc." />
 
-        <requestFocus/>
+                                <requestFocus />
 
-        <ListView
-            android:id="@+id/jobListView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+                                <ListView
+                                    android:id="@+id/jobListView1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent" />
+                        </LinearLayout>
+                        </FrameLayout>
+                        </RelativeLayout>
+                </TabHost>
+        </LinearLayout>
 
-    </LinearLayout>
-
-</FrameLayout>

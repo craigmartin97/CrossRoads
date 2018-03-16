@@ -1,23 +1,21 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Checkable;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +25,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kitkat.crossroads.CircleTransformation;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -38,7 +41,8 @@ import com.kitkat.crossroads.R;
  * Use the {@link ViewProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ViewProfileFragment extends Fragment {
+public class ViewProfileFragment extends Fragment
+{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -56,11 +60,13 @@ public class ViewProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
-    private String userID;
     private StorageReference storageReference;
 
     private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode;
-    private CheckBox advertiser, courier;
+    private CheckBox checkBoxAdvertiser, checkBoxCourier;
+    private boolean advertiser, courier;
+
+    private ImageView profileImageUri;
 
     public ViewProfileFragment()
     {
@@ -76,7 +82,8 @@ public class ViewProfileFragment extends Fragment {
      * @return A new instance of fragment ViewProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ViewProfileFragment newInstance(String param1, String param2) {
+    public static ViewProfileFragment newInstance(String param1, String param2)
+    {
         ViewProfileFragment fragment = new ViewProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -86,9 +93,11 @@ public class ViewProfileFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null)
+        {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -96,7 +105,8 @@ public class ViewProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
 
         View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
 
@@ -106,34 +116,29 @@ public class ViewProfileFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.profileImage);
         fullName = (TextView) view.findViewById(R.id.textViewName);
         phoneNumber = (TextView) view.findViewById(R.id.textViewPhoneNumber);
         addressOne = (TextView) view.findViewById(R.id.textViewAddressOne);
         addressTwo = (TextView) view.findViewById(R.id.textViewAddressTwo);
         town = (TextView) view.findViewById(R.id.textViewTown);
         postCode = (TextView) view.findViewById(R.id.textViewPostCode);
-        advertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
-        courier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
+        checkBoxAdvertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
+        checkBoxCourier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
+        profileImageUri = (ImageView) view.findViewById(R.id.profileImage);
 
-        Bundle bundle = getArguments();
-        if(bundle != null)
+        mAuthListener = new FirebaseAuth.AuthStateListener()
         {
-            Bitmap bitmapImage = bundle.getParcelable("ProfileImage");
-            RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmapImage);
-            roundedBitmapDrawable.setCircular(true);
-            imageView.setImageDrawable(roundedBitmapDrawable);
-        }
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
+            {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                if (user != null)
+                {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     toastMessage("Successfully signed in with: " + user.getEmail());
-                } else {
+                } else
+                {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out.");
@@ -141,7 +146,8 @@ public class ViewProfileFragment extends Fragment {
             }
         };
 
-        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+        {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
@@ -151,6 +157,9 @@ public class ViewProfileFragment extends Fragment {
                 String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
                 String usersTown = dataSnapshot.child("town").getValue(String.class);
                 String postalCode = dataSnapshot.child("postCode").getValue(String.class);
+                String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
                 Log.d(TAG, "Full Name: " + name);
                 Log.d(TAG, "Phone Number: " + number);
@@ -158,6 +167,9 @@ public class ViewProfileFragment extends Fragment {
                 Log.d(TAG, "Address Line Two: " + address2);
                 Log.d(TAG, "Town: " + usersTown);
                 Log.d(TAG, "PostCode: " + postalCode);
+                Log.d(TAG, "ProfileImage: " + profileImage);
+                Log.d(TAG, "Advertiser: " + advertiser);
+                Log.d(TAG, "Courier: " + courier);
 
                 fullName.setText(name);
                 phoneNumber.setText(number);
@@ -165,9 +177,29 @@ public class ViewProfileFragment extends Fragment {
                 addressTwo.setText(address2);
                 town.setText(usersTown);
                 postCode.setText(postalCode);
+
+                if(advertiser == true && courier == false)
+                {
+                    checkBoxAdvertiser.setChecked(true);
+                    checkBoxCourier.setChecked(false);
+                }
+                else if(advertiser == false && courier == true)
+                {
+                    checkBoxAdvertiser.setChecked(false);
+                    checkBoxCourier.setChecked(true);
+                }
+                else if(advertiser == true && courier == true)
+                {
+                    checkBoxAdvertiser.setChecked(true);
+                    checkBoxCourier.setChecked(true);
+                }
+
+                Picasso.get().load(profileImage).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
             }
+
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError)
+            {
 
             }
         });
@@ -176,24 +208,30 @@ public class ViewProfileFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
+    public void onButtonPressed(Uri uri)
+    {
+        if (mListener != null)
+        {
             mListener.onFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnFragmentInteractionListener)
+        {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
+        } else
+        {
             Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT);
         }
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         mListener = null;
     }
@@ -208,7 +246,8 @@ public class ViewProfileFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener
+    {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }

@@ -4,13 +4,12 @@
     android:layout_height="match_parent"
     tools:context="com.kitkat.crossroads.Profile.ViewProfileFragment">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/layout">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -19,6 +18,7 @@
             android:background="@drawable/gradient_background"
             android:orientation="vertical">
 
+
             <ImageView
                 android:id="@+id/profileImage"
                 android:layout_width="wrap_content"
@@ -26,8 +26,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="35dp"
                 android:adjustViewBounds="false"
-                android:contentDescription="@string/Profile_Photo_of_user"
-                android:src="@drawable/selfie" />
+                android:contentDescription="@string/Profile_Photo_of_user" />
 
             <TextView
                 android:id="@+id/textViewName"
@@ -57,8 +56,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="130dp"
                     android:paddingTop="10dp"
-                    android:text="Phone Number"
-                    />
+                    android:text="Phone Number" />
 
                 <TextView
                     android:id="@+id/textViewPhoneNumber"
@@ -71,37 +69,37 @@
 
                 <TextView
                     android:id="@+id/HeadingForAddressOne"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="130dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="130dp"
+                    android:paddingTop="10dp"
                     android:text="Address Line One" />
 
                 <TextView
                     android:id="@+id/textViewAddressOne"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="130dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="30dp"
-                    android:text="viewAddressOne"/>
+                    android:paddingLeft="130dp"
+                    android:paddingTop="10dp"
+                    android:text="viewAddressOne" />
 
                 <TextView
                     android:id="@+id/HeadingForAddressTwo"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="130dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Address Line Two"/>
+                    android:paddingLeft="130dp"
+                    android:paddingTop="10dp"
+                    android:text="Address Line Two" />
 
                 <TextView
                     android:id="@+id/textViewAddressTwo"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="130dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="30dp"
-                    android:text="viewAddressTwo"/>
+                    android:paddingLeft="130dp"
+                    android:paddingTop="10dp"
+                    android:text="viewAddressTwo" />
 
                 <TextView
                     android:id="@+id/HeadingForTown"
@@ -113,73 +111,71 @@
 
                 <TextView
                     android:id="@+id/textViewTown"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="130dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="30dp"
-                    android:text="viewTown"/>
+                    android:paddingLeft="130dp"
+                    android:paddingTop="10dp"
+                    android:text="viewTown" />
 
                 <TextView
                     android:id="@+id/HeadingForPostCode"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="130dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Post Code"/>
+                    android:paddingLeft="130dp"
+                    android:paddingTop="10dp"
+                    android:text="Post Code" />
 
                 <TextView
                     android:id="@+id/textViewPostCode"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="130dp"
-                    android:layout_width="match_parent"
+                    android:layout_width="346dp"
                     android:layout_height="wrap_content"
                     android:paddingBottom="30dp"
-                    android:text="viewPostCode"/>
+                    android:paddingLeft="130dp"
+                    android:paddingTop="10dp"
+                    android:text="viewPostCode" />
 
                 <TextView
                     android:id="@+id/textViewCheckbox"
-                    android:layout_width="wrap_content"
+
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/editTextPostCode"
                     android:layout_marginEnd="18dp"
                     android:layout_toStartOf="@+id/checkBoxAdvertiser"
+                    android:paddingLeft="30dp"
                     android:text="What Are You Primarily Going To Be Using The App For?"
+                    android:textAlignment="center"
                     android:textColor="#808080"
                     android:textSize="16dp" />
 
                 <CheckBox
                     android:id="@+id/checkBoxAdvertiser"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/editTextPostCode"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:textColor="#2bbc9b"
+                    android:layout_gravity="center"
                     android:buttonTint="#2bbc9b"
+                    android:clickable="false"
                     android:ems="10"
                     android:padding="10dp"
-
                     android:text="Advertiser"
+                    android:textColor="#2bbc9b"
                     android:visibility="visible" />
 
                 <CheckBox
                     android:id="@+id/checkBoxCourier"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_alignStart="@+id/checkBoxAdvertiser"
                     android:layout_below="@+id/checkBoxAdvertiser"
-                    android:layout_marginEnd="15dp"
-                    android:textColor="#2bbc9b"
+                    android:layout_gravity="center"
                     android:buttonTint="#2bbc9b"
+                    android:clickable="false"
                     android:padding="10dp"
                     android:text="Courier"
-                    android:layout_marginBottom="20dp"
+                    android:textColor="#2bbc9b"
                     android:visibility="visible" />
 
             </LinearLayout>

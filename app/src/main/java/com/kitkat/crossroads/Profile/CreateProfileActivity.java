@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Profile.UserInformation;
@@ -137,32 +140,79 @@ public class CreateProfileActivity extends AppCompatActivity
         String addressOne = this.addressOne.getText().toString().trim();
         String addressTwo = this.addressTwo.getText().toString().trim();
         String town = this.town.getText().toString().trim();
-        String postCode = this.postCode.getText().toString().trim();
+        String postCode = this.postCode.getText().toString().trim().toUpperCase();
+
+        if (TextUtils.isEmpty(fullName))
+        {
+            customToastMessage("Please Enter Your Name");
+            return;
+        }
+        if (TextUtils.isEmpty(phoneNumber))
+        {
+            customToastMessage("Please Enter Your Phone Number");
+            return;
+        }
+        if (TextUtils.isEmpty(addressOne))
+        {
+            customToastMessage("Please Enter Your House Number & Street");
+            return;
+        }
+        if (TextUtils.isEmpty(addressTwo))
+        {
+            customToastMessage("Please Enter Your Second Address Line");
+            return;
+        }
+        if (TextUtils.isEmpty(town))
+        {
+            customToastMessage("Please Enter Your Town");
+            return;
+        }
+        if (TextUtils.isEmpty(postCode))
+        {
+            customToastMessage("Please Enter Your PostCode");
+            return;
+        }
+
+        if (fullName.length() < 4)
+        {
+            customToastMessage("Your Full Name Must Be Greater Than Four Characters");
+            return;
+        }
+
+        if (phoneNumber.length() != 11)
+        {
+            customToastMessage("Your Phone Number Must Be 11 Numbers Long");
+            return;
+        }
+
+        if (!postCode.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9 ]+$"))
+        {
+            customToastMessage("Post Code Must Have Numbers and Letters");
+            return;
+        }
 
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, null);
 
             setUserInformation(userInformation);
-        }
-        else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, null);
 
             setUserInformation(userInformation);
-        }
-        else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier);
+                    addressTwo, town, postCode, advertiser, courier, null);
 
             setUserInformation(userInformation);
         }
@@ -182,6 +232,11 @@ public class CreateProfileActivity extends AppCompatActivity
         FirebaseUser userEmail = FirebaseAuth.getInstance().getCurrentUser();
         userEmail.sendEmailVerification();
         FirebaseAuth.getInstance().signOut();
+    }
+
+    private void customToastMessage(String message)
+    {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
 

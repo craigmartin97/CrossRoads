@@ -138,20 +138,17 @@ public class JobDetailsFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if(TextUtils.isEmpty(editTextBid.getText()))
+                if (TextUtils.isEmpty(editTextBid.getText()))
                 {
                     editTextBid.setHint("Please enter a bid!");
                     editTextBid.setHintTextColor(Color.RED);
-                }
-                else {
+                } else
+                {
 
                     saveBidInformation();
                 }
-            }
+             }
         });
-
-
-
 
 
         auth = FirebaseAuth.getInstance();
@@ -168,19 +165,21 @@ public class JobDetailsFragment extends Fragment
                 Iterable<DataSnapshot> jobListSnapShot = bidReference.getChildren();
 
 
-
                 for (DataSnapshot ds : jobListSnapShot)
                 {
-                    if(ds.getKey().toString().equals(jobInformation.getJobID())) {
+                    if (ds.getKey().toString().equals(jobInformation.getJobID()))
+                    {
 
                         Iterable<DataSnapshot> bidListSnapShot = ds.getChildren();
 
-                        for (DataSnapshot ds1 : bidListSnapShot) {
+                        for (DataSnapshot ds1 : bidListSnapShot)
+                        {
                             BidInformation b = ds1.getValue(BidInformation.class);
 
                             String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                            if (b.getUserID().equals(currentUser)) {
+                            if (b.getUserID().equals(currentUser))
+                            {
                                 buttonBid.setClickable(false);
                                 buttonBid.setHighlightColor(Color.GRAY);
                                 editTextBid.setText("Bid already placed!");
@@ -191,12 +190,6 @@ public class JobDetailsFragment extends Fragment
                         }
                     }
                 }
-
-
-
-
-
-
             }
 
             @Override
@@ -205,11 +198,6 @@ public class JobDetailsFragment extends Fragment
 
             }
         });
-
-
-
-
-
 
         return view;
     }

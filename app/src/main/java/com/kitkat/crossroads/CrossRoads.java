@@ -43,6 +43,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,6 +70,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         auth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference().child("Users");
+
         FirebaseUser user = auth.getCurrentUser();
         userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -83,33 +85,32 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         toggle.syncState();
 
 
-        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
-
-                if(advertiser ==  true && courier == false)
-                {
-                    getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-                }
-                else if(advertiser == false && courier == true)
-                {
-                    getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-                }
-                else if(advertiser == true && courier == true)
-                {
-                    getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
+//        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+//        {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot)
+//            {
+//                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+//                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+//
+//                if (advertiser == true && courier == false)
+//                {
+//                    getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+//                } else if (advertiser == false && courier == true)
+//                {
+//                    getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+//                } else if (advertiser == true && courier == true)
+//                {
+//                    getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError)
+//            {
+//
+//            }
+//        });
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -229,9 +230,13 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 String name = dataSnapshot.child("fullName").getValue(String.class);
+                String profileImageUri = dataSnapshot.child("profileImage").getValue(String.class);
+
                 Log.d(TAG, "Name Is: " + name);
+                Log.d(TAG, "ProfileImage: " + profileImage);
 
                 navigationName.setText(name);
+                Picasso.get().load(profileImageUri).resize(175, 175).transform(new CircleTransformation()).into(profileImage);
             }
 
             @Override
@@ -240,7 +245,6 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
             }
         });
-
 
 
         navigationEmail.setText(auth.getCurrentUser().getEmail());
@@ -254,7 +258,6 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                 onBackPressed();
             }
         });
-
 
 
         editProfile.setOnClickListener(new View.OnClickListener()
@@ -305,6 +308,16 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                         dialog.cancel();
                     }
                 });
+            }
+        });
+
+        profileImage.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).commit();
+                onBackPressed();
             }
         });
     }

@@ -5,20 +5,20 @@
     tools:context="com.kitkat.crossroads.PostAnAdvertFragment">
 
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/advertScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark">
+        android:background="#FFFFFF">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/relative_layout_background"
-            android:paddingBottom="70dp" >
+            android:layout_marginTop="20dp"
+            android:background="#FFFFFF"
+            android:paddingBottom="70dp">
 
             <TextView
                 android:id="@+id/textView4"
@@ -28,19 +28,19 @@
                 android:fontFamily="@font/bebasneueregular"
                 android:text="Add Job"
                 android:textAlignment="center"
-                android:textColor="#ffffff"
+                android:textColor="#000000"
                 android:textSize="35dp" />
 
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="345dp"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/textView4"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/bebasneueregular"
                 android:text="Delivery Details"
-                android:layout_below="@+id/textView4"
                 android:textAlignment="center"
-                android:textColor="#ffffff"
+                android:textColor="#000000"
                 android:textSize="20dp" />
 
             <EditText
@@ -48,8 +48,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView5"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Advert Name"
                 android:inputType="textPersonName" />
 
@@ -58,28 +61,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextAdName"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Advert Description"
                 android:inputType="textMultiLine" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/editTextJobSize"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_below="@+id/editTextAdDescription"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Job Size"
                 android:inputType="textMultiLine" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/editTextJobType"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_below="@+id/editTextJobSize"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Job Type"
                 android:inputType="textMultiLine" />
 
@@ -88,31 +100,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobType"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:ellipsize="start"
                 android:ems="10"
+                android:focusable="false"
+                android:gravity="center_horizontal"
                 android:hint="Collection Date"
-                android:inputType="textPostalAddress" />
+                android:inputType="date"
+                android:longClickable="false" />
 
             <EditText
                 android:id="@+id/editTextJobColTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobColDate"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:ellipsize="start"
                 android:ems="10"
+                android:focusable="false"
+                android:gravity="center_horizontal"
                 android:hint="Collection Time"
-                android:inputType="textPostalAddress" />
+                android:inputType="time" />
 
             <TextView
                 android:id="@+id/textViewCollection"
                 android:layout_width="345dp"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobColTime"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/bebasneueregular"
-                android:layout_below="@+id/editTextJobColTime"
                 android:text="Collection Address"
                 android:textAlignment="center"
-                android:textColor="#ffffff"
+                android:textColor="#000000"
                 android:textSize="20dp" />
 
             <EditText
@@ -120,8 +143,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewCollection"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Address Line 1"
                 android:inputType="textPostalAddress" />
 
@@ -130,8 +156,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobColL1"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Address Line 2"
                 android:inputType="textPostalAddress" />
 
@@ -140,8 +169,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobColL2"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Town"
                 android:inputType="textPostalAddress" />
 
@@ -150,23 +182,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobColTown"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Postcode"
                 android:inputType="textPostalAddress" />
-
 
 
             <TextView
                 android:id="@+id/textViewDelivery"
                 android:layout_width="345dp"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobColPostcode"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/bebasneueregular"
-                android:layout_below="@+id/editTextJobColPostcode"
                 android:text="Delivery Address"
                 android:textAlignment="center"
-                android:textColor="#ffffff"
+                android:textColor="#000000"
                 android:textSize="20dp" />
 
             <EditText
@@ -174,8 +208,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewDelivery"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Address Line 1"
                 android:inputType="textPostalAddress" />
 
@@ -184,8 +221,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobDelL1"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Address Line 2"
                 android:inputType="textPostalAddress" />
 
@@ -194,8 +234,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobDelL2"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Town"
                 android:inputType="textPostalAddress" />
 
@@ -204,8 +247,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobDelTown"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
+                android:ellipsize="start"
                 android:ems="10"
+                android:gravity="center_horizontal"
                 android:hint="Postcode"
                 android:inputType="textPostalAddress" />
 
@@ -216,11 +262,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobDelPostcode"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="40dp"
-                android:text="Post Advert" />
+                android:layout_marginTop="16dp"
+                android:background="#2bbc9b"
+                android:text="Post Advert"
+                android:textColor="#FFFFFF" />
 
         </RelativeLayout>
     </ScrollView>
-
 </FrameLayout>

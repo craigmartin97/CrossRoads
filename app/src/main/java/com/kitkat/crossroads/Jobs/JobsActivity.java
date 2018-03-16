@@ -120,7 +120,8 @@ public class JobsActivity extends Activity
 
         }
 
-        public void addArray(final ArrayList<JobInformation> j) {
+        public void addArray(final ArrayList<JobInformation> j)
+        {
             mData = j;
         }
 
@@ -184,7 +185,8 @@ public class JobsActivity extends Activity
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getJobType());
             holder.textViewTo.setText(mData.get(position).getJobSize());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+            {
 
                 @Override
                 public void onClick(View v)

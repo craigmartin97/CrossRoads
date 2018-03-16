@@ -62,13 +62,15 @@ public class MyAdvertsActivity extends Activity
 
                 mAdapter = new MyCustomAdapter();
 
-                for (DataSnapshot ds : jobListSnapShot) {
+                for (DataSnapshot ds : jobListSnapShot)
+                {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
 
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                    if (j.getPosterID().equals(currentUser.getUid())) {
+                    if (j.getPosterID().equals(currentUser.getUid()))
+                    {
                         jobList.add(j);
 
                     }
@@ -145,7 +147,7 @@ public class MyAdvertsActivity extends Activity
         }
 
         @Override
-        public  View getView (final int position, View convertView, ViewGroup parent)
+        public View getView(final int position, View convertView, ViewGroup parent)
         {
             System.out.println("getView " + position + " " + convertView);
             GroupViewHolder holder;
@@ -159,17 +161,19 @@ public class MyAdvertsActivity extends Activity
                 holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
             } else
-                {
-                    holder = (GroupViewHolder) convertView.getTag();
-                }
+            {
+                holder = (GroupViewHolder) convertView.getTag();
+            }
 
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getJobType());
             holder.textViewTo.setText(mData.get(position).getJobSize());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+            {
 
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
                     Intent intent = new Intent(MyAdvertsActivity.this, JobDetailsActivity.class);
                     intent.putExtra("JobDetails", mData.get(position));
                     startActivity(intent);
@@ -193,11 +197,11 @@ public class MyAdvertsActivity extends Activity
 
         public class GroupViewHolder
         {
-            public  TextView textViewName;
-            public  TextView textViewFrom;
-            public  TextView textViewTo;
-            public  Button detailsButton;
+            public TextView textViewName;
+            public TextView textViewFrom;
+            public TextView textViewTo;
+            public Button detailsButton;
         }
 
-        }
+    }
 }

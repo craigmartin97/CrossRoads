@@ -9,7 +9,8 @@ public class BidInformation
 
     private String userID, userBid;
 
-    public BidInformation() {
+    public BidInformation()
+    {
     }
 
     public BidInformation(String userID, String userBid)
@@ -29,11 +30,13 @@ public class BidInformation
         return userBid;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(String userID)
+    {
         this.userID = userID;
     }
 
-    public void setUserBid(String userBid) {
+    public void setUserBid(String userBid)
+    {
         this.userBid = userBid;
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:background="#FFFFFF"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:paddingBottom="80dp">
+        android:paddingBottom="30dp">
 
         <requestFocus />>
 
@@ -148,10 +148,10 @@
             android:id="@+id/textViewCheckbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_below="@+id/editTextPostCode"
             android:layout_marginEnd="18dp"
             android:layout_toStartOf="@+id/checkBoxAdvertiser"
+            android:paddingLeft="30dp"
             android:text="What Are You Primarily Going To Be Using The App For?"
             android:textColor="#808080"
             android:textSize="16dp" />
@@ -165,12 +165,12 @@
             android:layout_below="@+id/editTextPostCode"
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="15dp"
-            android:textColor="#2bbc9b"
             android:buttonTint="#2bbc9b"
             android:ems="10"
             android:padding="10dp"
-
             android:text="Advertiser"
+
+            android:textColor="#2bbc9b"
             android:visibility="visible" />
 
         <CheckBox
@@ -181,12 +181,12 @@
             android:layout_alignParentRight="true"
             android:layout_alignStart="@+id/checkBoxAdvertiser"
             android:layout_below="@+id/checkBoxAdvertiser"
+            android:layout_marginBottom="20dp"
             android:layout_marginEnd="15dp"
-            android:textColor="#2bbc9b"
             android:buttonTint="#2bbc9b"
             android:padding="10dp"
             android:text="Courier"
-            android:layout_marginBottom="20dp"
+            android:textColor="#2bbc9b"
             android:visibility="visible" />
 
         <Button
@@ -196,7 +196,9 @@
             android:layout_below="@+id/checkBoxCourier"
             android:layout_toStartOf="@+id/checkBoxCourier"
             android:background="#2bbc9b"
-            android:text="Upload Profile Image" />
+            android:padding="10dp"
+            android:text="Upload Profile Image"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/buttonSaveProfile"
@@ -206,7 +208,9 @@
             android:layout_marginStart="14dp"
             android:layout_toEndOf="@+id/buttonUploadImage"
             android:background="#2bbc9b"
-            android:text="Save Profile" />
+            android:padding="18dp"
+            android:text="Save Profile"
+            android:textColor="#FFFFFF" />
 
     </RelativeLayout>
 

@@ -1,0 +1,64 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.kitkat.crossroads.UploadImageFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageViewProfileImage"
+            android:layout_width="250dp"
+            android:layout_height="350dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="76dp"
+            android:layout_marginTop="16dp"
+            android:src="@color/colorAccent" />
+
+        <ImageView
+            android:id="@+id/imageRotateLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/buttonUploadProfileImage"
+            android:layout_alignStart="@+id/imageViewProfileImage"
+            android:layout_marginStart="17dp"
+            android:src="@drawable/ic_rotate_left" />
+
+        <ImageView
+            android:id="@+id/imageRotateRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageViewProfileImage"
+            android:layout_alignEnd="@+id/imageViewProfileImage"
+            android:layout_marginEnd="13dp"
+            android:src="@drawable/ic_rotate_right" />
+
+        <Button
+            android:id="@+id/buttonUploadProfileImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/imageViewProfileImage"
+            android:layout_below="@+id/imageViewProfileImage"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="12dp"
+            android:text="Upload Profile Image" />
+
+        <Button
+            android:id="@+id/buttonSaveProfileImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/buttonUploadProfileImage"
+            android:layout_alignStart="@+id/buttonUploadProfileImage"
+            android:layout_below="@+id/buttonUploadProfileImage"
+            android:layout_marginTop="11dp"
+            android:padding="18dp"
+            android:text="Save Profile Image" />
+
+    </RelativeLayout>
+
+
+</FrameLayout>

@@ -46,6 +46,20 @@
     <string name="job_name">Job Name</string>
     <string name="from">From</string>
     <string name="my_adverts">My Adverts</string>
+    <string name="my_bids">My Bids</string>
+    <string-array name="job_sizes">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>Extra Large</item>
+    </string-array>
+    <string-array name="job_types">
+        <item>Single Item</item>
+        <item>Multiple Items</item>
+    </string-array>
+    <string name="textTabTitle1">Completed</string>
+    <string name="textTabTitle2">Active</string>
+    <string name="textTabTitle3">Bid On</string>
 </resources>
 
 

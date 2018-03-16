@@ -2,11 +2,14 @@ package com.kitkat.crossroads;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -14,8 +17,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,10 +40,10 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link MyJobsFragment
- *.OnFragmentInteractionListener} interface
+ * .OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link MyJobsFragment
- *#newInstance} factory method to
+ * #newInstance} factory method to
  * create an instance of this fragment.
  */
 public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextListener
@@ -70,12 +75,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<JobInformation> jobList = new ArrayList<>();
 
 
-
     private ListView jobListView;
 
     private SearchView jobSearch;
 
-
+    private TabHost tabHost;
 
     public MyJobsFragment()
     {
@@ -89,7 +93,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
      * @return A new instance of fragment MyJobsFragment
-     *.
+     * .
      */
     // TODO: Rename and change types and number of parameters
     public static MyJobsFragment newInstance(String param1, String param2)
@@ -120,6 +124,59 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     {
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
+
+        final TabHost host = (TabHost) view.findViewById(R.id.tabHost);
+        host.setup();
+
+
+
+        //Tab 1
+        TabHost.TabSpec spec = host.newTabSpec("Completed Jobs");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("Completed");
+        host.addTab(spec);
+
+        //Tab 2
+        spec = host.newTabSpec("Active");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Active");
+        host.addTab(spec);
+
+        //Tab 3
+        spec = host.newTabSpec("Bid On");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("Bid On");
+        host.addTab(spec);
+
+        for(int i=0;i<host.getTabWidget().getChildCount();i++)
+        {
+            TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(Color.parseColor("#FFFFFF"));
+        }
+
+        host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
+        TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
+        tv.setTextColor(Color.parseColor("#2bbc9b"));
+
+        host.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+
+            @Override
+            public void onTabChanged(String tabId) {
+
+                for (int i = 0; i < host.getTabWidget().getChildCount(); i++) {
+                    host.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2bbc9b")); // unselected
+                    TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
+                    tv.setTextColor(Color.parseColor("#FFFFFF"));
+                }
+
+                host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
+                TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
+                tv.setTextColor(Color.parseColor("#2bbc9b"));
+
+            }
+        });
+
+
         jobListView = view.findViewById(R.id.jobListView1);
 
 
@@ -143,7 +200,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 mAdapter = new MyJobsFragment.MyCustomAdapter();
 
-                for (DataSnapshot ds : bidListSnapShot) {
+                for (DataSnapshot ds : bidListSnapShot)
+                {
 
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
 
@@ -153,25 +211,22 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                         BidInformation bid = ds1.getValue(BidInformation.class);
 
 
-                        if(bid.getUserID().equals(auth.getCurrentUser().getUid()))
+                        if (bid.getUserID().equals(auth.getCurrentUser().getUid()))
                         {
                             jobsListArray.add(ds.getKey());
                         }
                     }
-
-
                 }
 
-                for(DataSnapshot ds3 : jobListSnapShot)
+                for (DataSnapshot ds3 : jobListSnapShot)
                 {
-                    if(jobsListArray.contains(ds3.getKey())) {
+                    if (jobsListArray.contains(ds3.getKey()))
+                    {
                         JobInformation j = ds3.getValue(JobInformation.class);
                         jobList.add(j);
                     }
 
                 }
-                // check the bidID against the job ID
-                // if "Bids" userID equals the "Jobs" userID. If thats true you want to get ALL the "Job" information that corresponds with the bid
                 mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
             }
@@ -208,8 +263,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         if (context instanceof OnFragmentInteractionListener)
         {
             mListener = (OnFragmentInteractionListener) context;
-        }
-        else
+        } else
         {
 
         }
@@ -223,7 +277,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String query)
+    {
         return false;
     }
 
@@ -235,6 +290,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         return false;
     }
+
+
 
 
     /**
@@ -335,8 +392,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 holder.textViewTo = convertView.findViewById(R.id.textTo);
                 holder.detailsButton = convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
-            }
-            else
+            } else
             {
                 holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
@@ -351,12 +407,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 public void onClick(View v)
                 {
 
-                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
+                    BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("Job", mData.get(position));
-                    jobDetailsFragment.setArguments(bundle);
+                    bidDetailsFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).commit();
                 }
             });
             return convertView;
@@ -392,8 +448,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             if (charText.length() == 0)
             {
                 mData = mDataOrig;
-            }
-            else
+            } else
             {
 
                 for (JobInformation j : mDataOrig)
@@ -402,8 +457,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     {
                         jobs.add(j);
                         jA.add(j);
-                    }
-                    else
+                    } else
                     {
                         jA.add(j);
                     }
@@ -416,4 +470,23 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             notifyDataSetChanged();
         }
     }
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
