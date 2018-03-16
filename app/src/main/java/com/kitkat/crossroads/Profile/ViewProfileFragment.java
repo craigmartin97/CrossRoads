@@ -26,7 +26,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.CircleTransformation;
+import com.kitkat.crossroads.JobBidsFragment;
 import com.kitkat.crossroads.R;
+import com.kitkat.crossroads.UserBidInformation;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -67,6 +69,8 @@ public class ViewProfileFragment extends Fragment
     private boolean advertiser, courier;
 
     private ImageView profileImageUri;
+
+    private String passedUserID;
 
     public ViewProfileFragment()
     {
@@ -110,6 +114,13 @@ public class ViewProfileFragment extends Fragment
 
         View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
 
+        Bundle bundle = this.getArguments();
+        if(bundle != null)
+        {
+            final UserBidInformation userBidInformation = (UserBidInformation) bundle.getSerializable("User");
+            passedUserID = userBidInformation.getUserID();
+        }
+
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference().child("Users");
@@ -146,62 +157,126 @@ public class ViewProfileFragment extends Fragment
             }
         };
 
-        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+        if(passedUserID != null)
         {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
+            myRef.child(passedUserID).addValueEventListener(new ValueEventListener()
             {
-                String name = dataSnapshot.child("fullName").getValue(String.class);
-                String number = dataSnapshot.child("phoneNumber").getValue(String.class);
-                String address1 = dataSnapshot.child("addressOne").getValue(String.class);
-                String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
-                String usersTown = dataSnapshot.child("town").getValue(String.class);
-                String postalCode = dataSnapshot.child("postCode").getValue(String.class);
-                String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
-                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
-
-                Log.d(TAG, "Full Name: " + name);
-                Log.d(TAG, "Phone Number: " + number);
-                Log.d(TAG, "Address Line One: " + address1);
-                Log.d(TAG, "Address Line Two: " + address2);
-                Log.d(TAG, "Town: " + usersTown);
-                Log.d(TAG, "PostCode: " + postalCode);
-                Log.d(TAG, "ProfileImage: " + profileImage);
-                Log.d(TAG, "Advertiser: " + advertiser);
-                Log.d(TAG, "Courier: " + courier);
-
-                fullName.setText(name);
-                phoneNumber.setText(number);
-                addressOne.setText(address1);
-                addressTwo.setText(address2);
-                town.setText(usersTown);
-                postCode.setText(postalCode);
-
-                if(advertiser == true && courier == false)
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
                 {
-                    checkBoxAdvertiser.setChecked(true);
-                    checkBoxCourier.setChecked(false);
-                }
-                else if(advertiser == false && courier == true)
-                {
-                    checkBoxAdvertiser.setChecked(false);
-                    checkBoxCourier.setChecked(true);
-                }
-                else if(advertiser == true && courier == true)
-                {
-                    checkBoxAdvertiser.setChecked(true);
-                    checkBoxCourier.setChecked(true);
-                }
-                Picasso.get().load(profileImage).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
-            }
+                    String name = dataSnapshot.child("fullName").getValue(String.class);
+                    String number = dataSnapshot.child("phoneNumber").getValue(String.class);
+                    String address1 = dataSnapshot.child("addressOne").getValue(String.class);
+                    String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
+                    String usersTown = dataSnapshot.child("town").getValue(String.class);
+                    String postalCode = dataSnapshot.child("postCode").getValue(String.class);
+                    String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+                    boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                    boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError)
+                    Log.d(TAG, "Full Name: " + name);
+                    Log.d(TAG, "Phone Number: " + number);
+                    Log.d(TAG, "Address Line One: " + address1);
+                    Log.d(TAG, "Address Line Two: " + address2);
+                    Log.d(TAG, "Town: " + usersTown);
+                    Log.d(TAG, "PostCode: " + postalCode);
+                    Log.d(TAG, "ProfileImage: " + profileImage);
+                    Log.d(TAG, "Advertiser: " + advertiser);
+                    Log.d(TAG, "Courier: " + courier);
+
+                    fullName.setText(name);
+                    phoneNumber.setText(number);
+                    addressOne.setText(address1);
+                    addressTwo.setText(address2);
+                    town.setText(usersTown);
+                    postCode.setText(postalCode);
+
+                    if(advertiser == true && courier == false)
+                    {
+                        checkBoxAdvertiser.setChecked(true);
+                        checkBoxCourier.setChecked(false);
+                    }
+                    else if(advertiser == false && courier == true)
+                    {
+                        checkBoxAdvertiser.setChecked(false);
+                        checkBoxCourier.setChecked(true);
+                    }
+                    else if(advertiser == true && courier == true)
+                    {
+                        checkBoxAdvertiser.setChecked(true);
+                        checkBoxCourier.setChecked(true);
+                    }
+                    Picasso.get().load(profileImage).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError)
+                {
+
+                }
+            });
+        }
+        else
+        {
+            myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
             {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
+                {
+                    String name = dataSnapshot.child("fullName").getValue(String.class);
+                    String number = dataSnapshot.child("phoneNumber").getValue(String.class);
+                    String address1 = dataSnapshot.child("addressOne").getValue(String.class);
+                    String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
+                    String usersTown = dataSnapshot.child("town").getValue(String.class);
+                    String postalCode = dataSnapshot.child("postCode").getValue(String.class);
+                    String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+                    boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                    boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
-            }
-        });
+                    Log.d(TAG, "Full Name: " + name);
+                    Log.d(TAG, "Phone Number: " + number);
+                    Log.d(TAG, "Address Line One: " + address1);
+                    Log.d(TAG, "Address Line Two: " + address2);
+                    Log.d(TAG, "Town: " + usersTown);
+                    Log.d(TAG, "PostCode: " + postalCode);
+                    Log.d(TAG, "ProfileImage: " + profileImage);
+                    Log.d(TAG, "Advertiser: " + advertiser);
+                    Log.d(TAG, "Courier: " + courier);
+
+                    fullName.setText(name);
+                    phoneNumber.setText(number);
+                    addressOne.setText(address1);
+                    addressTwo.setText(address2);
+                    town.setText(usersTown);
+                    postCode.setText(postalCode);
+
+                    if(advertiser == true && courier == false)
+                    {
+                        checkBoxAdvertiser.setChecked(true);
+                        checkBoxCourier.setChecked(false);
+                    }
+                    else if(advertiser == false && courier == true)
+                    {
+                        checkBoxAdvertiser.setChecked(false);
+                        checkBoxCourier.setChecked(true);
+                    }
+                    else if(advertiser == true && courier == true)
+                    {
+                        checkBoxAdvertiser.setChecked(true);
+                        checkBoxCourier.setChecked(true);
+                    }
+                    Picasso.get().load(profileImage).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError)
+                {
+
+                }
+            });
+        }
+
+
 
         return view;
     }

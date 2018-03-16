@@ -23,8 +23,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.BidInformation;
+import com.kitkat.crossroads.Profile.ViewProfileFragment;
+import com.kitkat.crossroads.UserBidInformation;
 import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Profile.UserInformation;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -49,13 +51,10 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private String mParam1;
     private String mParam2;
 
-
     private FirebaseAuth auth;
-    private DatabaseReference databaseReference;
-    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
     private FirebaseDatabase database;
-    private FirebaseAuth.AuthStateListener authStateListener;
+    private DatabaseReference databaseReference;
 
     private DataSnapshot bidReference;
     private DataSnapshot jobReference;
@@ -68,7 +67,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
     private JobBidsFragment.MyCustomAdapter mAdapter;
 
-    private ArrayList<BidInformation> jobList = new ArrayList<>();
+    private ArrayList<UserBidInformation> jobList = new ArrayList<>();
 
     private ListView jobListView;
 
@@ -116,18 +115,17 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_job_bids, container, false);
+
+        database = FirebaseDatabase.getInstance();
+        myRef = FirebaseDatabase.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
+        databaseReference = database.getReference();
+        jobListView = view.findViewById(R.id.jobListView1);
+
         Bundle bundle = this.getArguments();
         final JobInformation jobInformation =  (JobInformation) bundle.getSerializable("JobId");
         jobId = jobInformation.getJobID();
 
-
-        jobListView = view.findViewById(R.id.jobListView1);
-
-        auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("Users");
 
         databaseReference.addValueEventListener(new ValueEventListener()
         {
@@ -144,6 +142,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
                 mAdapter = new JobBidsFragment.MyCustomAdapter();
 
+
+
                 for(DataSnapshot ds : bidListSnapShot)
                 {
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
@@ -152,51 +152,33 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                     {
                         for(DataSnapshot ds1 : bidsSnapShot)
                         {
-                            BidInformation bid = ds1.getValue(BidInformation.class);
-                            bid.getUserBid();
-                            usersId = bid.getUserID();
-//                            myRef = myRef.getRef().child(usersId);
-//
-//                            myRef.addValueEventListener(new ValueEventListener()
-//                            {
-//                                @Override
-//                                public void onDataChange(DataSnapshot dataSnapshot)
-//                                {
-//                                    name = dataSnapshot.child("fullName").getValue(String.class);
-////                                    String number = dataSnapshot.child("phoneNumber").getValue(String.class);
-////                                    String address1 = dataSnapshot.child("addressOne").getValue(String.class);
-////                                    String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
-////                                    String usersTown = dataSnapshot.child("town").getValue(String.class);
-////                                    String postalCode = dataSnapshot.child("postCode").getValue(String.class);
-////                                    String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
-////                                    //boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-////                                    //boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
-//
-//                                    Log.d(TAG, "Full Name: " + name);
-////                                    Log.d(TAG, "Phone Number: " + number);
-////                                    Log.d(TAG, "Address Line One: " + address1);
-////                                    Log.d(TAG, "Address Line Two: " + address2);
-////                                    Log.d(TAG, "Town: " + usersTown);
-////                                    Log.d(TAG, "PostCode: " + postalCode);
-////                                    Log.d(TAG, "ProfileImage: " + profileImage);
-//                                    //Log.d(TAG, "Advertiser: " + advertiser);
-//                                    //Log.d(TAG, "Courier: " + courier);
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(DatabaseError databaseError)
-//                                {
-//
-//                                }
-//                            });
+                            final UserBidInformation bid = ds1.getValue(UserBidInformation.class);
+                            String usersBid = bid.getUserBid();
+                            String userID = bid.getUserID();
 
-                            jobList.add(bid);
+                            myRef.child("Users").child(userID).addValueEventListener(new ValueEventListener()
+                            {
+                                @Override
+                                public void onDataChange(DataSnapshot thisDataSnapshot)
+                                {
+                                    String name = thisDataSnapshot.child("fullName").getValue(String.class);
+                                    bid.setFullName(name);
+                                    bid.getFullName();
+                                    jobList.add(bid);
+
+                                    mAdapter.addArray(jobList);
+                                    jobListView.setAdapter(mAdapter);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError)
+                                {
+
+                                }
+                            });
                         }
                     }
                 }
-
-                mAdapter.addArray(jobList);
-                jobListView.setAdapter(mAdapter);
             }
 
             @Override
@@ -274,8 +256,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     public class MyCustomAdapter extends BaseAdapter
     {
 
-        private ArrayList<BidInformation> mData = new ArrayList();
-        private ArrayList<BidInformation> mDataOrig = new ArrayList();
+        private ArrayList<UserBidInformation> mData = new ArrayList();
+        private ArrayList<UserBidInformation> mDataOrig = new ArrayList();
 
         private LayoutInflater mInflater;
 
@@ -288,14 +270,14 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             }
         }
 
-        public void addItem(final BidInformation item)
+        public void addItem(final UserBidInformation item)
         {
             mData.add(item);
             mDataOrig.add(item);
         }
 
 
-        public void addArray(final ArrayList<BidInformation> j)
+        public void addArray(final ArrayList<UserBidInformation> j)
         {
             mData = j;
             mDataOrig = j;
@@ -357,22 +339,21 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 holder = (JobBidsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-            holder.textViewName.setText(name);
+            holder.textViewName.setText(mData.get(position).getFullName());
             holder.textViewBid.setText(mData.get(position).getUserBid());
             holder.textViewRating.setText(mData.get(position).getUserID());
             holder.detailsButton.setOnClickListener(new View.OnClickListener()
             {
-
                 @Override
                 public void onClick(View v)
                 {
 
-                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
+                    ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("Job", mData.get(position));
-                    jobDetailsFragment.setArguments(bundle);
+                    bundle.putSerializable("User", mData.get(position));
+                    viewProfileFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).commit();
                 }
             });
             return convertView;
@@ -401,8 +382,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         public void filter(String charText)
         {
 
-            ArrayList<BidInformation> jobs = new ArrayList<BidInformation>();
-            ArrayList<BidInformation> jA = new ArrayList<BidInformation>();
+            ArrayList<UserBidInformation> jobs = new ArrayList<UserBidInformation>();
+            ArrayList<UserBidInformation> jA = new ArrayList<UserBidInformation>();
             charText = charText.toLowerCase(Locale.getDefault());
 
             if (charText.length() == 0)
@@ -411,7 +392,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             } else
             {
 
-                for (BidInformation j : mDataOrig)
+                for (UserBidInformation j : mDataOrig)
                 {
                     if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
                     {
