@@ -130,11 +130,14 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
-                    jobList.add(j);
+
+                    //display only jobs that are still open to bidding
+                    if(j.getJobStatus().equals("Pending")) {
+                        jobList.add(j);
+                    }
                 }
 
                 mAdapter.addArray(jobList);
-
                 jobListView.setAdapter(mAdapter);
             }
 
