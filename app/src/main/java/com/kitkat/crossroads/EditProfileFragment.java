@@ -176,22 +176,20 @@ public class EditProfileFragment extends Fragment
                 town.setText(usersTown);
                 postCode.setText(postalCode);
 
-                if(advertiser == true && courier == false)
+                if (advertiser == true && courier == false)
                 {
                     checkBoxAdvertiser.setChecked(true);
                     checkBoxCourier.setChecked(false);
-                }
-                else if(advertiser == false && courier == true)
+                } else if (advertiser == false && courier == true)
                 {
                     checkBoxAdvertiser.setChecked(false);
                     checkBoxCourier.setChecked(true);
-                }
-                else if(advertiser == true && courier == true)
+                } else if (advertiser == true && courier == true)
                 {
                     checkBoxAdvertiser.setChecked(true);
                     checkBoxCourier.setChecked(true);
                 }
-              //  Picasso.get().load(profileImage).rotate(90).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
+                //  Picasso.get().load(profileImage).rotate(90).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
             }
 
             @Override
@@ -327,50 +325,50 @@ public class EditProfileFragment extends Fragment
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
 
-        if(TextUtils.isEmpty(fullName))
+        if (TextUtils.isEmpty(fullName))
         {
             customToastMessage("Please Enter Your Name");
             return;
         }
-        if(TextUtils.isEmpty(phoneNumber))
+        if (TextUtils.isEmpty(phoneNumber))
         {
             customToastMessage("Please Enter Your Phone Number");
             return;
         }
-        if(TextUtils.isEmpty(addressOne))
+        if (TextUtils.isEmpty(addressOne))
         {
             customToastMessage("Please Enter Your House Number & Street");
             return;
         }
-        if(TextUtils.isEmpty(addressTwo))
+        if (TextUtils.isEmpty(addressTwo))
         {
             customToastMessage("Please Enter Your Second Address Line");
             return;
         }
-        if(TextUtils.isEmpty(town))
+        if (TextUtils.isEmpty(town))
         {
             customToastMessage("Please Enter Your Town");
             return;
         }
-        if(TextUtils.isEmpty(postCode))
+        if (TextUtils.isEmpty(postCode))
         {
             customToastMessage("Please Enter Your PostCode");
             return;
         }
 
-        if(fullName.length() < 4)
+        if (fullName.length() < 4)
         {
             customToastMessage("Your Full Name Must Be Greater Than Four Characters");
             return;
         }
 
-        if(phoneNumber.length() != 11)
+        if (phoneNumber.length() != 11)
         {
             customToastMessage("Your Phone Number Must Be 11 Numbers Long");
             return;
         }
 
-        if(!postCode.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9 ]+$"))
+        if (!postCode.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9 ]+$"))
         {
             customToastMessage("Post Code Must Have Numbers and Letters");
             return;
@@ -417,6 +415,6 @@ public class EditProfileFragment extends Fragment
 
     private void customToastMessage(String message)
     {
-        Toast.makeText(getActivity(),message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

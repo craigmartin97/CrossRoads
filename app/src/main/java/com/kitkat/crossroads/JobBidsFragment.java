@@ -123,7 +123,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         jobListView = view.findViewById(R.id.jobListView1);
 
         Bundle bundle = this.getArguments();
-        final JobInformation jobInformation =  (JobInformation) bundle.getSerializable("JobId");
+        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobId");
         jobId = jobInformation.getJobID();
 
 
@@ -143,14 +143,13 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 mAdapter = new JobBidsFragment.MyCustomAdapter();
 
 
-
-                for(DataSnapshot ds : bidListSnapShot)
+                for (DataSnapshot ds : bidListSnapShot)
                 {
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
 
-                    if(jobId.equals(ds.getKey()))
+                    if (jobId.equals(ds.getKey()))
                     {
-                        for(DataSnapshot ds1 : bidsSnapShot)
+                        for (DataSnapshot ds1 : bidsSnapShot)
                         {
                             final UserBidInformation bid = ds1.getValue(UserBidInformation.class);
                             String usersBid = bid.getUserBid();
