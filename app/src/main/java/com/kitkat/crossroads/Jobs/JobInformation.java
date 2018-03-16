@@ -13,14 +13,14 @@ public class JobInformation implements Serializable {
 
     private String advertName, advertDescription, jobSize, jobType, posterID, jobID, courierID, collectionDate, collectionTime;
     private String colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode;
-    private boolean jobActive;
+    private String jobStatus;
 
     public JobInformation()
     {
 
     }
 
-    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, boolean jobActive) {
+    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobActive) {
         this.advertName = advertName;
         this.advertDescription = advertDescription;
         this.jobSize = jobSize;
@@ -37,7 +37,7 @@ public class JobInformation implements Serializable {
         this.delL2 = delL2;
         this.delTown = delTown;
         this.delPostcode = delPostcode;
-        this.jobActive = jobActive;
+        this.jobStatus = jobStatus;
     }
 
     public void setJobID(String jobID) {
@@ -112,8 +112,8 @@ public class JobInformation implements Serializable {
         return delPostcode;
     }
 
-    public boolean isJobActive() {
-        return jobActive;
+    public String getJobStatus() {
+        return jobStatus;
     }
 
     public String getWholeString() {

@@ -200,7 +200,7 @@ public class PostAnAdvertFragment extends Fragment
         String delTown = editTextDelAddTown.getText().toString().trim();
         String delPostcode = editTextDelAddPostcode.getText().toString().trim();
 
-        Boolean jobActive = true;
+        String jobStatus = "Pending";
         String courierID = " ";
 
         FirebaseUser user = auth.getCurrentUser();
@@ -208,7 +208,7 @@ public class PostAnAdvertFragment extends Fragment
         String posterID = user.getUid().toString().trim();
 
         JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
-                courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobActive);
+                courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
 
 
         databaseReference.child("Jobs").push().setValue(jobInformation);
