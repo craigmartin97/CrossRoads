@@ -79,6 +79,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private SearchView jobSearch;
 
+    private TabHost host;
+
     private TabHost tabHost;
 
     public MyJobsFragment()
@@ -125,27 +127,27 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
 
-        final TabHost host = (TabHost) view.findViewById(R.id.tabHost);
+        host = (TabHost) view.findViewById(R.id.tabHost);
         host.setup();
 
 
-
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Completed Jobs");
-        spec.setContent(R.id.tab1);
-        spec.setIndicator("Completed");
-        host.addTab(spec);
-
         //Tab 2
-        spec = host.newTabSpec("Active");
-        spec.setContent(R.id.tab2);
+        TabHost.TabSpec spec = host.newTabSpec("Active");
+        spec.setContent(R.id.tab1);
         spec.setIndicator("Active");
         host.addTab(spec);
 
-        //Tab 3
+        //Tab 1
         spec = host.newTabSpec("Bid On");
-        spec.setContent(R.id.tab3);
+        spec.setContent(R.id.tab2);
         spec.setIndicator("Bid On");
+        host.addTab(spec);
+
+
+        //Tab 3
+        spec = host.newTabSpec("Completed Jobs");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("Completed");
         host.addTab(spec);
 
         for(int i=0;i<host.getTabWidget().getChildCount();i++)
@@ -412,7 +414,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     bundle.putSerializable("Job", mData.get(position));
                     bidDetailsFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
                 }
             });
             return convertView;
