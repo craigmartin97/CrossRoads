@@ -2,6 +2,7 @@ package com.kitkat.crossroads;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,9 +44,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 
 import java.io.IOException;
+
 import static android.app.Activity.RESULT_OK;
 
 
@@ -152,7 +156,7 @@ public class UploadImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if(profileImage != null)
+                if (profileImage != null)
                 {
                     // Rotate image 90
                     Picasso.get().load(imageUri).rotate(90).into(profileImage);
@@ -166,7 +170,7 @@ public class UploadImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if(profileImage != null)
+                if (profileImage != null)
                 {
                     // Rotate image -90
                     Picasso.get().load(imageUri).rotate(-90).into(profileImage);
@@ -230,7 +234,7 @@ public class UploadImageFragment extends Fragment
         super.onActivityResult(requestCode, resultCode, data);
         final FirebaseUser user = auth.getCurrentUser();
 
-        if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
+        if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Displaying Image...");

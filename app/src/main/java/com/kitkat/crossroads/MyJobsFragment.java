@@ -129,7 +129,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         host.setup();
 
 
-
         //Tab 1
         TabHost.TabSpec spec = host.newTabSpec("Completed Jobs");
         spec.setContent(R.id.tab1);
@@ -148,7 +147,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         spec.setIndicator("Bid On");
         host.addTab(spec);
 
-        for(int i=0;i<host.getTabWidget().getChildCount();i++)
+        for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
         {
             TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
             tv.setTextColor(Color.parseColor("#FFFFFF"));
@@ -158,12 +157,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
         tv.setTextColor(Color.parseColor("#2bbc9b"));
 
-        host.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+        host.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        {
 
             @Override
-            public void onTabChanged(String tabId) {
+            public void onTabChanged(String tabId)
+            {
 
-                for (int i = 0; i < host.getTabWidget().getChildCount(); i++) {
+                for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
+                {
                     host.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2bbc9b")); // unselected
                     TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
                     tv.setTextColor(Color.parseColor("#FFFFFF"));
@@ -290,8 +292,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         return false;
     }
-
-
 
 
     /**
@@ -472,17 +472,17 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
 
-
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             return true;
         }
 

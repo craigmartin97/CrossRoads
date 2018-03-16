@@ -45,7 +45,8 @@ import java.util.Calendar;
  * Use the {@link PostAnAdvertFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PostAnAdvertFragment extends Fragment {
+public class PostAnAdvertFragment extends Fragment
+{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -72,7 +73,8 @@ public class PostAnAdvertFragment extends Fragment {
 
     private DatabaseReference databaseReference;
 
-    public PostAnAdvertFragment() {
+    public PostAnAdvertFragment()
+    {
         // Required empty public constructor
     }
 
@@ -85,7 +87,8 @@ public class PostAnAdvertFragment extends Fragment {
      * @return A new instance of fragment PostAnAdvertFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PostAnAdvertFragment newInstance(String param1, String param2) {
+    public static PostAnAdvertFragment newInstance(String param1, String param2)
+    {
         PostAnAdvertFragment fragment = new PostAnAdvertFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -95,9 +98,11 @@ public class PostAnAdvertFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null)
+        {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -105,13 +110,15 @@ public class PostAnAdvertFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
         // Inflate the layout for this fragment
 
         auth = FirebaseAuth.getInstance();
 
-        if (auth.getCurrentUser() == null) {
+        if (auth.getCurrentUser() == null)
+        {
             startActivity(new Intent(getActivity(), LoginActivity.class));
         }
 
@@ -134,9 +141,11 @@ public class PostAnAdvertFragment extends Fragment {
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         editTextJobType.setAdapter(adapter1);
         editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
-        editTextColDate.setOnClickListener(new View.OnClickListener() {
+        editTextColDate.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Calendar calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -151,46 +160,56 @@ public class PostAnAdvertFragment extends Fragment {
                 dialog.show();
             }
         });
-        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+        dateSetListener = new DatePickerDialog.OnDateSetListener()
+        {
             @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
+            {
 
                 month = month + 1;
                 Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
 
-                if (dayOfMonth >= 1 && dayOfMonth <= 9) {
+                if (dayOfMonth >= 1 && dayOfMonth <= 9)
+                {
                     String newDay = "0" + dayOfMonth;
                     editTextColDate.setText(newDay + "/" + month + "/" + year);
                 }
 
-                if (month >= 1 && month <= 9) {
+                if (month >= 1 && month <= 9)
+                {
                     String newMonth = "0" + month;
                     editTextColDate.setText(dayOfMonth + "/" + newMonth + "/" + year);
                 }
 
-                if (dayOfMonth >= 1 && dayOfMonth <= 9 && month >= 1 && month <= 9) {
+                if (dayOfMonth >= 1 && dayOfMonth <= 9 && month >= 1 && month <= 9)
+                {
                     String newDay = "0" + dayOfMonth;
                     String newMonth = "0" + month;
                     editTextColDate.setText(newDay + "/" + newMonth + "/" + year);
-                } else {
+                } else
+                {
                     editTextColDate.setText(dayOfMonth + "/" + month + "/" + year);
                 }
             }
         };
         editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
-        editTextColTime.setOnClickListener(new View.OnClickListener() {
+        editTextColTime.setOnClickListener(new View.OnClickListener()
+        {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 // TODO Auto-generated method stub
                 Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
 
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener()
+                {
                     @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
+                    {
                         editTextColTime.setText(selectedHour + ":" + selectedMinute);
                     }
                 }, hour, minute, true);
@@ -207,81 +226,94 @@ public class PostAnAdvertFragment extends Fragment {
         editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
         editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
         editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
-        buttonPostAd.setOnClickListener(new View.OnClickListener() {
+        buttonPostAd.setOnClickListener(new View.OnClickListener()
+        {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 
 
-                if (TextUtils.isEmpty(editTextAdName.getText())) {
+                if (TextUtils.isEmpty(editTextAdName.getText()))
+                {
                     editTextAdName.setText("");
                     editTextAdName.setHintTextColor(Color.RED);
                     editTextAdName.setHint("Please enter Advert Name!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
                 }
-                if (TextUtils.isEmpty(editTextAdDescription.getText())) {
+                if (TextUtils.isEmpty(editTextAdDescription.getText()))
+                {
                     editTextAdDescription.setText("");
                     editTextAdDescription.setHintTextColor(Color.RED);
                     editTextAdDescription.setHint("Please enter Advert Description!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 }
-                if (TextUtils.isEmpty(editTextColDate.getText())) {
+                if (TextUtils.isEmpty(editTextColDate.getText()))
+                {
                     editTextColDate.setText("");
                     editTextColDate.setHintTextColor(Color.RED);
                     editTextColDate.setHint("Please enter a Collection Date!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 }
-                if (TextUtils.isEmpty(editTextColTime.getText())) {
+                if (TextUtils.isEmpty(editTextColTime.getText()))
+                {
                     editTextColTime.setText("");
                     editTextColTime.setHintTextColor(Color.RED);
                     editTextColTime.setHint("Please enter a Collection Time!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 }
-                if (TextUtils.isEmpty(editTextColAddL1.getText())) {
+                if (TextUtils.isEmpty(editTextColAddL1.getText()))
+                {
                     editTextColAddL1.setText("");
                     editTextColAddL1.setHintTextColor(Color.RED);
                     editTextColAddL1.setHint("Please enter Address Line 1!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 }
-                if (TextUtils.isEmpty(editTextColAddTown.getText())) {
+                if (TextUtils.isEmpty(editTextColAddTown.getText()))
+                {
                     editTextColAddTown.setText("");
                     editTextColAddTown.setHintTextColor(Color.RED);
                     editTextColAddTown.setHint("Please enter a Town!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 }
-                if ((!(editTextColAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextColAddPostcode.getText()))) {
+                if ((!(editTextColAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextColAddPostcode.getText())))
+                {
                     editTextColAddPostcode.setText("");
                     editTextColAddPostcode.setHintTextColor(Color.RED);
                     editTextColAddPostcode.setHint("Please enter valid Postcode!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 }
-                if (TextUtils.isEmpty(editTextDelAddL1.getText())) {
+                if (TextUtils.isEmpty(editTextDelAddL1.getText()))
+                {
                     editTextDelAddL1.setText("");
                     editTextDelAddL1.setHintTextColor(Color.RED);
                     editTextDelAddL1.setHint("Please enter Address Line 1!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 }
-                if (TextUtils.isEmpty(editTextDelAddTown.getText())) {
+                if (TextUtils.isEmpty(editTextDelAddTown.getText()))
+                {
                     editTextDelAddTown.setText("");
                     editTextDelAddTown.setHintTextColor(Color.RED);
                     editTextDelAddTown.setHint("Please enter a Town!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 }
-                if ((!(editTextDelAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextDelAddPostcode.getText()))) {
+                if ((!(editTextDelAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextDelAddPostcode.getText())))
+                {
                     editTextDelAddPostcode.setText("");
                     editTextDelAddPostcode.setHintTextColor(Color.RED);
                     editTextDelAddPostcode.setHint("Please enter valid Postcode!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
-                } else {
+                } else
+                {
                     saveJobInformation();
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -294,24 +326,30 @@ public class PostAnAdvertFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
+    public void onButtonPressed(Uri uri)
+    {
+        if (mListener != null)
+        {
             mListener.onFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnFragmentInteractionListener)
+        {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
+        } else
+        {
 
         }
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         mListener = null;
     }
@@ -326,12 +364,14 @@ public class PostAnAdvertFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener
+    {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
-    private void saveJobInformation() {
+    private void saveJobInformation()
+    {
         String adName = editTextAdName.getText().toString().trim();
         String adDescription = editTextAdDescription.getText().toString().trim();
         String jobSize = editTextJobSize.getSelectedItem().toString().trim();

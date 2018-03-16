@@ -19,6 +19,11 @@ public class UserInformation
     public boolean courier;
     public StorageReference profileImage;
 
+    public UserInformation()
+    {
+
+    }
+
     public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, StorageReference profileImage)
     {
         this.fullName = fullName;
@@ -29,6 +34,96 @@ public class UserInformation
         this.postCode = postCode;
         this.advertiser = advertiser;
         this.courier = courier;
+        this.profileImage = profileImage;
+    }
+
+    public String getFullName()
+    {
+        return fullName;
+    }
+
+    public void setFullName(String fullName)
+    {
+        this.fullName = fullName;
+    }
+
+    public String getPhoneNumber()
+    {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber)
+    {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddressOne()
+    {
+        return addressOne;
+    }
+
+    public void setAddressOne(String addressOne)
+    {
+        this.addressOne = addressOne;
+    }
+
+    public String getAddressTwo()
+    {
+        return addressTwo;
+    }
+
+    public void setAddressTwo(String addressTwo)
+    {
+        this.addressTwo = addressTwo;
+    }
+
+    public String getTown()
+    {
+        return town;
+    }
+
+    public void setTown(String town)
+    {
+        this.town = town;
+    }
+
+    public String getPostCode()
+    {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode)
+    {
+        this.postCode = postCode;
+    }
+
+    public boolean isAdvertiser()
+    {
+        return advertiser;
+    }
+
+    public void setAdvertiser(boolean advertiser)
+    {
+        this.advertiser = advertiser;
+    }
+
+    public boolean isCourier()
+    {
+        return courier;
+    }
+
+    public void setCourier(boolean courier)
+    {
+        this.courier = courier;
+    }
+
+    public StorageReference getProfileImage()
+    {
+        return profileImage;
+    }
+
+    public void setProfileImage(StorageReference profileImage)
+    {
         this.profileImage = profileImage;
     }
 }
