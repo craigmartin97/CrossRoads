@@ -50,6 +50,8 @@ public class JobDetailsFragment extends Fragment
     private FirebaseDatabase database;
     private DataSnapshot bidReference;
 
+    private String jobID;
+
 
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
@@ -131,6 +133,7 @@ public class JobDetailsFragment extends Fragment
         jobColTime.setText(jobInformation.getCollectionTime());
         jobFrom.setText(jobInformation.getColTown().toString());
         jobTo.setText(jobInformation.getDelTown().toString());
+        jobID = jobInformation.getJobID();
 
 
         buttonBid.setOnClickListener(new View.OnClickListener()
@@ -258,11 +261,9 @@ public class JobDetailsFragment extends Fragment
         user.getUid();
 
         String userID = user.getUid();
-
-
         String jobID = jobInformation.getJobID().toString().trim();
 
-        BidInformation bidInformation = new BidInformation(userID, userBid);
+        BidInformation bidInformation = new BidInformation(userID, userBid, jobID);
 
         databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 

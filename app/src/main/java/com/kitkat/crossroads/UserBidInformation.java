@@ -11,14 +11,14 @@ import java.io.Serializable;
 public class UserBidInformation implements Serializable
 {
 
-    public String fullName, userBid, userID;
+    public String fullName, userBid, userID, jobID;
 
     public UserBidInformation()
     {
 
     }
 
-    public UserBidInformation(String fullName, String userBid, String userID)
+    public UserBidInformation(String fullName, String userBid, String userID, String jobID)
     {
         this.fullName = fullName;
         this.userBid = userBid;
@@ -58,5 +58,13 @@ public class UserBidInformation implements Serializable
     public String getWholeString()
     {
         return fullName + userBid;
+    }
+
+    public String getJobID() {
+        return jobID;
+    }
+
+    public void setJobID(String jobID) {
+        this.jobID = jobID;
     }
 }
