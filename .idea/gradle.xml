@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="/home/scm-studs/q5063319/AndroidStudioProjects/CrossRoads" />
+            <option value="/home/scm-studs/q5063319/AndroidStudioProjects/CrossRoads/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
