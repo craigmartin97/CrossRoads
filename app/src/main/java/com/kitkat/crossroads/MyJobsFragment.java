@@ -132,7 +132,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         host.setup();
 
 
-
         //Tab 2
         TabHost.TabSpec spec = host.newTabSpec("Active");
         spec.setContent(R.id.tab1);

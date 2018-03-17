@@ -153,7 +153,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                             jobBidsFragment.setArguments(bundle);
 
                             FragmentManager fragmentManager = getFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).commit();
+                            fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).addToBackStack("tag").commit();
                         }
                     });
                 }
@@ -395,7 +395,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                 mData = mDataOrig;
             } else
             {
-
                 for (JobInformation j : mDataOrig)
                 {
                     if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
