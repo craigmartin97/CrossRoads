@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -72,6 +71,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private Spinner sortBySpinner;
     private Button filterButton;
     private SearchView jobSearch;
+
+    private Spinner filterSizeFrom;
+    private Spinner filterSizeTo;
 
 
     public FindAJobFragment()
@@ -207,6 +209,18 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         });
 
 
+
+        filterSizeFrom = (Spinner) view.findViewById(R.id.spinnerSizeFrom);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, R.layout.spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSizeFrom.setAdapter(adapter);
+
+        filterSizeTo = (Spinner) view.findViewById(R.id.spinnerSizeTo);
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes_reverse, R.layout.spinner_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSizeTo.setAdapter(adapter2);
+
+
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
@@ -216,6 +230,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
+                jobList.clear();
+
                 jobReference = dataSnapshot.child("Jobs");
 
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
@@ -350,6 +366,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         public void addItem(final JobInformation item)
         {
+            mData.clear();
+            mDataOrig.clear();
+
             mData.add(item);
             mDataOrig.add(item);
         }
@@ -357,6 +376,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         public void addArray(final ArrayList<JobInformation> j)
         {
+            mData.clear();
+            mDataOrig.clear();
+
             mData = j;
             mDataOrig = j;
         }

@@ -242,11 +242,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
                         BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("Job", mAdapter.mData.get(position));
                         bidDetailsFragment.setArguments(bundle);
                         FragmentManager fragmentManager = getFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+
                     }
                 });
             }
