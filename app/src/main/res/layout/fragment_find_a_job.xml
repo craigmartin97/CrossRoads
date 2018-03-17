@@ -11,7 +11,7 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <requestFocus />>
+        <requestFocus />
 
 
         <TextView
@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/bebasneueregular"
-
             android:text="Find A Job"
             android:textAlignment="center"
             android:textSize="30dp"
@@ -32,6 +31,7 @@
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryHint="Name, Location, Size, etc." />
+
         <LinearLayout
             android:padding="5dp"
             android:layout_width="match_parent"

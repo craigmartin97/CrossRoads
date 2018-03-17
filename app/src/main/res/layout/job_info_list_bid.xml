@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:layout_margin= "10dp"
+        android:background="@drawable/customborder">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -113,10 +114,8 @@
             android:id="@+id/detailsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View Profile"
+            android:text="Accept Bid"
             android:textSize="10dp" />
-
-
 
     </LinearLayout>
 </RelativeLayout>

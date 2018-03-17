@@ -11,9 +11,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 /**
@@ -38,8 +41,7 @@ import java.util.ArrayList;
  * Use the {@link MyAdvertsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyAdvertsFragment extends Fragment
-{
+public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,6 +53,7 @@ public class MyAdvertsFragment extends Fragment
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private FirebaseDatabase database;
@@ -62,6 +65,8 @@ public class MyAdvertsFragment extends Fragment
     private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
 
     private ListView jobListView;
+
+    private SearchView jobSearch;
 
     public MyAdvertsFragment()
     {
@@ -137,6 +142,20 @@ public class MyAdvertsFragment extends Fragment
 
                     mAdapter.addArray(jobList);
                     jobListView.setAdapter(mAdapter);
+
+                    jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                        {
+                            JobBidsFragment jobBidsFragment = new JobBidsFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("JobId", mAdapter.mData.get(position));
+                            jobBidsFragment.setArguments(bundle);
+
+                            FragmentManager fragmentManager = getFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).commit();
+                        }
+                    });
                 }
             }
 
@@ -147,9 +166,13 @@ public class MyAdvertsFragment extends Fragment
             }
         });
 
-        return view;
+        jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
+        jobSearch.setIconified(false);
+        jobSearch.clearFocus();
 
-        // Inflate the layout for this fragment
+        jobSearch.setOnQueryTextListener(this);
+
+        return view;
 
     }
 
@@ -181,6 +204,19 @@ public class MyAdvertsFragment extends Fragment
         mListener = null;
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        String text = newText;
+        mAdapter.filter(text);
+
+        return false;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -201,6 +237,7 @@ public class MyAdvertsFragment extends Fragment
     {
 
         private ArrayList<JobInformation> mData = new ArrayList();
+        private ArrayList<JobInformation> mDataOrig = new ArrayList<>();
 
         private LayoutInflater mInflater;
 
@@ -215,12 +252,14 @@ public class MyAdvertsFragment extends Fragment
         public void addItem(final JobInformation item)
         {
             mData.add(item);
+            mDataOrig.add(item);
         }
 
 
         public void addArray(final ArrayList<JobInformation> j)
         {
             mData = j;
+            mDataOrig = j;
         }
 
 
@@ -283,7 +322,6 @@ public class MyAdvertsFragment extends Fragment
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
-//
 //            holder.viewBidsButton.setOnClickListener(new View.OnClickListener()
 //            {
 //                @Override
@@ -343,6 +381,38 @@ public class MyAdvertsFragment extends Fragment
             public TextView textViewTo;
             public Button detailsButton;
             public Button viewBidsButton;
+        }
+
+        public void filter(String charText)
+        {
+
+            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
+            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
+            charText = charText.toLowerCase(Locale.getDefault());
+
+            if (charText.length() == 0)
+            {
+                mData = mDataOrig;
+            } else
+            {
+
+                for (JobInformation j : mDataOrig)
+                {
+                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
+                    {
+                        jobs.add(j);
+                        jA.add(j);
+                    } else
+                    {
+                        jA.add(j);
+                    }
+                }
+                mData.clear();
+                mData = jobs;
+                mDataOrig = jA;
+            }
+
+            notifyDataSetChanged();
         }
     }
 }
