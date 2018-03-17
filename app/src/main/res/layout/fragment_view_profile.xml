@@ -4,25 +4,22 @@
     android:layout_height="match_parent"
     tools:context="com.kitkat.crossroads.Profile.ViewProfileFragment">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/gradientLayout"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="134dp"
             android:background="@drawable/gradient_background"
             android:orientation="vertical">
-
 
             <ImageView
                 android:id="@+id/profileImage"
                 android:layout_width="wrap_content"
-                android:layout_height="163dp"
+                android:layout_height="65dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="35dp"
                 android:adjustViewBounds="false"
@@ -38,152 +35,170 @@
                 android:textSize="21sp"
                 android:textStyle="bold"
                 tools:text="@string/Person_Name_Here" />
+
         </LinearLayout>
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gradientLayout">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-
-                <TextView
-                    android:id="@+id/HeadingForPostalAddress"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="Phone Number" />
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/textViewPhoneNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="30dp"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="viewPhoneNumber" />
+                    <RatingBar
+                        android:id="@+id/RatingsBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:numStars="5"
+                        android:paddingTop="10dp"
+                        android:stepSize=".5" />
 
-                <TextView
-                    android:id="@+id/HeadingForAddressOne"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="Address Line One" />
+                    <TextView
+                        android:id="@+id/HeadingForPhoneNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/RatingsBar"
+                        android:layout_marginStart="17dp"
+                        android:paddingTop="10dp"
+                        android:text="Phone Number"
+                        android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/textViewAddressOne"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="30dp"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="viewAddressOne" />
+                    <TextView
+                        android:id="@+id/textViewPhoneNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/HeadingForPhoneNumber"
+                        android:paddingBottom="30dp"
+                        android:paddingTop="10dp"
+                        android:text="viewPhoneNumber"
+                        android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/HeadingForAddressTwo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="Address Line Two" />
+                    <TextView
+                        android:id="@+id/HeadingForAddressOne"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textViewPhoneNumber"
+                        android:paddingTop="10dp"
+                        android:text="Address Line One"
+                        android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/textViewAddressTwo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="30dp"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="viewAddressTwo" />
+                    <TextView
+                        android:id="@+id/textViewAddressOne"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/HeadingForAddressOne"
+                        android:paddingBottom="30dp"
+                        android:paddingTop="10dp"
+                        android:text="viewAddressOne"
+                        android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/HeadingForTown"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="Town" />
+                    <TextView
+                        android:id="@+id/HeadingForAddressTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textViewAddressOne"
+                        android:paddingTop="10dp"
+                        android:text="Address Line Two"
+                        android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/textViewTown"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="30dp"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="viewTown" />
+                    <TextView
+                        android:id="@+id/textViewAddressTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/HeadingForAddressTwo"
+                        android:paddingBottom="30dp"
+                        android:paddingTop="10dp"
+                        android:text="viewAddressTwo"
+                        android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/HeadingForPostCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="Post Code" />
+                    <TextView
+                        android:id="@+id/HeadingForTown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textViewAddressTwo"
+                        android:paddingTop="10dp"
+                        android:text="Town"
+                        android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/textViewPostCode"
-                    android:layout_width="346dp"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="30dp"
-                    android:paddingLeft="130dp"
-                    android:paddingTop="10dp"
-                    android:text="viewPostCode" />
+                    <TextView
+                        android:id="@+id/textViewTown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/HeadingForTown"
+                        android:paddingBottom="60dp"
+                        android:paddingTop="10dp"
+                        android:text="viewTown"
+                        android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/textViewCheckbox"
+                    <TextView
+                        android:id="@+id/HeadingForPostCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/textViewTown"
+                        android:paddingTop="10dp"
+                        android:text="Post Code"
+                        android:textAlignment="center" />
 
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/editTextPostCode"
-                    android:layout_marginEnd="18dp"
-                    android:layout_toStartOf="@+id/checkBoxAdvertiser"
-                    android:paddingLeft="30dp"
-                    android:text="What Are You Primarily Going To Be Using The App For?"
-                    android:textAlignment="center"
-                    android:textColor="#808080"
-                    android:textSize="16dp" />
+                    <TextView
+                        android:id="@+id/textViewPostCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/HeadingForPostCode"
+                        android:paddingBottom="30dp"
+                        android:paddingTop="10dp"
+                        android:text="viewPostCode"
+                        android:textAlignment="center" />
 
-                <CheckBox
-                    android:id="@+id/checkBoxAdvertiser"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/editTextPostCode"
-                    android:layout_gravity="center"
-                    android:buttonTint="#2bbc9b"
-                    android:clickable="false"
-                    android:ems="10"
-                    android:padding="10dp"
-                    android:text="Advertiser"
-                    android:textColor="#2bbc9b"
-                    android:visibility="visible" />
+                    <TextView
+                        android:id="@+id/textViewCheckbox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textViewPostCode"
+                        android:text="What Are You Primarily Going To Be Using The App For?"
+                        android:textAlignment="center"
+                        android:textColor="#808080"
+                        android:textSize="16dp" />
 
-                <CheckBox
-                    android:id="@+id/checkBoxCourier"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/checkBoxAdvertiser"
-                    android:layout_below="@+id/checkBoxAdvertiser"
-                    android:layout_gravity="center"
-                    android:buttonTint="#2bbc9b"
-                    android:clickable="false"
-                    android:padding="10dp"
-                    android:text="Courier"
-                    android:textColor="#2bbc9b"
-                    android:visibility="visible" />
+                    <CheckBox
+                        android:id="@+id/checkBoxAdvertiser"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textViewCheckbox"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:buttonTint="#2bbc9b"
+                        android:clickable="false"
+                        android:ems="10"
+                        android:padding="10dp"
+                        android:text="Advertiser"
+                        android:textColor="#2bbc9b"
+                        android:visibility="visible" />
 
-            </LinearLayout>
+                    <CheckBox
+                        android:id="@+id/checkBoxCourier"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignStart="@+id/checkBoxAdvertiser"
+                        android:layout_below="@+id/checkBoxAdvertiser"
+                        android:layout_gravity="center"
+                        android:buttonTint="#2bbc9b"
+                        android:clickable="false"
+                        android:padding="10dp"
+                        android:text="Courier"
+                        android:textColor="#2bbc9b"
+                        android:visibility="visible" />
 
-        </ScrollView>
-
+                </RelativeLayout>
+            </ScrollView>
+        </LinearLayout>
     </LinearLayout>
-
 </FrameLayout>
 
 
