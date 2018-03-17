@@ -160,7 +160,6 @@ public class ViewProfileFragment extends Fragment
         Bundle bundle = this.getArguments();
 
         if (bundle != null)
-
         {
             final UserBidInformation userBidInformation = (UserBidInformation) bundle.getSerializable("User");
             passedUserID = userBidInformation.getUserID();
@@ -248,13 +247,7 @@ public class ViewProfileFragment extends Fragment
                     {
                         checkBoxAdvertiser.setChecked(true);
                         checkBoxCourier.setChecked(true);
-                    }
-
-
-//                    Bitmap bitmap = BitmapFactory.decodeFile(profileImage);
-//                    Bitmap b = Bitmap.createBitmap(bitmap);
-//                    profileImageUri.setImageBitmap(b);
-                    ////Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
+                    };
                 }
 
                 @Override
