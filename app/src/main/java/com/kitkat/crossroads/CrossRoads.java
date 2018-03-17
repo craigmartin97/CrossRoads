@@ -254,7 +254,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });
@@ -267,7 +267,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new EditProfileFragment()).commit();
+                getFragmentTransaction().replace(R.id.content, new EditProfileFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });
@@ -316,7 +316,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).commit();
+                getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });

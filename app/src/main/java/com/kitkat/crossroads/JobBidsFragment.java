@@ -352,7 +352,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                     bundle.putSerializable("User", mData.get(position));
                     viewProfileFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).commit();
+                    fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).addToBackStack("tag").commit();
                 }
             });
             return convertView;

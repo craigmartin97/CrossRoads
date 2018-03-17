@@ -317,7 +317,7 @@ public class PostAnAdvertFragment extends Fragment
                     saveJobInformation();
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.content, new FindAJobFragment()).commit();
+                    fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack("tag").commit();
                 }
             }
         });
