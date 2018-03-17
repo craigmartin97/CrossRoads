@@ -49,6 +49,8 @@ public class JobInformation implements Serializable
         this.jobID = jobID;
     }
 
+    public void setJobStatus(String jobStatus){this.jobStatus = jobStatus;}
+
     public void setCourierID(String courierID)
     {
         this.courierID = courierID;

@@ -64,6 +64,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private DataSnapshot usersReference;
 
     private String jobId;
+    private String jobBidId;
     private String usersId;
     private static final String TAG = "JobsBidsFragment";
     private String name;
@@ -140,8 +141,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 usersReference = dataSnapshot.child("Users");
 
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
-                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
-                Iterable<DataSnapshot> userListSnapShot = usersReference.getChildren();
+//                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+//                Iterable<DataSnapshot> userListSnapShot = usersReference.getChildren();
 
                 mAdapter = new JobBidsFragment.MyCustomAdapter();
 
@@ -149,6 +150,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 for (DataSnapshot ds : bidListSnapShot)
                 {
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
+                    jobBidId = ds.getKey();
 
                     if (jobId.equals(ds.getKey()))
                     {
@@ -157,6 +159,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                             final UserBidInformation bid = ds1.getValue(UserBidInformation.class);
                             String usersBid = bid.getUserBid();
                             String userID = bid.getUserID();
+                            String id = bid.getJobID();
 
                             myRef.child("Users").child(userID).addValueEventListener(new ValueEventListener()
                             {
@@ -379,6 +382,9 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                             dialog.cancel();
 
                             View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
+
+                            myRef.child("Jobs").child(mData.get(position).getJobID()).child("courierID").setValue(mData.get(position).getUserID());
+                            myRef.child("Jobs").child(mData.get(position).getJobID()).child("jobStatus").setValue("Active");
 
                             alertDialog.setTitle("Bid Accepted");
                             alertDialog.setView(mView);
