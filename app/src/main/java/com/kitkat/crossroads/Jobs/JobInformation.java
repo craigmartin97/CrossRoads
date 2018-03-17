@@ -21,9 +21,8 @@ public class JobInformation implements Serializable
 
     }
 
-
-    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobStatus) {
-
+    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobStatus)
+    {
         this.advertName = advertName;
         this.advertDescription = advertDescription;
         this.jobSize = jobSize;
@@ -42,6 +41,8 @@ public class JobInformation implements Serializable
         this.delPostcode = delPostcode;
         this.jobStatus = jobStatus;
     }
+
+
 
     public void setJobID(String jobID)
     {
@@ -137,7 +138,6 @@ public class JobInformation implements Serializable
     {
         return delPostcode;
     }
-
 
     public String getJobStatus() {
         return jobStatus;
