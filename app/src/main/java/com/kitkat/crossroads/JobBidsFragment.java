@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.Jobs.BidInformation;
+import com.kitkat.crossroads.Jobs.MyAdvertsActivity;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.UserBidInformation;
 import com.kitkat.crossroads.Jobs.JobInformation;
@@ -61,6 +64,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private DataSnapshot usersReference;
 
     private String jobId;
+    private String jobBidId;
     private String usersId;
     private static final String TAG = "JobsBidsFragment";
     private String name;
@@ -137,8 +141,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 usersReference = dataSnapshot.child("Users");
 
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
-                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
-                Iterable<DataSnapshot> userListSnapShot = usersReference.getChildren();
+//                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+//                Iterable<DataSnapshot> userListSnapShot = usersReference.getChildren();
 
                 mAdapter = new JobBidsFragment.MyCustomAdapter();
 
@@ -146,6 +150,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 for (DataSnapshot ds : bidListSnapShot)
                 {
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
+                    jobBidId = ds.getKey();
 
                     if (jobId.equals(ds.getKey()))
                     {
@@ -154,6 +159,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                             final UserBidInformation bid = ds1.getValue(UserBidInformation.class);
                             String usersBid = bid.getUserBid();
                             String userID = bid.getUserID();
+                            String id = bid.getJobID();
 
                             myRef.child("Users").child(userID).addValueEventListener(new ValueEventListener()
                             {
@@ -331,7 +337,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewBid = convertView.findViewById(R.id.textBid);
                 holder.textViewRating = convertView.findViewById(R.id.textRating);
-                holder.detailsButton = convertView.findViewById(R.id.detailsButton);
+                holder.acceptBidButton = convertView.findViewById(R.id.acceptBidButton);
                 convertView.setTag(holder);
             } else
             {
@@ -341,18 +347,81 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             holder.textViewName.setText(mData.get(position).getFullName());
             holder.textViewBid.setText(mData.get(position).getUserBid());
             holder.textViewRating.setText(mData.get(position).getUserID());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+
+            holder.acceptBidButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
 
-                    ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("User", mData.get(position));
-                    viewProfileFragment.setArguments(bundle);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).addToBackStack("tag").commit();
+//<<<<<<< HEAD
+//                    ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("User", mData.get(position));
+//                    viewProfileFragment.setArguments(bundle);
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).addToBackStack("tag").commit();
+//=======
+                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                    View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
+
+                    alertDialog.setTitle("Accept Bid?");
+                    alertDialog.setView(mView);
+                    final AlertDialog dialog = alertDialog.create();
+                    dialog.show();
+
+                    TextView text = (TextView) mView.findViewById(R.id.acceptBidText);
+                    Button yesButton = (Button) mView.findViewById(R.id.yesButton);
+                    Button noButton = (Button) mView.findViewById(R.id.noButton);
+
+                        /*accept users bid
+                            - get bidder's ID and set to CourierID
+                            - change Job Status to Active
+                            - notify users of selection
+                        */
+
+                    yesButton.setOnClickListener(new View.OnClickListener()
+                    {
+
+
+                        @Override
+                        public void onClick(View v)
+                        {
+                            dialog.cancel();
+
+                            View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
+
+                            myRef.child("Jobs").child(mData.get(position).getJobID()).child("courierID").setValue(mData.get(position).getUserID());
+                            myRef.child("Jobs").child(mData.get(position).getJobID()).child("jobStatus").setValue("Active");
+
+                            alertDialog.setTitle("Bid Accepted");
+                            alertDialog.setView(mView);
+                            final AlertDialog dialog = alertDialog.create();
+                            dialog.show();
+
+                            TextView text = (TextView) mView.findViewById(R.id.bidAccepted);
+                            Button okButton = (Button) mView.findViewById(R.id.okButton);
+
+                            okButton.setOnClickListener(new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View v)
+                                {
+                                    dialog.cancel();
+                                }
+                            });
+
+                        }
+                    });
+
+                    noButton.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            dialog.cancel();
+                        }
+                    });
                 }
             });
             return convertView;
@@ -375,7 +444,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             public TextView textViewName;
             public TextView textViewBid;
             public TextView textViewRating;
-            public Button detailsButton;
+            public Button acceptBidButton;
         }
 
         public void filter(String charText)

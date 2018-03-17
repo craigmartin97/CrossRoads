@@ -13,13 +13,13 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/logoutText"
+        android:id="@+id/bidAccepted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/bebasneueregular"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:text="Are You Sure You Want To LogOut?"
+        android:text="Bid Accepted."
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="20dp" />
@@ -35,17 +35,11 @@
         android:layout_alignParentBottom="true">
 
         <Button
-            android:id="@+id/logoutButton"
+            android:id="@+id/okButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Logout"></Button>
+            android:text="OK"></Button>
 
-        <Button
-            android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Cancel"></Button>
     </LinearLayout>
 </LinearLayout>
