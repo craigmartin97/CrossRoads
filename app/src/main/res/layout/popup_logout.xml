@@ -16,7 +16,7 @@
         android:id="@+id/logoutText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/applegaramond"
+        android:fontFamily="@font/bebasneueregular"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:text="Are You Sure You Want To LogOut?"
