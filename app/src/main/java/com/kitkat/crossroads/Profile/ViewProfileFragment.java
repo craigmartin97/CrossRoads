@@ -3,6 +3,7 @@ package com.kitkat.crossroads.Profile;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.opengl.Matrix;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -66,6 +69,8 @@ public class ViewProfileFragment extends Fragment
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private StorageReference storageReference;
+    private DataSnapshot reviewReference;
+    private RatingBar userRatingBar;
 
     private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
@@ -117,8 +122,45 @@ public class ViewProfileFragment extends Fragment
 
         View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
 
+        final ArrayList<ReviewInformation> reviewListArray = new ArrayList<>();
+
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
+
+        ValueEventListener ratings = myRef.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                reviewReference = dataSnapshot.child("Ratings").child(mAuth.getCurrentUser().getUid());
+                Iterable<DataSnapshot> reviewListSnapShot = reviewReference.getChildren();
+
+                for (DataSnapshot ds : reviewListSnapShot)
+                {
+                    reviewListArray.add(ds.getValue(ReviewInformation.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+        userRatingBar = (RatingBar) view.findViewById(R.id.UserRatingsBar);
+        userRatingBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+
+            }
+        });
+
         Bundle bundle = this.getArguments();
+
         if (bundle != null)
+
         {
             final UserBidInformation userBidInformation = (UserBidInformation) bundle.getSerializable("User");
             passedUserID = userBidInformation.getUserID();
@@ -278,8 +320,6 @@ public class ViewProfileFragment extends Fragment
                 }
             });
         }
-
-
         return view;
     }
 
