@@ -208,7 +208,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
         });
 
-
         filterSizeFrom = (Spinner) view.findViewById(R.id.spinnerSizeFrom);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
