@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -235,6 +236,18 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 }
                 mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
+
+                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+                      Bundle bundle = new Bundle();
+                      bundle.putSerializable("Job", mAdapter.mData.get(position));
+                      bidDetailsFragment.setArguments(bundle);
+                      FragmentManager fragmentManager = getFragmentManager();
+                      fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+                    }
+                });
             }
 
             @Override
@@ -394,7 +407,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewFrom = convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = convertView.findViewById(R.id.textTo);
-                holder.detailsButton = convertView.findViewById(R.id.detailsButton);
+                //holder.detailsButton = convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
             } else
             {
@@ -404,21 +417,21 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColL1());
             holder.textViewTo.setText(mData.get(position).getDelL1());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener()
-            {
-
-                @Override
-                public void onClick(View v)
-                {
-
-                    BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("Job", mData.get(position));
-                    bidDetailsFragment.setArguments(bundle);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
-                }
-            });
+//            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+//            {
+//
+//                @Override
+//                public void onClick(View v)
+//                {
+//
+//                    BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("Job", mData.get(position));
+//                    bidDetailsFragment.setArguments(bundle);
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+//                }
+//            });
             return convertView;
         }
 
