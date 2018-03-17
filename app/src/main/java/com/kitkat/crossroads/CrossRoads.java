@@ -169,16 +169,16 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
         if (id == R.id.nav_findAJob)
         {
-            fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack( "tag" ).commit();
+            fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack("tag").commit();
         } else if (id == R.id.nav_postAnAdvert)
         {
-            fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).addToBackStack( "tag" ).commit();
+            fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).addToBackStack("tag").commit();
         } else if (id == R.id.nav_myAdverts)
         {
-            fragmentTransaction.replace(R.id.content, new MyAdvertsFragment()).addToBackStack( "tag" ).commit();
+            fragmentTransaction.replace(R.id.content, new MyAdvertsFragment()).addToBackStack("tag").commit();
         } else if (id == R.id.nav_myJobs)
         {
-            fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack( "tag" ).commit();
+            fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack("tag").commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -254,7 +254,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });
@@ -267,7 +267,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new EditProfileFragment()).commit();
+                getFragmentTransaction().replace(R.id.content, new EditProfileFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });
@@ -316,7 +316,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).commit();
+                getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });

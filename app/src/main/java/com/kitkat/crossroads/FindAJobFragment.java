@@ -130,30 +130,34 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         };
 
         final List<String> sortByList = new ArrayList<>(Arrays.asList(sortBy));
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByList){
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByList)
+        {
             @Override
-            public boolean isEnabled(int position){
-                if(position == 0)
+            public boolean isEnabled(int position)
+            {
+                if (position == 0)
                 {
                     // Disable the first item from Spinner
                     // First item will be use for hint
                     return false;
-                }
-                else
+                } else
                 {
                     return true;
                 }
             }
+
             @Override
             public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
+                                        ViewGroup parent)
+            {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if(position == 0){
+                if (position == 0)
+                {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                }
-                else {
+                } else
+                {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
@@ -163,13 +167,16 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortBySpinner.setAdapter(adapter1);
 
-        sortBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sortBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
                 // If user change the default selection
                 // First item is disable and it is used for hint
-                if(position > 0){
+                if (position > 0)
+                {
                     // Notify the selected item text
                     Toast.makeText
                             (getActivity(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
@@ -178,24 +185,26 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent)
+            {
 
             }
         });
 
         filterButton = (Button) view.findViewById(R.id.filterButton);
 
-        filterButton.setOnClickListener(new View.OnClickListener() {
+        filterButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                if(filterButton.getTag().equals("#2bbc9b"))
+            public void onClick(View v)
+            {
+                if (filterButton.getTag().equals("#2bbc9b"))
                 {
                     TextView filterName = (TextView) view.findViewById(R.id.filterName);
                     filterName.setVisibility(view.GONE);
                 }
             }
         });
-
 
 
         auth = FirebaseAuth.getInstance();
@@ -219,7 +228,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                     j.setJobID(ds.getKey());
 
                     //display only jobs that are still open to bidding
-                    if(j.getJobStatus().equals("Pending")) {
+                    if (j.getJobStatus().equals("Pending"))
+                    {
                         jobList.add(j);
                     }
                 }
@@ -227,9 +237,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
 
-                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
                         JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("Job", mAdapter.mData.get(position));

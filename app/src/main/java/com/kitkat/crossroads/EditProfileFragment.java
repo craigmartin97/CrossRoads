@@ -404,7 +404,7 @@ public class EditProfileFragment extends Fragment
 
         android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, new ViewProfileFragment()).commit();
+        fragmentTransaction.replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
     }
 
     private void setUserInformation(UserInformation userInformation)

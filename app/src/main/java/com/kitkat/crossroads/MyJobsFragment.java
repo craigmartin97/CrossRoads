@@ -132,7 +132,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         host.setup();
 
 
-
         //Tab 2
         TabHost.TabSpec spec = host.newTabSpec("Active");
         spec.setContent(R.id.tab1);
@@ -237,15 +236,17 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
 
-                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
                         BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
-                      Bundle bundle = new Bundle();
-                      bundle.putSerializable("Job", mAdapter.mData.get(position));
-                      bidDetailsFragment.setArguments(bundle);
-                      FragmentManager fragmentManager = getFragmentManager();
-                      fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("Job", mAdapter.mData.get(position));
+                        bidDetailsFragment.setArguments(bundle);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
                     }
                 });
             }
