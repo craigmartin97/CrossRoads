@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -79,6 +80,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private SearchView jobSearch;
 
+    private TabHost host;
+
     private TabHost tabHost;
 
     public MyJobsFragment()
@@ -125,26 +128,28 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
 
-        final TabHost host = (TabHost) view.findViewById(R.id.tabHost);
+        host = (TabHost) view.findViewById(R.id.tabHost);
         host.setup();
 
 
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Completed Jobs");
-        spec.setContent(R.id.tab1);
-        spec.setIndicator("Completed");
-        host.addTab(spec);
 
         //Tab 2
-        spec = host.newTabSpec("Active");
-        spec.setContent(R.id.tab2);
+        TabHost.TabSpec spec = host.newTabSpec("Active");
+        spec.setContent(R.id.tab1);
         spec.setIndicator("Active");
         host.addTab(spec);
 
-        //Tab 3
+        //Tab 1
         spec = host.newTabSpec("Bid On");
-        spec.setContent(R.id.tab3);
+        spec.setContent(R.id.tab2);
         spec.setIndicator("Bid On");
+        host.addTab(spec);
+
+
+        //Tab 3
+        spec = host.newTabSpec("Completed Jobs");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("Completed");
         host.addTab(spec);
 
         for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
@@ -231,6 +236,18 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 }
                 mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
+
+                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+                      Bundle bundle = new Bundle();
+                      bundle.putSerializable("Job", mAdapter.mData.get(position));
+                      bidDetailsFragment.setArguments(bundle);
+                      FragmentManager fragmentManager = getFragmentManager();
+                      fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+                    }
+                });
             }
 
             @Override
@@ -390,7 +407,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewFrom = convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = convertView.findViewById(R.id.textTo);
-                holder.detailsButton = convertView.findViewById(R.id.detailsButton);
+                //holder.detailsButton = convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
             } else
             {
@@ -400,21 +417,21 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColL1());
             holder.textViewTo.setText(mData.get(position).getDelL1());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener()
-            {
-
-                @Override
-                public void onClick(View v)
-                {
-
-                    BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("Job", mData.get(position));
-                    bidDetailsFragment.setArguments(bundle);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).commit();
-                }
-            });
+//            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+//            {
+//
+//                @Override
+//                public void onClick(View v)
+//                {
+//
+//                    BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("Job", mData.get(position));
+//                    bidDetailsFragment.setArguments(bundle);
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+//                }
+//            });
             return convertView;
         }
 

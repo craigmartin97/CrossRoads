@@ -158,7 +158,7 @@ public class MyAdvertsActivity extends Activity
                 holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
                 holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
-                holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
+                //holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
             } else
             {
@@ -168,18 +168,18 @@ public class MyAdvertsActivity extends Activity
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getJobType());
             holder.textViewTo.setText(mData.get(position).getJobSize());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener()
-            {
-
-                @Override
-                public void onClick(View v)
-                {
-                    Intent intent = new Intent(MyAdvertsActivity.this, JobDetailsActivity.class);
-                    intent.putExtra("JobDetails", mData.get(position));
-                    startActivity(intent);
-
-                }
-            });
+//            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+//            {
+//
+//                @Override
+//                public void onClick(View v)
+//                {
+//                    Intent intent = new Intent(MyAdvertsActivity.this, JobDetailsActivity.class);
+//                    intent.putExtra("JobDetails", mData.get(position));
+//                    startActivity(intent);
+//
+//                }
+//            });
             return convertView;
         }
 

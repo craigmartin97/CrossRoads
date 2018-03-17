@@ -272,8 +272,8 @@ public class MyAdvertsFragment extends Fragment
                 holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
                 holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
-                holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
-                holder.viewBidsButton = (Button) convertView.findViewById(R.id.viewBidsButton);
+
+                //holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
             } else
             {
@@ -283,37 +283,43 @@ public class MyAdvertsFragment extends Fragment
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
-            holder.detailsButton.setOnClickListener(new View.OnClickListener()
-            {
+//
+//            holder.viewBidsButton.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override
+//                public void onClick(View v)
+//                {
+//
+//                    JobBidsFragment jobBidsFragment = new JobBidsFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("JobId", mData.get(position));
+//                    jobBidsFragment.setArguments(bundle);
+//
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).commit();
+//                }
+//            });
 
-                @Override
-                public void onClick(View v)
-                {
-
-
-                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("Job", mData.get(position));
-                    jobDetailsFragment.setArguments(bundle);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
-                }
-            });
-            holder.viewBidsButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-
-                    JobBidsFragment jobBidsFragment = new JobBidsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("JobId", mData.get(position));
-                    jobBidsFragment.setArguments(bundle);
-
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).commit();
-                }
-            });
+//            holder.detailsButton.setOnClickListener(new View.OnClickListener()
+//            {
+//
+//                @Override
+//                public void onClick(View v)
+//                {
+//                    Intent intent = new Intent(getActivity(), JobDetailsActivity.class);
+//                    intent.putExtra("JobDetails", mData.get(position));
+//                    startActivity(intent);
+//
+//                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("Job", mData.get(position));
+//                    bundle.putString("name", "Hello");
+//                    bundle.putString("address", "123345");
+//                    jobDetailsFragment.setArguments(bundle);
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).commit();
+//                }
+//            });
             return convertView;
         }
 

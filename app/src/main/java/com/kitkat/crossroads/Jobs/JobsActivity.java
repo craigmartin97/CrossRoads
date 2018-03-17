@@ -172,7 +172,7 @@ public class JobsActivity extends Activity
                 holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
                 holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
-                holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
+                //holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
             } else
             {
