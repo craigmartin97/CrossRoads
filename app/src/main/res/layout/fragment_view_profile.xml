@@ -52,19 +52,20 @@
                     android:layout_height="wrap_content">
 
                     <RatingBar
-                        android:id="@+id/RatingsBar"
+                        android:id="@+id/UserRatingsBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:numStars="5"
                         android:paddingTop="10dp"
-                        android:stepSize=".5" />
+                        android:stepSize=".5"
+                        android:isIndicator="true"/>
 
                     <TextView
                         android:id="@+id/HeadingForPhoneNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/RatingsBar"
+                        android:layout_below="@+id/UserRatingsBar"
                         android:layout_marginStart="17dp"
                         android:paddingTop="10dp"
                         android:text="Phone Number"
