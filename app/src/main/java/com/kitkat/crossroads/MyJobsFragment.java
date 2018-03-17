@@ -133,6 +133,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
 
 
+
         //Tab 2
         TabHost.TabSpec spec = host.newTabSpec("Active");
         spec.setContent(R.id.tab1);
@@ -245,7 +246,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                       bundle.putSerializable("Job", mAdapter.mData.get(position));
                       bidDetailsFragment.setArguments(bundle);
                       FragmentManager fragmentManager = getFragmentManager();
-                      fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+                      fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
                     }
                 });
             }
