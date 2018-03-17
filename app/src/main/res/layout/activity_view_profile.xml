@@ -44,7 +44,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/HeadingForPostalAddress"
+                android:id="@+id/HeadingForPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="130dp"
