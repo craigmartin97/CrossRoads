@@ -115,7 +115,7 @@ public class ViewProfileFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
 
         Bundle bundle = this.getArguments();
-        if(bundle != null)
+        if (bundle != null)
         {
             final UserBidInformation userBidInformation = (UserBidInformation) bundle.getSerializable("User");
             passedUserID = userBidInformation.getUserID();
@@ -157,7 +157,7 @@ public class ViewProfileFragment extends Fragment
             }
         };
 
-        if(passedUserID != null)
+        if (passedUserID != null)
         {
             myRef.child(passedUserID).addValueEventListener(new ValueEventListener()
             {
@@ -191,22 +191,20 @@ public class ViewProfileFragment extends Fragment
                     town.setText(usersTown);
                     postCode.setText(postalCode);
 
-                    if(advertiser == true && courier == false)
+                    if (advertiser == true && courier == false)
                     {
                         checkBoxAdvertiser.setChecked(true);
                         checkBoxCourier.setChecked(false);
-                    }
-                    else if(advertiser == false && courier == true)
+                    } else if (advertiser == false && courier == true)
                     {
                         checkBoxAdvertiser.setChecked(false);
                         checkBoxCourier.setChecked(true);
-                    }
-                    else if(advertiser == true && courier == true)
+                    } else if (advertiser == true && courier == true)
                     {
                         checkBoxAdvertiser.setChecked(true);
                         checkBoxCourier.setChecked(true);
                     }
-                    Picasso.get().load(profileImage).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
+                    Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
                 }
 
                 @Override
@@ -215,8 +213,7 @@ public class ViewProfileFragment extends Fragment
 
                 }
             });
-        }
-        else
+        } else
         {
             myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
             {
@@ -250,22 +247,20 @@ public class ViewProfileFragment extends Fragment
                     town.setText(usersTown);
                     postCode.setText(postalCode);
 
-                    if(advertiser == true && courier == false)
+                    if (advertiser == true && courier == false)
                     {
                         checkBoxAdvertiser.setChecked(true);
                         checkBoxCourier.setChecked(false);
-                    }
-                    else if(advertiser == false && courier == true)
+                    } else if (advertiser == false && courier == true)
                     {
                         checkBoxAdvertiser.setChecked(false);
                         checkBoxCourier.setChecked(true);
-                    }
-                    else if(advertiser == true && courier == true)
+                    } else if (advertiser == true && courier == true)
                     {
                         checkBoxAdvertiser.setChecked(true);
                         checkBoxCourier.setChecked(true);
                     }
-                    Picasso.get().load(profileImage).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
+                    Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
                 }
 
                 @Override
@@ -275,7 +270,6 @@ public class ViewProfileFragment extends Fragment
                 }
             });
         }
-
 
 
         return view;

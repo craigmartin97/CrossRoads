@@ -41,7 +41,8 @@ import java.util.Locale;
  * Use the {@link MyAdvertsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTextListener
+{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -143,7 +144,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                     mAdapter.addArray(jobList);
                     jobListView.setAdapter(mAdapter);
 
-                    jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                    {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                         {
@@ -205,12 +207,14 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String query)
+    {
         return false;
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(String newText)
+    {
         String text = newText;
         mAdapter.filter(text);
 

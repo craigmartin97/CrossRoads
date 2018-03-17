@@ -169,16 +169,16 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
         if (id == R.id.nav_findAJob)
         {
-            fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack( "tag" ).commit();
+            fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack("tag").commit();
         } else if (id == R.id.nav_postAnAdvert)
         {
-            fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).addToBackStack( "tag" ).commit();
+            fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).addToBackStack("tag").commit();
         } else if (id == R.id.nav_myAdverts)
         {
-            fragmentTransaction.replace(R.id.content, new MyAdvertsFragment()).addToBackStack( "tag" ).commit();
+            fragmentTransaction.replace(R.id.content, new MyAdvertsFragment()).addToBackStack("tag").commit();
         } else if (id == R.id.nav_myJobs)
         {
-            fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack( "tag" ).commit();
+            fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack("tag").commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
