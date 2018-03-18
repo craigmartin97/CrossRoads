@@ -263,7 +263,7 @@ public class JobDetailsFragment extends Fragment
         String userID = user.getUid();
         String jobID = jobInformation.getJobID().toString().trim();
 
-        BidInformation bidInformation = new BidInformation(userID, userBid, jobID);
+        BidInformation bidInformation = new BidInformation(userID, userBid);
 
         databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 
