@@ -141,8 +141,6 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 usersReference = dataSnapshot.child("Users");
 
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
-//                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
-//                Iterable<DataSnapshot> userListSnapShot = usersReference.getChildren();
 
                 mAdapter = new JobBidsFragment.MyCustomAdapter();
 

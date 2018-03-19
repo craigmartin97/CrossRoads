@@ -69,6 +69,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     private SearchView jobSearch;
 
+    private String jobID;
+
     public MyAdvertsFragment()
     {
         // Required empty public constructor
@@ -326,6 +328,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
+            jobID = mData.get(position).getJobID();
+
 //            holder.viewBidsButton.setOnClickListener(new View.OnClickListener()
 //            {
 //                @Override
