@@ -450,6 +450,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 @Override
                 public void onClick(View v)
                 {
+
                     final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                     View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
 
