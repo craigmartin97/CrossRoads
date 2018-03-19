@@ -1,8 +1,6 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.content.Intent;
 import android.media.ExifInterface;
 import android.net.Uri;
