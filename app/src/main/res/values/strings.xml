@@ -47,6 +47,7 @@
     <string name="from">From</string>
     <string name="my_adverts">My Adverts</string>
     <string name="my_bids">My Bids</string>
+    <string name="my_active_jobs">My Active Jobs</string>
     <string-array name="job_sizes">
         <item>Small</item>
         <item>Medium</item>

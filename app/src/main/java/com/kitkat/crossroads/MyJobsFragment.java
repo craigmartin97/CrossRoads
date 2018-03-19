@@ -71,12 +71,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<String> userBidId = new ArrayList<String>();
     private ArrayList<String> userJobId = new ArrayList<String>();
 
-    private MyJobsFragment.MyCustomAdapter mAdapter;
+    private MyJobsFragment.MyCustomAdapter mAdapter, mAdapterActiveJobs;
 
     private ArrayList<JobInformation> jobList = new ArrayList<>();
+    private ArrayList<JobInformation> jobListActive = new ArrayList<>();
 
 
-    private ListView jobListView;
+    private ListView jobListView, jobListViewMyAcJobs;
 
     private SearchView jobSearch;
 
@@ -184,10 +185,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
 
         jobListView = view.findViewById(R.id.jobListView1);
-
+        jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
 
         final ArrayList<String> jobsListArray = new ArrayList<>();
 
+        final ArrayList<String> activeJobsListArray = new ArrayList<>();
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -205,6 +207,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
 
                 mAdapter = new MyJobsFragment.MyCustomAdapter();
+                mAdapterActiveJobs = new MyJobsFragment.MyCustomAdapter();
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
@@ -229,7 +232,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     if (jobsListArray.contains(ds3.getKey()))
                     {
                         JobInformation j = ds3.getValue(JobInformation.class);
-                        jobList.add(j);
+                        if(j.getJobStatus().equals("Pending")) {
+                            jobList.add(j);
+                        }
                     }
 
                 }
@@ -251,6 +256,37 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                     }
                 });
+
+                Iterable<DataSnapshot> activeJobListSnapShot = jobReference.getChildren();
+
+
+                for (DataSnapshot ds4 : activeJobListSnapShot)
+                {
+                    JobInformation j = ds4.getValue(JobInformation.class);
+                    if(j.getJobStatus().equals("Active") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
+                    {
+                        jobListActive.add(j);
+                    }
+
+                }
+                mAdapterActiveJobs.addArray(jobListActive);
+                jobListViewMyAcJobs.setAdapter(mAdapterActiveJobs);
+
+                jobListViewMyAcJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("Job", mAdapterActiveJobs.mData.get(position));
+                        activeJobDetailsFragment.setArguments(bundle);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+
+                    }
+                });
+
             }
 
             @Override
@@ -357,6 +393,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         public void addArray(final ArrayList<JobInformation> j)
         {
+            mData.clear();
+            mDataOrig.clear();
             mData = j;
             mDataOrig = j;
         }
