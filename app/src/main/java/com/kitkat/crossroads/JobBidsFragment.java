@@ -152,65 +152,23 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         textViewToTown = view.findViewById(R.id.textViewToTown);
         textViewToPostcode = view.findViewById(R.id.textViewJobToPostcode);
 
-        myRef.child("Jobs").child(jobId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                String name = dataSnapshot.child("advertName").getValue(String.class);
-                String description = dataSnapshot.child("advertDescription").getValue(String.class);
-                String jobSize = dataSnapshot.child("jobSize").getValue(String.class);
-                String jobType = dataSnapshot.child("jobType").getValue(String.class);
-                String collectionDate = dataSnapshot.child("collectionDate").getValue(String.class);
-                String collectionTime = dataSnapshot.child("collectionTime").getValue(String.class);
 
-                String fromAddress = dataSnapshot.child("colL1").getValue(String.class);
-                String fromAddressLine2 = dataSnapshot.child("colL2").getValue(String.class);
-                String fromTown = dataSnapshot.child("colTown").getValue(String.class);
-                String fromPostcode = dataSnapshot.child("colPostcode").getValue(String.class);
 
-                String toAddress = dataSnapshot.child("delL1").getValue(String.class);
-                String toAddressLine2 = dataSnapshot.child("delL2").getValue(String.class);
-                String toTown = dataSnapshot.child("delTown").getValue(String.class);
-                String toPostcode = dataSnapshot.child("delPostcode").getValue(String.class);
+                textViewJobName1.setText(jobInformation.getAdvertName());
+                textViewDescription1.setText(jobInformation.getAdvertDescription());
+                textViewJobSize1.setText(jobInformation.getJobSize());
+                textViewJobType1.setText(jobInformation.getJobType());
+                textViewJobColDate1.setText(jobInformation.getCollectionDate());
+                textViewJobColTime1.setText(jobInformation.getCollectionTime());
 
-                Log.d(TAG, "Job Name: " + name);
-                Log.d(TAG, "Description: " + description);
-                Log.d(TAG, "Job Size: " + jobSize);
-                Log.d(TAG, "Job Type: " + jobType);
-                Log.d(TAG, "Collection Date: " + collectionDate);
-                Log.d(TAG, "Collection Time: " + collectionTime);
+                textViewFromAddress.setText(jobInformation.getColL1() + ", " + jobInformation.getColL2());
+                textViewFromTown.setText(jobInformation.getColTown());
+                textViewFromPostcode.setText(jobInformation.getColPostcode());
 
-                Log.d(TAG, "From Address: " + fromAddress);
-                Log.d(TAG, "From Address Line 2: " + fromAddressLine2);
-                Log.d(TAG, "From Town: " + fromTown);
-                Log.d(TAG, "From PostCode: " + fromPostcode);
+                textViewToAddress.setText(jobInformation.getDelL1() + ", " + jobInformation.getDelL2());
+                textViewToTown.setText(jobInformation.getDelTown());
+                textViewToPostcode.setText(jobInformation.getDelPostcode());
 
-                Log.d(TAG, "To Address: " + toAddress);
-                Log.d(TAG, "To Address Line 2: " + toAddressLine2);
-                Log.d(TAG, "To Town: " + toTown);
-                Log.d(TAG, "To PostCode: " + toPostcode);
-
-                textViewJobName1.setText(name);
-                textViewDescription1.setText(description);
-                textViewJobSize1.setText(jobSize);
-                textViewJobType1.setText(jobType);
-                textViewJobColDate1.setText(collectionDate);
-                textViewJobColTime1.setText(collectionTime);
-
-                textViewFromAddress.setText(fromAddress + ", " + fromAddressLine2);
-                textViewFromTown.setText(fromTown);
-                textViewFromPostcode.setText(fromPostcode);
-
-                textViewToAddress.setText(toAddress + ", " + toAddressLine2);
-                textViewToTown.setText(toTown);
-                textViewToPostcode.setText(toPostcode);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         databaseReference.addValueEventListener(new ValueEventListener()
         {

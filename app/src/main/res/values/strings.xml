@@ -48,6 +48,7 @@
     <string name="my_adverts">My Adverts</string>
     <string name="my_bids">My Bids</string>
     <string name="my_active_jobs">My Active Jobs</string>
+    <string name="my_complete_jobs">My Complete Jobs</string>
     <string-array name="job_sizes">
         <item>Small</item>
         <item>Medium</item>

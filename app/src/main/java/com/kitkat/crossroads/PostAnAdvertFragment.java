@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -28,8 +29,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.JobsActivity;
@@ -59,6 +63,8 @@ public class PostAnAdvertFragment extends Fragment
     private OnFragmentInteractionListener mListener;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private static final String TAG = "PostAnActivityFragment";
+
+    private DataSnapshot jobReference;
 
 
     private FirebaseAuth auth;
@@ -394,11 +400,37 @@ public class PostAnAdvertFragment extends Fragment
 
         String posterID = user.getUid().toString().trim();
 
-        JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
+        final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
                 courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
 
 
         databaseReference.child("Jobs").push().setValue(jobInformation);
+
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                jobReference = dataSnapshot.child("Jobs");
+
+                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+
+                for (DataSnapshot ds : jobListSnapShot)
+                {
+                    JobInformation j = ds.getValue(JobInformation.class);
+                    if(j.equals(jobInformation))
+                    {
+                        databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
 
         Toast.makeText(getActivity(), "Job Added!", Toast.LENGTH_SHORT).show();
 
