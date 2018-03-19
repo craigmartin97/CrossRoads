@@ -141,8 +141,6 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 usersReference = dataSnapshot.child("Users");
 
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
-//                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
-//                Iterable<DataSnapshot> userListSnapShot = usersReference.getChildren();
 
                 mAdapter = new JobBidsFragment.MyCustomAdapter();
 
@@ -391,8 +389,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
                             View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
 
-                            myRef.child("Jobs").child(mData.get(position).getJobID()).child("courierID").setValue(mData.get(position).getUserID());
-                            myRef.child("Jobs").child(mData.get(position).getJobID()).child("jobStatus").setValue("Active");
+                            myRef.child("Jobs").child(jobId).child("courierID").setValue(mData.get(position).getUserID());
+                            myRef.child("Jobs").child(jobId).child("jobStatus").setValue("Active");
 
                             alertDialog.setTitle("Bid Accepted");
                             alertDialog.setView(mView);

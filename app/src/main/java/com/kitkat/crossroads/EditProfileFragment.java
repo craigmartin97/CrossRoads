@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Profile.UserInformation;
@@ -220,11 +221,13 @@ public class EditProfileFragment extends Fragment
             }
         });
 
+        // uupload users profile image
         uploadProfileImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                // intent to gallery area
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, GALLERY_INTENT);
@@ -247,9 +250,11 @@ public class EditProfileFragment extends Fragment
             progressDialog.show();
 
             final Uri uri = data.getData();
+
             final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
             this.filePath = filePath;
 
+            // Put the file in the Firebase Storage Area
             filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
                 @Override
@@ -258,6 +263,8 @@ public class EditProfileFragment extends Fragment
                     progressDialog.dismiss();
                     Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
+
+                    // Saving the URL under the "Users" table, under the "Users ID" In the Firebase Database to later retrieve it
                     myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
                 }
             }).addOnFailureListener(new OnFailureListener()

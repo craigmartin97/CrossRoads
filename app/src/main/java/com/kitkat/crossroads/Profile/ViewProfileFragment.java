@@ -1,10 +1,13 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.opengl.Matrix;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -204,7 +207,12 @@ public class ViewProfileFragment extends Fragment
                         checkBoxAdvertiser.setChecked(true);
                         checkBoxCourier.setChecked(true);
                     }
-                    Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
+
+
+//                    Bitmap bitmap = BitmapFactory.decodeFile(profileImage);
+//                    Bitmap b = Bitmap.createBitmap(bitmap);
+//                    profileImageUri.setImageBitmap(b);
+                    ////Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
                 }
 
                 @Override
@@ -275,7 +283,6 @@ public class ViewProfileFragment extends Fragment
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri)
     {
         if (mListener != null)

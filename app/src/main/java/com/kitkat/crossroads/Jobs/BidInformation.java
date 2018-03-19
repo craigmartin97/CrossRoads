@@ -9,17 +9,16 @@ import java.io.Serializable;
 public class BidInformation implements Serializable
 {
 
-    public String userID, userBid, jobID;
+    public String userID, userBid;
 
     public BidInformation()
     {
     }
 
-    public BidInformation(String userID, String userBid, String jobID)
+    public BidInformation(String userID, String userBid)
     {
         this.userID = userID;
         this.userBid = userBid;
-        this.jobID = jobID;
     }
 
 
@@ -46,13 +45,5 @@ public class BidInformation implements Serializable
     public String getWholeString()
     {
         return userID + userBid;
-    }
-
-    public String getJobID() {
-        return jobID;
-    }
-
-    public void setJobID(String jobID) {
-        this.jobID = jobID;
     }
 }
