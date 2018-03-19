@@ -331,6 +331,7 @@ public class EditProfileFragment extends Fragment
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
 
+
         if (TextUtils.isEmpty(fullName))
         {
             customToastMessage("Please Enter Your Name");
