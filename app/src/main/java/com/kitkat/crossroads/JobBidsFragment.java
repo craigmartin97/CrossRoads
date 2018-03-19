@@ -352,14 +352,6 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 public void onClick(View v)
                 {
 
-//<<<<<<< HEAD
-//                    ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("User", mData.get(position));
-//                    viewProfileFragment.setArguments(bundle);
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).addToBackStack("tag").commit();
-//=======
                     final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                     View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
 
