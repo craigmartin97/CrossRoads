@@ -221,7 +221,6 @@ public class EditProfileFragment extends Fragment
             }
         });
 
-        // uupload users profile image
         uploadProfileImage.setOnClickListener(new View.OnClickListener()
         {
             @Override

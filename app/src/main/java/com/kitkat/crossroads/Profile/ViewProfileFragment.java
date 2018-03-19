@@ -120,7 +120,7 @@ public class ViewProfileFragment extends Fragment
         Bundle bundle = this.getArguments();
         if (bundle != null)
         {
-            final UserBidInformation userBidInformation = (UserBidInformation) bundle.getSerializable("User");
+            final UserBidInformation userBidInformation = (UserBidInformation) bundle.getSerializable("ViewProfile");
             passedUserID = userBidInformation.getUserID();
         }
 
