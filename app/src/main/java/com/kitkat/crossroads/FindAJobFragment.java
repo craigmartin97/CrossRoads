@@ -410,7 +410,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
                 holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
-                //holder.detailsButton = (Button) convertView.findViewById(R.id.detailsButton);
                 convertView.setTag(holder);
             } else
             {
@@ -420,21 +419,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
-//            holder.detailsButton.setOnClickListener(new View.OnClickListener()
-//            {
-//
-//                @Override
-//                public void onClick(View v)
-//                {
-//
-//                    JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("Job", mData.get(position));
-//                    jobDetailsFragment.setArguments(bundle);
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).addToBackStack("tag").commit();
-//                }
-//            });
             return convertView;
         }
 
@@ -455,7 +439,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             public TextView textViewName;
             public TextView textViewFrom;
             public TextView textViewTo;
-            public Button detailsButton;
         }
 
         public void filter(String charText)

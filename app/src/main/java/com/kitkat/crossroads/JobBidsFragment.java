@@ -79,6 +79,11 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
     private OnFragmentInteractionListener mListener;
 
+    private TextView textViewJobName1, textViewDescription1, textViewJobSize1,
+            textViewJobType1, textViewJobColDate1, textViewJobColTime1,
+            textViewFromAddress, textViewFromTown, textViewFromPostcode,
+            textViewToAddress, textViewToTown, textViewToPostcode;
+
     public JobBidsFragment()
     {
         // Required empty public constructor
@@ -124,12 +129,88 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         myRef = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
         databaseReference = database.getReference();
-        jobListView = view.findViewById(R.id.jobListView1);
 
         Bundle bundle = this.getArguments();
         final JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobId");
         jobId = jobInformation.getJobID();
 
+        jobListView = view.findViewById(R.id.jobListView1);
+
+        textViewJobName1 = view.findViewById(R.id.textViewJobName1);
+        textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
+        textViewJobSize1 = view.findViewById(R.id.textViewJobSize1);
+        textViewJobType1 = view.findViewById(R.id.textViewJobType1);
+        textViewJobColDate1 = view.findViewById(R.id.textViewJobColDate1);
+        textViewJobColTime1 = view.findViewById(R.id.textViewJobColTime1);
+
+
+        textViewFromAddress = view.findViewById(R.id.textViewFromAddress);
+        textViewFromTown = view.findViewById(R.id.textViewFromTown);
+        textViewFromPostcode = view.findViewById(R.id.textViewFromPostcode);
+
+        textViewToAddress = view.findViewById(R.id.textViewToAddress);
+        textViewToTown = view.findViewById(R.id.textViewToTown);
+        textViewToPostcode = view.findViewById(R.id.textViewJobToPostcode);
+
+        myRef.child("Jobs").child(jobId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                String name = dataSnapshot.child("advertName").getValue(String.class);
+                String description = dataSnapshot.child("advertDescription").getValue(String.class);
+                String jobSize = dataSnapshot.child("jobSize").getValue(String.class);
+                String jobType = dataSnapshot.child("jobType").getValue(String.class);
+                String collectionDate = dataSnapshot.child("collectionDate").getValue(String.class);
+                String collectionTime = dataSnapshot.child("collectionTime").getValue(String.class);
+
+                String fromAddress = dataSnapshot.child("colL1").getValue(String.class);
+                String fromAddressLine2 = dataSnapshot.child("colL2").getValue(String.class);
+                String fromTown = dataSnapshot.child("colTown").getValue(String.class);
+                String fromPostcode = dataSnapshot.child("colPostcode").getValue(String.class);
+
+                String toAddress = dataSnapshot.child("delL1").getValue(String.class);
+                String toAddressLine2 = dataSnapshot.child("delL2").getValue(String.class);
+                String toTown = dataSnapshot.child("delTown").getValue(String.class);
+                String toPostcode = dataSnapshot.child("delPostcode").getValue(String.class);
+
+                Log.d(TAG, "Job Name: " + name);
+                Log.d(TAG, "Description: " + description);
+                Log.d(TAG, "Job Size: " + jobSize);
+                Log.d(TAG, "Job Type: " + jobType);
+                Log.d(TAG, "Collection Date: " + collectionDate);
+                Log.d(TAG, "Collection Time: " + collectionTime);
+
+                Log.d(TAG, "From Address: " + fromAddress);
+                Log.d(TAG, "From Address Line 2: " + fromAddressLine2);
+                Log.d(TAG, "From Town: " + fromTown);
+                Log.d(TAG, "From PostCode: " + fromPostcode);
+
+                Log.d(TAG, "To Address: " + toAddress);
+                Log.d(TAG, "To Address Line 2: " + toAddressLine2);
+                Log.d(TAG, "To Town: " + toTown);
+                Log.d(TAG, "To PostCode: " + toPostcode);
+
+                textViewJobName1.setText(name);
+                textViewDescription1.setText(description);
+                textViewJobSize1.setText(jobSize);
+                textViewJobType1.setText(jobType);
+                textViewJobColDate1.setText(collectionDate);
+                textViewJobColTime1.setText(collectionTime);
+
+                textViewFromAddress.setText(fromAddress + ", " + fromAddressLine2);
+                textViewFromTown.setText(fromTown);
+                textViewFromPostcode.setText(fromPostcode);
+
+                textViewToAddress.setText(toAddress + ", " + toAddressLine2);
+                textViewToTown.setText(toTown);
+                textViewToPostcode.setText(toPostcode);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         databaseReference.addValueEventListener(new ValueEventListener()
         {
