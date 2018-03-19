@@ -71,13 +71,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<String> userBidId = new ArrayList<String>();
     private ArrayList<String> userJobId = new ArrayList<String>();
 
-    private MyJobsFragment.MyCustomAdapter mAdapter, mAdapterActiveJobs;
+    private MyJobsFragment.MyCustomAdapter mAdapter, mAdapterActiveJobs, mAdapterCompleteJobs;
 
     private ArrayList<JobInformation> jobList = new ArrayList<>();
     private ArrayList<JobInformation> jobListActive = new ArrayList<>();
+    private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
 
 
-    private ListView jobListView, jobListViewMyAcJobs;
+    private ListView jobListView, jobListViewMyAcJobs, jobListViewMyComJobs;
 
     private SearchView jobSearch;
 
@@ -186,10 +187,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         jobListView = view.findViewById(R.id.jobListView1);
         jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
+        jobListViewMyComJobs = view.findViewById(R.id.jobListViewMyCompleteJobs);
 
         final ArrayList<String> jobsListArray = new ArrayList<>();
 
         final ArrayList<String> activeJobsListArray = new ArrayList<>();
+
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -206,8 +209,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
 
-                mAdapter = new MyJobsFragment.MyCustomAdapter();
-                mAdapterActiveJobs = new MyJobsFragment.MyCustomAdapter();
+                mAdapter = new MyCustomAdapter();
+                mAdapterActiveJobs = new MyCustomAdapter();
+                mAdapterCompleteJobs = new MyCustomAdapter();
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
@@ -286,6 +290,23 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                     }
                 });
+
+
+                Iterable<DataSnapshot> completeJobListSnapShot = jobReference.getChildren();
+
+
+                for (DataSnapshot ds5 : completeJobListSnapShot)
+                {
+                    JobInformation j = ds5.getValue(JobInformation.class);
+                    if(j.getJobStatus().equals("Complete") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
+                    {
+                        jobListComplete.add(j);
+                    }
+
+                }
+                mAdapterCompleteJobs.addArray(jobListComplete);
+                jobListViewMyComJobs.setAdapter(mAdapterCompleteJobs);
+
 
             }
 

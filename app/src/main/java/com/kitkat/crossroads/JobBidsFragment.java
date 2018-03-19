@@ -171,31 +171,23 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         textViewJobSize1 = view.findViewById(R.id.textViewJobSize1);
         textViewJobType1 = view.findViewById(R.id.textViewJobType1);
 
-        myRef.child("Jobs").child(jobId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                String name = dataSnapshot.child("advertName").getValue(String.class);
-                String description = dataSnapshot.child("advertDescription").getValue(String.class);
-                String jobSize = dataSnapshot.child("jobSize").getValue(String.class);
-                String jobType = dataSnapshot.child("jobType").getValue(String.class);
 
-                Log.d(TAG, "Job Name: " + name);
-                Log.d(TAG, "Description: " + description);
-                Log.d(TAG, "Job Size: " + jobSize);
-                Log.d(TAG, "Job Type: " + jobType);
 
-                textViewJobName1.setText(name);
-                textViewDescription1.setText(description);
-                textViewJobSize1.setText(jobSize);
-                textViewJobType1.setText(jobType);
-            }
+                textViewJobName1.setText(jobInformation.getAdvertName());
+                textViewDescription1.setText(jobInformation.getAdvertDescription());
+                textViewJobSize1.setText(jobInformation.getJobSize());
+                textViewJobType1.setText(jobInformation.getJobType());
+                textViewJobColDate1.setText(jobInformation.getCollectionDate());
+                textViewJobColTime1.setText(jobInformation.getCollectionTime());
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                textViewFromAddress.setText(jobInformation.getColL1() + ", " + jobInformation.getColL2());
+                textViewFromTown.setText(jobInformation.getColTown());
+                textViewFromPostcode.setText(jobInformation.getColPostcode());
 
-            }
-        });
+                textViewToAddress.setText(jobInformation.getDelL1() + ", " + jobInformation.getDelL2());
+                textViewToTown.setText(jobInformation.getDelTown());
+                textViewToPostcode.setText(jobInformation.getDelPostcode());
+
 
         databaseReference.addValueEventListener(new ValueEventListener()
         {
