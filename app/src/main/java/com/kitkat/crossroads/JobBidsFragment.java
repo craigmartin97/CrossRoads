@@ -89,9 +89,16 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             textViewJobType1;
 
     private ExpandableListView expandableListView;
+    private ExpandableListView expandableListView2;
+
     private ExpandableListAdapter adapter;
+    private ExpandableListAdapter adapter2;
+
     private List<String> list;
+    private List<String> list2;
+
     private HashMap<String, List<String>> listHashMap;
+    private HashMap<String, List<String>> listHashMap2;
 
     public JobBidsFragment()
     {
@@ -153,12 +160,30 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         delPostcode = jobInformation.getColPostcode().toString();
 
         expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list_view);
-        addItems();
+        expandableListView2 = (ExpandableListView) view.findViewById(R.id.expandable_list_view2);
+
+        addItemsCollection();
+        addItemsDelivery();
+
         adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
+        adapter2 = new ExpandableListAdapter(getActivity(), list2, listHashMap2);
+
         expandableListView.setAdapter(adapter);
+        expandableListView2.setAdapter(adapter2);
+
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                setListViewHeight(parent,groupPosition);
+                return false;
+            }
+        });
+
+        expandableListView2.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
                 setListViewHeight(parent,groupPosition);
                 return false;
             }
@@ -262,7 +287,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                             listView);
                     listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
-                    totalHeight += listItem.getMeasuredHeight();
+                    totalHeight += listItem.getMeasuredHeight() + 5;
 
                 }
             }
@@ -330,13 +355,12 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         void onFragmentInteraction(Uri uri);
     }
 
-    private void addItems()
+    private void addItemsCollection()
     {
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
 
         list.add("Collection Information");
-        list.add("Delivery Information");
 
         List<String> collectionInfo = new ArrayList<>();
         collectionInfo.add(colDate);
@@ -345,13 +369,22 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         collectionInfo.add(colTown);
         collectionInfo.add(colPostcode);
 
+        listHashMap.put(list.get(0),collectionInfo);
+    }
+
+    private void addItemsDelivery()
+    {
+        list2 = new ArrayList<>();
+        listHashMap2 = new HashMap<>();
+
+        list2.add("Delivery Information");
+
         List<String> deliveryInfo = new ArrayList<>();
         deliveryInfo.add(delAddress);
         deliveryInfo.add(delTown);
         deliveryInfo.add(delPostcode);
 
-        listHashMap.put(list.get(0),collectionInfo);
-        listHashMap.put(list.get(1),deliveryInfo);
+        listHashMap2.put(list2.get(0),deliveryInfo);
     }
 
 
