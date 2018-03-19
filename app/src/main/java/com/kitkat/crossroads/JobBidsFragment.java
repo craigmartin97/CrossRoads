@@ -353,15 +353,6 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 @Override
                 public void onClick(View v)
                 {
-
-//<<<<<<< HEAD
-//                    ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("User", mData.get(position));
-//                    viewProfileFragment.setArguments(bundle);
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    fragmentManager.beginTransaction().replace(R.id.content, viewProfileFragment).addToBackStack("tag").commit();
-//=======
                     final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                     View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
 
@@ -391,8 +382,8 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
                             View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
 
-                            myRef.child("Jobs").child(mData.get(position).getJobID()).child("courierID").setValue(mData.get(position).getUserID());
-                            myRef.child("Jobs").child(mData.get(position).getJobID()).child("jobStatus").setValue("Active");
+                            myRef.child("Jobs").child(jobId).child("courierID").setValue(mData.get(position).getUserID());
+                            myRef.child("Jobs").child(jobId).child("jobStatus").setValue("Active");
 
                             alertDialog.setTitle("Bid Accepted");
                             alertDialog.setView(mView);
