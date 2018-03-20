@@ -69,7 +69,7 @@
                         <!--android:layout_height="wrap_content" />-->
 
                     <ListView
-                        android:id="@+id/jobListView2"
+                        android:id="@+id/jobListViewPending"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </LinearLayout>
@@ -105,7 +105,7 @@
                     <requestFocus />
 
                     <ListView
-                        android:id="@+id/jobListView1"
+                        android:id="@+id/jobListViewMyActiveJobs"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -145,7 +145,7 @@
                         <!--android:layout_height="wrap_content" />-->
 
                     <ListView
-                        android:id="@+id/jobListView3"
+                        android:id="@+id/jobListViewMyCompleteJobs"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </LinearLayout>

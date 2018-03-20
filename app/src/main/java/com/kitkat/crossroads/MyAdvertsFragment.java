@@ -64,11 +64,13 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     private FirebaseAuth.AuthStateListener authStateListener;
     private DataSnapshot jobReference;
 
-    private MyAdvertsFragment.MyCustomAdapter mAdapter;
+    private MyCustomAdapter mAdapter, mAdapterActiveJobs, mAdapterCompleteJobs;
 
-    private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
+    private ArrayList<JobInformation> jobList = new ArrayList<>();
+    private ArrayList<JobInformation> jobListActive = new ArrayList<>();
+    private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
 
-    private ListView jobListView;
+    private ListView jobListViewPending, jobListViewActive, jobListViewComplete;
 
     private SearchView jobSearch;
 
@@ -121,15 +123,15 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
 
         //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Active");
+        TabHost.TabSpec spec = host.newTabSpec("Pending");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("Active");
+        spec.setIndicator("Pending");
         host.addTab(spec);
 
         //Tab 2
-        spec = host.newTabSpec("Pending");
+        spec = host.newTabSpec("Active");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("Pending");
+        spec.setIndicator("Active");
         host.addTab(spec);
 
 
@@ -170,7 +172,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
             }
         });
 
-        jobListView = (ListView) view.findViewById(R.id.jobListView1);
+        jobListViewPending = (ListView) view.findViewById(R.id.jobListViewPending);
+        jobListViewActive = view.findViewById(R.id.jobListViewMyActiveJobs);
+        jobListViewComplete = view.findViewById(R.id.jobListViewMyCompleteJobs);
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -185,7 +189,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
                 Iterable<DataSnapshot> jobListSnapshot = jobReference.getChildren();
 
-                mAdapter = new MyAdvertsFragment.MyCustomAdapter();
+                mAdapter = new MyCustomAdapter();
+                mAdapterActiveJobs = new MyCustomAdapter();
+                mAdapterCompleteJobs = new MyCustomAdapter();
 
                 for (DataSnapshot ds : jobListSnapshot)
                 {
@@ -199,25 +205,88 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                         jobList.add(j);
 
                     }
-
-                    mAdapter.addArray(jobList);
-                    jobListView.setAdapter(mAdapter);
-
-                    jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                    {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                        {
-                            JobBidsFragment jobBidsFragment = new JobBidsFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("JobId", mAdapter.mData.get(position));
-                            jobBidsFragment.setArguments(bundle);
-
-                            FragmentManager fragmentManager = getFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).addToBackStack("tag").commit();
-                        }
-                    });
                 }
+                mAdapter.addArray(jobList);
+                jobListViewPending.setAdapter(mAdapter);
+
+                jobListViewPending.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("JobId", mAdapter.mData.get(position));
+                        myAdvertsFragment.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, myAdvertsFragment).addToBackStack("tag").commit();
+                    }
+                });
+
+                for (DataSnapshot ds1 : jobListSnapshot)
+                {
+                    JobInformation j = ds1.getValue(JobInformation.class);
+                    j.setJobID(ds1.getKey());
+
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                    if (j.getPosterID().equals(currentUser.getUid()) && j.getJobStatus().equals("Active"))
+                    {
+                        jobListActive.add(j);
+
+                    }
+                }
+
+                mAdapterActiveJobs.addArray(jobListActive);
+                jobListViewActive.setAdapter(mAdapterActiveJobs);
+
+                jobListViewActive.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("JobId", mAdapter.mData.get(position));
+                        myAdvertsFragment.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, myAdvertsFragment).addToBackStack("tag").commit();
+                    }
+                });
+
+                for (DataSnapshot ds2 : jobListSnapshot)
+                {
+                    JobInformation j = ds2.getValue(JobInformation.class);
+                    j.setJobID(ds2.getKey());
+
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                    if (j.getPosterID().equals(currentUser.getUid()) && j.getJobStatus().equals("Complete"))
+                    {
+                        jobListComplete.add(j);
+
+                    }
+                }
+
+                mAdapterCompleteJobs.addArray(jobListComplete);
+                jobListViewComplete.setAdapter(mAdapterCompleteJobs);
+
+                jobListViewComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("JobId", mAdapter.mData.get(position));
+                        myAdvertsFragment.setArguments(bundle);
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, myAdvertsFragment).addToBackStack("tag").commit();
+                    }
+                });
             }
 
             @Override
@@ -321,6 +390,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
         public void addArray(final ArrayList<JobInformation> j)
         {
+            mData.clear();
+            mData.clear();
             mData = j;
             mDataOrig = j;
         }
