@@ -28,6 +28,8 @@ import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.squareup.picasso.Picasso;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
