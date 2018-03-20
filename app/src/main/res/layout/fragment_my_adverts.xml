@@ -4,22 +4,24 @@
     android:layout_height="match_parent"
     tools:context="com.kitkat.crossroads.Jobs.MyAdvertsFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <requestFocus />
+
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/bebasneueregular"
-            android:text="@string/my_adverts"
+            android:text="My Adverts"
             android:textAlignment="center"
-            android:textSize="30sp"
+            android:textSize="30dp"
             tools:layout_editor_absoluteX="163dp"
             tools:layout_editor_absoluteY="16dp" />
 
@@ -28,8 +30,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
-            android:queryHint="Name, Location, Size, etc."
-            android:layout_marginBottom="10dp"/>
+            android:queryHint="Name, Location, Size, etc." />
+
+        <LinearLayout
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/filterButton"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Filter"
+                android:tag="#2bbc9b"
+                android:background="#2bbc9b"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"/>
+
+            <Spinner
+                android:id="@+id/sortBySpinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="Sort By">
+            </Spinner>
+
+
+        </LinearLayout>
 
         <requestFocus />
 
@@ -39,5 +65,4 @@
             android:layout_height="match_parent" />
 
     </LinearLayout>
-
 </FrameLayout>
