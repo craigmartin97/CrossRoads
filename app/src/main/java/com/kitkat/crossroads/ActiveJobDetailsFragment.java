@@ -2,63 +2,50 @@ package com.kitkat.crossroads;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.gcacace.signaturepad.views.SignaturePad;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.BidInformation;
-import com.kitkat.crossroads.Jobs.MyAdvertsActivity;
-import com.kitkat.crossroads.Profile.ViewProfileFragment;
-import com.kitkat.crossroads.UserBidInformation;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Jobs.JobInformation;
-import com.kitkat.crossroads.Profile.UserInformation;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link JobBidsFragment.OnFragmentInteractionListener} interface
+ * {@link ActiveJobDetailsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link JobBidsFragment#newInstance} factory method to
+ * Use the {@link ActiveJobDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextListener
-{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class ActiveJobDetailsFragment extends Fragment {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private FirebaseAuth auth;
     private DatabaseReference myRef;
@@ -68,14 +55,16 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private DataSnapshot bidReference;
     private DataSnapshot jobReference;
     private DataSnapshot usersReference;
+    private StorageReference storageReference;
 
-    private String jobId, colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode;
+
+    private String jobId;
     private String jobBidId;
     private String usersId;
-    private static final String TAG = "JobsBidsFragment";
+    private static final String TAG = "ActJobDetailsFragment";
     private String name;
 
-    private JobBidsFragment.MyCustomAdapter mAdapter;
+    private ActiveJobDetailsFragment.MyCustomAdapter mAdapter;
 
     private ArrayList<UserBidInformation> jobList = new ArrayList<>();
 
@@ -83,18 +72,28 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
     private SearchView jobSearch;
 
-    private OnFragmentInteractionListener mListener;
+    private SignaturePad mSignaturePad;
+
+    private Button mJobCompleteButton, mClearButton;
 
     private TextView textViewJobName1, textViewDescription1, textViewJobSize1,
-            textViewJobType1;
+            textViewJobType1, textViewJobColDate1, textViewJobColTime1,
+            textViewFromAddress, textViewFromTown, textViewFromPostcode,
+            textViewToAddress, textViewToTown, textViewToPostcode;
 
-    private ExpandableListView expandableListView;
-    private ExpandableListAdapter adapter;
-    private List<String> list;
-    private HashMap<String, List<String>> listHashMap;
 
-    public JobBidsFragment()
-    {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    private OnFragmentInteractionListener mListener;
+
+    public ActiveJobDetailsFragment() {
         // Required empty public constructor
     }
 
@@ -104,12 +103,11 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment JobBidsFragment.
+     * @return A new instance of fragment ActiveJobDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static JobBidsFragment newInstance(String param1, String param2)
-    {
-        JobBidsFragment fragment = new JobBidsFragment();
+    public static ActiveJobDetailsFragment newInstance(String param1, String param2) {
+        ActiveJobDetailsFragment fragment = new ActiveJobDetailsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -118,11 +116,9 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
+        if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -132,37 +128,17 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_job_bids, container, false);
+        View view = inflater.inflate(R.layout.fragment_active_job_details, container, false);
 
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
         databaseReference = database.getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         Bundle bundle = this.getArguments();
-        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobId");
-
+        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
         jobId = jobInformation.getJobID();
-        colDate = jobInformation.getCollectionDate().toString();
-        colTime = jobInformation.getCollectionTime().toString();
-        colAddress = jobInformation.getColL1().toString() + ", " + jobInformation.getColL2().toString();
-        colTown = jobInformation.getColTown().toString();
-        colPostcode = jobInformation.getColPostcode().toString();
-        delAddress = jobInformation.getDelL1().toString() + ", " + jobInformation.getDelL2().toString();
-        delTown = jobInformation.getColTown().toString();
-        delPostcode = jobInformation.getColPostcode().toString();
-
-        expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list_view);
-        addItems();
-        adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
-        expandableListView.setAdapter(adapter);
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                setListViewHeight(parent,groupPosition);
-                return false;
-            }
-        });
 
         jobListView = view.findViewById(R.id.jobListView1);
 
@@ -170,191 +146,151 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
         textViewJobSize1 = view.findViewById(R.id.textViewJobSize1);
         textViewJobType1 = view.findViewById(R.id.textViewJobType1);
+        textViewJobColDate1 = view.findViewById(R.id.textViewJobColDate1);
+        textViewJobColTime1 = view.findViewById(R.id.textViewJobColTime1);
 
 
+        textViewFromAddress = view.findViewById(R.id.textViewFromAddress);
+        textViewFromTown = view.findViewById(R.id.textViewFromTown);
+        textViewFromPostcode = view.findViewById(R.id.textViewFromPostcode);
 
-                textViewJobName1.setText(jobInformation.getAdvertName());
-                textViewDescription1.setText(jobInformation.getAdvertDescription());
-                textViewJobSize1.setText(jobInformation.getJobSize());
-                textViewJobType1.setText(jobInformation.getJobType());
-                
+        textViewToAddress = view.findViewById(R.id.textViewToAddress);
+        textViewToTown = view.findViewById(R.id.textViewToTown);
+        textViewToPostcode = view.findViewById(R.id.textViewJobToPostcode);
 
+        textViewJobName1.setText(jobInformation.getAdvertName());
+        textViewDescription1.setText(jobInformation.getAdvertDescription());
+        textViewJobSize1.setText(jobInformation.getJobSize());
+        textViewJobType1.setText(jobInformation.getJobType());
+        textViewJobColDate1.setText(jobInformation.getCollectionDate());
+        textViewJobColTime1.setText(jobInformation.getCollectionTime());
 
-        databaseReference.addValueEventListener(new ValueEventListener()
-        {
+        textViewFromAddress.setText(jobInformation.getColL1() + ", " + jobInformation.getColL2());
+        textViewFromTown.setText(jobInformation.getColTown());
+        textViewFromPostcode.setText(jobInformation.getColPostcode());
+
+        textViewToAddress.setText(jobInformation.getDelL1() + ", " + jobInformation.getDelL2());
+        textViewToTown.setText(jobInformation.getDelTown());
+        textViewToPostcode.setText(jobInformation.getDelPostcode());
+
+        mSignaturePad = (SignaturePad) view.findViewById(R.id.signature_pad);
+        mSignaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                bidReference = dataSnapshot.child("Bids");
-                jobReference = dataSnapshot.child("Jobs");
-                usersReference = dataSnapshot.child("Users");
+            public void onStartSigning() {
 
-                Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
-
-                mAdapter = new JobBidsFragment.MyCustomAdapter();
-
-
-                for (DataSnapshot ds : bidListSnapShot)
-                {
-                    Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
-                    jobBidId = ds.getKey();
-
-                    if (jobId.equals(ds.getKey()))
-                    {
-                        for (DataSnapshot ds1 : bidsSnapShot)
-                        {
-                            final UserBidInformation bid = ds1.getValue(UserBidInformation.class);
-                            String usersBid = bid.getUserBid();
-                            String userID = bid.getUserID();
-                            String id = bid.getJobID();
-
-                            myRef.child("Users").child(userID).addValueEventListener(new ValueEventListener()
-                            {
-                                @Override
-                                public void onDataChange(DataSnapshot thisDataSnapshot)
-                                {
-                                    String name = thisDataSnapshot.child("fullName").getValue(String.class);
-                                    bid.setFullName(name);
-                                    bid.getFullName();
-                                    jobList.add(bid);
-
-                                    mAdapter.addArray(jobList);
-                                    jobListView.setAdapter(mAdapter);
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError)
-                                {
-
-                                }
-                            });
-                        }
-                    }
-                }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
+            public void onSigned() {
+                mJobCompleteButton.setEnabled(true);
+                mClearButton.setEnabled(true);
+                mJobCompleteButton.setBackgroundColor(Color.parseColor("#2bbc9b"));
+                mClearButton.setBackgroundColor(Color.parseColor("#2bbc9b"));
+
+
+            }
+
+            @Override
+            public void onClear() {
+                mJobCompleteButton.setEnabled(false);
+                mClearButton.setEnabled(false);
+                mJobCompleteButton.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                mClearButton.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                mJobCompleteButton.setTextColor(Color.parseColor("#FFFFFF"));
+                mClearButton.setTextColor(Color.parseColor("#FFFFFF"));
+
 
             }
         });
+
+        mClearButton = (Button) view.findViewById(R.id.clear_button);
+        mJobCompleteButton = (Button) view.findViewById(R.id.job_complete_button);
+
+        mClearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSignaturePad.clear();
+            }
+        });
+
+        mJobCompleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
+
+                String jobID = jobInformation.getJobID();
+
+                final StorageReference filePath = storageReference.child("Jobs").child(jobID).child("Signature/collectionSignature.jpg");
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                signatureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] data = baos.toByteArray();
+
+                UploadTask uploadTask = filePath.putBytes(data);
+
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "Unsuccessful!", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        myRef.child("Jobs").child(jobInformation.getJobID()).child("jobStatus").setValue("Complete");
+
+
+                    }
+                });
+
+            }
+        });
+
+
+
+
+
         return view;
     }
 
-
-    private void setListViewHeight(ExpandableListView listView,
-                                   int group) {
-        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
-        int totalHeight = 0;
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
-                View.MeasureSpec.EXACTLY);
-        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
-            View groupItem = listAdapter.getGroupView(i, false, null, listView);
-            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-
-            totalHeight += groupItem.getMeasuredHeight();
-
-            if (((listView.isGroupExpanded(i)) && (i != group))
-                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
-                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
-                    View listItem = listAdapter.getChildView(i, j, false, null,
-                            listView);
-                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-
-                    totalHeight += listItem.getMeasuredHeight();
-
-                }
-            }
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        int height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
-        if (height < 10)
-            height = 200;
-        params.height = height;
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-
-    }
-
-
-
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context)
-    {
+    public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
+        if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
+        } else {
+
         }
     }
 
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText)
-    {
-        String text = newText;
-        mAdapter.filter(text);
-
-        return false;
-    }
-
-    interface OnFragmentInteractionListener
-    {
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    private void addItems()
-    {
-        list = new ArrayList<>();
-        listHashMap = new HashMap<>();
-
-        list.add("Collection Information");
-        list.add("Delivery Information");
-
-        List<String> collectionInfo = new ArrayList<>();
-        collectionInfo.add(colDate);
-        collectionInfo.add(colTime);
-        collectionInfo.add(colAddress);
-        collectionInfo.add(colTown);
-        collectionInfo.add(colPostcode);
-
-        List<String> deliveryInfo = new ArrayList<>();
-        deliveryInfo.add(delAddress);
-        deliveryInfo.add(delTown);
-        deliveryInfo.add(delPostcode);
-
-        listHashMap.put(list.get(0),collectionInfo);
-        listHashMap.put(list.get(1),deliveryInfo);
-    }
-
-
     public class MyCustomAdapter extends BaseAdapter
     {
 
@@ -426,11 +362,11 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             System.out.println("getView " + position + " " + convertView);
-            JobBidsFragment.MyCustomAdapter.GroupViewHolder holder;
+            ActiveJobDetailsFragment.MyCustomAdapter.GroupViewHolder holder;
             if (convertView == null)
             {
                 convertView = mInflater.inflate(R.layout.job_info_list_bid, null);
-                holder = new JobBidsFragment.MyCustomAdapter.GroupViewHolder();
+                holder = new ActiveJobDetailsFragment.MyCustomAdapter.GroupViewHolder();
                 holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewBid = convertView.findViewById(R.id.textBid);
                 holder.textViewRating = convertView.findViewById(R.id.textRating);
@@ -438,7 +374,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 convertView.setTag(holder);
             } else
             {
-                holder = (JobBidsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
+                holder = (ActiveJobDetailsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
             holder.textViewName.setText(mData.get(position).getFullName());
@@ -461,6 +397,12 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                     TextView text = (TextView) mView.findViewById(R.id.acceptBidText);
                     Button yesButton = (Button) mView.findViewById(R.id.yesButton);
                     Button noButton = (Button) mView.findViewById(R.id.noButton);
+
+                        /*accept users bid
+                            - get bidder's ID and set to CourierID
+                            - change Job Status to Active
+                            - notify users of selection
+                        */
 
                     yesButton.setOnClickListener(new View.OnClickListener()
                     {
@@ -562,3 +504,4 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         }
     }
 }
+
