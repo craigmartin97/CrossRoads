@@ -1,22 +1,24 @@
 package com.kitkat.crossroads;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,13 +29,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -71,11 +70,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     private ListView jobListView;
 
-    private String jobID;
-
-    private Spinner sortBySpinner;
-    private Button filterButton;
     private SearchView jobSearch;
+
+    private TabHost host;
 
     public MyAdvertsFragment()
     {
@@ -119,92 +116,61 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
         final View view = inflater.inflate(R.layout.fragment_my_adverts, container, false);
 
+        host = (TabHost) view.findViewById(R.id.tabHost);
+        host.setup();
+
+
+        //Tab 1
+        TabHost.TabSpec spec = host.newTabSpec("Active");
+        spec.setContent(R.id.tab1);
+        spec.setIndicator("Active");
+        host.addTab(spec);
+
+        //Tab 2
+        spec = host.newTabSpec("Pending");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Pending");
+        host.addTab(spec);
+
+
+        //Tab 3
+        spec = host.newTabSpec("Completed Jobs");
+        spec.setContent(R.id.tab3);
+        spec.setIndicator("Completed");
+        host.addTab(spec);
+
+        for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
+        {
+            TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(Color.parseColor("#FFFFFF"));
+        }
+
+        host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
+        TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
+        tv.setTextColor(Color.parseColor("#2bbc9b"));
+
+        host.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        {
+
+            @Override
+            public void onTabChanged(String tabId)
+            {
+
+                for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
+                {
+                    host.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2bbc9b")); // unselected
+                    TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
+                    tv.setTextColor(Color.parseColor("#FFFFFF"));
+                }
+
+                host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
+                TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
+                tv.setTextColor(Color.parseColor("#2bbc9b"));
+
+            }
+        });
+
         jobListView = (ListView) view.findViewById(R.id.jobListView1);
-
-        sortBySpinner = (Spinner) view.findViewById(R.id.sortBySpinner);
-
-        String [] sortBy = new String[]{
-
-                "Sort By",
-                "Name",
-                "Collection From",
-                "Delivery To",
-                "Collection Date",
-                "Size"
-        };
-
-        final List<String> sortByList = new ArrayList<>(Arrays.asList(sortBy));
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByList)
-        {
-            @Override
-            public boolean isEnabled(int position)
-            {
-                if (position == 0)
-                {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    return false;
-                } else
-                {
-                    return true;
-                }
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent)
-            {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0)
-                {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY);
-                } else
-                {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-
-        };
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sortBySpinner.setAdapter(adapter);
-
-        sortBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                String selectedItemText = (String) parent.getItemAtPosition(position);
-
-                if(position > 0)
-                {
-                    Toast.makeText
-                            (getActivity(), "selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        filterButton = (Button) view.findViewById(R.id.filterButton);
-        filterButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (filterButton.getTag().equals("#2bbc9b"))
-                {
-                    TextView filterName = (TextView) view.findViewById(R.id.filterName);
-                    filterName.setVisibility(view.GONE);
-                }
-            }
-        });
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -418,7 +384,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
-            jobID = mData.get(position).getJobID();
 
             return convertView;
         }
@@ -473,5 +438,22 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
             notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings)
+        {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
