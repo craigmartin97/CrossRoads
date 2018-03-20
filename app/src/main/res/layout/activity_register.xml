@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/imageViewCBlack"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:src="@drawable/cblack" />
@@ -40,7 +40,7 @@
             android:layout_width="345dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/imageViewCRGreen"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/bebasneueregular"
             android:text="@string/create_account"
             android:textAlignment="center"
@@ -144,6 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/checkBox"
             android:layout_below="@+id/buttonRegister"
+            android:layout_marginBottom="10dp"
             android:text="@string/TermsAndConditionsAndPrivacyPolicy"
             android:textColor="#1a8cff"
             android:textColorLink="#1a8cff"

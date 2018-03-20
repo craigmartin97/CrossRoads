@@ -1,43 +1,147 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kitkat.crossroads.MyAdvertsFragment">
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <requestFocus />
+
+    <TabHost
+        android:id="@+id/tabHost"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:background="#2bbc9b">
+            </TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="50dp">
+
+                <LinearLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"
+                    android:orientation="vertical">
+
+                    <!-- Tab One -->
+
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/bebasneueregular"
+                        android:text="My Pending Adverts"
+                        android:textAlignment="center"
+                        android:textSize="30sp"
+                        tools:layout_editor_absoluteX="163dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+                    <SearchView
+                        android:id="@+id/searchViewPendingJobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:iconifiedByDefault="false"
+                        android:queryHint="Name, Location, Size, etc." />
+
+                    <requestFocus />
+
+                    <ListView
+                        android:id="@+id/jobListViewPending"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+                </LinearLayout>
 
-        <requestFocus />
+                <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"
+                    android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/bebasneueregular"
-            android:text="@string/my_adverts"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            tools:layout_editor_absoluteX="163dp"
-            tools:layout_editor_absoluteY="16dp" />
+                    <!-- Tab Two -->
 
-        <SearchView
-            android:id="@+id/searchViewJob"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:iconifiedByDefault="false"
-            android:queryHint="Name, Location, Size, etc."
-            android:layout_marginBottom="10dp"/>
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/bebasneueregular"
+                        android:text="My Active Jobs"
+                        android:textAlignment="center"
+                        android:textSize="30sp"
+                        tools:layout_editor_absoluteX="163dp"
+                        tools:layout_editor_absoluteY="16dp" />
 
-        <requestFocus />
+                    <SearchView
+                        android:id="@+id/searchViewMyJobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:iconifiedByDefault="false"
+                        android:queryHint="Name, Location, Size, etc." />
 
-        <ListView
-            android:id="@+id/jobListView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+                    <requestFocus />
 
-    </LinearLayout>
+                    <ListView
+                        android:id="@+id/jobListViewMyActiveJobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-</FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"
+                    android:orientation="vertical">
+
+                    <!-- Tab Three -->
+
+                    <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/bebasneueregular"
+                        android:text="My Completed Jobs"
+                        android:textAlignment="center"
+                        android:textSize="30sp"
+                        tools:layout_editor_absoluteX="163dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
+                    <SearchView
+                        android:id="@+id/searchViewCompletedJobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:iconifiedByDefault="false"
+                        android:queryHint="Name, Location, Size, etc." />
+
+                    <ListView
+                        android:id="@+id/jobListViewMyCompleteJobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+            </FrameLayout>
+        </RelativeLayout>
+    </TabHost>
+</LinearLayout>
