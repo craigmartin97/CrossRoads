@@ -239,17 +239,11 @@ public class ActiveJobDetailsFragment extends Fragment {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         myRef.child("Jobs").child(jobInformation.getJobID()).child("jobStatus").setValue("Complete");
-
-
                     }
                 });
 
             }
         });
-
-
-
-
 
         return view;
     }

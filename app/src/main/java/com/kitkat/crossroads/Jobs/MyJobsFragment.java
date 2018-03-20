@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Jobs;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -8,11 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -20,21 +18,14 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.ActiveJobDetailsFragment;
-import com.kitkat.crossroads.Jobs.BidDetailsFragment;
-import com.kitkat.crossroads.Jobs.BidInformation;
-import com.kitkat.crossroads.Jobs.BidInformation;
-import com.kitkat.crossroads.Jobs.JobInformation;
-
+import com.kitkat.crossroads.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -78,7 +69,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<JobInformation> jobList = new ArrayList<>();
     private ArrayList<JobInformation> jobListActive = new ArrayList<>();
     private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
-
 
     private ListView jobListView, jobListViewMyAcJobs, jobListViewMyComJobs;
 
@@ -131,10 +121,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     {
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
-
         host = (TabHost) view.findViewById(R.id.tabHost);
         host.setup();
-
 
         //Tab 2
         TabHost.TabSpec spec = host.newTabSpec("Active");
@@ -195,7 +183,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         final ArrayList<String> activeJobsListArray = new ArrayList<>();
 
-
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
@@ -217,14 +204,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
-
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
-
 
                     for (DataSnapshot ds1 : bidsSnapShot)
                     {
                         BidInformation bid = ds1.getValue(BidInformation.class);
-
 
                         if (bid.getUserID().equals(auth.getCurrentUser().getUid()))
                         {
