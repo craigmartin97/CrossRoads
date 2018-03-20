@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.opengl.Matrix;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -28,16 +26,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.kitkat.crossroads.CircleTransformation;
-import com.kitkat.crossroads.JobBidsFragment;
+import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
 import com.kitkat.crossroads.R;
-import com.kitkat.crossroads.UserBidInformation;
+import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 
 /**
  * A simple {@link Fragment} subclass.
