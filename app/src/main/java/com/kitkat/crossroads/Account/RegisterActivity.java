@@ -83,21 +83,12 @@ public class RegisterActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 String url = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/TermsConditions%2FTermsAndConditions.pdf?alt=media&token=694fc922-5a1a-4ee6-b130-af3f226263fc";
-                viewTAndC(url);
-                startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
             }
         });
     }
 
-    private void viewTAndC(String url)
-    {
-        Uri webpage = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(getPackageManager()) != null)
-        {
-            startActivity(new Intent(RegisterActivity.this, TermsAndConditions.class));
-        }
-    }
 
     private void registerUser()
     {
