@@ -1,4 +1,4 @@
-package com.kitkat.crossroads.Jobs;
+package com.kitkat.crossroads;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -18,14 +20,20 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.R;
+import com.kitkat.crossroads.Jobs.ActiveJobDetailsFragment;
+import com.kitkat.crossroads.Jobs.BidDetailsFragment;
+import com.kitkat.crossroads.Jobs.BidInformation;
+import com.kitkat.crossroads.Jobs.BidInformation;
+import com.kitkat.crossroads.Jobs.JobInformation;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -65,11 +73,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<String> userBidId = new ArrayList<String>();
     private ArrayList<String> userJobId = new ArrayList<String>();
 
-    private MyJobsFragment.MyCustomAdapter mAdapter;
+    private MyJobsFragment.MyCustomAdapter mAdapter, mAdapterActiveJobs, mAdapterCompleteJobs;
 
     private ArrayList<JobInformation> jobList = new ArrayList<>();
+    private ArrayList<JobInformation> jobListActive = new ArrayList<>();
+    private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
 
-    private ListView jobListView;
+
+    private ListView jobListView, jobListViewMyAcJobs, jobListViewMyComJobs;
 
     private SearchView jobSearch;
 
@@ -120,8 +131,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     {
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
+
         host = (TabHost) view.findViewById(R.id.tabHost);
         host.setup();
+
 
         //Tab 2
         TabHost.TabSpec spec = host.newTabSpec("Active");
@@ -175,8 +188,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
 
         jobListView = view.findViewById(R.id.jobListView1);
+        jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
+        jobListViewMyComJobs = view.findViewById(R.id.jobListViewMyCompleteJobs);
 
         final ArrayList<String> jobsListArray = new ArrayList<>();
+
+        final ArrayList<String> activeJobsListArray = new ArrayList<>();
+
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -193,15 +211,20 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
 
-                mAdapter = new MyJobsFragment.MyCustomAdapter();
+                mAdapter = new MyCustomAdapter();
+                mAdapterActiveJobs = new MyCustomAdapter();
+                mAdapterCompleteJobs = new MyCustomAdapter();
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
+
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
+
 
                     for (DataSnapshot ds1 : bidsSnapShot)
                     {
                         BidInformation bid = ds1.getValue(BidInformation.class);
+
 
                         if (bid.getUserID().equals(auth.getCurrentUser().getUid()))
                         {
@@ -215,7 +238,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     if (jobsListArray.contains(ds3.getKey()))
                     {
                         JobInformation j = ds3.getValue(JobInformation.class);
-                        jobList.add(j);
+                        if(j.getJobStatus().equals("Pending")) {
+                            jobList.add(j);
+                        }
                     }
 
                 }
@@ -228,13 +253,63 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
                         BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("Job", mAdapter.mData.get(position));
                         bidDetailsFragment.setArguments(bundle);
                         FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+                        fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
+
                     }
                 });
+
+                Iterable<DataSnapshot> activeJobListSnapShot = jobReference.getChildren();
+
+
+                for (DataSnapshot ds4 : activeJobListSnapShot)
+                {
+                    JobInformation j = ds4.getValue(JobInformation.class);
+                    if(j.getJobStatus().equals("Active") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
+                    {
+                        jobListActive.add(j);
+                    }
+
+                }
+                mAdapterActiveJobs.addArray(jobListActive);
+                jobListViewMyAcJobs.setAdapter(mAdapterActiveJobs);
+
+                jobListViewMyAcJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("Job", mAdapterActiveJobs.mData.get(position));
+                        activeJobDetailsFragment.setArguments(bundle);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+
+                    }
+                });
+
+
+                Iterable<DataSnapshot> completeJobListSnapShot = jobReference.getChildren();
+
+
+                for (DataSnapshot ds5 : completeJobListSnapShot)
+                {
+                    JobInformation j = ds5.getValue(JobInformation.class);
+                    if(j.getJobStatus().equals("Complete") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
+                    {
+                        jobListComplete.add(j);
+                    }
+
+                }
+                mAdapterCompleteJobs.addArray(jobListComplete);
+                jobListViewMyComJobs.setAdapter(mAdapterCompleteJobs);
+
+
             }
 
             @Override
@@ -341,6 +416,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         public void addArray(final ArrayList<JobInformation> j)
         {
+            mData.clear();
+            mDataOrig.clear();
             mData = j;
             mDataOrig = j;
         }
