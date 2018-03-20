@@ -96,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity
         final String password = editTextPassword.getText().toString().trim();
         final String confirmPassword = editTextConfirmPassword.getText().toString().trim();
 
+
         // email is too short
         if (TextUtils.isEmpty(email))
         {
