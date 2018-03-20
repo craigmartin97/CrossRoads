@@ -117,9 +117,22 @@
                                 <!-- TAB THREE CONTENT -->
 
                                 <TextView
+                                    android:id="@+id/textViewCompleteJobs"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="This is tab 3" />
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/bebasneueregular"
+                                    android:text="@string/my_complete_jobs"
+                                    android:textAlignment="center"
+                                    android:textSize="30sp"
+                                    tools:layout_editor_absoluteX="163dp"
+                                    tools:layout_editor_absoluteY="16dp" />
+
+                                <requestFocus />
+
+                                <ListView
+                                    android:id="@+id/jobListViewMyCompleteJobs"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent" />
 
                         </LinearLayout>
                         </FrameLayout>
