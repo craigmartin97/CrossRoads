@@ -2,24 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kitkat.crossroads.JobBidsFragment">
+    tools:context="com.kitkat.crossroads.Jobs.JobBidsFragment">
 
-    <android.support.v4.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="wrap_content"
+        android:fillViewport="true" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/textViewJobInformation"
@@ -197,15 +196,27 @@
                 <ExpandableListView
                     android:id="@+id/expandable_list_view"
                     android:layout_width="match_parent"
-                    android:layout_height="136dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
                     android:dividerHeight="3dp"
-                    android:padding="10dp"
                     android:pointerIcon="arrow">
 
                 </ExpandableListView>
 
+                <View
+                    android:background="@android:color/darker_gray"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp" />
 
+                <ExpandableListView
+                    android:id="@+id/expandable_list_view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:dividerHeight="3dp"
+                    android:pointerIcon="arrow">
 
+                </ExpandableListView>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -255,9 +266,6 @@
                     android:orientation="horizontal">
 
                 </LinearLayout>
-
-
-
 
             </LinearLayout>
 
@@ -298,5 +306,5 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </ScrollView>
 </FrameLayout>

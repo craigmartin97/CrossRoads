@@ -1,20 +1,15 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Jobs;
 
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -28,12 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.BidInformation;
-import com.kitkat.crossroads.Jobs.MyAdvertsActivity;
-import com.kitkat.crossroads.Profile.ViewProfileFragment;
-import com.kitkat.crossroads.UserBidInformation;
-import com.kitkat.crossroads.Jobs.JobInformation;
-import com.kitkat.crossroads.Profile.UserInformation;
+import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,9 +80,16 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             textViewJobType1;
 
     private ExpandableListView expandableListView;
+    private ExpandableListView expandableListView2;
+
     private ExpandableListAdapter adapter;
+    private ExpandableListAdapter adapter2;
+
     private List<String> list;
+    private List<String> list2;
+
     private HashMap<String, List<String>> listHashMap;
+    private HashMap<String, List<String>> listHashMap2;
 
     public JobBidsFragment()
     {
@@ -153,12 +151,30 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         delPostcode = jobInformation.getColPostcode().toString();
 
         expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list_view);
-        addItems();
+        expandableListView2 = (ExpandableListView) view.findViewById(R.id.expandable_list_view2);
+
+        addItemsCollection();
+        addItemsDelivery();
+
         adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
+        adapter2 = new ExpandableListAdapter(getActivity(), list2, listHashMap2);
+
         expandableListView.setAdapter(adapter);
+        expandableListView2.setAdapter(adapter2);
+
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                setListViewHeight(parent,groupPosition);
+                return false;
+            }
+        });
+
+        expandableListView2.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
                 setListViewHeight(parent,groupPosition);
                 return false;
             }
@@ -262,7 +278,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                             listView);
                     listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
-                    totalHeight += listItem.getMeasuredHeight();
+                    totalHeight += listItem.getMeasuredHeight() + 5;
 
                 }
             }
@@ -330,13 +346,12 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         void onFragmentInteraction(Uri uri);
     }
 
-    private void addItems()
+    private void addItemsCollection()
     {
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
 
         list.add("Collection Information");
-        list.add("Delivery Information");
 
         List<String> collectionInfo = new ArrayList<>();
         collectionInfo.add(colDate);
@@ -345,13 +360,22 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         collectionInfo.add(colTown);
         collectionInfo.add(colPostcode);
 
+        listHashMap.put(list.get(0),collectionInfo);
+    }
+
+    private void addItemsDelivery()
+    {
+        list2 = new ArrayList<>();
+        listHashMap2 = new HashMap<>();
+
+        list2.add("Delivery Information");
+
         List<String> deliveryInfo = new ArrayList<>();
         deliveryInfo.add(delAddress);
         deliveryInfo.add(delTown);
         deliveryInfo.add(delPostcode);
 
-        listHashMap.put(list.get(0),collectionInfo);
-        listHashMap.put(list.get(1),deliveryInfo);
+        listHashMap2.put(list2.get(0),deliveryInfo);
     }
 
 
