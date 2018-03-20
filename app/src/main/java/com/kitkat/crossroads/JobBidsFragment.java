@@ -177,16 +177,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 textViewDescription1.setText(jobInformation.getAdvertDescription());
                 textViewJobSize1.setText(jobInformation.getJobSize());
                 textViewJobType1.setText(jobInformation.getJobType());
-                textViewJobColDate1.setText(jobInformation.getCollectionDate());
-                textViewJobColTime1.setText(jobInformation.getCollectionTime());
-
-                textViewFromAddress.setText(jobInformation.getColL1() + ", " + jobInformation.getColL2());
-                textViewFromTown.setText(jobInformation.getColTown());
-                textViewFromPostcode.setText(jobInformation.getColPostcode());
-
-                textViewToAddress.setText(jobInformation.getDelL1() + ", " + jobInformation.getDelL2());
-                textViewToTown.setText(jobInformation.getDelTown());
-                textViewToPostcode.setText(jobInformation.getDelPostcode());
+                
 
 
         databaseReference.addValueEventListener(new ValueEventListener()
