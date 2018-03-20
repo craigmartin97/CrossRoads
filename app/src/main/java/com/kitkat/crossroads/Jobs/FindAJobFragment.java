@@ -218,27 +218,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSizeTo.setAdapter(adapter2);
 
-        filterSizeFrom = (Spinner) view.findViewById(R.id.spinnerSizeFrom);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, R.layout.spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filterSizeFrom.setAdapter(adapter);
-
-        filterSizeTo = (Spinner) view.findViewById(R.id.spinnerSizeTo);
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes_reverse, R.layout.spinner_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filterSizeTo.setAdapter(adapter2);
-
-
-        filterSizeFrom = (Spinner) view.findViewById(R.id.spinnerSizeFrom);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, R.layout.spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filterSizeFrom.setAdapter(adapter);
-
-        filterSizeTo = (Spinner) view.findViewById(R.id.spinnerSizeTo);
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes_reverse, R.layout.spinner_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filterSizeTo.setAdapter(adapter2);
-
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
