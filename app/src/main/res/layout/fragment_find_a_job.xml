@@ -88,7 +88,7 @@
                 android:visibility="visible" />
 
             <EditText
-                android:id="@+id/textViewJobName1"
+                android:id="@+id/edittextViewJobName"
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -196,7 +196,7 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
@@ -214,19 +214,21 @@
                 android:visibility="visible" />
 
 
-            <TextView
-                android:id="@+id/textViewJobType1"
-                android:layout_width="300dp"
+            <CheckBox
+                android:id="@+id/singleItemCheck"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/textName"
-                android:background="#FFFFFFFF"
-                android:gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:paddingVertical="10dp"
-                android:text="TextView"
-                android:textColor="#FF000000"
-                android:visibility="visible" />
+                android:text="Single Item"
+                android:buttonTint="#2bbc9b"
+                />
+            <CheckBox
+                android:id="@+id/multipleItemsCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Multiple Items"
+                android:layout_marginLeft="35dp"
+                android:buttonTint="#2bbc9b"
+                />
 
         </LinearLayout>
 
@@ -252,19 +254,16 @@
                 android:textColor="#FF000000"
                 android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/textViewJobColDate1"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/textName"
-                android:background="#FFFFFFFF"
-                android:gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:paddingVertical="10dp"
-                android:text="TextView"
-                android:textColor="#FF000000"
-                android:visibility="visible" />
+            <EditText
+                android:id="@+id/editTextColDateFilter"
+                android:layout_width="243dp"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/customspinnerborderrounded"
+                android:clickable="true"
+                android:focusable="false"
+                android:inputType="date"
+                android:longClickable="false" />
         </LinearLayout>
 
 
@@ -325,18 +324,16 @@
                 android:textColor="#FF000000"
                 android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/textViewJobFrom1"
-                android:layout_width="300dp"
+            <EditText
+                android:id="@+id/editTextJobColFrom"
+                android:layout_width="240dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/textName"
-                android:background="#FFFFFFFF"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/customborderrounded"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:paddingVertical="10dp"
-                android:text="TextView"
-                android:textColor="#FF000000"
+                android:textSize="12sp"
                 android:visibility="visible" />
         </LinearLayout>
     </LinearLayout>
