@@ -69,7 +69,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private ArrayList<JobInformation> jobList = new ArrayList<>();
 
-
     private ListView jobListView;
 
     private SearchView jobSearch;
@@ -121,10 +120,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     {
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
-
         host = (TabHost) view.findViewById(R.id.tabHost);
         host.setup();
-
 
         //Tab 2
         TabHost.TabSpec spec = host.newTabSpec("Active");
@@ -179,9 +176,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         jobListView = view.findViewById(R.id.jobListView1);
 
-
         final ArrayList<String> jobsListArray = new ArrayList<>();
-
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -202,14 +197,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
-
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
-
 
                     for (DataSnapshot ds1 : bidsSnapShot)
                     {
                         BidInformation bid = ds1.getValue(BidInformation.class);
-
 
                         if (bid.getUserID().equals(auth.getCurrentUser().getUid()))
                         {
