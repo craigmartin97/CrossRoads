@@ -30,8 +30,6 @@
             />
         <activity
             android:name=".Profile.CreateProfileActivity" />
-        <activity android:name=".Jobs.AddJobActivity" />
-        <activity android:name=".Jobs.JobsActivity" />
         <activity android:name=".Account.ResetPasswordActivity" />
         <activity
             android:name=".CrossRoads"
@@ -39,7 +37,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation|screenSize">
         </activity>
-        <activity android:name=".Jobs.JobDetailsActivity"></activity>
         <activity android:name=".TermsAndConditions"
             android:configChanges="orientation|screenSize"></activity>
     </application>

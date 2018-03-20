@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Jobs;
 
 import com.kitkat.crossroads.Profile.UserInformation;
 

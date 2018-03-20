@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Jobs;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,16 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kitkat.crossroads.R;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BidDetailsFragment.OnFragmentInteractionListener} interface
+ * {@link MyJobDetailsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link BidDetailsFragment#newInstance} factory method to
+ * Use the {@link MyJobDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BidDetailsFragment extends Fragment
+public class MyJobDetailsFragment extends Fragment
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,7 +32,7 @@ public class BidDetailsFragment extends Fragment
 
     private OnFragmentInteractionListener mListener;
 
-    public BidDetailsFragment()
+    public MyJobDetailsFragment()
     {
         // Required empty public constructor
     }
@@ -41,12 +43,12 @@ public class BidDetailsFragment extends Fragment
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment BidDetailsFragment.
+     * @return A new instance of fragment MyJobDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BidDetailsFragment newInstance(String param1, String param2)
+    public static MyJobDetailsFragment newInstance(String param1, String param2)
     {
-        BidDetailsFragment fragment = new BidDetailsFragment();
+        MyJobDetailsFragment fragment = new MyJobDetailsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -70,7 +72,7 @@ public class BidDetailsFragment extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bid_details, container, false);
+        return inflater.inflate(R.layout.fragment_my_job_details, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -91,6 +93,8 @@ public class BidDetailsFragment extends Fragment
             mListener = (OnFragmentInteractionListener) context;
         } else
         {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
