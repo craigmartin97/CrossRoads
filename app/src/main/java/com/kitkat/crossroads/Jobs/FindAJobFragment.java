@@ -218,8 +218,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSizeTo.setAdapter(adapter2);
 
-
-
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
