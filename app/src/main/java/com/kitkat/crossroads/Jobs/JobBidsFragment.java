@@ -296,7 +296,6 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
 
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri)
     {
