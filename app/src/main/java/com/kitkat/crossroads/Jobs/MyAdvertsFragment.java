@@ -206,25 +206,27 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
                     }
                 }
+
                 mAdapter.addArray(jobList);
                 jobListViewPending.setAdapter(mAdapter);
-
                 jobListViewPending.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
-                        MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
+                        JobBidsFragment jobBidsFragment = new JobBidsFragment();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("JobId", mAdapter.mData.get(position));
-                        myAdvertsFragment.setArguments(bundle);
+                        jobBidsFragment.setArguments(bundle);
 
                         FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, myAdvertsFragment).addToBackStack("tag").commit();
+                        fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).addToBackStack("tag").commit();
                     }
                 });
 
-                for (DataSnapshot ds1 : jobListSnapshot)
+                Iterable<DataSnapshot> jobListSnapshotActive = jobReference.getChildren();
+
+                for (DataSnapshot ds1 : jobListSnapshotActive)
                 {
                     JobInformation j = ds1.getValue(JobInformation.class);
                     j.setJobID(ds1.getKey());
@@ -234,29 +236,30 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                     if (j.getPosterID().equals(currentUser.getUid()) && j.getJobStatus().equals("Active"))
                     {
                         jobListActive.add(j);
-
                     }
                 }
 
                 mAdapterActiveJobs.addArray(jobListActive);
                 jobListViewActive.setAdapter(mAdapterActiveJobs);
 
-                jobListViewActive.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("JobId", mAdapter.mData.get(position));
-                        myAdvertsFragment.setArguments(bundle);
+//                jobListViewActive.setOnItemClickListener(new AdapterView.OnItemClickListener()
+//                {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+//                    {
+//                        MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
+//                        Bundle bundle = new Bundle();
+//                        bundle.putSerializable("JobId", mAdapter.mData.get(position));
+//                        myAdvertsFragment.setArguments(bundle);
+//
+//                        FragmentManager fragmentManager = getFragmentManager();
+//                        fragmentManager.beginTransaction().replace(R.id.content, myAdvertsFragment).addToBackStack("tag").commit();
+//                    }
+//                });
 
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, myAdvertsFragment).addToBackStack("tag").commit();
-                    }
-                });
+                Iterable<DataSnapshot> jobListSnapshotCompleted = jobReference.getChildren();
 
-                for (DataSnapshot ds2 : jobListSnapshot)
+                for (DataSnapshot ds2 : jobListSnapshotCompleted)
                 {
                     JobInformation j = ds2.getValue(JobInformation.class);
                     j.setJobID(ds2.getKey());
@@ -296,7 +299,37 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
             }
         });
 
-        jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
+
+        // ACTIVE PART
+
+//        databaseReference.addValueEventListener(new ValueEventListener()
+//        {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot)
+//            {
+//                jobReference = dataSnapshot.child("Jobs");
+//
+//                Iterable<DataSnapshot> jobListSnapshot = jobReference.getChildren();
+//
+//                for(DataSnapshot j : jobListSnapshot)
+//                {
+//                    JobInformation jobInformation = j.getValue(JobInformation.class);
+//
+//                    if(jobInformation.getJobStatus().equals("Active") && auth.getCurrentUser().getUid().equals(jobInformation.getPosterID()))
+//                    {
+//                        jobListActive.add(jobInformation);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError)
+//            {
+//
+//            }
+//        })
+
+        jobSearch = (SearchView) view.findViewById(R.id.searchViewPendingJobs);
         jobSearch.setIconified(false);
         jobSearch.clearFocus();
 

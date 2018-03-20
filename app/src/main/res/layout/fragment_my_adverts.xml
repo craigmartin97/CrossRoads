@@ -42,33 +42,34 @@
                     android:background="#FFFFFF"
                     android:orientation="vertical">
 
+                    <!-- Tab One -->
+
                     <TextView
                         android:id="@+id/textView6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bebasneueregular"
-                        android:text="@string/my_adverts"
+                        android:text="My Pending Adverts"
                         android:textAlignment="center"
                         android:textSize="30sp"
                         tools:layout_editor_absoluteX="163dp"
                         tools:layout_editor_absoluteY="16dp" />
 
                     <SearchView
-                        android:id="@+id/searchViewJob"
+                        android:id="@+id/searchViewPendingJobs"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:iconifiedByDefault="false"
                         android:queryHint="Name, Location, Size, etc." />
 
-                    <!--<requestFocus-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content" />-->
+                    <requestFocus />
 
                     <ListView
                         android:id="@+id/jobListViewPending"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
+
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -78,22 +79,21 @@
                     android:background="#FFFFFF"
                     android:orientation="vertical">
 
+                    <!-- Tab Two -->
+
                     <TextView
                         android:id="@+id/textView5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:fontFamily="@font/bebasneueregular"
-
-
-                        android:text="@string/my_adverts"
+                        android:text="My Active Jobs"
                         android:textAlignment="center"
                         android:textSize="30sp"
                         tools:layout_editor_absoluteX="163dp"
                         tools:layout_editor_absoluteY="16dp" />
 
                     <SearchView
-                        android:id="@+id/searchViewJob2"
+                        android:id="@+id/searchViewMyJobs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:iconifiedByDefault="false"
@@ -115,142 +115,33 @@
                     android:background="#FFFFFF"
                     android:orientation="vertical">
 
+                    <!-- Tab Three -->
+
                     <TextView
                         android:id="@+id/textView7"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:fontFamily="@font/bebasneueregular"
-
-
-                        android:text="@string/my_adverts"
+                        android:text="My Completed Jobs"
                         android:textAlignment="center"
                         android:textSize="30sp"
                         tools:layout_editor_absoluteX="163dp"
                         tools:layout_editor_absoluteY="16dp" />
 
                     <SearchView
-                        android:id="@+id/searchViewJob3"
+                        android:id="@+id/searchViewCompletedJobs"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:iconifiedByDefault="false"
                         android:queryHint="Name, Location, Size, etc." />
-
-                    <!--<requestFocus-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content" />-->
 
                     <ListView
                         android:id="@+id/jobListViewMyCompleteJobs"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
+
                 </LinearLayout>
             </FrameLayout>
         </RelativeLayout>
     </TabHost>
 </LinearLayout>
-<!--=======-->
-
-
-                        <!--android:text="@string/my_adverts"-->
-                        <!--android:textAlignment="center"-->
-                        <!--android:textSize="30sp"-->
-                        <!--tools:layout_editor_absoluteX="163dp"-->
-                        <!--tools:layout_editor_absoluteY="16dp" />-->
-
-                    <!--<SearchView-->
-                        <!--android:id="@+id/searchViewJob"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:iconifiedByDefault="false"-->
-                        <!--android:queryHint="Name, Location, Size, etc." />-->
-
-
-
-                    <!--<ListView-->
-
-                        <!--android:id="@+id/jobListViewPending"-->
-                        <!--android:id="@+id/jobListView2"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent" />-->
-                <!--</LinearLayout>-->
-
-                <!--<LinearLayout-->
-                    <!--android:id="@+id/tab2"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:background="#FFFFFF"-->
-                    <!--android:orientation="vertical">-->
-
-                    <!--<TextView-->
-                        <!--android:id="@+id/textView5"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-
-                        <!--android:fontFamily="@font/bebasneueregular"-->
-
-
-                        <!--android:text="@string/my_adverts"-->
-                        <!--android:textAlignment="center"-->
-                        <!--android:textSize="30sp"-->
-                        <!--tools:layout_editor_absoluteX="163dp"-->
-                        <!--tools:layout_editor_absoluteY="16dp" />-->
-
-                    <!--<SearchView-->
-                        <!--android:id="@+id/searchViewJob2"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:iconifiedByDefault="false"-->
-                        <!--android:queryHint="Name, Location, Size, etc." />-->
-
-                    <!--<requestFocus />-->
-
-                    <!--<ListView-->
-
-                        <!--android:id="@+id/jobListViewMyActiveJobs"-->
-                        <!--android:id="@+id/jobListView1"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent" />-->
-
-                <!--</LinearLayout>-->
-
-                <!--<LinearLayout-->
-                    <!--android:id="@+id/tab3"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:background="#FFFFFF"-->
-                    <!--android:orientation="vertical">-->
-
-                    <!--<TextView-->
-                        <!--android:id="@+id/textView7"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-
-                        <!--android:fontFamily="@font/bebasneueregular"-->
-
-
-                        <!--android:text="@string/my_adverts"-->
-                        <!--android:textAlignment="center"-->
-                        <!--android:textSize="30sp"-->
-                        <!--tools:layout_editor_absoluteX="163dp"-->
-                        <!--tools:layout_editor_absoluteY="16dp" />-->
-
-                    <!--<SearchView-->
-                        <!--android:id="@+id/searchViewJob3"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:iconifiedByDefault="false"-->
-                        <!--android:queryHint="Name, Location, Size, etc." />-->
-
-                    <!--<ListView-->
-                        <!--android:id="@+id/jobListViewMyCompleteJobs"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent" />-->
-                <!--</LinearLayout>-->
-            <!--</FrameLayout>-->
-        <!--</RelativeLayout>-->
-    <!--</TabHost>-->
-<!--</LinearLayout>-->
-
-<!--&gt;>>>>>> 3d1ed7dc158ea988233be74777699696bc9f7819-->
