@@ -1,34 +1,22 @@
 package com.kitkat.crossroads;
 
-import android.support.v7.app.ActionBar;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +30,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
+import com.kitkat.crossroads.Jobs.FindAJobFragment;
+import com.kitkat.crossroads.Jobs.MyAdvertsFragment;
+import com.kitkat.crossroads.Jobs.MyJobsFragment;
+import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
+import com.kitkat.crossroads.Profile.EditProfileFragment;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.io.IOException;
 
 public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {

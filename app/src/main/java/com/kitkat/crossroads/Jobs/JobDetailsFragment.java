@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Jobs;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,11 +6,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.BidInformation;
-import com.kitkat.crossroads.Jobs.JobDetailsActivity;
-import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.CrossRoads;
+import com.kitkat.crossroads.R;
 
 
 /**
