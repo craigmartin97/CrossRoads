@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.Jobs;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -34,6 +34,7 @@ import com.kitkat.crossroads.Jobs.BidDetailsFragment;
 import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -86,6 +87,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private TabHost host;
 
+    private String tabTag;
+
     private TabHost tabHost;
 
     public MyJobsFragment()
@@ -117,7 +120,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        tabTag = "Active";
         if (getArguments() != null)
         {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -155,6 +158,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         spec.setIndicator("Completed");
         host.addTab(spec);
 
+        host.setCurrentTabByTag(tabTag);
         for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
         {
             TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
@@ -164,6 +168,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
         TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
         tv.setTextColor(Color.parseColor("#2bbc9b"));
+
+
 
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
@@ -182,6 +188,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
                 TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
                 tv.setTextColor(Color.parseColor("#2bbc9b"));
+
+
+                tabTag = host.getCurrentTabTag();
+
 
             }
         });
