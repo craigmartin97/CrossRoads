@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -29,10 +30,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.R;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -56,6 +60,24 @@ public class ActiveJobDetailsFragment extends Fragment {
     private DataSnapshot jobReference;
     private DataSnapshot usersReference;
     private StorageReference storageReference;
+
+    private String colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize;
+
+    private ExpandableListView expandableListView;
+    private ExpandableListView expandableListView2;
+    private ExpandableListView expandableListView3;
+
+    private ExpandableListAdapter adapter;
+    private ExpandableListAdapter adapter2;
+    private ExpandableListAdapter adapter3;
+
+    private List<String> list;
+    private List<String> list2;
+    private List<String> list3;
+
+    private HashMap<String, List<String>> listHashMap;
+    private HashMap<String, List<String>> listHashMap2;
+    private HashMap<String, List<String>> listHashMap3;
 
 
     private String jobId;
@@ -144,34 +166,64 @@ public class ActiveJobDetailsFragment extends Fragment {
 
         textViewJobName1 = view.findViewById(R.id.textViewJobName1);
         textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
-        textViewJobSize1 = view.findViewById(R.id.textViewJobSize1);
-        textViewJobType1 = view.findViewById(R.id.textViewJobType1);
-        textViewJobColDate1 = view.findViewById(R.id.textViewJobColDate1);
-        textViewJobColTime1 = view.findViewById(R.id.textViewJobColTime1);
-
-
-        textViewFromAddress = view.findViewById(R.id.textViewFromAddress);
-        textViewFromTown = view.findViewById(R.id.textViewFromTown);
-        textViewFromPostcode = view.findViewById(R.id.textViewFromPostcode);
-
-        textViewToAddress = view.findViewById(R.id.textViewToAddress);
-        textViewToTown = view.findViewById(R.id.textViewToTown);
-        textViewToPostcode = view.findViewById(R.id.textViewJobToPostcode);
 
         textViewJobName1.setText(jobInformation.getAdvertName());
         textViewDescription1.setText(jobInformation.getAdvertDescription());
-        textViewJobSize1.setText(jobInformation.getJobSize());
-        textViewJobType1.setText(jobInformation.getJobType());
-        textViewJobColDate1.setText(jobInformation.getCollectionDate());
-        textViewJobColTime1.setText(jobInformation.getCollectionTime());
 
-        textViewFromAddress.setText(jobInformation.getColL1() + ", " + jobInformation.getColL2());
-        textViewFromTown.setText(jobInformation.getColTown());
-        textViewFromPostcode.setText(jobInformation.getColPostcode());
+        colDate = jobInformation.getCollectionDate().toString();
+        colTime = jobInformation.getCollectionTime().toString();
+        colAddress = jobInformation.getColL1().toString() + ", " + jobInformation.getColL2().toString();
+        colTown = jobInformation.getColTown().toString();
+        colPostcode = jobInformation.getColPostcode().toString();
+        delAddress = jobInformation.getDelL1().toString() + ", " + jobInformation.getDelL2().toString();
+        delTown = jobInformation.getColTown().toString();
+        delPostcode = jobInformation.getColPostcode().toString();
+        jobType = jobInformation.getJobType().toString();
+        jobSize = jobInformation.getJobSize().toString();
 
-        textViewToAddress.setText(jobInformation.getDelL1() + ", " + jobInformation.getDelL2());
-        textViewToTown.setText(jobInformation.getDelTown());
-        textViewToPostcode.setText(jobInformation.getDelPostcode());
+        expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list_view);
+        expandableListView2 = (ExpandableListView) view.findViewById(R.id.expandable_list_view2);
+        expandableListView3 = (ExpandableListView) view.findViewById(R.id.expandable_list_view3);
+
+        addItemsCollection();
+        addItemsDelivery();
+        addItemsJobInformation();
+
+        adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
+        adapter2 = new ExpandableListAdapter(getActivity(), list2, listHashMap2);
+        adapter3 = new ExpandableListAdapter(getActivity(), list3, listHashMap3);
+
+        expandableListView.setAdapter(adapter);
+        expandableListView2.setAdapter(adapter2);
+        expandableListView3.setAdapter(adapter3);
+
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                setListViewHeight(parent,groupPosition);
+                return false;
+            }
+        });
+
+        expandableListView2.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
+                setListViewHeight(parent,groupPosition);
+                return false;
+            }
+        });
+
+        expandableListView3.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
+                setListViewHeight(parent, groupPosition);
+                return false;
+            }
+        });
 
         mSignaturePad = (SignaturePad) view.findViewById(R.id.signature_pad);
         mSignaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
@@ -269,6 +321,88 @@ public class ActiveJobDetailsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void addItemsCollection()
+    {
+        list = new ArrayList<>();
+        listHashMap = new HashMap<>();
+
+        list.add("Collection Information");
+
+        List<String> collectionInfo = new ArrayList<>();
+        collectionInfo.add(colDate);
+        collectionInfo.add(colTime);
+        collectionInfo.add(colAddress);
+        collectionInfo.add(colTown);
+        collectionInfo.add(colPostcode);
+
+        listHashMap.put(list.get(0), collectionInfo);
+    }
+
+    private void addItemsDelivery()
+    {
+        list2 = new ArrayList<>();
+        listHashMap2 = new HashMap<>();
+
+        list2.add("Delivery Information");
+
+        List<String> deliveryInfo = new ArrayList<>();
+        deliveryInfo.add(delAddress);
+        deliveryInfo.add(delTown);
+        deliveryInfo.add(delPostcode);
+
+        listHashMap2.put(list2.get(0), deliveryInfo);
+    }
+
+    private void addItemsJobInformation()
+    {
+        list3 = new ArrayList<>();
+        listHashMap3 = new HashMap<>();
+
+        list3.add("Job Information");
+
+        List<String> jobInformation = new ArrayList<>();
+        jobInformation.add(jobSize);
+        jobInformation.add(jobType);
+
+        listHashMap3.put(list3.get(0), jobInformation);
+    }
+
+    private void setListViewHeight(ExpandableListView listView,
+                                   int group) {
+        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.EXACTLY);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+            totalHeight += groupItem.getMeasuredHeight();
+
+            if (((listView.isGroupExpanded(i)) && (i != group))
+                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                    View listItem = listAdapter.getChildView(i, j, false, null,
+                            listView);
+                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                    totalHeight += listItem.getMeasuredHeight() + 5;
+
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+
     }
 
     /**
