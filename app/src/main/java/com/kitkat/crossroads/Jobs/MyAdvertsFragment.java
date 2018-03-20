@@ -214,6 +214,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
+
                         JobBidsFragment jobBidsFragment = new JobBidsFragment();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("JobId", mAdapter.mData.get(position));

@@ -60,11 +60,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private DataSnapshot jobReference;
     private DataSnapshot usersReference;
 
-    private String jobId, colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode;
-    private String jobBidId;
-    private String usersId;
-    private static final String TAG = "JobsBidsFragment";
-    private String name;
+    private String jobId, colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize;
 
     private JobBidsFragment.MyCustomAdapter mAdapter;
 
@@ -76,20 +72,23 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
     private OnFragmentInteractionListener mListener;
 
-    private TextView textViewJobName1, textViewDescription1, textViewJobSize1,
-            textViewJobType1;
+    private TextView textViewJobName1, textViewDescription1;
 
     private ExpandableListView expandableListView;
     private ExpandableListView expandableListView2;
+    private ExpandableListView expandableListView3;
 
     private ExpandableListAdapter adapter;
     private ExpandableListAdapter adapter2;
+    private ExpandableListAdapter adapter3;
 
     private List<String> list;
     private List<String> list2;
+    private List<String> list3;
 
     private HashMap<String, List<String>> listHashMap;
     private HashMap<String, List<String>> listHashMap2;
+    private HashMap<String, List<String>> listHashMap3;
 
     public JobBidsFragment()
     {
@@ -149,18 +148,24 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         delAddress = jobInformation.getDelL1().toString() + ", " + jobInformation.getDelL2().toString();
         delTown = jobInformation.getColTown().toString();
         delPostcode = jobInformation.getColPostcode().toString();
+        jobType = jobInformation.getJobType().toString();
+        jobSize = jobInformation.getJobSize().toString();
 
         expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list_view);
         expandableListView2 = (ExpandableListView) view.findViewById(R.id.expandable_list_view2);
+        expandableListView3 = (ExpandableListView) view.findViewById(R.id.expandable_list_view3);
 
         addItemsCollection();
         addItemsDelivery();
+        addItemsJobInformation();
 
         adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
         adapter2 = new ExpandableListAdapter(getActivity(), list2, listHashMap2);
+        adapter3 = new ExpandableListAdapter(getActivity(), list3, listHashMap3);
 
         expandableListView.setAdapter(adapter);
         expandableListView2.setAdapter(adapter2);
+        expandableListView3.setAdapter(adapter3);
 
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -180,21 +185,27 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
             }
         });
 
+        expandableListView3.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
+                setListViewHeight(parent, groupPosition);
+                return false;
+            }
+        });
+
         jobListView = view.findViewById(R.id.jobListView1);
 
         textViewJobName1 = view.findViewById(R.id.textViewJobName1);
         textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
-        textViewJobSize1 = view.findViewById(R.id.textViewJobSize1);
-        textViewJobType1 = view.findViewById(R.id.textViewJobType1);
+//        textViewJobSize1 = view.findViewById(R.id.textViewJobSize1);
+//        textViewJobType1 = view.findViewById(R.id.textViewJobType1);
 
-
-
-                textViewJobName1.setText(jobInformation.getAdvertName());
-                textViewDescription1.setText(jobInformation.getAdvertDescription());
-                textViewJobSize1.setText(jobInformation.getJobSize());
-                textViewJobType1.setText(jobInformation.getJobType());
-                
-
+        textViewJobName1.setText(jobInformation.getAdvertName());
+        textViewDescription1.setText(jobInformation.getAdvertDescription());
+//        textViewJobSize1.setText(jobInformation.getJobSize());
+//        textViewJobType1.setText(jobInformation.getJobType());
 
         databaseReference.addValueEventListener(new ValueEventListener()
         {
@@ -209,11 +220,9 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
                 mAdapter = new JobBidsFragment.MyCustomAdapter();
 
-
                 for (DataSnapshot ds : bidListSnapShot)
                 {
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
-                    jobBidId = ds.getKey();
 
                     if (jobId.equals(ds.getKey()))
                     {
@@ -359,7 +368,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         collectionInfo.add(colTown);
         collectionInfo.add(colPostcode);
 
-        listHashMap.put(list.get(0),collectionInfo);
+        listHashMap.put(list.get(0), collectionInfo);
     }
 
     private void addItemsDelivery()
@@ -374,7 +383,21 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         deliveryInfo.add(delTown);
         deliveryInfo.add(delPostcode);
 
-        listHashMap2.put(list2.get(0),deliveryInfo);
+        listHashMap2.put(list2.get(0), deliveryInfo);
+    }
+
+    private void addItemsJobInformation()
+    {
+        list3 = new ArrayList<>();
+        listHashMap3 = new HashMap<>();
+
+        list3.add("Job Information");
+
+        List<String> jobInformation = new ArrayList<>();
+        jobInformation.add(jobSize);
+        jobInformation.add(jobType);
+
+        listHashMap3.put(list3.get(0), jobInformation);
     }
 
 
