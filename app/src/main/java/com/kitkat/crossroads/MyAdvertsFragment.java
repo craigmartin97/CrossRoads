@@ -1,21 +1,22 @@
 package com.kitkat.crossroads;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +27,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.JobDetailsActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -67,9 +71,11 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     private ListView jobListView;
 
-    private SearchView jobSearch;
-
     private String jobID;
+
+    private Spinner sortBySpinner;
+    private Button filterButton;
+    private SearchView jobSearch;
 
     public MyAdvertsFragment()
     {
@@ -111,9 +117,94 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                              Bundle savedInstanceState)
     {
 
-        View view = inflater.inflate(R.layout.fragment_my_adverts, container, false);
+        final View view = inflater.inflate(R.layout.fragment_my_adverts, container, false);
 
         jobListView = (ListView) view.findViewById(R.id.jobListView1);
+
+        sortBySpinner = (Spinner) view.findViewById(R.id.sortBySpinner);
+
+        String [] sortBy = new String[]{
+
+                "Sort By",
+                "Name",
+                "Collection From",
+                "Delivery To",
+                "Collection Date",
+                "Size"
+        };
+
+        final List<String> sortByList = new ArrayList<>(Arrays.asList(sortBy));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByList)
+        {
+            @Override
+            public boolean isEnabled(int position)
+            {
+                if (position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                } else
+                {
+                    return true;
+                }
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent)
+            {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0)
+                {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else
+                {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+
+        };
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortBySpinner.setAdapter(adapter);
+
+        sortBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String selectedItemText = (String) parent.getItemAtPosition(position);
+
+                if(position > 0)
+                {
+                    Toast.makeText
+                            (getActivity(), "selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        filterButton = (Button) view.findViewById(R.id.filterButton);
+        filterButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (filterButton.getTag().equals("#2bbc9b"))
+                {
+                    TextView filterName = (TextView) view.findViewById(R.id.filterName);
+                    filterName.setVisibility(view.GONE);
+                }
+            }
+        });
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -137,7 +228,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                    if (j.getPosterID().equals(currentUser.getUid()))
+                    if (j.getPosterID().equals(currentUser.getUid()) && j.getJobStatus().equals("Pending"))
                     {
                         jobList.add(j);
 
@@ -317,6 +408,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                 holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
                 holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
+
                 convertView.setTag(holder);
             } else
             {
