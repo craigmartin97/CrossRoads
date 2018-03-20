@@ -42,19 +42,21 @@
                             android:background="#FFFFFF"
                             android:orientation="vertical">
 
+                                <!-- TAB ONE CONTENT -->
+
                                 <TextView
-                                    android:id="@+id/textViewActiveJobs"
+                                    android:id="@+id/textViewMyActiveJobs"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/bebasneueregular"
-                                    android:text="@string/my_active_jobs"
+                                    android:text="My ACTIVE JOBS"
                                     android:textAlignment="center"
                                     android:textSize="30sp"
                                     tools:layout_editor_absoluteX="163dp"
                                     tools:layout_editor_absoluteY="16dp" />
 
                                 <SearchView
-                                    android:id="@+id/searchViewMyActiveJobs"
+                                    android:id="@+id/searchViewMyJobs"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:iconifiedByDefault="false"
@@ -68,8 +70,6 @@
                                     android:layout_height="match_parent" />
 
                         </LinearLayout>
-
-
 
                                 <LinearLayout
                                     android:id="@+id/tab2"
@@ -117,29 +117,9 @@
                                 <!-- TAB THREE CONTENT -->
 
                                 <TextView
-                                    android:id="@+id/textViewCompleteJobs"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/bebasneueregular"
-                                    android:text="@string/my_complete_jobs"
-                                    android:textAlignment="center"
-                                    android:textSize="30sp"
-                                    tools:layout_editor_absoluteX="163dp"
-                                    tools:layout_editor_absoluteY="16dp" />
-
-                                <SearchView
-                                    android:id="@+id/searchViewMyCompleteJobs"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:iconifiedByDefault="false"
-                                    android:queryHint="Name, Location, Size, etc." />
-
-                                <requestFocus />
-
-                                <ListView
-                                    android:id="@+id/jobListViewMyCompleteJobs"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent" />
+                                    android:layout_height="match_parent"
+                                    android:text="This is tab 3" />
 
                         </LinearLayout>
                         </FrameLayout>

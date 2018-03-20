@@ -25,7 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.ActiveJobDetailsFragment;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -66,13 +65,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<String> userBidId = new ArrayList<String>();
     private ArrayList<String> userJobId = new ArrayList<String>();
 
-    private MyJobsFragment.MyCustomAdapter mAdapter, mAdapterActiveJobs, mAdapterCompleteJobs;
+    private MyJobsFragment.MyCustomAdapter mAdapter;
 
     private ArrayList<JobInformation> jobList = new ArrayList<>();
-    private ArrayList<JobInformation> jobListActive = new ArrayList<>();
-    private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
 
-    private ListView jobListView, jobListViewMyAcJobs, jobListViewMyComJobs;
+    private ListView jobListView;
 
     private SearchView jobSearch;
 
@@ -178,12 +175,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
 
         jobListView = view.findViewById(R.id.jobListView1);
-        jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
-        jobListViewMyComJobs = view.findViewById(R.id.jobListViewMyCompleteJobs);
 
         final ArrayList<String> jobsListArray = new ArrayList<>();
-
-        final ArrayList<String> activeJobsListArray = new ArrayList<>();
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -200,9 +193,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
 
-                mAdapter = new MyCustomAdapter();
-                mAdapterActiveJobs = new MyCustomAdapter();
-                mAdapterCompleteJobs = new MyCustomAdapter();
+                mAdapter = new MyJobsFragment.MyCustomAdapter();
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
@@ -224,9 +215,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     if (jobsListArray.contains(ds3.getKey()))
                     {
                         JobInformation j = ds3.getValue(JobInformation.class);
-                        if(j.getJobStatus().equals("Pending")) {
-                            jobList.add(j);
-                        }
+                        jobList.add(j);
                     }
 
                 }
@@ -239,63 +228,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
                         BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
-
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("Job", mAdapter.mData.get(position));
                         bidDetailsFragment.setArguments(bundle);
                         FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
-
+                        fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
                     }
                 });
-
-                Iterable<DataSnapshot> activeJobListSnapShot = jobReference.getChildren();
-
-
-                for (DataSnapshot ds4 : activeJobListSnapShot)
-                {
-                    JobInformation j = ds4.getValue(JobInformation.class);
-                    if(j.getJobStatus().equals("Active") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
-                    {
-                        jobListActive.add(j);
-                    }
-
-                }
-                mAdapterActiveJobs.addArray(jobListActive);
-                jobListViewMyAcJobs.setAdapter(mAdapterActiveJobs);
-
-                jobListViewMyAcJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("Job", mAdapterActiveJobs.mData.get(position));
-                        activeJobDetailsFragment.setArguments(bundle);
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
-
-                    }
-                });
-
-
-                Iterable<DataSnapshot> completeJobListSnapShot = jobReference.getChildren();
-
-
-                for (DataSnapshot ds5 : completeJobListSnapShot)
-                {
-                    JobInformation j = ds5.getValue(JobInformation.class);
-                    if(j.getJobStatus().equals("Complete") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
-                    {
-                        jobListComplete.add(j);
-                    }
-
-                }
-                mAdapterCompleteJobs.addArray(jobListComplete);
-                jobListViewMyComJobs.setAdapter(mAdapterCompleteJobs);
-
-
             }
 
             @Override
@@ -402,8 +341,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         public void addArray(final ArrayList<JobInformation> j)
         {
-            mData.clear();
-            mDataOrig.clear();
             mData = j;
             mDataOrig = j;
         }
