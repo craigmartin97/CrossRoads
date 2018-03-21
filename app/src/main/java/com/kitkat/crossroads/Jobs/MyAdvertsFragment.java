@@ -243,21 +243,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                 mAdapterActiveJobs.addArray(jobListActive);
                 jobListViewActive.setAdapter(mAdapterActiveJobs);
 
-//                jobListViewActive.setOnItemClickListener(new AdapterView.OnItemClickListener()
-//                {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-//                    {
-//                        MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
-//                        Bundle bundle = new Bundle();
-//                        bundle.putSerializable("JobId", mAdapter.mData.get(position));
-//                        myAdvertsFragment.setArguments(bundle);
-//
-//                        FragmentManager fragmentManager = getFragmentManager();
-//                        fragmentManager.beginTransaction().replace(R.id.content, myAdvertsFragment).addToBackStack("tag").commit();
-//                    }
-//                });
-
                 Iterable<DataSnapshot> jobListSnapshotCompleted = jobReference.getChildren();
 
                 for (DataSnapshot ds2 : jobListSnapshotCompleted)
@@ -299,36 +284,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
             }
         });
-
-
-        // ACTIVE PART
-
-//        databaseReference.addValueEventListener(new ValueEventListener()
-//        {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot)
-//            {
-//                jobReference = dataSnapshot.child("Jobs");
-//
-//                Iterable<DataSnapshot> jobListSnapshot = jobReference.getChildren();
-//
-//                for(DataSnapshot j : jobListSnapshot)
-//                {
-//                    JobInformation jobInformation = j.getValue(JobInformation.class);
-//
-//                    if(jobInformation.getJobStatus().equals("Active") && auth.getCurrentUser().getUid().equals(jobInformation.getPosterID()))
-//                    {
-//                        jobListActive.add(jobInformation);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError)
-//            {
-//
-//            }
-//        })
 
         jobSearch = (SearchView) view.findViewById(R.id.searchViewPendingJobs);
         jobSearch.setIconified(false);

@@ -99,7 +99,7 @@
                     <requestFocus />
 
                     <ListView
-                        android:id="@+id/jobListView1"
+                        android:id="@+id/jobListViewBidOn"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
