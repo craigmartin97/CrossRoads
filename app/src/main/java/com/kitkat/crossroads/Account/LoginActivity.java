@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kitkat.crossroads.CrossRoads;
 import com.kitkat.crossroads.R;
 
@@ -109,6 +110,9 @@ public class LoginActivity extends AppCompatActivity
                             if (task.isSuccessful() && user.isEmailVerified() == true)
                             {
                                 dismissDialog();
+                                String token = FirebaseInstanceId.getInstance().getToken();
+                                myRef.child(mAuth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
+
                                 startActivity(new Intent(getApplicationContext(), CrossRoads.class));
                                 finish();
                             } else if (user.isEmailVerified() == false)

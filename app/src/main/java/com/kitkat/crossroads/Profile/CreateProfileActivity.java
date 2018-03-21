@@ -23,9 +23,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.MyFirebaseInstanceIDService;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Profile.UserInformation;
 
@@ -73,55 +75,7 @@ public class CreateProfileActivity extends AppCompatActivity
         checkBoxAdvertiser = (CheckBox) findViewById(R.id.checkBoxAdvertiser);
         checkBoxCourier = (CheckBox) findViewById(R.id.checkBoxCourier);
 
-//        textViewDateOfBirth.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Calendar calendar = Calendar.getInstance();
-//                int year = calendar.get(Calendar.YEAR);
-//                int month = calendar.get(Calendar.MONTH);
-//                int day = calendar.get(Calendar.DAY_OF_MONTH);
-//
-//                DatePickerDialog dialog = new DatePickerDialog(
-//                        CreateProfileActivity.this,
-//                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-//                        dateSetListener,
-//                        year,month,day);
-//                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//                dialog.show();
-//            }
-//        });
 
-//        dateSetListener = new DatePickerDialog.OnDateSetListener() {
-//            @Override
-//            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//
-//                                month = month + 1;
-//                                Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
-//
-//                               if(dayOfMonth >= 1 && dayOfMonth <= 9)
-//                                {
-//                                    String newDay = "0" + dayOfMonth;
-//                                    textViewDateOfBirth.setText(newDay + "/" + month + "/" + year);
-//                                }
-//
-//                                if(month >= 1 && month <= 9)
-//                                {
-//                                    String newMonth = "0" + month;
-//                                    textViewDateOfBirth.setText(dayOfMonth + "/" + newMonth + "/" + year);
-//                                }
-//
-//                                if(dayOfMonth >= 1 && dayOfMonth <= 9 && month >= 1 && month <= 9)
-//                                {
-//                                    String newDay = "0" + dayOfMonth;
-//                                    String newMonth = "0" + month;
-//                                    textViewDateOfBirth.setText(newDay + "/" + newMonth + "/" + year);
-//                                }
-//                                else
-//                                {
-//                                    textViewDateOfBirth.setText(dayOfMonth + "/" + month + "/" + year);
-//                                }
-//                            }
-//        };
 
         saveProfile.setOnClickListener(new View.OnClickListener()
         {

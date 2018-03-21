@@ -19,6 +19,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kitkat.crossroads.CrossRoads;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.R;
@@ -34,6 +38,8 @@ public class RegisterActivity extends AppCompatActivity
     private TextView textViewSignUp, textViewTermsAndConditionsAndPrivacyPolicy;
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,6 +48,8 @@ public class RegisterActivity extends AppCompatActivity
         setContentView(R.layout.activity_register);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         if (firebaseAuth.getCurrentUser() != null)
         {
@@ -147,6 +155,7 @@ public class RegisterActivity extends AppCompatActivity
                                 if (isNewUser == true)
                                 {
                                     dismissDialog();
+                                    databaseReference.child("Users").child(firebaseAuth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
                                     startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
                                 } else if (task.getException() instanceof FirebaseAuthUserCollisionException)
                                 {
