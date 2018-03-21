@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -75,6 +76,7 @@ public class EditProfileFragment extends Fragment
     private FirebaseDatabase database;
     private StorageReference storageReference;
     private StorageReference filePath;
+    private Uri fileUri;
 
     public EditProfileFragment()
     {
@@ -238,6 +240,7 @@ public class EditProfileFragment extends Fragment
             progressDialog.show();
 
             final Uri uri = data.getData();
+            fileUri = data.getData();
 
             final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
             this.filePath = filePath;
@@ -254,6 +257,7 @@ public class EditProfileFragment extends Fragment
 
                     // Saving the URL under the "Users" table, under the "Users ID" In the Firebase Database to later retrieve it
                     myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
+                    myRef.child("Users").child(user.getUid()).child("profileUri").setValue(fileUri);
                 }
             }).addOnFailureListener(new OnFailureListener()
             {
@@ -375,7 +379,7 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, filePath);
+                    addressTwo, town, postCode, advertiser, courier, filePath, fileUri);
 
             setUserInformation(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -383,7 +387,7 @@ public class EditProfileFragment extends Fragment
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, filePath);
+                    addressTwo, town, postCode, advertiser, courier, filePath, fileUri);
 
             setUserInformation(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -391,7 +395,7 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, filePath);
+                    addressTwo, town, postCode, advertiser, courier, filePath, fileUri);
 
             setUserInformation(userInformation);
         }

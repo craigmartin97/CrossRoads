@@ -196,7 +196,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null);
+                    addressTwo, town, postCode, advertiser, courier, null, null);
 
             setUserInformation(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -204,7 +204,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null);
+                    addressTwo, town, postCode, advertiser, courier, null, null);
 
             setUserInformation(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -212,7 +212,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null);
+                    addressTwo, town, postCode, advertiser, courier, null, null);
 
             setUserInformation(userInformation);
         }

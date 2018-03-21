@@ -1,5 +1,7 @@
 package com.kitkat.crossroads.Profile;
 
+import android.net.Uri;
+
 import com.google.firebase.storage.StorageReference;
 
 /**
@@ -18,13 +20,14 @@ public class UserInformation
     public boolean advertiser;
     public boolean courier;
     public StorageReference profileImage;
+    public Uri fileUri;
 
     public UserInformation()
     {
 
     }
 
-    public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, StorageReference profileImage)
+    public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, StorageReference profileImage, Uri fileUri)
     {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
@@ -35,6 +38,7 @@ public class UserInformation
         this.advertiser = advertiser;
         this.courier = courier;
         this.profileImage = profileImage;
+        this.fileUri = fileUri;
     }
 
     public String getFullName()
@@ -125,5 +129,15 @@ public class UserInformation
     public void setProfileImage(StorageReference profileImage)
     {
         this.profileImage = profileImage;
+    }
+
+    public Uri getFileUri()
+    {
+        return fileUri;
+    }
+
+    public void setFileUri(Uri fileUri)
+    {
+        this.fileUri = fileUri;
     }
 }
