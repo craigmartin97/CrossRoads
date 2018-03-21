@@ -1,7 +1,15 @@
 package com.kitkat.crossroads;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
@@ -38,6 +46,13 @@ import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
 import com.kitkat.crossroads.Profile.EditProfileFragment;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.squareup.picasso.Picasso;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 
 public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -222,12 +237,15 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             {
                 String name = dataSnapshot.child("fullName").getValue(String.class);
                 String profileImageUri = dataSnapshot.child("profileImage").getValue(String.class);
+                String profileUri = dataSnapshot.child("profileUri").getValue(String.class);
 
                 Log.d(TAG, "Name Is: " + name);
                 Log.d(TAG, "ProfileImage: " + profileImage);
 
                 navigationName.setText(name);
-                Picasso.get().load(profileImageUri).resize(175, 175).transform(new CircleTransformation()).into(profileImage);
+
+                Picasso.get().load(profileImageUri).resize(250,250).transform(new CircleTransformation()).into(profileImage);
+
             }
 
             @Override
