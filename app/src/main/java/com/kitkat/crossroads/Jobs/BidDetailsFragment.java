@@ -73,7 +73,8 @@ public class BidDetailsFragment extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bid_details, container, false);
+        return inflater.inflate(R.layout.info_list_my_bids, container, false);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

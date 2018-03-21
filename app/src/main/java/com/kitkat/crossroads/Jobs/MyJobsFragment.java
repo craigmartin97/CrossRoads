@@ -64,13 +64,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<String> userBidId = new ArrayList<String>();
     private ArrayList<String> userJobId = new ArrayList<String>();
 
-    private MyJobsFragment.MyCustomAdapter mAdapter, mAdapterActiveJobs, mAdapterCompleteJobs;
+    private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterActiveJobs, mAdapterCompleteJobs;
 
     private ArrayList<JobInformation> jobList = new ArrayList<>();
     private ArrayList<JobInformation> jobListActive = new ArrayList<>();
     private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
 
-    private ListView jobListView, jobListViewMyAcJobs, jobListViewMyComJobs;
+    private ListView jobListViewBidOn, jobListViewMyAcJobs, jobListViewMyComJobs;
 
     private SearchView jobSearch;
 
@@ -156,8 +156,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
         tv.setTextColor(Color.parseColor("#2bbc9b"));
 
-
-
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
 
@@ -176,15 +174,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
                 tv.setTextColor(Color.parseColor("#2bbc9b"));
 
-
                 tabTag = host.getCurrentTabTag();
-
-
             }
         });
 
 
-        jobListView = view.findViewById(R.id.jobListView1);
+        jobListViewBidOn = view.findViewById(R.id.jobListViewBidOn);
         jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
         jobListViewMyComJobs = view.findViewById(R.id.jobListViewMyCompleteJobs);
 
@@ -207,9 +202,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
                 Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
 
-                mAdapter = new MyCustomAdapter();
+                mAdapterBidOn = new MyCustomAdapter();
                 mAdapterActiveJobs = new MyCustomAdapter();
                 mAdapterCompleteJobs = new MyCustomAdapter();
+
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
@@ -238,17 +234,17 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 }
 
-                mAdapter.addArray(jobList);
-                jobListView.setAdapter(mAdapter);
+                mAdapterBidOn.addArray(jobList);
+                jobListViewBidOn.setAdapter(mAdapterBidOn);
 
-                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                jobListViewBidOn.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
                         BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("Job", mAdapter.mData.get(position));
+                        bundle.putSerializable("Job", mAdapterBidOn.mData.get(position));
                         bidDetailsFragment.setArguments(bundle);
                         FragmentManager fragmentManager = getFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
@@ -360,7 +356,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     public boolean onQueryTextChange(String newText)
     {
         String text = newText;
-        mAdapter.filter(text);
+        mAdapterBidOn.filter(text);
 
         return false;
     }
@@ -464,7 +460,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewFrom = convertView.findViewById(R.id.textFrom);
                 holder.textViewTo = convertView.findViewById(R.id.textTo);
-                //holder.detailsButton = convertView.findViewById(R.id.detailsButton);
+
                 convertView.setTag(holder);
             } else
             {
