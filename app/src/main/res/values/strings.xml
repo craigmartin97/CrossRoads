@@ -4,50 +4,26 @@
     <string name="password">Password</string>
     <string name="by_checking_this_box_and_signing_up_you_are_agreeing_to_our_terms_and_conditions_and_privacy_policy">By checking this box and signing up, you are agreeing to our Terms and Conditions and Privacy Policy.</string>
     <string name="register">Register</string>
-    <string name="lets_get_started">Lets get started</string>
-    <string name="enter_your_email_and_mobile_number_to_verify_your_identity">Enter your email and password to verify your identity!</string>
     <string name="Welcome_back_login">Welcome Back, Please Login</string>
     <string name="Already_user">Already Registered? Sign In Here</string>
     <string name="Not_user">Not Registered? Sign Up Here</string>
     <string name="sign_in">Login</string>
-    <string name="minimum_password">Password must be at least 6 characters</string>
-    <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
-    <string name="Enter_Your_Full_Name"> Enter your full name</string>
-    <string name="Enter_Your_Phone_Number">Enter your phone number</string>
-    <string name="Enter_Your_Postal_Address">Enter your postal address</string>
-    <string name="Enter_Your_Date_Of_Birth">Enter your date of birth</string>
     <string name="Person_Name_Here"> Name</string>
     <string name="Profile_Photo_of_user">Profile Picture</string>
     <string name="edit_your_profile">Edit Your Profile</string>
     <string name="create_your_profile">Create Your Profile</string>
     <string name="full_name">Full Name</string>
     <string name="phone_number">Phone Number</string>
-    <string name="date_of_birth">Date of Birth</string>
-    <string name="address">Address</string>
-    <string name="save_profile">Save Profile</string>
-    <string name="log_out">Log Out</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="recover_password">Forgot Password? Recover Password</string>
     <string name="reset_password">Reset Password</string>
-    <string name="TermsAndConditions">Terms And Conditions</string>
-    <string name="PrivacyPolicy">Privacy Policy</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="title_activity_home">Cross Roads</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="TermsAndConditionsAndPrivacyPolicy">Terms And Conditions and Privacy Policy</string>
     <string name="create_account">Create Account</string>
-    <string name="upload_image">Upload Profile Picture</string>
-    <string name="to">To</string>
-    <string name="jobs">Jobs</string>
-    <string name="job_name">Job Name</string>
-    <string name="from">From</string>
-    <string name="my_adverts">My Adverts</string>
     <string name="my_bids">My Bids</string>
-    <string name="my_active_jobs">My Active Jobs</string>
     <string name="my_complete_jobs">My Complete Jobs</string>
     <string-array name="job_sizes">
         <item>Small</item>
@@ -65,9 +41,6 @@
         <item>Single Item</item>
         <item>Multiple Items</item>
     </string-array>
-    <string name="textTabTitle1">Completed</string>
-    <string name="textTabTitle2">Active</string>
-    <string name="textTabTitle3">Bid On</string>
 
 </resources>
 

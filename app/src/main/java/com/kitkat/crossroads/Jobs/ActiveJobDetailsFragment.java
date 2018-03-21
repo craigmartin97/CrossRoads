@@ -50,68 +50,31 @@ import java.util.Locale;
  */
 public class ActiveJobDetailsFragment extends Fragment {
 
+    private View view;
 
-    private FirebaseAuth auth;
     private DatabaseReference myRef;
     private FirebaseDatabase database;
-    private DatabaseReference databaseReference;
 
-    private DataSnapshot bidReference;
-    private DataSnapshot jobReference;
-    private DataSnapshot usersReference;
     private StorageReference storageReference;
 
-    private String colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize;
+    private String colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize, jobId;
 
-    private ExpandableListView expandableListView;
-    private ExpandableListView expandableListView2;
-    private ExpandableListView expandableListView3;
+    private ExpandableListView expandableListView, expandableListView2, expandableListView3;
 
-    private ExpandableListAdapter adapter;
-    private ExpandableListAdapter adapter2;
-    private ExpandableListAdapter adapter3;
+    private ExpandableListAdapter adapter, adapter2, adapter3;
 
-    private List<String> list;
-    private List<String> list2;
-    private List<String> list3;
+    private List<String> list, list2, list3;
 
-    private HashMap<String, List<String>> listHashMap;
-    private HashMap<String, List<String>> listHashMap2;
-    private HashMap<String, List<String>> listHashMap3;
-
-
-    private String jobId;
-    private String jobBidId;
-    private String usersId;
-    private static final String TAG = "ActJobDetailsFragment";
-    private String name;
-
-    private ActiveJobDetailsFragment.MyCustomAdapter mAdapter;
-
-    private ArrayList<UserBidInformation> jobList = new ArrayList<>();
-
-    private ListView jobListView;
-
-    private SearchView jobSearch;
+    private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
 
     private SignaturePad mSignaturePad;
 
     private Button mJobCompleteButton, mClearButton;
 
-    private TextView textViewJobName1, textViewDescription1, textViewJobSize1,
-            textViewJobType1, textViewJobColDate1, textViewJobColTime1,
-            textViewFromAddress, textViewFromTown, textViewFromPostcode,
-            textViewToAddress, textViewToTown, textViewToPostcode;
+    private TextView textViewJobName1, textViewDescription1;
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -141,31 +104,41 @@ public class ActiveJobDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_active_job_details, container, false);
+        view = inflater.inflate(R.layout.fragment_active_job_details, container, false);
+
+
+        textViewJobName1 = view.findViewById(R.id.textViewJobName1);
+        textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
+
+        expandableListView = view.findViewById(R.id.expandable_list_view);
+        expandableListView2 = view.findViewById(R.id.expandable_list_view2);
+        expandableListView3 = view.findViewById(R.id.expandable_list_view3);
+
+        mSignaturePad = view.findViewById(R.id.signature_pad);
+
+        mClearButton = view.findViewById(R.id.clear_button);
+        mJobCompleteButton = view.findViewById(R.id.job_complete_button);
+
 
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
-        databaseReference = database.getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
 
         Bundle bundle = this.getArguments();
         final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
         jobId = jobInformation.getJobID();
 
-        jobListView = view.findViewById(R.id.jobListView1);
-
-        textViewJobName1 = view.findViewById(R.id.textViewJobName1);
-        textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
 
         textViewJobName1.setText(jobInformation.getAdvertName());
         textViewDescription1.setText(jobInformation.getAdvertDescription());
@@ -181,9 +154,6 @@ public class ActiveJobDetailsFragment extends Fragment {
         jobType = jobInformation.getJobType().toString();
         jobSize = jobInformation.getJobSize().toString();
 
-        expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list_view);
-        expandableListView2 = (ExpandableListView) view.findViewById(R.id.expandable_list_view2);
-        expandableListView3 = (ExpandableListView) view.findViewById(R.id.expandable_list_view3);
 
         addItemsCollection();
         addItemsDelivery();
@@ -225,7 +195,6 @@ public class ActiveJobDetailsFragment extends Fragment {
             }
         });
 
-        mSignaturePad = (SignaturePad) view.findViewById(R.id.signature_pad);
         mSignaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
             @Override
             public void onStartSigning() {
@@ -255,8 +224,7 @@ public class ActiveJobDetailsFragment extends Fragment {
             }
         });
 
-        mClearButton = (Button) view.findViewById(R.id.clear_button);
-        mJobCompleteButton = (Button) view.findViewById(R.id.job_complete_button);
+
 
         mClearButton.setOnClickListener(new View.OnClickListener() {
             @Override

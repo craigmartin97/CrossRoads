@@ -26,10 +26,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.MyFirebaseInstanceIDService;
 import com.kitkat.crossroads.R;
 
 import java.io.ByteArrayOutputStream;
@@ -61,10 +63,29 @@ public class CreateProfileActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
-
         getViewByIds();
         setDatabaseConnections();
+        auth = FirebaseAuth.getInstance();
 
+        if (auth.getCurrentUser() == null)
+        {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
+        database = FirebaseDatabase.getInstance();
+        myRef = FirebaseDatabase.getInstance().getReference();
+
+        saveProfile = (Button) findViewById(R.id.buttonSaveProfile);
+
+        fullName = (EditText) findViewById(R.id.editTextFullName);
+        phoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
+        addressOne = (EditText) findViewById(R.id.editTextAddress1);
+        addressTwo = (EditText) findViewById(R.id.editTextAddress2);
+        town = (EditText) findViewById(R.id.editTextTown);
+        postCode = (EditText) findViewById(R.id.editTextPostCode);
+        checkBoxAdvertiser = (CheckBox) findViewById(R.id.checkBoxAdvertiser);
+        checkBoxCourier = (CheckBox) findViewById(R.id.checkBoxCourier);
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override

@@ -1,5 +1,8 @@
 package com.kitkat.crossroads;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -12,8 +15,9 @@ import android.util.Log;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
-    private static final String TAG = "CrossRoads Messenger";
-
+    private final String TAG = "CrossRoads Messenger";
+    private DatabaseReference databaseReference;
+    private FirebaseAuth auth;
 
     @Override
     public void onTokenRefresh() {
@@ -29,6 +33,12 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private void sendRegistrationToServer(String refreshedToken) {
 
-        //method to send data to server
+        if (!auth.getCurrentUser().getUid().equals(null)) {
+            databaseReference = FirebaseDatabase.getInstance().getReference();
+            auth = FirebaseAuth.getInstance();
+            databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(refreshedToken);
+        }
     }
+
+
 }

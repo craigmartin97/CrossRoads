@@ -3,5 +3,4 @@
     <color name="colorPrimary">#2bbc9b</color> <!--foreground colour -->
     <color name="colorPrimaryDark">#406280</color> <!--background colour-->
     <color name="colorAccent">#bbe4db</color>
-    <color name="RichLilac">#b666d2</color>
 </resources>
