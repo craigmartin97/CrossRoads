@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -105,6 +106,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     {
         super.onCreate(savedInstanceState);
 
+
+
         if (getArguments() != null)
         {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -117,6 +120,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                              Bundle savedInstanceState)
     {
         final View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
+
+        final LinearLayout filterLayout = (LinearLayout) view.findViewById(R.id.filterLayout);
 
         jobListView = (ListView) view.findViewById(R.id.jobListView1);
 
@@ -200,11 +205,22 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             @Override
             public void onClick(View v)
             {
-                if (filterButton.getTag().equals("#2bbc9b"))
+
+                String tag = filterLayout.getTag().toString();
+
+
+                if (filterLayout.getTag().toString().equals("Closed"))
                 {
-                    TextView filterName = (TextView) view.findViewById(R.id.filterName);
-                    filterName.setVisibility(view.GONE);
+                    filterLayout.setVisibility(View.VISIBLE);
+                    filterLayout.setTag("Open");
                 }
+                else
+                {
+                    filterLayout.setVisibility(View.GONE);
+                    filterLayout.setTag("Closed");
+
+                }
+
             }
         });
 
