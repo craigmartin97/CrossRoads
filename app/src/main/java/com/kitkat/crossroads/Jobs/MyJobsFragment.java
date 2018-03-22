@@ -126,13 +126,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         host = (TabHost) view.findViewById(R.id.tabHost);
         host.setup();
 
-        //Tab 2
+        //Tab 1
         TabHost.TabSpec spec = host.newTabSpec("Active");
         spec.setContent(R.id.tab1);
         spec.setIndicator("Active");
         host.addTab(spec);
 
-        //Tab 1
+        //Tab 2
         spec = host.newTabSpec("Bid On");
         spec.setContent(R.id.tab2);
         spec.setIndicator("Bid On");
@@ -470,21 +470,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColL1());
             holder.textViewTo.setText(mData.get(position).getDelL1());
-//            holder.detailsButton.setOnClickListener(new View.OnClickListener()
-//            {
-//
-//                @Override
-//                public void onClick(View v)
-//                {
-//
-//                    BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("Job", mData.get(position));
-//                    bidDetailsFragment.setArguments(bundle);
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
-//                }
-//            });
+
+
             return convertView;
         }
 
