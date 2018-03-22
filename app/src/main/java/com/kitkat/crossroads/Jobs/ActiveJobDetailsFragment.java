@@ -598,6 +598,8 @@ public class ActiveJobDetailsFragment extends Fragment {
 
             notifyDataSetChanged();
         }
+
+
     }
 }
 

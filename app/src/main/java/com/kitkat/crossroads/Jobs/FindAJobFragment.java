@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -69,6 +71,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private Spinner sortBySpinner, filterSizeFrom, filterSizeTo;
     private Button filterButton, filterApplyButton, filterClearButton;
     private SearchView jobSearch;
+    private EditText filterName, filterColDate, filterColTime, filterColFrom, filterDelTo;
+    private CheckBox filterSingle, filterMultiple;
+
 
 
 
@@ -101,8 +106,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     {
         super.onCreate(savedInstanceState);
 
-
-
         if (getArguments() != null)
         {
             String mParam1 = getArguments().getString(ARG_PARAM1);
@@ -122,9 +125,15 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         sortBySpinner = view.findViewById(R.id.sortBySpinner);
 
+
+
         filterApplyButton = view.findViewById(R.id.filterApplyButton);
         filterClearButton = view.findViewById(R.id.filterClearButton);
-
+        filterName = view.findViewById(R.id.edittextFilterName);
+        filterColDate = view.findViewById(R.id.editTextFilterColDate);
+        filterColTime = view.findViewById(R.id.editTextFilterColTime);
+        filterColFrom = view.findViewById(R.id.editTextFilterColFrom);
+        filterDelTo = view.findViewById(R.id.editTextFilterDelTo);
 
 
 
@@ -223,12 +232,12 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
         });
 
-        filterSizeFrom = (Spinner) view.findViewById(R.id.spinnerSizeFrom);
+        filterSizeFrom = view.findViewById(R.id.spinnerSizeFrom);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSizeFrom.setAdapter(adapter);
 
-        filterSizeTo = (Spinner) view.findViewById(R.id.spinnerSizeTo);
+        filterSizeTo = view.findViewById(R.id.spinnerSizeTo);
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes_reverse, R.layout.spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSizeTo.setAdapter(adapter2);
@@ -287,11 +296,21 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
         });
 
-        jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
+        jobSearch = view.findViewById(R.id.searchViewJob);
         jobSearch.setIconified(false);
         jobSearch.clearFocus();
 
         jobSearch.setOnQueryTextListener(this);
+
+        filterApplyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> filters = new ArrayList<>();
+
+                filters.add(filterName.getText().toString());
+            }
+        });
+
 
         return view;
     }
@@ -497,6 +516,39 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                     } else
                     {
                         jA.add(j);
+                    }
+                }
+                mData.clear();
+                mData = jobs;
+                mDataOrig = jA;
+            }
+
+            notifyDataSetChanged();
+        }
+
+        public void filterArray(ArrayList<String> filterArray)
+        {
+
+            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
+            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
+
+            if (filterArray.size() == 0)
+            {
+                mData = mDataOrig;
+            } else
+            {
+
+                for (JobInformation j : mDataOrig)
+                {
+                    for(String s : filterArray) {
+
+                        if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(s.toLowerCase())) {
+                            jobs.add(j);
+                            jA.add(j);
+                            break;
+                        } else {
+                            jA.add(j);
+                        }
                     }
                 }
                 mData.clear();

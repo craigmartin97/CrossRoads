@@ -73,7 +73,7 @@
 
 
             <EditText
-                android:id="@+id/edittextViewJobName"
+                android:id="@+id/edittextFilterName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -200,7 +200,7 @@
 
 
             <EditText
-                android:id="@+id/editTextJobColDate"
+                android:id="@+id/editTextFilterColDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -219,7 +219,7 @@
 
 
             <EditText
-                android:id="@+id/editTextJobColTime"
+                android:id="@+id/editTextFilterColTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -234,7 +234,7 @@
 
 
             <EditText
-                android:id="@+id/editTextJobColFrom"
+                android:id="@+id/editTextFilterColFrom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -248,7 +248,7 @@
                 android:hint="Colletion From"/>
 
         <EditText
-            android:id="@+id/editTextJobDelTo"
+            android:id="@+id/editTextFilterDelTo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
