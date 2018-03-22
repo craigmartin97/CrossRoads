@@ -67,7 +67,7 @@
         android:layout_marginHorizontal="5dp"
         android:background="@drawable/customborder"
         android:tag="Closed"
-        android:visibility="gone">
+        android:visibility="visible">
 
 
 
@@ -269,6 +269,7 @@
             android:layout_marginTop="5dp">
 
             <Button
+                android:id="@+id/filterClearButton"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:text="Clear"
@@ -277,6 +278,7 @@
                 android:textColor="#FFFFFF"/>
 
             <Button
+                android:id="@+id/filterApplyButton"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:text="Apply Filter"
