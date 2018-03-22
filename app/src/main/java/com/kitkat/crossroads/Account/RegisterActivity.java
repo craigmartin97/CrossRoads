@@ -67,7 +67,6 @@ RegisterActivity extends AppCompatActivity
             }
         });
 
-
         textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -123,7 +122,6 @@ RegisterActivity extends AppCompatActivity
         }
     }
 
-    // Dialog method to dismiss it
     private void dismissDialog()
     {
         progressDialog.dismiss();
