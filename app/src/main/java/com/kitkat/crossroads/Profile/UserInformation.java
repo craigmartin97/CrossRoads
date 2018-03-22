@@ -19,15 +19,14 @@ public class UserInformation
     public String postCode;
     public boolean advertiser;
     public boolean courier;
-    public StorageReference profileImage;
-    public Uri fileUri;
+    public String profileImage;
 
     public UserInformation()
     {
 
     }
 
-    public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, StorageReference profileImage, Uri fileUri)
+    public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, String profileImage)
     {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
@@ -38,7 +37,6 @@ public class UserInformation
         this.advertiser = advertiser;
         this.courier = courier;
         this.profileImage = profileImage;
-        this.fileUri = fileUri;
     }
 
     public String getFullName()
@@ -121,23 +119,13 @@ public class UserInformation
         this.courier = courier;
     }
 
-    public StorageReference getProfileImage()
+    public String getProfileImage()
     {
         return profileImage;
     }
 
-    public void setProfileImage(StorageReference profileImage)
+    public void setProfileImage(String profileImage)
     {
         this.profileImage = profileImage;
-    }
-
-    public Uri getFileUri()
-    {
-        return fileUri;
-    }
-
-    public void setFileUri(Uri fileUri)
-    {
-        this.fileUri = fileUri;
     }
 }

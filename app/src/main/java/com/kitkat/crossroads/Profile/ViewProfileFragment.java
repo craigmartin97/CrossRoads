@@ -65,7 +65,6 @@ public class ViewProfileFragment extends Fragment
 
     private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
-    private boolean advertiser, courier;
 
     private ImageView profileImageUri;
 
