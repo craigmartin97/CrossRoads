@@ -61,9 +61,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private DataSnapshot bidReference;
     private DataSnapshot jobReference;
 
-    private ArrayList<String> userBidId = new ArrayList<String>();
-    private ArrayList<String> userJobId = new ArrayList<String>();
-
     private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterActiveJobs, mAdapterCompleteJobs;
 
     private ArrayList<JobInformation> jobList = new ArrayList<>();
@@ -234,7 +231,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                             jobList.add(j);
                         }
                     }
-
                 }
 
                 mAdapterBidOn.addArray(jobList);
@@ -255,8 +251,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     }
                 });
 
-                Iterable<DataSnapshot> activeJobListSnapShot = jobReference.getChildren();
+                ///////////////////////////////////////////////////////////////////////////
 
+                Iterable<DataSnapshot> activeJobListSnapShot = jobReference.getChildren();
 
                 for (DataSnapshot ds4 : activeJobListSnapShot)
                 {
@@ -288,6 +285,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     }
                 });
 
+                ///////////////////////////////////////////////////////////////////////////////////////
 
                 Iterable<DataSnapshot> completeJobListSnapShot = jobReference.getChildren();
 
@@ -303,7 +301,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 }
                 mAdapterCompleteJobs.addArray(jobListComplete);
                 jobListViewMyComJobs.setAdapter(mAdapterCompleteJobs);
-
 
             }
 

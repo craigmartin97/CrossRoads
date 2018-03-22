@@ -220,11 +220,8 @@ public class ActiveJobDetailsFragment extends Fragment {
                 mJobCompleteButton.setTextColor(Color.parseColor("#FFFFFF"));
                 mClearButton.setTextColor(Color.parseColor("#FFFFFF"));
 
-
             }
         });
-
-
 
         mClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
