@@ -33,9 +33,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private void sendRegistrationToServer(String refreshedToken) {
 
+        auth = FirebaseAuth.getInstance();
+
         if (!auth.getCurrentUser().getUid().equals(null)) {
             databaseReference = FirebaseDatabase.getInstance().getReference();
-            auth = FirebaseAuth.getInstance();
             databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(refreshedToken);
         }
     }
