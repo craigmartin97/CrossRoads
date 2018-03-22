@@ -118,6 +118,7 @@ public class RegisterActivity extends AppCompatActivity
         }
     }
 
+    // Dialog method to dismiss it
     private void dismissDialog()
     {
         progressDialog.dismiss();
