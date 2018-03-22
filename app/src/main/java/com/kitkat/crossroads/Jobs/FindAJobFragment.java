@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -26,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -50,16 +54,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
-    private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private FirebaseDatabase database;
-    private FirebaseAuth.AuthStateListener authStateListener;
     private DataSnapshot jobReference;
 
     private FindAJobFragment.MyCustomAdapter mAdapter;
@@ -68,12 +66,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
     private ListView jobListView;
 
-    private Spinner sortBySpinner;
-    private Button filterButton;
+    private Spinner sortBySpinner, filterSizeFrom, filterSizeTo;
+    private Button filterButton, filterApplyButton, filterClearButton;
     private SearchView jobSearch;
 
-    private Spinner filterSizeFrom;
-    private Spinner filterSizeTo;
 
 
     public FindAJobFragment()
@@ -105,10 +101,12 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     {
         super.onCreate(savedInstanceState);
 
+
+
         if (getArguments() != null)
         {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -118,9 +116,18 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     {
         final View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
 
-        jobListView = (ListView) view.findViewById(R.id.jobListView1);
+        final LinearLayout filterLayout = view.findViewById(R.id.filterLayout);
 
-        sortBySpinner = (Spinner) view.findViewById(R.id.sortBySpinner);
+        jobListView = view.findViewById(R.id.jobListView1);
+
+        sortBySpinner = view.findViewById(R.id.sortBySpinner);
+
+        filterApplyButton = view.findViewById(R.id.filterApplyButton);
+        filterClearButton = view.findViewById(R.id.filterClearButton);
+
+
+
+
 
         String[] sortBy = new String[]{
                 "Sort By",
@@ -193,18 +200,26 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
         });
 
-        filterButton = (Button) view.findViewById(R.id.filterButton);
+        filterButton = view.findViewById(R.id.filterButton);
 
         filterButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (filterButton.getTag().equals("#2bbc9b"))
+
+                if (filterLayout.getTag().toString().equals("Closed"))
                 {
-                    TextView filterName = (TextView) view.findViewById(R.id.filterName);
-                    filterName.setVisibility(view.GONE);
+                    filterLayout.setVisibility(View.VISIBLE);
+                    filterLayout.setTag("Open");
                 }
+                else
+                {
+                    filterLayout.setVisibility(View.GONE);
+                    filterLayout.setTag("Closed");
+
+                }
+
             }
         });
 
@@ -218,7 +233,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSizeTo.setAdapter(adapter2);
 
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
 

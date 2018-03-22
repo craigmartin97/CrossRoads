@@ -1,14 +1,19 @@
 package com.kitkat.crossroads;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -40,14 +45,23 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -79,9 +93,9 @@ public class UploadImageFragment extends Fragment
     private StorageReference storageReference;
     private FirebaseUser user;
 
-    private StorageReference filePath;
-    private ImageView profileImage;
+    private static ImageView profileImage;
     private Uri imageUri;
+    private static byte[] data;
 
     private static final int GALLERY_INTENT = 2;
 
@@ -123,7 +137,7 @@ public class UploadImageFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
 
@@ -145,36 +159,22 @@ public class UploadImageFragment extends Fragment
 
         // Setting buttons
         profileImage = (ImageView) view.findViewById(R.id.imageViewProfileImage);
-        ImageView rotateLeft = (ImageView) view.findViewById(R.id.imageRotateLeft);
-        ImageView rotateRight = (ImageView) view.findViewById(R.id.imageRotateRight);
         Button uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadProfileImage);
         Button saveProfileImage = (Button) view.findViewById(R.id.buttonSaveProfileImage);
 
-        // Rotate Left is a button
-        rotateLeft.setOnClickListener(new View.OnClickListener()
+        myRef.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener()
         {
             @Override
-            public void onClick(View v)
+            public void onDataChange(DataSnapshot dataSnapshot)
             {
-                if (profileImage != null)
-                {
-                    // Rotate image 90
-                    Picasso.get().load(imageUri).rotate(90).into(profileImage);
-                }
+                String profileImageURL = dataSnapshot.child("profileImage").getValue(String.class);
+                Picasso.get().load(profileImageURL).into(profileImage);
             }
-        });
 
-        // Rotate Right is a button
-        rotateRight.setOnClickListener(new View.OnClickListener()
-        {
             @Override
-            public void onClick(View v)
+            public void onCancelled(DatabaseError databaseError)
             {
-                if (profileImage != null)
-                {
-                    // Rotate image -90
-                    Picasso.get().load(imageUri).rotate(-90).into(profileImage);
-                }
+
             }
         });
 
@@ -183,14 +183,12 @@ public class UploadImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                // Send user to gallery
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, GALLERY_INTENT);
             }
         });
 
-        // Save image to storage area
         saveProfileImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -200,15 +198,13 @@ public class UploadImageFragment extends Fragment
                 progressDialog.show();
 
                 final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(imageUri.getLastPathSegment());
-                filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
                 {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                     {
                         Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-
-                        // Save image uri in the Firebase database under the usersID
                         myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
                         progressDialog.dismiss();
                     }
@@ -227,7 +223,6 @@ public class UploadImageFragment extends Fragment
         return view;
     }
 
-    // Get image data and display on page
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -241,11 +236,71 @@ public class UploadImageFragment extends Fragment
             progressDialog.show();
 
             imageUri = data.getData();
-            Picasso.get().load(imageUri).into(profileImage);
             final Uri uri = data.getData();
-            Picasso.get().load(uri).into(profileImage);
-            progressDialog.dismiss();
+            setUpImageTransfer(uri);
         }
+    }
+
+    public void setUpImageTransfer(Uri uri)
+    {
+        progressDialog.dismiss();
+        try
+        {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            ContentResolver contentResolver = getActivity().getContentResolver();
+            InputStream inputStream = contentResolver.openInputStream(uri);
+            modifyOrientation(bitmap, inputStream);
+        } catch (IOException e)
+        {
+            e.getStackTrace();
+        }
+    }
+
+    public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException
+    {
+        android.support.media.ExifInterface exifInterface = new android.support.media.ExifInterface(image_absolute_path);
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation)
+        {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotate(bitmap, 90);
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotate(bitmap, 180);
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotate(bitmap, 270);
+
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                return flip(bitmap, true, false);
+
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                return flip(bitmap, false, true);
+            default:
+                return bitmap;
+        }
+    }
+
+    public static Bitmap rotate(Bitmap bitmap, float degrees)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        profileImage.setImageBitmap(bitmap1);
+
+        profileImage.buildDrawingCache();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        data = byteArrayOutputStream.toByteArray();
+        return bitmap1;
+    }
+
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical)
+    {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

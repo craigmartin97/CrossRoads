@@ -18,19 +18,22 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kitkat.crossroads.CrossRoads;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
 public class LoginActivity extends AppCompatActivity
 {
+    private FirebaseAuth auth;
+    private DatabaseReference myRef;
+
     private EditText inputEmail, inputPassword;
-    private FirebaseAuth mAuth;
-    public DatabaseReference myRef;
-    public FirebaseDatabase mFirebaseDatabase;
     private ProgressDialog progressDialog;
     private Button btnLogin;
     private TextView signUp, resetPassword;
+
+    private DatabaseConnections databaseConnections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,19 +41,10 @@ public class LoginActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        inputEmail = (EditText) findViewById(R.id.editTextEmailLogin);
-        inputPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
-        progressDialog = new ProgressDialog(this);
-        signUp = (TextView) findViewById(R.id.textViewSignUp);
-        resetPassword = (TextView) findViewById(R.id.textViewResetPassword);
-        btnLogin = (Button) findViewById(R.id.buttonSignIn);
+        databaseConnections = new DatabaseConnections();
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("Users");
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        getCurrentUser();
+        getViewByIds();
+        setDatabaseConnections();
 
         signUp.setOnClickListener(new View.OnClickListener()
         {
@@ -91,7 +85,7 @@ public class LoginActivity extends AppCompatActivity
                 progressDialog.setMessage("Logging In Please Wait...");
                 progressDialog.show();
 
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
@@ -109,6 +103,9 @@ public class LoginActivity extends AppCompatActivity
                             if (task.isSuccessful() && user.isEmailVerified() == true)
                             {
                                 dismissDialog();
+                                String token = FirebaseInstanceId.getInstance().getToken();
+                                myRef.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
+
                                 startActivity(new Intent(getApplicationContext(), CrossRoads.class));
                                 finish();
                             } else if (user.isEmailVerified() == false)
@@ -128,14 +125,27 @@ public class LoginActivity extends AppCompatActivity
         });
     }
 
-    private void getCurrentUser()
+    private void setDatabaseConnections()
     {
-        if (mAuth.getCurrentUser() != null)
+        myRef = databaseConnections.getMyRef();
+        auth = databaseConnections.getAuth();
+
+        if (auth.getCurrentUser() != null)
         {
             Intent intent = new Intent(LoginActivity.this, CrossRoads.class);
             startActivity(intent);
             finish();
         }
+    }
+
+    private void getViewByIds()
+    {
+        inputEmail = (EditText) findViewById(R.id.editTextEmailLogin);
+        inputPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
+        progressDialog = new ProgressDialog(this);
+        signUp = (TextView) findViewById(R.id.textViewSignUp);
+        resetPassword = (TextView) findViewById(R.id.textViewResetPassword);
+        btnLogin = (Button) findViewById(R.id.buttonSignIn);
     }
 
     private void dismissDialog()
