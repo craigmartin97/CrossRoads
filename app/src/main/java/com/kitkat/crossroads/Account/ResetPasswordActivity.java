@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
 public class ResetPasswordActivity extends AppCompatActivity
@@ -21,14 +22,15 @@ public class ResetPasswordActivity extends AppCompatActivity
     private Button buttonResetPassword;
     private ProgressDialog progressDialog;
 
+    private DatabaseConnections databaseConnections = new DatabaseConnections();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
-        editTextEmailRecover = (EditText) findViewById(R.id.editTextEmailReset);
-        buttonResetPassword = (Button) findViewById(R.id.buttonResetPassword);
+        getViewsByIds();
         progressDialog = new ProgressDialog(this);
 
         buttonResetPassword.setOnClickListener(new View.OnClickListener()
@@ -48,27 +50,37 @@ public class ResetPasswordActivity extends AppCompatActivity
         progressDialog.setMessage("Registering User Please Wait");
         progressDialog.show();
 
-        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>()
+        databaseConnections.getAuth().sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<Void> task)
+            {
+                if (task.isSuccessful())
                 {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task)
-                    {
-                        if (task.isSuccessful())
-                        {
-                            progressDialog.dismiss();
-                            customToastMessage("Email Sent To " + email);
-                        } else
-                        {
-                            progressDialog.dismiss();
-                            customToastMessage("An Error Has Occurred");
-                        }
-                    }
-                });
+                    dismissDialog();
+                    customToastMessage("Email Sent To " + email);
+                } else
+                {
+                    dismissDialog();
+                    customToastMessage("An Error Has Occurred");
+                }
+            }
+        });
     }
 
     private void customToastMessage(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void dismissDialog()
+    {
+        progressDialog.dismiss();
+    }
+
+    private void getViewsByIds()
+    {
+        editTextEmailRecover = (EditText) findViewById(R.id.editTextEmailReset);
+        buttonResetPassword = (Button) findViewById(R.id.buttonResetPassword);
     }
 }
