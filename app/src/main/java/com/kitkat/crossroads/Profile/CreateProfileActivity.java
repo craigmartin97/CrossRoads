@@ -31,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.MyFirebaseInstanceIDService;
 import com.kitkat.crossroads.R;
 
@@ -48,10 +49,10 @@ public class CreateProfileActivity extends AppCompatActivity
 
     private FirebaseAuth auth;
     private DatabaseReference myRef;
-    private FirebaseDatabase database;
     private StorageReference storageReference;
-    private DatabaseReference databaseReference;
     private FirebaseUser user;
+
+    private DatabaseConnections databaseConnections = new DatabaseConnections();
 
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
@@ -63,29 +64,10 @@ public class CreateProfileActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
+
         getViewByIds();
         setDatabaseConnections();
-        auth = FirebaseAuth.getInstance();
 
-        if (auth.getCurrentUser() == null)
-        {
-            finish();
-            startActivity(new Intent(this, LoginActivity.class));
-        }
-
-        database = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference();
-
-        saveProfile = (Button) findViewById(R.id.buttonSaveProfile);
-
-        fullName = (EditText) findViewById(R.id.editTextFullName);
-        phoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
-        addressOne = (EditText) findViewById(R.id.editTextAddress1);
-        addressTwo = (EditText) findViewById(R.id.editTextAddress2);
-        town = (EditText) findViewById(R.id.editTextTown);
-        postCode = (EditText) findViewById(R.id.editTextPostCode);
-        checkBoxAdvertiser = (CheckBox) findViewById(R.id.checkBoxAdvertiser);
-        checkBoxCourier = (CheckBox) findViewById(R.id.checkBoxCourier);
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -111,7 +93,6 @@ public class CreateProfileActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        final FirebaseUser user = auth.getCurrentUser();
 
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
@@ -127,7 +108,7 @@ public class CreateProfileActivity extends AppCompatActivity
 
     public void setUpImageTransfer(Uri uri)
     {
-        progressDialog.dismiss();
+        dismissDialog();
         try
         {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
@@ -227,7 +208,7 @@ public class CreateProfileActivity extends AppCompatActivity
             return;
         }
 
-        if(profileImage.getDrawable() == null)
+        if (profileImage.getDrawable() == null)
         {
             customToastMessage("You Must Upload A Profile Image");
             return;
@@ -312,18 +293,16 @@ public class CreateProfileActivity extends AppCompatActivity
 
     private void setDatabaseConnections()
     {
-        auth = FirebaseAuth.getInstance();
+        auth = databaseConnections.getAuth();
+        myRef = databaseConnections.getMyRef();
+        user = databaseConnections.getUser();
+        storageReference = databaseConnections.getStorageReference();
 
         if (auth.getCurrentUser() == null)
         {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
-
-        database = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference();
-        user = auth.getCurrentUser();
-        storageReference = FirebaseStorage.getInstance().getReference();
     }
 
     private void uploadUsersProfileImage()
@@ -337,14 +316,14 @@ public class CreateProfileActivity extends AppCompatActivity
                 customToastMessage("Profile Image Uploaded Successfully");
                 Uri downloadUri = taskSnapshot.getDownloadUrl();
                 myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
-                progressDialog.dismiss();
+                dismissDialog();
             }
         }).addOnFailureListener(new OnFailureListener()
         {
             @Override
             public void onFailure(@NonNull Exception e)
             {
-                progressDialog.dismiss();
+                dismissDialog();
                 customToastMessage("Failed To Upload Image, Try Again");
             }
         });
@@ -353,6 +332,11 @@ public class CreateProfileActivity extends AppCompatActivity
     private void customToastMessage(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void dismissDialog()
+    {
+        progressDialog.dismiss();
     }
 }
 
