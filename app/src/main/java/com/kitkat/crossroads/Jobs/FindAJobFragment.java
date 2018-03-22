@@ -27,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -64,7 +67,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private ListView jobListView;
 
     private Spinner sortBySpinner, filterSizeFrom, filterSizeTo;
-    private Button filterButton;
+    private Button filterButton, filterApplyButton, filterClearButton;
     private SearchView jobSearch;
 
 
@@ -118,6 +121,13 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         jobListView = view.findViewById(R.id.jobListView1);
 
         sortBySpinner = view.findViewById(R.id.sortBySpinner);
+
+        filterApplyButton = view.findViewById(R.id.filterApplyButton);
+        filterClearButton = view.findViewById(R.id.filterClearButton);
+
+
+
+
 
         String[] sortBy = new String[]{
                 "Sort By",
