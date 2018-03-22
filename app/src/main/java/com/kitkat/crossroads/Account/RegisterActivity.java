@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-
+    private String email, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,25 +47,9 @@ public class RegisterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        firebaseAuth = FirebaseAuth.getInstance();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
-        if (firebaseAuth.getCurrentUser() != null)
-        {
-            finish();
-            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
-        }
-
-        progressDialog = new ProgressDialog(this);
-        buttonRegister = (Button) findViewById(R.id.buttonRegister);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
-        editTextPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
-        editTextConfirmPassword = (EditText) findViewById(R.id.editTextPasswordConfirmLogin);
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
-        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
-
-        textViewTermsAndConditionsAndPrivacyPolicy = (TextView) findViewById(R.id.textViewTermsAndConditionsAndPrivacyPolicy);
+        setDatabaseConnections();
+        getViewByIds();
 
         buttonRegister.setOnClickListener(new View.OnClickListener()
         {
@@ -100,42 +84,7 @@ public class RegisterActivity extends AppCompatActivity
 
     private void registerUser()
     {
-        final String email = editTextEmail.getText().toString().trim();
-        final String password = editTextPassword.getText().toString().trim();
-        final String confirmPassword = editTextConfirmPassword.getText().toString().trim();
-
-
-        // email is too short
-        if (TextUtils.isEmpty(email))
-        {
-            customToastMessage("Please Enter An Email Address");
-            return;
-        }
-
-        // password to short
-        if (TextUtils.isEmpty(password) || password.length() < 8)
-        {
-            customToastMessage("Please Enter A Password With 6 Or More Characters");
-            return;
-        }
-
-        if (TextUtils.isEmpty(confirmPassword) || confirmPassword.length() < 8)
-        {
-            customToastMessage("Please Confirm Your Password With 8 Or More Characters");
-            return;
-        }
-
-        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,}$") && !confirmPassword.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,}$"))
-        {
-            customToastMessage("Passwords Must Have Numbers, Upper and Lowercase's");
-            return;
-        }
-
-        if (!password.matches(confirmPassword) && !confirmPassword.matches(password))
-        {
-            customToastMessage("Passwords Do Not Match");
-            return;
-        }
+        userInformationValidation();
 
         if (checkBox.isChecked())
         {
@@ -185,5 +134,67 @@ public class RegisterActivity extends AppCompatActivity
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-    
+
+    private void getViewByIds()
+    {
+        progressDialog = new ProgressDialog(this);
+        buttonRegister = (Button) findViewById(R.id.buttonRegister);
+        editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
+        editTextPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
+        editTextConfirmPassword = (EditText) findViewById(R.id.editTextPasswordConfirmLogin);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
+        textViewTermsAndConditionsAndPrivacyPolicy = (TextView) findViewById(R.id.textViewTermsAndConditionsAndPrivacyPolicy);
+    }
+
+    private void setDatabaseConnections()
+    {
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        if (firebaseAuth.getCurrentUser() != null)
+        {
+            finish();
+            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
+        }
+    }
+
+    private void userInformationValidation()
+    {
+        email = editTextEmail.getText().toString().trim();
+        password = editTextPassword.getText().toString().trim();
+        final String confirmPassword = editTextConfirmPassword.getText().toString().trim();
+
+
+        // email is too short
+        if (TextUtils.isEmpty(email))
+        {
+            customToastMessage("Please Enter An Email Address");
+            return;
+        }
+
+        // password to short
+        if (TextUtils.isEmpty(password) || password.length() < 8)
+        {
+            customToastMessage("Please Enter A Password With 6 Or More Characters");
+            return;
+        }
+
+        if (TextUtils.isEmpty(confirmPassword) || confirmPassword.length() < 8)
+        {
+            customToastMessage("Please Confirm Your Password With 8 Or More Characters");
+            return;
+        }
+
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,}$") && !confirmPassword.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,}$"))
+        {
+            customToastMessage("Passwords Must Have Numbers, Upper and Lowercase's");
+            return;
+        }
+
+        if (!password.matches(confirmPassword) && !confirmPassword.matches(password))
+        {
+            customToastMessage("Passwords Do Not Match");
+            return;
+        }
+    }
 }
