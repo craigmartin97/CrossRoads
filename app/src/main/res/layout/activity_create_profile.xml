@@ -45,12 +45,24 @@
             android:textColor="#000000"
             android:textSize="35dp" />
 
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="wrap_content"
+            android:layout_height="65dp"
+            android:layout_alignEnd="@+id/buttonSaveProfile"
+            android:layout_below="@+id/textViewCreateProfileHeader"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="13dp"
+            android:adjustViewBounds="false"
+            android:contentDescription="@string/Profile_Photo_of_user"
+            android:src="@drawable/selfie" />
+
         <EditText
             android:id="@+id/editTextFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/textViewCreateProfileHeader"
+            android:layout_below="@+id/profileImage"
             android:layout_centerInParent="true"
             android:backgroundTint="@color/colorPrimaryDark"
             android:ellipsize="start"
@@ -189,14 +201,27 @@
             android:textColor="#2bbc9b"
             android:visibility="visible" />
 
+        <Button
+            android:id="@+id/buttonUploadProfileImage"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/buttonSaveProfile"
+            android:layout_below="@+id/checkBoxCourier"
+            android:layout_marginTop="11dp"
+            android:background="#2bbc9b"
+            android:text="Upload Profile Image"
+            android:textColor="#FFFFFF"/>
+
 
         <Button
             android:id="@+id/buttonSaveProfile"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/checkBoxCourier"
+            android:layout_below="@+id/buttonUploadProfileImage"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
             android:background="#2bbc9b"
+            android:textColor="#FFFFFF"
             android:text="Save Profile" />
 
     </RelativeLayout>

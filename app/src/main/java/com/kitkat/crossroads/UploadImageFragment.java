@@ -1,6 +1,8 @@
 package com.kitkat.crossroads;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import android.app.ProgressDialog;
@@ -43,6 +45,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -90,7 +93,6 @@ public class UploadImageFragment extends Fragment
     private StorageReference storageReference;
     private FirebaseUser user;
 
-    private StorageReference filePath;
     private static ImageView profileImage;
     private Uri imageUri;
     private static byte[] data;
@@ -157,17 +159,30 @@ public class UploadImageFragment extends Fragment
 
         // Setting buttons
         profileImage = (ImageView) view.findViewById(R.id.imageViewProfileImage);
-        ImageView rotateLeft = (ImageView) view.findViewById(R.id.imageRotateLeft);
-        ImageView rotateRight = (ImageView) view.findViewById(R.id.imageRotateRight);
         Button uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadProfileImage);
         Button saveProfileImage = (Button) view.findViewById(R.id.buttonSaveProfileImage);
+
+        myRef.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                String profileImageURL = dataSnapshot.child("profileImage").getValue(String.class);
+                Picasso.get().load(profileImageURL).into(profileImage);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
 
         uploadProfileImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                // Send user to gallery
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, GALLERY_INTENT);
@@ -190,15 +205,7 @@ public class UploadImageFragment extends Fragment
                     {
                         Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-
-                        // Save image uri in the Firebase database under the usersID
                         myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
-
-                        Uri input = imageUri;
-                        String input2 = imageUri.toString();
-                        String input3 = imageUri.getPath();
-
-                        myRef.child("Users").child(user.getUid()).child("profileUri").setValue(imageUri.toString());
                         progressDialog.dismiss();
                     }
                 }).addOnFailureListener(new OnFailureListener()
@@ -210,33 +217,6 @@ public class UploadImageFragment extends Fragment
                         Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
                     }
                 });
-//                filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-//                {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-//                    {
-//                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
-//                        Uri downloadUri = taskSnapshot.getDownloadUrl();
-//
-//                        // Save image uri in the Firebase database under the usersID
-//                        myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
-//
-//                        Uri input = imageUri;
-//                        String input2 = imageUri.toString();
-//                        String input3 = imageUri.getPath();
-//
-//                        myRef.child("Users").child(user.getUid()).child("profileUri").setValue(imageUri.toString());
-//                        progressDialog.dismiss();
-//                    }
-//                }).addOnFailureListener(new OnFailureListener()
-//                {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e)
-//                    {
-//                        progressDialog.dismiss();
-//                        Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
             }
         });
 
@@ -269,19 +249,20 @@ public class UploadImageFragment extends Fragment
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
             ContentResolver contentResolver = getActivity().getContentResolver();
             InputStream inputStream = contentResolver.openInputStream(uri);
-            modifyOrientation(bitmap,inputStream);
-        }
-        catch(IOException e)
+            modifyOrientation(bitmap, inputStream);
+        } catch (IOException e)
         {
             e.getStackTrace();
         }
     }
 
-    public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException {
+    public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException
+    {
         android.support.media.ExifInterface exifInterface = new android.support.media.ExifInterface(image_absolute_path);
         int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
-        switch (orientation) {
+        switch (orientation)
+        {
             case ExifInterface.ORIENTATION_ROTATE_90:
                 return rotate(bitmap, 90);
 
@@ -301,7 +282,8 @@ public class UploadImageFragment extends Fragment
         }
     }
 
-    public static Bitmap rotate(Bitmap bitmap, float degrees) {
+    public static Bitmap rotate(Bitmap bitmap, float degrees)
+    {
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
         Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -314,7 +296,8 @@ public class UploadImageFragment extends Fragment
         return bitmap1;
     }
 
-    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical)
+    {
         Matrix matrix = new Matrix();
         matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);

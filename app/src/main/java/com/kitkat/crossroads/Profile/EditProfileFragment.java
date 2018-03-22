@@ -48,8 +48,6 @@ import static android.app.Activity.RESULT_OK;
  */
 public class EditProfileFragment extends Fragment
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "EditProfileActivity";
@@ -59,24 +57,21 @@ public class EditProfileFragment extends Fragment
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private DatePickerDialog.OnDateSetListener dateSetListener;
 
 
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
     private boolean advertiser, courier;
-    private Button saveProfile, uploadProfileImage;
-    private ImageView profileImage;
-
-    private static final int GALLERY_INTENT = 2;
-    private ProgressDialog progressDialog;
+    private Button saveProfile;
+    private String profileImage;
 
     private FirebaseAuth auth;
     private DatabaseReference myRef;
     private FirebaseDatabase database;
     private StorageReference storageReference;
-    private StorageReference filePath;
-    private Uri fileUri;
+//    private StorageReference filePath;
+
+    private ProgressDialog progressDialog;
 
     public EditProfileFragment()
     {
@@ -147,7 +142,7 @@ public class EditProfileFragment extends Fragment
                 String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
                 String usersTown = dataSnapshot.child("town").getValue(String.class);
                 String postalCode = dataSnapshot.child("postCode").getValue(String.class);
-                String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+                profileImage = dataSnapshot.child("profileImage").getValue(String.class);
                 boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
                 boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
@@ -181,7 +176,6 @@ public class EditProfileFragment extends Fragment
                     checkBoxAdvertiser.setChecked(true);
                     checkBoxCourier.setChecked(true);
                 }
-                //  Picasso.get().load(profileImage).rotate(90).resize(350,350).transform(new CircleTransformation()).into(profileImageUri);
             }
 
             @Override
@@ -192,83 +186,19 @@ public class EditProfileFragment extends Fragment
         });
 
         saveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
-        uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadImage);
-
-        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-
-        ImageView profileImage = (ImageView) headerView.findViewById(R.id.navigationImage);
-
         this.profileImage = profileImage;
-
-        progressDialog = new ProgressDialog(getActivity());
 
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                progressDialog.setMessage("Saving Profile Please Wait...");
                 saveUserInformation();
             }
         });
 
-        uploadProfileImage.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // intent to gallery area
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, GALLERY_INTENT);
-            }
-        });
-
         return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        final FirebaseUser user = auth.getCurrentUser();
-
-        if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
-        {
-
-            progressDialog.setMessage("Uploading Image Please Wait...");
-            progressDialog.show();
-
-            final Uri uri = data.getData();
-            fileUri = data.getData();
-
-            final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(uri.getLastPathSegment());
-            this.filePath = filePath;
-
-            // Put the file in the Firebase Storage Area
-            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-            {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                {
-                    progressDialog.dismiss();
-                    Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-
-                    // Saving the URL under the "Users" table, under the "Users ID" In the Firebase Database to later retrieve it
-                    myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
-                    myRef.child("Users").child(user.getUid()).child("profileUri").setValue(fileUri);
-                }
-            }).addOnFailureListener(new OnFailureListener()
-            {
-                @Override
-                public void onFailure(@NonNull Exception e)
-                {
-                    progressDialog.dismiss();
-                    Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -317,13 +247,16 @@ public class EditProfileFragment extends Fragment
 
     private void saveUserInformation()
     {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Updating Information Please Wait...");
+        progressDialog.show();
+
         String fullName = this.fullName.getText().toString().trim();
         String phoneNumber = this.phoneNumber.getText().toString().trim();
         String addressOne = this.addressOne.getText().toString().trim();
         String addressTwo = this.addressTwo.getText().toString().trim();
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
-
 
         if (TextUtils.isEmpty(fullName))
         {
@@ -379,7 +312,7 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, filePath, fileUri);
+                    addressTwo, town, postCode, advertiser, courier, profileImage);
 
             setUserInformation(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -387,7 +320,7 @@ public class EditProfileFragment extends Fragment
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, filePath, fileUri);
+                    addressTwo, town, postCode, advertiser, courier, profileImage);
 
             setUserInformation(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -395,11 +328,12 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, filePath, fileUri);
+                    addressTwo, town, postCode, advertiser, courier, profileImage);
 
             setUserInformation(userInformation);
         }
 
+        progressDialog.dismiss();
         customToastMessage("Information Saved...");
 
         android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();

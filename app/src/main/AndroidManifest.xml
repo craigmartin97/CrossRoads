@@ -5,8 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_cross_roads_logo_c"
@@ -14,49 +12,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".Account.RegisterActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:configChanges="orientation|screenSize"
-            >
-
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".MyFirebaseMessagingService">
+        <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".MyFirebaseInstanceIDService">
+        <service android:name=".MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
 
         <activity
             android:name=".Account.LoginActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:configChanges="orientation|screenSize"
-            />
-        <activity
-            android:name=".Profile.CreateProfileActivity" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".Profile.CreateProfileActivity" />
         <activity android:name=".Account.ResetPasswordActivity" />
         <activity
             android:name=".CrossRoads"
+            android:configChanges="orientation|screenSize"
             android:label=" "
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="orientation|screenSize">
-        </activity>
-        <activity android:name=".TermsAndConditions"
-            android:configChanges="orientation|screenSize"></activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".TermsAndConditions"
+            android:configChanges="orientation|screenSize" />
     </application>
+
 </manifest>
