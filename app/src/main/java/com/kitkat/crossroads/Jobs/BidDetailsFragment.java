@@ -222,30 +222,4 @@ public class BidDetailsFragment extends Fragment
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    private void saveBidInformation()
-    {
-        Bundle bundle = getArguments();
-
-        JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
-
-        String userBid = editTextBid.getText().toString().trim();
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        user.getUid();
-
-        String userID = user.getUid();
-        String jobID = jobInformation.getJobID().toString().trim();
-
-        BidInformation bidInformation = new BidInformation(userID, userBid);
-
-        databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
-
-        startActivity(new Intent(getActivity(), CrossRoads.class));
-    }
-
-    private void customToastMessage(String message)
-    {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
 }
