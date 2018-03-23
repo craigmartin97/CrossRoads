@@ -29,7 +29,8 @@ import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.TermsAndConditions;
 
 
-public class RegisterActivity extends AppCompatActivity
+public class
+RegisterActivity extends AppCompatActivity
 {
 
     private Button buttonRegister;
