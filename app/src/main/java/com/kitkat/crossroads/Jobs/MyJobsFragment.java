@@ -37,18 +37,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private DataSnapshot bidReference;
     private DataSnapshot jobReference;
 
+    private ListView jobListViewBidOn, jobListViewMyAcJobs, jobListViewMyComJobs;
+
     private ArrayList<JobInformation> jobList = new ArrayList<>();
     private ArrayList<JobInformation> jobListActive = new ArrayList<>();
     private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
-
     private ArrayList<String> jobListKey = new ArrayList<>();
 
-    private ListView jobListViewBidOn, jobListViewMyAcJobs, jobListViewMyComJobs;
-
     private SearchView jobSearch;
-
     private TabHost host;
-
     private String tabTag;
 
     public MyJobsFragment()
