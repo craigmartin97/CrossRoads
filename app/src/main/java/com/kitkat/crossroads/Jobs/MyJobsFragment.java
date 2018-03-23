@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,47 +25,62 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
-
+/**
+ * MyJobsFragment displays all of the jobs associated with the current user signed in
+ * It displays all of the users jobs they have Bid On, Accepted On and Completed.
+ * It displays these in separate tab views.
+ */
 public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextListener
 {
     private OnFragmentInteractionListener mListener;
 
+    /**
+     * FirebaseAuth, create a connection to the Firebase Authentication table
+     */
     private FirebaseAuth auth;
+    /**
+     * DatabaseReference, create a connection to the Firebase Database table
+     */
     private DatabaseReference databaseReference;
+    /**
+     * Used to get the children of the bids table
+     */
     private DataSnapshot bidReference;
+    /**
+     * Used to get the children of the jobs table
+     */
     private DataSnapshot jobReference;
 
+    /**
+     * ListViews are elements on the Fragments layout page
+     * used to add users jobs into and display on the page
+     */
     private ListView jobListViewBidOn, jobListViewMyAcJobs, jobListViewMyComJobs;
 
+    /**
+     * All of the users current jobs they have Bid On are stored in this ArrayList
+     */
     private final ArrayList<JobInformation> jobList = new ArrayList<>();
+    /**
+     * All of the users current accepted, active jobs are stored in this ArrayList
+     */
     private final ArrayList<JobInformation> jobListActive = new ArrayList<>();
+    /**
+     * All of the users previously completed jobs are stored in this ArrayList
+     */
     private final ArrayList<JobInformation> jobListComplete = new ArrayList<>();
+    /**
+     * Stores the jobs key
+     */
     private final ArrayList<String> jobListKey = new ArrayList<>();
 
     private SearchView jobSearch;
     private TabHost host;
     private String tabTag;
-
-    /**
-     * Blank constructors
-     */
-    public MyJobsFragment()
-    {
-        // Empty
-    }
-
-    /**
-     * A constructor that returns a new MyJobsFragment
-     *
-     * @return MyJobsFragment
-     */
-    public static MyJobsFragment newInstance()
-    {
-        return new MyJobsFragment();
-    }
 
     /**
      * OnCreate is called on the creation of Fragment to create a new
@@ -76,13 +92,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setDatabaseConnections();
         tabTag = "Active";
     }
 
     /**
-     * OnCreateView creates all of the graphical initalisations and sets all of the
+     * OnCreateView creates all of the graphical initialisations and sets all of the
      * actions of the fragment.
-     *
+     * <p>
      * This method sets all of the Views elements, creates a new tab host
      * and creates all of the content for the list views.
      *
@@ -98,10 +115,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
         getViewsByIds(view);
-        setDatabaseConnections();
         setTabHosts();
         createTabHost();
-
 
         databaseReference.addValueEventListener(new ValueEventListener()
         {
@@ -125,24 +140,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         setSearchOptions();
         return view;
     }
-//    @Override
-//    public void onAttach(Context context)
-//    {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener)
-//        {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else
-//        {
-//        }
-//    }
-
-//    @Override
-//    public void onDetach()
-//    {
-//        super.onDetach();
-//        mListener = null;
-//    }
 
     /**
      * Method sets all of the fragments View elements to class variables
@@ -175,19 +172,19 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     {
         host.setup();
 
-        //Tab 1
+        //Bid On Tab
         TabHost.TabSpec spec = host.newTabSpec("Bid On");
         spec.setContent(R.id.tab1);
         spec.setIndicator("Bid On");
         host.addTab(spec);
 
-        //Tab 2
+        //Active Tab
         spec = host.newTabSpec("Active");
         spec.setContent(R.id.tab2);
         spec.setIndicator("Accepted");
         host.addTab(spec);
 
-        //Tab 3
+        //Completed Tab
         spec = host.newTabSpec("Completed Jobs");
         spec.setContent(R.id.tab3);
         spec.setIndicator("Completed");
@@ -200,12 +197,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private void createTabHost()
     {
         host.setCurrentTabByTag(tabTag);
+
+        // Assigning the color for each tab
         for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
         {
             TextView tv = host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
             tv.setTextColor(Color.parseColor("#FFFFFF"));
         }
 
+        // For the current selected tab
         host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
         TextView tv = host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
         tv.setTextColor(Color.parseColor("#2bbc9b"));
@@ -326,12 +326,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     {
         final ArrayList<String> jobsListArray = new ArrayList<>();
 
+        // Iterate through entire bids table
         for (DataSnapshot ds : getBidListChildren())
         {
+            // Iterate through the actual bids information
             Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
 
             for (DataSnapshot ds1 : bidsSnapShot)
             {
+                // if the User Id equals the current user added to a list
                 if (getBidInformation(ds1).getUserID().equals(auth.getCurrentUser().getUid()))
                 {
                     jobsListArray.add(ds.getKey());
@@ -339,20 +342,24 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             }
         }
 
+        // Go through the jobs table
         for (DataSnapshot ds3 : getJobListChildren())
         {
-            if (jobsListArray.contains(ds3.getKey()))
+            /*
+               If the job is in the jobsListArray previously and the status is Pending
+                Add to the jobsList
+            */
+            if (jobsListArray.contains(ds3.getKey()) && getJobInformation(ds3).getJobStatus().equals("Pending"))
             {
-                if (getJobInformation(ds3).getJobStatus().equals("Pending"))
-                {
-                    jobList.add(getJobInformation(ds3));
-                }
+                jobList.add(getJobInformation(ds3));
             }
         }
 
+        // Display information in ListView
         final MyJobsFragment.MyCustomAdapter adapter = createNewCustomAdapter(jobList);
         jobListViewBidOn.setAdapter(adapter);
 
+        // Press on the object and go view all the Job Information and Bids
         jobListViewBidOn.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -374,20 +381,25 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private void acceptedList()
     {
+        // Go through the Jobs table
         for (DataSnapshot ds4 : getJobListChildren())
         {
+            // If the status if active and the current users job
             if (getJobInformation(ds4).getJobStatus().equals("Active") && getJobInformation(ds4).getCourierID().equals(auth.getCurrentUser().getUid()))
             {
+                // Add the key and information
                 jobListKey.add(ds4.getKey());
                 jobListActive.add(getJobInformation(ds4));
             }
 
         }
 
+        // Display the Job in the ListView
         final MyJobsFragment.MyCustomAdapter adapterActiveJobs = createNewCustomAdapter(jobListActive);
         adapterActiveJobs.addKeyArray(jobListKey);
         jobListViewMyAcJobs.setAdapter(adapterActiveJobs);
 
+        // Press the object and display the information and sign the job of with signature pad
         jobListViewMyAcJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -410,14 +422,17 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private void completeList()
     {
+        // Go through the Jobs table
         for (DataSnapshot ds5 : getJobListChildren())
         {
+            // If the status if complete and the current users job
             if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
             {
                 jobListComplete.add(getJobInformation(ds5));
             }
         }
 
+        // Display in the ListView
         MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
         jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
     }
