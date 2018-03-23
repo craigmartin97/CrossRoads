@@ -87,6 +87,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 bidReference = dataSnapshot.child("Bids");
                 jobReference = dataSnapshot.child("Jobs");
 
+                clearLists();
+
                 for (DataSnapshot ds : getBidListChildren())
                 {
                     Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
@@ -314,10 +316,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         return adapter;
     }
 
-    private ArrayList<JobInformation> createNewList()
+    private void clearLists()
     {
-        ArrayList<JobInformation> arrayList = new ArrayList<>();
-        return arrayList;
+        jobList.clear();
+        jobListActive.clear();
+        jobListComplete.clear();
     }
 
     @Override
