@@ -169,12 +169,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     {
                         jobListComplete.add(getJobInformation(ds5));
                     }
-
                 }
 
                 MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
                 jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
-
             }
 
             @Override
@@ -185,17 +183,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         });
 
         setSearchOptions();
-
         return view;
     }
-
-//    public void onButtonPressed(Uri uri)
-//    {
-//        if (mListener != null)
-//        {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
 
     @Override
     public void onAttach(Context context)
@@ -205,9 +194,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         {
             mListener = (OnFragmentInteractionListener) context;
         } else
-        {
-
-        }
+        {}
     }
 
     @Override
@@ -323,12 +310,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         jobSearch.setOnQueryTextListener(this);
     }
 
-//    private MyJobsFragment.MyCustomAdapter createNewCustomAdapter()
-//    {
-//        MyJobsFragment.MyCustomAdapter adapter = new MyJobsFragment.MyCustomAdapter();
-//        return adapter.addArray();
-//    }
-
     private MyJobsFragment.MyCustomAdapter createNewCustomAdapter(ArrayList<JobInformation> jobInformation)
     {
         MyJobsFragment.MyCustomAdapter adapter = new MyJobsFragment.MyCustomAdapter();
@@ -336,8 +317,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         return adapter;
     }
 
-
-
+    private ArrayList<JobInformation> createNewList()
+    {
+        ArrayList<JobInformation> arrayList = new ArrayList<>();
+        return arrayList;
+    }
 
     @Override
     public boolean onQueryTextSubmit(String query)
@@ -354,17 +338,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         return false;
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
@@ -383,7 +356,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         public MyCustomAdapter()
         {
-
             if (isAdded())
             {
                 mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -533,7 +505,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -550,5 +521,4 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         return super.onOptionsItemSelected(item);
     }
-
 }
