@@ -43,6 +43,7 @@
                     <!-- TAB ONE CONTENT -->
 
                     <TextView
+                        android:paddingTop="15dp"
                         android:id="@+id/textViewMyActiveJobs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -79,6 +80,7 @@
                     <!-- TAB TWO CONTENT -->
 
                     <TextView
+                        android:paddingTop="15dp"
                         android:id="@+id/textView5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -116,6 +118,7 @@
 
 
                     <TextView
+                        android:paddingTop="15dp"
                         android:id="@+id/textViewCompleteJobs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
