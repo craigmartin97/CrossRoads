@@ -339,5 +339,3 @@ public class CreateProfileActivity extends AppCompatActivity
         progressDialog.dismiss();
     }
 }
-
-
