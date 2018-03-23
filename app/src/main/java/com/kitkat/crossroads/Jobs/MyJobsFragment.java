@@ -73,7 +73,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private ArrayList<String> jobListKey = new ArrayList<>();
 
-    private ListView jobListView, jobListViewMyAcJobs, jobListViewMyComJobs;
+    private ListView jobListViewBidOn, jobListViewMyAcJobs, jobListViewMyComJobs;
 
     private SearchView jobSearch;
 
