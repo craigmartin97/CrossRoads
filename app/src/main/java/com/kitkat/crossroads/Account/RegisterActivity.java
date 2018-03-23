@@ -26,8 +26,8 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.R;
 
-public class
-RegisterActivity extends AppCompatActivity
+
+public class RegisterActivity extends AppCompatActivity
 {
     private Button buttonRegister;
     private EditText editTextEmail, editTextPassword, editTextConfirmPassword;
@@ -46,6 +46,7 @@ RegisterActivity extends AppCompatActivity
         setContentView(R.layout.activity_register);
 
         databaseConnections = new DatabaseConnections();
+
         setDatabaseConnections();
         getViewByIds();
 
