@@ -222,15 +222,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         host.setup();
 
         //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Active");
+        TabHost.TabSpec spec = host.newTabSpec("Bid On");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("Active");
+        spec.setIndicator("Bid On");
         host.addTab(spec);
 
         //Tab 2
-        spec = host.newTabSpec("Bid On");
+        spec = host.newTabSpec("Active");
         spec.setContent(R.id.tab2);
-        spec.setIndicator("Bid On");
+        spec.setIndicator("Accepted");
         host.addTab(spec);
 
         //Tab 3
