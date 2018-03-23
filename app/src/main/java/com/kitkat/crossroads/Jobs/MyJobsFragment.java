@@ -70,6 +70,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private ArrayList<JobInformation> jobListActive = new ArrayList<>();
     private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
 
+    private ArrayList<String> jobListKey = new ArrayList<>();
+
     private ListView jobListView, jobListViewMyAcJobs, jobListViewMyComJobs;
 
     private SearchView jobSearch;
@@ -264,10 +266,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     JobInformation j = ds4.getValue(JobInformation.class);
                     if(j.getJobStatus().equals("Active") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
                     {
+                        jobListKey.add(ds4.getKey());
                         jobListActive.add(j);
                     }
 
                 }
+                mAdapterActiveJobs.addKeyArray(jobListKey);
                 mAdapterActiveJobs.addArray(jobListActive);
                 jobListViewMyAcJobs.setAdapter(mAdapterActiveJobs);
 
@@ -279,6 +283,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                         ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("Job", mAdapterActiveJobs.mData.get(position));
+                        bundle.putSerializable("JobId", mAdapterActiveJobs.mDataKeys.get(position));
                         activeJobDetailsFragment.setArguments(bundle);
                         FragmentManager fragmentManager = getFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
@@ -388,6 +393,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         private ArrayList<JobInformation> mData = new ArrayList();
         private ArrayList<JobInformation> mDataOrig = new ArrayList();
+        private ArrayList<String> mDataKeys = new ArrayList<>();
 
         private LayoutInflater mInflater;
 
@@ -415,6 +421,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             mDataOrig = j;
         }
 
+        public void addKeyArray(final ArrayList<String> k)
+        {
+            mDataKeys.clear();
+            mDataKeys = k;
+        }
+
 
         @Override
         public void registerDataSetObserver(DataSetObserver observer)
@@ -433,6 +445,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         {
             return mData.size();
         }
+
+        public String getKey(int position) { return mDataKeys.get(position); }
 
         @Override
         public Object getItem(int position)

@@ -129,7 +129,7 @@
                     <SearchView
                         android:id="@+id/searchViewMyCompleteJobs"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="This is tab 3"
                     android:iconifiedByDefault="false"
                     android:queryHint="Name, Location, Size, etc." />
