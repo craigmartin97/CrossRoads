@@ -13,147 +13,201 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MyJobsFragment
- * .OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MyJobsFragment
- * #newInstance} factory method to
- * create an instance of this fragment.
+ * MyJobsFragment displays all of the jobs associated with the current user signed in
+ * It displays all of the users jobs they have Bid On, Accepted On and Completed.
+ * It displays these in separate tab views.
  */
 public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextListener
 {
-
-//    // TODO: Rename parameter arguments, choose names that match
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-//
-//    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
+    /**
+     * FirebaseAuth, create a connection to the Firebase Authentication table
+     */
     private FirebaseAuth auth;
+    /**
+     * DatabaseReference, create a connection to the Firebase Database table
+     */
     private DatabaseReference databaseReference;
-    private FirebaseDatabase database;
-    private FirebaseAuth.AuthStateListener authStateListener;
+    /**
+     * Used to get the children of the bids table
+     */
     private DataSnapshot bidReference;
+    /**
+     * Used to get the children of the jobs table
+     */
     private DataSnapshot jobReference;
 
-    private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterActiveJobs, mAdapterCompleteJobs;
-
-    private ArrayList<JobInformation> jobList = new ArrayList<>();
-    private ArrayList<JobInformation> jobListActive = new ArrayList<>();
-    private ArrayList<JobInformation> jobListComplete = new ArrayList<>();
-
-
-    private ArrayList<String> jobListKey = new ArrayList<>();
-
+    /**
+     * ListViews are elements on the Fragments layout page
+     * used to add users jobs into and display on the page
+     */
     private ListView jobListViewBidOn, jobListViewMyAcJobs, jobListViewMyComJobs;
 
+    /**
+     * All of the users current jobs they have Bid On are stored in this ArrayList
+     */
+    private final ArrayList<JobInformation> jobList = new ArrayList<>();
+    /**
+     * All of the users current accepted, active jobs are stored in this ArrayList
+     */
+    private final ArrayList<JobInformation> jobListActive = new ArrayList<>();
+    /**
+     * All of the users previously completed jobs are stored in this ArrayList
+     */
+    private final ArrayList<JobInformation> jobListComplete = new ArrayList<>();
+    /**
+     * Stores the jobs key
+     */
+    private final ArrayList<String> jobListKey = new ArrayList<>();
+
     private SearchView jobSearch;
-
     private TabHost host;
-
     private String tabTag;
 
-    private TabHost tabHost;
-
-    public MyJobsFragment()
-    {
-        // Required empty public constructor
-    }
-
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * OnCreate is called on the creation of Fragment to create a new
+     * fragment.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyJobsFragment
-     * .
+     * @param savedInstanceState
      */
-    // TODO: Rename and change types and number of parameters
-    public static MyJobsFragment newInstance(String param1, String param2)
-    {
-        MyJobsFragment fragment = new MyJobsFragment();
-        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setDatabaseConnections();
         tabTag = "Active";
-//        if (getArguments() != null)
-//        {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
     }
 
+    /**
+     * OnCreateView creates all of the graphical initialisations and sets all of the
+     * actions of the fragment.
+     * <p>
+     * This method sets all of the Views elements, creates a new tab host
+     * and creates all of the content for the list views.
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
-        host = (TabHost) view.findViewById(R.id.tabHost);
+        getViewsByIds(view);
+        setTabHosts();
+        createTabHost();
+
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                createDataSnapShots(dataSnapshot);
+                clearLists();
+                bidOnList();
+                acceptedList();
+                completeList();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
+        setSearchOptions();
+        return view;
+    }
+
+    /**
+     * Method sets all of the fragments View elements to class variables
+     *
+     * @param view
+     */
+    private void getViewsByIds(View view)
+    {
+        host = view.findViewById(R.id.tabHost);
+        jobListViewBidOn = view.findViewById(R.id.jobListViewBidOn);
+        jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
+        jobListViewMyComJobs = view.findViewById(R.id.jobListViewMyCompleteJobs);
+        jobSearch = view.findViewById(R.id.searchViewJob);
+    }
+
+    /**
+     * Creating all of the database connections to firebase
+     */
+    private void setDatabaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        auth = databaseConnections.getAuth();
+        databaseReference = databaseConnections.getDatabaseReference();
+    }
+
+    /**
+     * Set all of the tab elements features.
+     */
+    private void setTabHosts()
+    {
         host.setup();
 
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Active");
+        //Bid On Tab
+        TabHost.TabSpec spec = host.newTabSpec("Bid On");
         spec.setContent(R.id.tab1);
-        spec.setIndicator("Active");
-        host.addTab(spec);
-
-        //Tab 2
-        spec = host.newTabSpec("Bid On");
-        spec.setContent(R.id.tab2);
         spec.setIndicator("Bid On");
         host.addTab(spec);
 
+        //Active Tab
+        spec = host.newTabSpec("Active");
+        spec.setContent(R.id.tab2);
+        spec.setIndicator("Accepted");
+        host.addTab(spec);
 
-        //Tab 3
+        //Completed Tab
         spec = host.newTabSpec("Completed Jobs");
         spec.setContent(R.id.tab3);
         spec.setIndicator("Completed");
         host.addTab(spec);
+    }
 
+    /**
+     * Create all of the tabs and display on the fragment
+     */
+    private void createTabHost()
+    {
         host.setCurrentTabByTag(tabTag);
+
+        // Assigning the color for each tab
         for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
         {
-            TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            TextView tv = host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
             tv.setTextColor(Color.parseColor("#FFFFFF"));
         }
 
+        // For the current selected tab
         host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
-        TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
+        TextView tv = host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
         tv.setTextColor(Color.parseColor("#2bbc9b"));
 
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener()
@@ -166,187 +220,221 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
                 {
                     host.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2bbc9b")); // unselected
-                    TextView tv = (TextView) host.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
+                    TextView tv = host.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
                     tv.setTextColor(Color.parseColor("#FFFFFF"));
                 }
 
                 host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
-                TextView tv = (TextView) host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
+                TextView tv = host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
                 tv.setTextColor(Color.parseColor("#2bbc9b"));
 
                 tabTag = host.getCurrentTabTag();
             }
         });
+    }
 
+    /**
+     * Get the children of the Bids table
+     *
+     * @return bidReference
+     */
+    private Iterable<DataSnapshot> getBidListChildren()
+    {
+        return bidReference.getChildren();
+    }
 
-        jobListViewBidOn = view.findViewById(R.id.jobListViewBidOn);
-        jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
-        jobListViewMyComJobs = view.findViewById(R.id.jobListViewMyCompleteJobs);
+    /**
+     * Get the children of the Jobs table
+     *
+     * @return jobReference
+     */
+    private Iterable<DataSnapshot> getJobListChildren()
+    {
+        return jobReference.getChildren();
+    }
 
+    /**
+     * Get the Bid Information
+     *
+     * @param dataSnapshot
+     * @return BidInformation
+     */
+    private BidInformation getBidInformation(DataSnapshot dataSnapshot)
+    {
+        return dataSnapshot.getValue(BidInformation.class);
+    }
+
+    /**
+     * Get the Job Information
+     *
+     * @param dataSnapshot
+     * @return JobInformation
+     */
+    private JobInformation getJobInformation(DataSnapshot dataSnapshot)
+    {
+        return dataSnapshot.getValue(JobInformation.class);
+    }
+
+    /**
+     * Setting the search bars features
+     */
+    private void setSearchOptions()
+    {
+        jobSearch.setIconified(false);
+        jobSearch.clearFocus();
+        jobSearch.setOnQueryTextListener(this);
+    }
+
+    /**
+     * Create a new Custom Adapter, when the user selects a job it will grab the data
+     *
+     * @param jobInformation
+     * @return adapter
+     */
+    private MyJobsFragment.MyCustomAdapter createNewCustomAdapter(ArrayList<JobInformation> jobInformation)
+    {
+        MyJobsFragment.MyCustomAdapter adapter = new MyJobsFragment.MyCustomAdapter();
+        adapter.addArray(jobInformation);
+        return adapter;
+    }
+
+    /**
+     * Assign class variables the Firebase tables
+     *
+     * @param dataSnapshot
+     */
+    private void createDataSnapShots(DataSnapshot dataSnapshot)
+    {
+        bidReference = dataSnapshot.child("Bids");
+        jobReference = dataSnapshot.child("Jobs");
+    }
+
+    /**
+     * Clear lists, to avoid duplication error
+     */
+    private void clearLists()
+    {
+        jobList.clear();
+        jobListActive.clear();
+        jobListComplete.clear();
+    }
+
+    /**
+     * Get all the jobs I have currently bid on from the Firebase database
+     */
+    private void bidOnList()
+    {
         final ArrayList<String> jobsListArray = new ArrayList<>();
 
-        final ArrayList<String> activeJobsListArray = new ArrayList<>();
+        // Iterate through entire bids table
+        for (DataSnapshot ds : getBidListChildren())
+        {
+            // Iterate through the actual bids information
+            Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
 
-        auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
+            for (DataSnapshot ds1 : bidsSnapShot)
+            {
+                // if the User Id equals the current user added to a list
+                if (getBidInformation(ds1).getUserID().equals(auth.getCurrentUser().getUid()))
+                {
+                    jobsListArray.add(ds.getKey());
+                }
+            }
+        }
 
-        databaseReference.addValueEventListener(new ValueEventListener()
+        // Go through the jobs table
+        for (DataSnapshot ds3 : getJobListChildren())
+        {
+            /*
+               If the job is in the jobsListArray previously and the status is Pending
+                Add to the jobsList
+            */
+            if (jobsListArray.contains(ds3.getKey()) && getJobInformation(ds3).getJobStatus().equals("Pending"))
+            {
+                jobList.add(getJobInformation(ds3));
+            }
+        }
+
+        // Display information in ListView
+        final MyJobsFragment.MyCustomAdapter adapter = createNewCustomAdapter(jobList);
+        jobListViewBidOn.setAdapter(adapter);
+
+        // Press on the object and go view all the Job Information and Bids
+        jobListViewBidOn.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                bidReference = dataSnapshot.child("Bids");
-                jobReference = dataSnapshot.child("Jobs");
-
-                Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
-                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
-
-                mAdapterBidOn = new MyCustomAdapter();
-                mAdapterActiveJobs = new MyCustomAdapter();
-                mAdapterCompleteJobs = new MyCustomAdapter();
-
-
-                for (DataSnapshot ds : bidListSnapShot)
-                {
-                    Iterable<DataSnapshot> bidsSnapShot = ds.getChildren();
-
-                    for (DataSnapshot ds1 : bidsSnapShot)
-                    {
-                        BidInformation bid = ds1.getValue(BidInformation.class);
-
-                        if (bid.getUserID().equals(auth.getCurrentUser().getUid()))
-                        {
-                            jobsListArray.add(ds.getKey());
-                        }
-                    }
-                }
-
-                for (DataSnapshot ds3 : jobListSnapShot)
-                {
-                    if (jobsListArray.contains(ds3.getKey()))
-                    {
-                        JobInformation j = ds3.getValue(JobInformation.class);
-                        if(j.getJobStatus().equals("Pending")) {
-                            jobList.add(j);
-                        }
-                    }
-                }
-
-                mAdapterBidOn.addArray(jobList);
-                jobListViewBidOn.setAdapter(mAdapterBidOn);
-
-                jobListViewBidOn.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("Job", mAdapterBidOn.mData.get(position));
-                        bidDetailsFragment.setArguments(bundle);
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
-
-                    }
-                });
-
-                ///////////////////////////////////////////////////////////////////////////
-
-                Iterable<DataSnapshot> activeJobListSnapShot = jobReference.getChildren();
-
-                for (DataSnapshot ds4 : activeJobListSnapShot)
-                {
-                    JobInformation j = ds4.getValue(JobInformation.class);
-                    if(j.getJobStatus().equals("Active") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
-                    {
-                        jobListKey.add(ds4.getKey());
-                        jobListActive.add(j);
-                    }
-
-                }
-                mAdapterActiveJobs.addKeyArray(jobListKey);
-                mAdapterActiveJobs.addArray(jobListActive);
-                jobListViewMyAcJobs.setAdapter(mAdapterActiveJobs);
-
-                jobListViewMyAcJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("Job", mAdapterActiveJobs.mData.get(position));
-                        bundle.putSerializable("JobId", mAdapterActiveJobs.mDataKeys.get(position));
-                        activeJobDetailsFragment.setArguments(bundle);
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
-
-                    }
-                });
-
-                ///////////////////////////////////////////////////////////////////////////////////////
-
-                Iterable<DataSnapshot> completeJobListSnapShot = jobReference.getChildren();
-
-
-                for (DataSnapshot ds5 : completeJobListSnapShot)
-                {
-                    JobInformation j = ds5.getValue(JobInformation.class);
-                    if(j.getJobStatus().equals("Complete") && j.getCourierID().equals(auth.getCurrentUser().getUid()))
-                    {
-                        jobListComplete.add(j);
-                    }
-
-                }
-                mAdapterCompleteJobs.addArray(jobListComplete);
-                jobListViewMyComJobs.setAdapter(mAdapterCompleteJobs);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
+                BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Job", adapter.mData.get(position));
+                bidDetailsFragment.setArguments(bundle);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
 
             }
         });
-
-        jobSearch = (SearchView) view.findViewById(R.id.searchViewJob);
-        jobSearch.setIconified(false);
-        jobSearch.clearFocus();
-
-        jobSearch.setOnQueryTextListener(this);
-
-        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
+    /**
+     * Get the jobs that I have currently been accepted for and am actively doing
+     */
+    private void acceptedList()
     {
-        if (mListener != null)
+        // Go through the Jobs table
+        for (DataSnapshot ds4 : getJobListChildren())
         {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
+            // If the status if active and the current users job
+            if (getJobInformation(ds4).getJobStatus().equals("Active") && getJobInformation(ds4).getCourierID().equals(auth.getCurrentUser().getUid()))
+            {
+                // Add the key and information
+                jobListKey.add(ds4.getKey());
+                jobListActive.add(getJobInformation(ds4));
+            }
 
         }
+
+        // Display the Job in the ListView
+        final MyJobsFragment.MyCustomAdapter adapterActiveJobs = createNewCustomAdapter(jobListActive);
+        adapterActiveJobs.addKeyArray(jobListKey);
+        jobListViewMyAcJobs.setAdapter(adapterActiveJobs);
+
+        // Press the object and display the information and sign the job of with signature pad
+        jobListViewMyAcJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Job", adapterActiveJobs.mData.get(position));
+                bundle.putSerializable("JobId", adapterActiveJobs.mDataKeys.get(position));
+                activeJobDetailsFragment.setArguments(bundle);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
+
+            }
+        });
     }
 
-    @Override
-    public void onDetach()
+    /**
+     * Get all the jobs that I have completed
+     */
+    private void completeList()
     {
-        super.onDetach();
-        mListener = null;
+        // Go through the Jobs table
+        for (DataSnapshot ds5 : getJobListChildren())
+        {
+            // If the status if complete and the current users job
+            if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
+            {
+                jobListComplete.add(getJobInformation(ds5));
+            }
+        }
+
+        // Display in the ListView
+        MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
+        jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
     }
 
     @Override
@@ -359,25 +447,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     public boolean onQueryTextChange(String newText)
     {
         String text = newText;
-        mAdapterBidOn.filter(text);
+        // mAdapterBidOn.filter(text);
 
         return false;
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    interface OnFragmentInteractionListener
+    private interface OnFragmentInteractionListener
     {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
@@ -385,15 +461,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     public class MyCustomAdapter extends BaseAdapter
     {
 
-        private ArrayList<JobInformation> mData = new ArrayList();
-        private ArrayList<JobInformation> mDataOrig = new ArrayList();
+        private ArrayList<JobInformation> mData = new ArrayList<>();
+        private ArrayList<JobInformation> mDataOrig = new ArrayList<>();
         private ArrayList<String> mDataKeys = new ArrayList<>();
 
         private LayoutInflater mInflater;
 
         public MyCustomAdapter()
         {
-
             if (isAdded())
             {
                 mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -440,7 +515,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             return mData.size();
         }
 
-        public String getKey(int position) { return mDataKeys.get(position); }
+        public String getKey(int position)
+        {
+            return mDataKeys.get(position);
+        }
 
         @Override
         public Object getItem(int position)
@@ -504,14 +582,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             public TextView textViewName;
             public TextView textViewFrom;
             public TextView textViewTo;
-            public Button detailsButton;
         }
 
         public void filter(String charText)
         {
 
-            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
-            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
+            ArrayList<JobInformation> jobs = new ArrayList<>();
+            ArrayList<JobInformation> jA = new ArrayList<>();
             charText = charText.toLowerCase(Locale.getDefault());
 
             if (charText.length() == 0)
@@ -540,7 +617,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -557,5 +633,4 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         return super.onOptionsItemSelected(item);
     }
-
 }
