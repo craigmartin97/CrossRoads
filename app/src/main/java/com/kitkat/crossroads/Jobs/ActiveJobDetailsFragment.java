@@ -137,7 +137,7 @@ public class ActiveJobDetailsFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
-        jobId = jobInformation.getJobID();
+        jobId = (String) bundle.getSerializable("JobId");
 
 
         textViewJobName1.setText(jobInformation.getAdvertName());
