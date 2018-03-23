@@ -53,7 +53,6 @@
                         android:layout_alignTop="@+id/imageView"
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="40dp"
-                        android:fontFamily="@font/robotocondensed"
                         android:layout_toEndOf="@+id/imageView"
                         android:text="JobName Here" />
 
@@ -61,7 +60,6 @@
                         android:id="@+id/textViewJobDescription1"
                         android:layout_width="100dp"
                         android:textSize="14sp"
-                        android:fontFamily="@font/robotocondensed"
                         android:layout_height="match_parent"
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
