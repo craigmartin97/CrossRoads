@@ -78,9 +78,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private final ArrayList<String> jobListKey = new ArrayList<>();
 
-    private SearchView jobSearch;
+    private SearchView jobSearchBidOn, jobSearchAccepted, jobSearchCompleted;
     private TabHost host;
     private String tabTag;
+
+    private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
 
     /**
      * OnCreate is called on the creation of Fragment to create a new
@@ -149,10 +151,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private void getViewsByIds(View view)
     {
         host = view.findViewById(R.id.tabHost);
+
         jobListViewBidOn = view.findViewById(R.id.jobListViewBidOn);
         jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
         jobListViewMyComJobs = view.findViewById(R.id.jobListViewMyCompleteJobs);
-        jobSearch = view.findViewById(R.id.searchViewJob);
+
+        jobSearchBidOn = view.findViewById(R.id.searchViewBidOn);
+        jobSearchAccepted = view.findViewById(R.id.searchViewAccepted);
+        jobSearchCompleted = view.findViewById(R.id.searchViewCompletedJobs);
     }
 
     /**
@@ -280,9 +286,17 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private void setSearchOptions()
     {
-        jobSearch.setIconified(false);
-        jobSearch.clearFocus();
-        jobSearch.setOnQueryTextListener(this);
+        jobSearchBidOn.setIconified(false);
+        jobSearchAccepted.setIconified(false);
+        jobSearchCompleted.setIconified(false);
+
+        jobSearchBidOn.clearFocus();
+        jobSearchAccepted.clearFocus();
+        jobSearchCompleted.clearFocus();
+
+        jobSearchBidOn.setOnQueryTextListener(this);
+        jobSearchAccepted.setOnQueryTextListener(this);
+        jobSearchCompleted.setOnQueryTextListener(this);
     }
 
     /**
@@ -357,6 +371,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         // Display information in ListView
         final MyJobsFragment.MyCustomAdapter adapter = createNewCustomAdapter(jobList);
+        mAdapterBidOn = adapter;
         jobListViewBidOn.setAdapter(adapter);
 
         // Press on the object and go view all the Job Information and Bids
@@ -369,9 +384,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Job", adapter.mData.get(position));
                 bidDetailsFragment.setArguments(bundle);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
-
+                getFragmentManager().beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
             }
         });
     }
@@ -391,12 +404,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 jobListKey.add(ds4.getKey());
                 jobListActive.add(getJobInformation(ds4));
             }
-
         }
 
         // Display the Job in the ListView
         final MyJobsFragment.MyCustomAdapter adapterActiveJobs = createNewCustomAdapter(jobListActive);
         adapterActiveJobs.addKeyArray(jobListKey);
+        mAdapterAccepted = adapterActiveJobs;
         jobListViewMyAcJobs.setAdapter(adapterActiveJobs);
 
         // Press the object and display the information and sign the job of with signature pad
@@ -410,9 +423,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 bundle.putSerializable("Job", adapterActiveJobs.mData.get(position));
                 bundle.putSerializable("JobId", adapterActiveJobs.mDataKeys.get(position));
                 activeJobDetailsFragment.setArguments(bundle);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
-
+                getFragmentManager().beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
             }
         });
     }
@@ -434,6 +445,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         // Display in the ListView
         MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
+        mAdapterCompleted = adapterCompletedJobs;
         jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
     }
 
@@ -446,9 +458,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     @Override
     public boolean onQueryTextChange(String newText)
     {
-        String text = newText;
-        // mAdapterBidOn.filter(text);
-
+        mAdapterBidOn.filter(newText);
+        mAdapterAccepted.filter(newText);
+        mAdapterCompleted.filter(newText);
         return false;
     }
 
@@ -457,10 +469,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         void onFragmentInteraction(Uri uri);
     }
 
-
     public class MyCustomAdapter extends BaseAdapter
     {
-
         private ArrayList<JobInformation> mData = new ArrayList<>();
         private ArrayList<JobInformation> mDataOrig = new ArrayList<>();
         private ArrayList<String> mDataKeys = new ArrayList<>();
@@ -496,28 +506,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             mDataKeys = k;
         }
 
-
-        @Override
-        public void registerDataSetObserver(DataSetObserver observer)
-        {
-
-        }
-
-        @Override
-        public void unregisterDataSetObserver(DataSetObserver observer)
-        {
-
-        }
-
         @Override
         public int getCount()
         {
             return mData.size();
-        }
-
-        public String getKey(int position)
-        {
-            return mDataKeys.get(position);
         }
 
         @Override
@@ -561,20 +553,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             holder.textViewFrom.setText(mData.get(position).getColL1());
             holder.textViewTo.setText(mData.get(position).getDelL1());
 
-
             return convertView;
-        }
-
-        @Override
-        public boolean areAllItemsEnabled()
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isEmpty()
-        {
-            return false;
         }
 
         public class GroupViewHolder
@@ -596,7 +575,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 mData = mDataOrig;
             } else
             {
-
                 for (JobInformation j : mDataOrig)
                 {
                     if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
@@ -620,12 +598,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
             return true;

@@ -55,7 +55,7 @@
                         tools:layout_editor_absoluteY="16dp" />
 
                     <SearchView
-                        android:id="@+id/searchViewMyJobs"
+                        android:id="@+id/searchViewBidOn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:iconifiedByDefault="false"
@@ -92,7 +92,7 @@
                         tools:layout_editor_absoluteY="16dp" />
 
                     <SearchView
-                        android:id="@+id/searchViewJob"
+                        android:id="@+id/searchViewAccepted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:iconifiedByDefault="false"
@@ -116,7 +116,6 @@
 
                     <!-- TAB THREE CONTENT -->
 
-
                     <TextView
                         android:paddingTop="15dp"
                         android:id="@+id/textViewCompleteJobs"
@@ -130,12 +129,12 @@
                         tools:layout_editor_absoluteY="16dp" />
 
                     <SearchView
-                        android:id="@+id/searchViewMyCompleteJobs"
+                        android:id="@+id/searchViewCompletedJobs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="This is tab 3"
-                    android:iconifiedByDefault="false"
-                    android:queryHint="Name, Location, Size, etc." />
+                        android:iconifiedByDefault="false"
+                        android:queryHint="Name, Location, Size, etc." />
 
                     <requestFocus />
 
