@@ -216,15 +216,13 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("fullName").getValue(String.class);
                 String profileImageUri = dataSnapshot.child("profileImage").getValue(String.class);
-                String profileUri = dataSnapshot.child("profileUri").getValue(String.class);
 
                 Log.d(TAG, "Name Is: " + name);
                 Log.d(TAG, "ProfileImage: " + profileImage);
 
                 navigationName.setText(name);
 
-                Picasso.get().load(profileImageUri).resize(250, 250).transform(new CircleTransformation()).into(profileImage);
-
+                Picasso.get().load(profileImageUri).fit().transform(new CircleTransformation()).into(profileImage);
             }
 
             @Override
