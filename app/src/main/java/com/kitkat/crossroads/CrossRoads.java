@@ -57,6 +57,9 @@ import java.net.URL;
 public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "ViewProfileActivity";
 
+    /**
+     * Firebase auth is a connection to Firebase Database
+     */
     private FirebaseAuth auth;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
