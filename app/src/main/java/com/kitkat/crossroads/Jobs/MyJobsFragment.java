@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.MyCustomAdapter;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -78,9 +80,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private final ArrayList<String> jobListKey = new ArrayList<>();
 
-    private SearchView jobSearch;
+    private SearchView jobSearchBidOn, jobSearchAccepted, jobSearchCompleted;
     private TabHost host;
     private String tabTag;
+
+    private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
+
+    private com.kitkat.crossroads.ExternalClasses.MyCustomAdapter myCustomAdapter;
 
     /**
      * OnCreate is called on the creation of Fragment to create a new
@@ -149,10 +155,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private void getViewsByIds(View view)
     {
         host = view.findViewById(R.id.tabHost);
+
         jobListViewBidOn = view.findViewById(R.id.jobListViewBidOn);
         jobListViewMyAcJobs = view.findViewById(R.id.jobListViewMyActiveJobs);
         jobListViewMyComJobs = view.findViewById(R.id.jobListViewMyCompleteJobs);
-        jobSearch = view.findViewById(R.id.searchViewJob);
+
+        jobSearchBidOn = view.findViewById(R.id.searchViewBidOn);
+        jobSearchAccepted = view.findViewById(R.id.searchViewAccepted);
+        jobSearchCompleted = view.findViewById(R.id.searchViewCompletedJobs);
     }
 
     /**
@@ -212,11 +222,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         host.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
-
             @Override
             public void onTabChanged(String tabId)
             {
-
                 for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
                 {
                     host.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2bbc9b")); // unselected
@@ -225,6 +233,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 }
 
                 host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
+                host.getTabWidget().getChildAt(host.getCurrentTab());
                 TextView tv = host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
                 tv.setTextColor(Color.parseColor("#2bbc9b"));
 
@@ -280,9 +289,17 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private void setSearchOptions()
     {
-        jobSearch.setIconified(false);
-        jobSearch.clearFocus();
-        jobSearch.setOnQueryTextListener(this);
+        jobSearchBidOn.setIconified(false);
+        jobSearchAccepted.setIconified(false);
+        jobSearchCompleted.setIconified(false);
+
+        jobSearchBidOn.clearFocus();
+        jobSearchAccepted.clearFocus();
+        jobSearchCompleted.clearFocus();
+
+        jobSearchBidOn.setOnQueryTextListener(this);
+        jobSearchAccepted.setOnQueryTextListener(this);
+        jobSearchCompleted.setOnQueryTextListener(this);
     }
 
     /**
@@ -357,6 +374,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         // Display information in ListView
         final MyJobsFragment.MyCustomAdapter adapter = createNewCustomAdapter(jobList);
+        mAdapterBidOn = adapter;
         jobListViewBidOn.setAdapter(adapter);
 
         // Press on the object and go view all the Job Information and Bids
@@ -369,9 +387,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Job", adapter.mData.get(position));
                 bidDetailsFragment.setArguments(bundle);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
-
+                getFragmentManager().beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
             }
         });
     }
@@ -391,12 +407,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 jobListKey.add(ds4.getKey());
                 jobListActive.add(getJobInformation(ds4));
             }
-
         }
 
         // Display the Job in the ListView
         final MyJobsFragment.MyCustomAdapter adapterActiveJobs = createNewCustomAdapter(jobListActive);
         adapterActiveJobs.addKeyArray(jobListKey);
+        mAdapterAccepted = adapterActiveJobs;
         jobListViewMyAcJobs.setAdapter(adapterActiveJobs);
 
         // Press the object and display the information and sign the job of with signature pad
@@ -410,9 +426,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 bundle.putSerializable("Job", adapterActiveJobs.mData.get(position));
                 bundle.putSerializable("JobId", adapterActiveJobs.mDataKeys.get(position));
                 activeJobDetailsFragment.setArguments(bundle);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
-
+                getFragmentManager().beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
             }
         });
     }
@@ -434,6 +448,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         // Display in the ListView
         MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
+        mAdapterCompleted = adapterCompletedJobs;
         jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
     }
 
@@ -446,9 +461,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     @Override
     public boolean onQueryTextChange(String newText)
     {
-        String text = newText;
-        // mAdapterBidOn.filter(text);
-
+        mAdapterBidOn.filter(newText);
+        mAdapterAccepted.filter(newText);
+        mAdapterCompleted.filter(newText);
         return false;
     }
 
@@ -457,10 +472,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         void onFragmentInteraction(Uri uri);
     }
 
-
     public class MyCustomAdapter extends BaseAdapter
     {
-
         private ArrayList<JobInformation> mData = new ArrayList<>();
         private ArrayList<JobInformation> mDataOrig = new ArrayList<>();
         private ArrayList<String> mDataKeys = new ArrayList<>();
@@ -496,28 +509,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             mDataKeys = k;
         }
 
-
-        @Override
-        public void registerDataSetObserver(DataSetObserver observer)
-        {
-
-        }
-
-        @Override
-        public void unregisterDataSetObserver(DataSetObserver observer)
-        {
-
-        }
-
         @Override
         public int getCount()
         {
             return mData.size();
-        }
-
-        public String getKey(int position)
-        {
-            return mDataKeys.get(position);
         }
 
         @Override
@@ -541,40 +536,55 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
-            System.out.println("getView " + position + " " + convertView);
-            MyJobsFragment.MyCustomAdapter.GroupViewHolder holder;
+            // Completed Jobs
+            MyJobsFragment.MyCustomAdapter.GroupViewHolderName holder;
+
+            // Bid On & Accepted Jobs
+            MyJobsFragment.MyCustomAdapter.GroupViewHolder holder2;
+
             if (convertView == null)
             {
-                convertView = mInflater.inflate(R.layout.job_info_list, null);
-                holder = new MyJobsFragment.MyCustomAdapter.GroupViewHolder();
-                holder.textViewName = convertView.findViewById(R.id.textName);
-                holder.textViewFrom = convertView.findViewById(R.id.textFrom);
-                holder.textViewTo = convertView.findViewById(R.id.textTo);
+                // Completed Jobs
+                if (host.getCurrentTab() == 2)
+                {
+                    convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
 
-                convertView.setTag(holder);
+                    holder = new MyJobsFragment.MyCustomAdapter.GroupViewHolderName();
+
+                    holder.textViewJobName = convertView.findViewById(R.id.textName);
+                    holder.textViewJobName.setText(mData.get(position).getAdvertName());
+
+                    convertView.setTag(holder);
+                    // Bid On & Accepted Jobs
+                } else
+                {
+                    convertView = mInflater.inflate(R.layout.job_info_list, null);
+
+                    holder2 = new MyJobsFragment.MyCustomAdapter.GroupViewHolder();
+
+                    holder2.textViewName = convertView.findViewById(R.id.textName);
+                    holder2.textViewFrom = convertView.findViewById(R.id.textFrom);
+                    holder2.textViewTo = convertView.findViewById(R.id.textTo);
+
+                    holder2.textViewName.setText(mData.get(position).getAdvertName());
+                    holder2.textViewFrom.setText(mData.get(position).getColL1());
+                    holder2.textViewTo.setText(mData.get(position).getDelL1());
+
+                    convertView.setTag(holder2);
+                }
             } else
             {
-                holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
+                if(host.getCurrentTab() == 2)
+                {
+                    holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolderName) convertView.getTag();
+                }
+                else
+                {
+                    holder2 = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
+                }
             }
 
-            holder.textViewName.setText(mData.get(position).getAdvertName());
-            holder.textViewFrom.setText(mData.get(position).getColL1());
-            holder.textViewTo.setText(mData.get(position).getDelL1());
-
-
             return convertView;
-        }
-
-        @Override
-        public boolean areAllItemsEnabled()
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isEmpty()
-        {
-            return false;
         }
 
         public class GroupViewHolder
@@ -584,9 +594,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             public TextView textViewTo;
         }
 
+        public class GroupViewHolderName
+        {
+            public TextView textViewJobName;
+        }
+
         public void filter(String charText)
         {
-
             ArrayList<JobInformation> jobs = new ArrayList<>();
             ArrayList<JobInformation> jA = new ArrayList<>();
             charText = charText.toLowerCase(Locale.getDefault());
@@ -596,7 +610,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 mData = mDataOrig;
             } else
             {
-
                 for (JobInformation j : mDataOrig)
                 {
                     if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
@@ -620,12 +633,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
             return true;

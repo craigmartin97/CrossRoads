@@ -54,9 +54,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+{
     private static final String TAG = "ViewProfileActivity";
 
+    /**
+     * Firebase auth is a connection to Firebase Database
+     */
     private FirebaseAuth auth;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -65,9 +69,12 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
     private String userID;
     private ImageView profileImage;
 
+    private String profileImageUrl;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -79,76 +86,75 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         userID = user.getUid();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        //        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
-        //        {
-        //            @Override
-        //            public void onDataChange(DataSnapshot dataSnapshot)
-        //            {
-        //                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-        //                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
-        //
-        //                if (advertiser == true && courier == false)
-        //                {
-        //                    getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-        //                } else if (advertiser == false && courier == true)
-        //                {
-        //                    getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-        //                } else if (advertiser == true && courier == true)
-        //                {
-        //                    getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
-        //                }
-        //            }
-        //
-        //            @Override
-        //            public void onCancelled(DatabaseError databaseError)
-        //            {
-        //
-        //            }
-        //        });
+        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                if (advertiser == true && courier == false)
+                {
+                    getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+                } else if (advertiser == false && courier == true)
+                {
+                    getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+                } else if (advertiser == true && courier == true)
+                {
+                    getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //        getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-
 
         navigationButtonActions(navigationView);
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+    public void onBackPressed()
+    {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START))
+        {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else
+        {
             super.onBackPressed();
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             return true;
         }
 
@@ -157,36 +163,42 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
         int id = item.getItemId();
 
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if (id == R.id.nav_findAJob) {
+        if (id == R.id.nav_findAJob)
+        {
             fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack("tag").commit();
-        } else if (id == R.id.nav_postAnAdvert) {
+        } else if (id == R.id.nav_postAnAdvert)
+        {
             fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).addToBackStack("tag").commit();
-        } else if (id == R.id.nav_myAdverts) {
+        } else if (id == R.id.nav_myAdverts)
+        {
             fragmentTransaction.replace(R.id.content, new MyAdvertsFragment()).addToBackStack("tag").commit();
-        } else if (id == R.id.nav_myJobs) {
+        } else if (id == R.id.nav_myJobs)
+        {
             fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack("tag").commit();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private FragmentTransaction getFragmentTransaction() {
+    private FragmentTransaction getFragmentTransaction()
+    {
         final android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         return fragmentTransaction;
     }
 
-    private void navigationButtonActions(NavigationView navigationView) {
+    private void navigationButtonActions(NavigationView navigationView)
+    {
         View headerview = navigationView.getHeaderView(0);
         final TextView navigationName = (TextView) headerview.findViewById(R.id.navigationName);
         TextView navigationEmail = (TextView) headerview.findViewById(R.id.navigationEmail);
@@ -195,40 +207,25 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         ImageView logout = (ImageView) headerview.findViewById(R.id.imageLogout);
         profileImage = (ImageView) headerview.findViewById(R.id.navigationImage);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        myRef.child(userID).addValueEventListener(new ValueEventListener()
+        {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    customToastMessage("Successfully signed in with: " + user.getEmail());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    customToastMessage("Successfully signed out.");
-                }
-            }
-        };
-
-        myRef.child(userID).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
                 String name = dataSnapshot.child("fullName").getValue(String.class);
-                String profileImageUri = dataSnapshot.child("profileImage").getValue(String.class);
-                String profileUri = dataSnapshot.child("profileUri").getValue(String.class);
+                profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
 
                 Log.d(TAG, "Name Is: " + name);
                 Log.d(TAG, "ProfileImage: " + profileImage);
 
                 navigationName.setText(name);
 
-                Picasso.get().load(profileImageUri).resize(250, 250).transform(new CircleTransformation()).into(profileImage);
-
+                Picasso.get().load(profileImageUrl).fit().transform(new CircleTransformation()).into(profileImage);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError)
+            {
 
             }
         });
@@ -236,28 +233,34 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
         navigationEmail.setText(auth.getCurrentUser().getEmail());
 
-        viewProfile.setOnClickListener(new View.OnClickListener() {
+        viewProfile.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });
 
 
-        editProfile.setOnClickListener(new View.OnClickListener() {
+        editProfile.setOnClickListener(new View.OnClickListener()
+        {
 
 
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getFragmentTransaction().replace(R.id.content, new EditProfileFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });
 
-        logout.setOnClickListener(new View.OnClickListener() {
+        logout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 onBackPressed();
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoads.this);
                 View mView = getLayoutInflater().inflate(R.layout.popup_logout, null);
@@ -271,17 +274,21 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                 Button logoutButton = (Button) mView.findViewById(R.id.logoutButton);
                 Button cancelButton = (Button) mView.findViewById(R.id.cancelButton);
 
-                logoutButton.setOnClickListener(new View.OnClickListener() {
+                logoutButton.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         auth.signOut();
                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     }
                 });
 
-                cancelButton.setOnClickListener(new View.OnClickListener() {
+                cancelButton.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         dialog.cancel();
                     }
                 });
@@ -297,7 +304,8 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         });
     }
 
-    private void customToastMessage(String message) {
+    private void customToastMessage(String message)
+    {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

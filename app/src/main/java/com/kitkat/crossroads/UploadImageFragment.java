@@ -194,6 +194,7 @@ public class UploadImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setMessage("Uploading Image Please Wait...");
                 progressDialog.show();
 
