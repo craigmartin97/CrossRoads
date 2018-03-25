@@ -5,10 +5,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -28,6 +30,7 @@ import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,6 +72,8 @@ public class ViewProfileFragment extends Fragment
     private ImageView profileImageUri;
 
     private String passedUserID;
+
+    private String profileImage;
 
     public ViewProfileFragment()
     {
@@ -139,7 +144,8 @@ public class ViewProfileFragment extends Fragment
             }
         });
         userRatingBar = (RatingBar) view.findViewById(R.id.UserRatingsBar);
-        userRatingBar.setOnClickListener(new View.OnClickListener() {
+        userRatingBar.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
@@ -237,7 +243,8 @@ public class ViewProfileFragment extends Fragment
                     {
                         checkBoxAdvertiser.setChecked(true);
                         checkBoxCourier.setChecked(true);
-                    };
+                    }
+                    ;
                 }
 
                 @Override
@@ -259,7 +266,7 @@ public class ViewProfileFragment extends Fragment
                     String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
                     String usersTown = dataSnapshot.child("town").getValue(String.class);
                     String postalCode = dataSnapshot.child("postCode").getValue(String.class);
-                    String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+                    profileImage = dataSnapshot.child("profileImage").getValue(String.class);
                     boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
                     boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
@@ -300,6 +307,35 @@ public class ViewProfileFragment extends Fragment
                 public void onCancelled(DatabaseError databaseError)
                 {
 
+                }
+            });
+
+            profileImageUri.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    final AlertDialog.Builder profileImageDialog = new AlertDialog.Builder(getActivity());
+                    View viewPopUpImage = getLayoutInflater().inflate(R.layout.popup_profile_image, null);
+
+                    profileImageDialog.setTitle("Profile Image");
+                    profileImageDialog.setView(viewPopUpImage);
+                    final AlertDialog alertDialog = profileImageDialog.create();
+                    alertDialog.show();
+
+                    ImageView image = viewPopUpImage.findViewById(R.id.profileImage);
+                    Picasso.get().load(profileImage).resize(350,500).into(image);
+
+                    Button cancelButton = viewPopUpImage.findViewById(R.id.cancelButton);
+
+                    cancelButton.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            alertDialog.cancel();
+                        }
+                    });
                 }
             });
         }
