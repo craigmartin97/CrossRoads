@@ -105,10 +105,41 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:dividerHeight="3dp"
-                    android:pointerIcon="arrow"></ExpandableListView>
+                    android:pointerIcon="arrow">
+
+                </ExpandableListView>
 
 
             </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity=""
+                    android:layout_marginStart="49dp"
+                    android:text="Your Previous Bid"
+                    android:textStyle="bold"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/editBid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="33dp"
+                    android:layout_toEndOf="@+id/textView2"
+                    android:hint="Your Bid"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
