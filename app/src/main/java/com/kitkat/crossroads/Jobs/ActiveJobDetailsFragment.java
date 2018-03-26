@@ -332,7 +332,7 @@ public class ActiveJobDetailsFragment extends Fragment {
         listHashMap3.put(list3.get(0), jobInformation);
     }
 
-    private void setListViewHeight(ExpandableListView listView,
+    public void setListViewHeight(ExpandableListView listView,
                                    int group) {
         ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
         int totalHeight = 0;

@@ -2,373 +2,113 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kitkat.crossroads.Jobs.JobDetailsFragment">
-
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context="com.kitkat.crossroads.Jobs.JobBidsFragment">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity">
-
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-
-                android:orientation="vertical"
-                android:padding="15dp">
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/textViewJobInformation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/bebasneueregular"
-                    android:text="Bid Details"
+                    android:paddingTop="10dp"
+                    android:text="Job Information"
                     android:textAlignment="center"
                     android:textSize="30dp"
-                    tools:layout_editor_absoluteX="163dp"
-                    tools:layout_editor_absoluteY="16dp" />
+                    tools:layout_editor_absoluteX="163dp" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="27dp"
+                        android:layout_marginTop="14dp"
+                        android:src="@drawable/selfie" />
+
+                    <TextView
+                        android:id="@+id/textViewJobName1"
+                        android:layout_width="100dp"
+                        android:textSize="18sp"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@+id/imageView"
+                        android:layout_marginStart="29dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_toEndOf="@+id/imageView"
+                        android:text="JobName Here" />
+
+                    <TextView
+                        android:id="@+id/textViewJobDescription1"
+                        android:layout_width="100dp"
+                        android:textSize="14sp"
+                        android:layout_height="match_parent"
+                        android:layout_alignStart="@+id/textViewJobName1"
+                        android:layout_below="@+id/textViewJobName1"
+                        android:layout_marginTop="26dp"
+                        android:text="JobDescription Here" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@android:color/darker_gray" />
+
+                <ExpandableListView
+                    android:id="@+id/expandable_list_view3"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:orientation="vertical">
+                    android:layout_gravity="start"
+                    android:dividerHeight="3dp"
+                    android:pointerIcon="arrow"></ExpandableListView>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@android:color/darker_gray" />
 
-                        <TextView
-                            android:id="@+id/viewName"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobName1"
-                            android:layout_alignTop="@id/textViewJobName1"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Job:"
-                            android:textAlignment="viewStart"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                <ExpandableListView
+                    android:id="@+id/expandable_list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:dividerHeight="3dp"
+                    android:pointerIcon="arrow"></ExpandableListView>
 
-                        <TextView
-                            android:id="@+id/textViewJobName1"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="text"
-                            android:textColor="#FF000000"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@android:color/darker_gray" />
 
-                            android:visibility="visible" />
-                    </LinearLayout>
+                <ExpandableListView
+                    android:id="@+id/expandable_list_view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:dividerHeight="3dp"
+                    android:pointerIcon="arrow"></ExpandableListView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/viewDesc"
-                            android:layout_width="110dp"
-                            android:layout_height="match_parent"
-                            android:layout_alignBottom="@id/textViewJobDescription1"
-                            android:layout_alignTop="@id/textViewJobDescription1"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Description:"
-                            android:textAlignment="viewStart"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                        <TextView
-                            android:id="@+id/textViewJobDescription1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
-                            android:layout_weight="3"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="TextView"
-                            android:textColor="#FF000000"
-                            android:visibility="visible"
-
-                            />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/viewSize"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobSize1"
-                            android:layout_alignTop="@id/textViewJobSize1"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Job Size:"
-                            android:textAlignment="viewStart"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                        <TextView
-                            android:id="@+id/textViewJobSize1"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="TextView"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/viewType"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Job Type:"
-                            android:textAlignment="viewStart"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-
-                        <TextView
-                            android:id="@+id/textViewJobType1"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="TextView"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/viewColDate"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobColDate1"
-                            android:layout_alignTop="@id/textViewJobColDate1"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Collection Date:"
-
-                            android:textAlignment="viewStart"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                        <TextView
-                            android:id="@+id/textViewJobColDate1"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="TextView"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/viewColTime1"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobColTime1"
-                            android:layout_alignTop="@id/textViewJobColTime1"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Collection Time:"
-
-                            android:textAlignment="viewStart"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                        <TextView
-                            android:id="@+id/textViewJobColTime1"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="TextView"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/viewFrom"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobFrom1"
-                            android:layout_alignTop="@id/textViewJobFrom1"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Collection From:"
-                            android:textAlignment="viewStart"
-
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                        <TextView
-                            android:id="@+id/textViewJobFrom1"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="TextView"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/viewTo"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobTo1"
-                            android:layout_alignTop="@id/textViewJobTo1"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Delivery To:"
-                            android:textAlignment="viewStart"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                        <TextView
-                            android:id="@+id/textViewJobTo1"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textFrom"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="TextView"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/viewBid"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="10dp"
-                            android:text=" Your Bid:"
-                            android:textAlignment="viewStart"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-
-                        <TextView
-                            android:id="@+id/textViewBid"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
-                            android:background="#FFFFFFFF"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="10dp"
-                            android:paddingVertical="10dp"
-                            android:text="TextView"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
 
             </LinearLayout>
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
 </FrameLayout>

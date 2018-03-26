@@ -3,6 +3,7 @@ package com.kitkat.crossroads.Jobs;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -77,13 +81,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private final ArrayList<String> jobListKey = new ArrayList<>();
 
-    private ArrayList<String> arrayList = new ArrayList<>();
-
     private SearchView jobSearchBidOn, jobSearchAccepted, jobSearchCompleted;
     private TabHost host;
     private String tabTag;
 
     private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
+
+    private TextView text;
 
     /**
      * OnCreate is called on the creation of Fragment to create a new
@@ -420,8 +424,19 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             {
                 ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
                 Bundle bundle = new Bundle();
+
                 bundle.putSerializable("Job", adapterActiveJobs.mData.get(position));
                 bundle.putSerializable("JobId", adapterActiveJobs.mDataKeys.get(position));
+
+                // setting selected
+//                adapterActiveJobs.mData.get(position).setIsSelected(true);
+//                adapterActiveJobs.notifyDataSetChanged();
+
+                MyJobsFragment.MyCustomAdapter adapterActiveJobsNew = createNewCustomAdapter(jobListActive);
+                adapterActiveJobsNew.mData.get(position).setIsSelected(true);
+                mAdapterAccepted = adapterActiveJobsNew;
+                jobListViewMyAcJobs.setAdapter(adapterActiveJobsNew);
+
                 activeJobDetailsFragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
             }
@@ -444,9 +459,22 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display in the ListView
-        MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
+        final MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
         mAdapterCompleted = adapterCompletedJobs;
         jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
+
+        jobListViewMyComJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+            {
+                BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Job", adapterCompletedJobs.mData.get(position));
+                bidDetailsFragment.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
+            }
+        });
     }
 
     @Override
@@ -526,6 +554,37 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         @Override
+        public void registerDataSetObserver(DataSetObserver observer)
+        {
+
+        }
+
+        @Override
+        public void unregisterDataSetObserver(DataSetObserver observer)
+        {
+
+        }
+
+        public void updateData(ArrayList<JobInformation> updatedData)
+        {
+            mData.clear();
+            mData = updatedData;
+            this.notifyDataSetChanged();
+        }
+
+        @Override
+        public boolean areAllItemsEnabled()
+        {
+            return false;
+        }
+
+        @Override
+        public boolean isEmpty()
+        {
+            return false;
+        }
+
+        @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             // Bid on holder
@@ -562,6 +621,22 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                     holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
                     holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
+
+                    // Link to answer someone gave me - https://stackoverflow.com/questions/49496786/change-textview-text-to-normal-after-the-object-has-been-pressed/49497350?noredirect=1#comment86002608_49497350
+                    // Font bold when unselected
+                    // When the user is selecting an item, title could be bold to begin with otherwise if previously selected it could be normal.
+                    if (mData.get(position).isSelected())
+                    {
+                        holderAccepted.textViewJobName.setTypeface(null, Typeface.NORMAL);
+                    }
+                    // font when the item has never been selected
+                    else
+                    {
+                        holderAccepted.textViewJobName.setTypeface(null, Typeface.BOLD);
+                    }
+
+                    // TODO - Was going to add the the users bid into this here, however it's difficult as the bid isnt stored in the jobs table
+                    // TODO - I tried to add it in, looped through the bids table and found the bids with the mDataKeys. But it always displayed the last value.
 
                     convertView.setTag(holderAccepted);
                 }
