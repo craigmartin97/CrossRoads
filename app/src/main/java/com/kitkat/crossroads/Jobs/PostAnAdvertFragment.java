@@ -64,7 +64,6 @@ public class PostAnAdvertFragment extends Fragment
 
     private DataSnapshot jobReference;
 
-
     private FirebaseAuth auth;
 
     private EditText editTextAdName, editTextAdDescription, editTextColDate, editTextColTime;

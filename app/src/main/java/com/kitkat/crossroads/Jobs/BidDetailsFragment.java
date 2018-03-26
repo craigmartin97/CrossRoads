@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,203 +24,225 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.CrossRoads;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link JobDetailsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link JobDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class displays the job information for a job they have just bid on.
+ * They can also view their bid they made and edit that bid.
+ * They can also delete the bid from here as well.
  */
 public class BidDetailsFragment extends Fragment
 {
-
-    private TextView jobName, jobDescription, jobSize, jobType, jobColDate, jobColTime, jobFrom, jobTo, yourBid;
-    private Button buttonBid;
-    private EditText editTextBid;
-
-    private FirebaseAuth auth;
-    private FirebaseDatabase database;
-    private DataSnapshot bidReference;
-
-    private String jobID;
-
-
-    private DatabaseReference databaseReference;
-    private FirebaseAuth mAuth;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    public BidDetailsFragment()
-    {
-        // Required empty public constructor
-    }
+    /**
+     * Text Views to display the jobs name and description
+     */
+    private TextView jobName, jobDescription;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment JobDetailsFragment.
+     * Strings to store the jobs information passed in by a bundle
      */
-    // TODO: Rename and change types and number of parameters
-    public static JobDetailsFragment newInstance(String param1, String param2)
-    {
-        JobDetailsFragment fragment = new JobDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private String colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize;
+
+    /**
+     * Expandable list views to store the job information in
+     */
+    private ExpandableListView expandableListView, expandableListView2, expandableListView3;
+
+    /**
+     * Adapters to process and handle the data in the expandable list views
+     */
+    private ExpandableListAdapter adapter, adapter2, adapter3;
+
+    /**
+     * Lists to store the information in
+     */
+    private List<String> list, list2, list3;
+    private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
+
+    /**
+     * Accessing ActiveJobDetailsFragment
+     */
+    ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
+    /**
+     * Method displays and renders the content to the user
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.info_list_my_bids_details, container, false);
 
-        Bundle bundle = getArguments();
+        getViewsByIds(view);
+        final JobInformation jobInformation = getBundleInformation();
+        setJobInformationDetails(jobInformation);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        addItemsCollection();
+        addItemsDelivery();
+        addItemsJobInformation();
 
-        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
+        adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
+        adapter2 = new ExpandableListAdapter(getActivity(), list2, listHashMap2);
+        adapter3 = new ExpandableListAdapter(getActivity(), list3, listHashMap3);
 
-        jobName = (TextView) view.findViewById(R.id.textViewJobName1);
-        jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        jobSize = (TextView) view.findViewById(R.id.textViewJobSize1);
-        jobType = (TextView) view.findViewById(R.id.textViewJobType1);
-        jobColDate = (TextView) view.findViewById(R.id.textViewJobColDate1);
-        jobColTime = (TextView) view.findViewById(R.id.textViewJobColTime1);
-        jobFrom = (TextView) view.findViewById(R.id.textViewJobFrom1);
-        jobTo = (TextView) view.findViewById(R.id.textViewJobTo1);
-        yourBid = (TextView) view.findViewById(R.id.textViewBid);
+        expandableListView.setAdapter(adapter);
+        expandableListView2.setAdapter(adapter2);
+        expandableListView3.setAdapter(adapter3);
 
-
-        jobName.setText(jobInformation.getAdvertName().toString());
-        jobDescription.setText(jobInformation.getAdvertDescription().toString());
-        jobSize.setText(jobInformation.getJobSize().toString());
-        jobType.setText(jobInformation.getJobType().toString());
-        jobColDate.setText(jobInformation.getCollectionDate());
-        jobColTime.setText(jobInformation.getCollectionTime());
-        jobFrom.setText(jobInformation.getColTown().toString());
-        jobTo.setText(jobInformation.getDelTown().toString());
-        yourBid.setText("");
-        jobID = jobInformation.getJobID();
-
-        auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
-
-        databaseReference.addValueEventListener(new ValueEventListener()
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
         {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
-                bidReference = dataSnapshot.child("Bids");
-
-                Iterable<DataSnapshot> jobListSnapShot = bidReference.getChildren();
-
-
-                for (DataSnapshot ds : jobListSnapShot)
-                {
-                    if (ds.getKey().toString().equals(jobInformation.getJobID()))
-                    {
-
-                        Iterable<DataSnapshot> bidListSnapShot = ds.getChildren();
-
-                        for (DataSnapshot ds1 : bidListSnapShot)
-                        {
-                            BidInformation b = ds1.getValue(BidInformation.class);
-
-                            String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                            if (b.getUserID().equals(currentUser))
-                            {
-                                yourBid.setText(b.getUserBid());
-                                break;
-                            }
-
-                        }
-                    }
-                }
+                activeJobDetailsFragment.setListViewHeight(parent, groupPosition);
+                return false;
             }
+        });
 
+        expandableListView2.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
             @Override
-            public void onCancelled(DatabaseError databaseError)
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
+                activeJobDetailsFragment.setListViewHeight(parent, groupPosition);
+                return false;
+            }
+        });
 
+        expandableListView3.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
+                activeJobDetailsFragment.setListViewHeight(parent, groupPosition);
+                return false;
             }
         });
 
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
+    /**
+     * Get all of the layout pages content, such as TextViews and the Expandable Lists
+     *
+     * @param view - page to be inflated
+     */
+    private void getViewsByIds(View view)
     {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+        jobName = (TextView) view.findViewById(R.id.textViewJobName1);
+        jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
 
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-        }
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
+        expandableListView = view.findViewById(R.id.expandable_list_view);
+        expandableListView2 = view.findViewById(R.id.expandable_list_view2);
+        expandableListView3 = view.findViewById(R.id.expandable_list_view3);
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Setting all of the information from the bundle that has been passed across to the TextViews
+     * And storing them in strings for future use
+     *
+     * @param jobInformation - Information passed from a bundle that contains that Job Information
      */
-    public interface OnFragmentInteractionListener
+    private void setJobInformationDetails(JobInformation jobInformation)
     {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        // Setting text in the TextViews
+        jobName.setText(jobInformation.getAdvertName());
+        jobDescription.setText(jobInformation.getAdvertDescription());
+
+        // Storing information in variables for later use
+        colDate = jobInformation.getCollectionDate().toString();
+        colTime = jobInformation.getCollectionTime().toString();
+        colAddress = jobInformation.getColL1().toString() + ", " + jobInformation.getColL2().toString();
+        colTown = jobInformation.getColTown().toString();
+        colPostcode = jobInformation.getColPostcode().toString();
+        delAddress = jobInformation.getDelL1().toString() + ", " + jobInformation.getDelL2().toString();
+        delTown = jobInformation.getColTown().toString();
+        delPostcode = jobInformation.getColPostcode().toString();
+        jobType = jobInformation.getJobType().toString();
+        jobSize = jobInformation.getJobSize().toString();
+    }
+
+    /**
+     * Getting all arguments from the bundle that was passed across
+     *
+     * @return jobInformation
+     */
+    private JobInformation getBundleInformation()
+    {
+        Bundle bundle = getArguments();
+        return (JobInformation) bundle.getSerializable("Job");
+    }
+
+    /**
+     * Adding information into Expandable list collection information
+     */
+    private void addItemsCollection()
+    {
+        list = new ArrayList<>();
+        listHashMap = new HashMap<>();
+
+        list.add("Collection Information");
+
+        List<String> collectionInfo = new ArrayList<>();
+        collectionInfo.add(colDate);
+        collectionInfo.add(colTime);
+        collectionInfo.add(colAddress);
+        collectionInfo.add(colTown);
+        collectionInfo.add(colPostcode);
+
+        listHashMap.put(list.get(0), collectionInfo);
+    }
+
+    /**
+     * Adding information into Expandable list delivery
+     */
+    private void addItemsDelivery()
+    {
+        list2 = new ArrayList<>();
+        listHashMap2 = new HashMap<>();
+
+        list2.add("Delivery Information");
+
+        List<String> deliveryInfo = new ArrayList<>();
+        deliveryInfo.add(delAddress);
+        deliveryInfo.add(delTown);
+        deliveryInfo.add(delPostcode);
+
+        listHashMap2.put(list2.get(0), deliveryInfo);
+    }
+
+    /**
+     * Adding information into Expandable list job information
+     */
+    private void addItemsJobInformation()
+    {
+        list3 = new ArrayList<>();
+        listHashMap3 = new HashMap<>();
+
+        list3.add("Job Information");
+
+        List<String> jobInformation = new ArrayList<>();
+        jobInformation.add(jobSize);
+        jobInformation.add(jobType);
+
+        listHashMap3.put(list3.get(0), jobInformation);
     }
 }

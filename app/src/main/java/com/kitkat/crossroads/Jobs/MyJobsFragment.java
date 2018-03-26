@@ -3,6 +3,7 @@ package com.kitkat.crossroads.Jobs;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,8 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.ExternalClasses.MyCustomAdapter;
 import com.kitkat.crossroads.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -38,8 +41,6 @@ import java.util.Locale;
  */
 public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextListener
 {
-    private OnFragmentInteractionListener mListener;
-
     /**
      * FirebaseAuth, create a connection to the Firebase Authentication table
      */
@@ -86,7 +87,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
 
-    private com.kitkat.crossroads.ExternalClasses.MyCustomAdapter myCustomAdapter;
+    private TextView text;
 
     /**
      * OnCreate is called on the creation of Fragment to create a new
@@ -184,13 +185,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         //Bid On Tab
         TabHost.TabSpec spec = host.newTabSpec("Bid On");
-        spec.setContent(R.id.tab1);
+        spec.setContent(R.id.tab2);
         spec.setIndicator("Bid On");
         host.addTab(spec);
 
         //Active Tab
         spec = host.newTabSpec("Active");
-        spec.setContent(R.id.tab2);
+        spec.setContent(R.id.tab1);
         spec.setIndicator("Accepted");
         host.addTab(spec);
 
@@ -423,8 +424,19 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             {
                 ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
                 Bundle bundle = new Bundle();
+
                 bundle.putSerializable("Job", adapterActiveJobs.mData.get(position));
                 bundle.putSerializable("JobId", adapterActiveJobs.mDataKeys.get(position));
+
+                // setting selected
+//                adapterActiveJobs.mData.get(position).setIsSelected(true);
+//                adapterActiveJobs.notifyDataSetChanged();
+
+                MyJobsFragment.MyCustomAdapter adapterActiveJobsNew = createNewCustomAdapter(jobListActive);
+                adapterActiveJobsNew.mData.get(position).setIsSelected(true);
+                mAdapterAccepted = adapterActiveJobsNew;
+                jobListViewMyAcJobs.setAdapter(adapterActiveJobsNew);
+
                 activeJobDetailsFragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
             }
@@ -447,9 +459,22 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display in the ListView
-        MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
+        final MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
         mAdapterCompleted = adapterCompletedJobs;
         jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
+
+        jobListViewMyComJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+            {
+                BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Job", adapterCompletedJobs.mData.get(position));
+                bidDetailsFragment.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
+            }
+        });
     }
 
     @Override
@@ -465,11 +490,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         mAdapterAccepted.filter(newText);
         mAdapterCompleted.filter(newText);
         return false;
-    }
-
-    private interface OnFragmentInteractionListener
-    {
-        void onFragmentInteraction(Uri uri);
     }
 
     public class MyCustomAdapter extends BaseAdapter
@@ -534,67 +554,134 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         @Override
+        public void registerDataSetObserver(DataSetObserver observer)
+        {
+
+        }
+
+        @Override
+        public void unregisterDataSetObserver(DataSetObserver observer)
+        {
+
+        }
+
+        public void updateData(ArrayList<JobInformation> updatedData)
+        {
+            mData.clear();
+            mData = updatedData;
+            this.notifyDataSetChanged();
+        }
+
+        @Override
+        public boolean areAllItemsEnabled()
+        {
+            return false;
+        }
+
+        @Override
+        public boolean isEmpty()
+        {
+            return false;
+        }
+
+        @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
-            // Completed Jobs
-            MyJobsFragment.MyCustomAdapter.GroupViewHolderName holder;
-
-            // Bid On & Accepted Jobs
-            MyJobsFragment.MyCustomAdapter.GroupViewHolder holder2;
+            // Bid on holder
+            MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn holderBidOn;
+            // Accepted holder
+            final MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted holderAccepted;
+            // Completed holder
+            MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted holderCompleted;
 
             if (convertView == null)
             {
-                // Completed Jobs
-                if (host.getCurrentTab() == 2)
+                // Bid on
+                if (host.getCurrentTab() == 0)
+                {
+                    convertView = mInflater.inflate(R.layout.job_info_bid_on, null);
+                    holderBidOn = new MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn();
+
+                    holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
+
+                    holderBidOn.textViewJobName.setText(mData.get(position).getAdvertName());
+                    holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
+
+                    convertView.setTag(holderBidOn);
+                }
+                // Accepted
+                else if (host.getCurrentTab() == 1)
+                {
+                    convertView = mInflater.inflate(R.layout.job_info_accepted, null);
+                    holderAccepted = new MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted();
+
+                    holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
+
+                    holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
+                    holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
+
+                    // Link to answer someone gave me - https://stackoverflow.com/questions/49496786/change-textview-text-to-normal-after-the-object-has-been-pressed/49497350?noredirect=1#comment86002608_49497350
+                    // Font bold when unselected
+                    // When the user is selecting an item, title could be bold to begin with otherwise if previously selected it could be normal.
+                    if (mData.get(position).isSelected())
+                    {
+                        holderAccepted.textViewJobName.setTypeface(null, Typeface.NORMAL);
+                    }
+                    // font when the item has never been selected
+                    else
+                    {
+                        holderAccepted.textViewJobName.setTypeface(null, Typeface.BOLD);
+                    }
+
+                    // TODO - Was going to add the the users bid into this here, however it's difficult as the bid isnt stored in the jobs table
+                    // TODO - I tried to add it in, looped through the bids table and found the bids with the mDataKeys. But it always displayed the last value.
+
+                    convertView.setTag(holderAccepted);
+                }
+                // Completed
+                else if (host.getCurrentTab() == 2)
                 {
                     convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
 
-                    holder = new MyJobsFragment.MyCustomAdapter.GroupViewHolderName();
+                    holderCompleted = new MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted();
 
-                    holder.textViewJobName = convertView.findViewById(R.id.textName);
-                    holder.textViewJobName.setText(mData.get(position).getAdvertName());
+                    holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderCompleted.textViewJobName.setText(mData.get(position).getAdvertName());
 
-                    convertView.setTag(holder);
-                    // Bid On & Accepted Jobs
-                } else
-                {
-                    convertView = mInflater.inflate(R.layout.job_info_list, null);
-
-                    holder2 = new MyJobsFragment.MyCustomAdapter.GroupViewHolder();
-
-                    holder2.textViewName = convertView.findViewById(R.id.textName);
-                    holder2.textViewFrom = convertView.findViewById(R.id.textFrom);
-                    holder2.textViewTo = convertView.findViewById(R.id.textTo);
-
-                    holder2.textViewName.setText(mData.get(position).getAdvertName());
-                    holder2.textViewFrom.setText(mData.get(position).getColL1());
-                    holder2.textViewTo.setText(mData.get(position).getDelL1());
-
-                    convertView.setTag(holder2);
+                    convertView.setTag(holderCompleted);
                 }
             } else
             {
-                if(host.getCurrentTab() == 2)
+                if (host.getCurrentTab() == 0)
                 {
-                    holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolderName) convertView.getTag();
-                }
-                else
+                    holderBidOn = (MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn) convertView.getTag();
+                } else if (host.getCurrentTab() == 1)
                 {
-                    holder2 = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
+                    holderAccepted = (MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted) convertView.getTag();
+                } else if (host.getCurrentTab() == 2)
+                {
+                    holderCompleted = (MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted) convertView.getTag();
                 }
             }
 
             return convertView;
         }
 
-        public class GroupViewHolder
+        public class GroupViewHolderBidOn
         {
-            public TextView textViewName;
-            public TextView textViewFrom;
-            public TextView textViewTo;
+            public TextView textViewJobName;
+            public TextView textViewJobDescription;
         }
 
-        public class GroupViewHolderName
+        public class GroupViewHolderAccepted
+        {
+            public TextView textViewJobName;
+            public TextView textViewDescription;
+        }
+
+        public class GroupViewHolderCompleted
         {
             public TextView textViewJobName;
         }
