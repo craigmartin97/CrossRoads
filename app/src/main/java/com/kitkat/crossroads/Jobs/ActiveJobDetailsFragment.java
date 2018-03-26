@@ -207,8 +207,6 @@ public class ActiveJobDetailsFragment extends Fragment {
                 mClearButton.setEnabled(true);
                 mJobCompleteButton.setBackgroundColor(Color.parseColor("#2bbc9b"));
                 mClearButton.setBackgroundColor(Color.parseColor("#2bbc9b"));
-
-
             }
 
             @Override

@@ -25,7 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.ExternalClasses.MyCustomAdapter;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -38,8 +37,6 @@ import java.util.Locale;
  */
 public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextListener
 {
-    private OnFragmentInteractionListener mListener;
-
     /**
      * FirebaseAuth, create a connection to the Firebase Authentication table
      */
@@ -80,13 +77,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private final ArrayList<String> jobListKey = new ArrayList<>();
 
+    private ArrayList<String> arrayList = new ArrayList<>();
+
     private SearchView jobSearchBidOn, jobSearchAccepted, jobSearchCompleted;
     private TabHost host;
     private String tabTag;
 
     private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
-
-    private com.kitkat.crossroads.ExternalClasses.MyCustomAdapter myCustomAdapter;
 
     /**
      * OnCreate is called on the creation of Fragment to create a new
@@ -184,13 +181,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         //Bid On Tab
         TabHost.TabSpec spec = host.newTabSpec("Bid On");
-        spec.setContent(R.id.tab1);
+        spec.setContent(R.id.tab2);
         spec.setIndicator("Bid On");
         host.addTab(spec);
 
         //Active Tab
         spec = host.newTabSpec("Active");
-        spec.setContent(R.id.tab2);
+        spec.setContent(R.id.tab1);
         spec.setIndicator("Accepted");
         host.addTab(spec);
 
@@ -467,11 +464,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         return false;
     }
 
-    private interface OnFragmentInteractionListener
-    {
-        void onFragmentInteraction(Uri uri);
-    }
-
     public class MyCustomAdapter extends BaseAdapter
     {
         private ArrayList<JobInformation> mData = new ArrayList<>();
@@ -536,65 +528,85 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
-            // Completed Jobs
-            MyJobsFragment.MyCustomAdapter.GroupViewHolderName holder;
-
-            // Bid On & Accepted Jobs
-            MyJobsFragment.MyCustomAdapter.GroupViewHolder holder2;
+            // Bid on holder
+            MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn holderBidOn;
+            // Accepted holder
+            final MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted holderAccepted;
+            // Completed holder
+            MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted holderCompleted;
 
             if (convertView == null)
             {
-                // Completed Jobs
-                if (host.getCurrentTab() == 2)
+                // Bid on
+                if (host.getCurrentTab() == 0)
+                {
+                    convertView = mInflater.inflate(R.layout.job_info_bid_on, null);
+                    holderBidOn = new MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn();
+
+                    holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
+
+                    holderBidOn.textViewJobName.setText(mData.get(position).getAdvertName());
+                    holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
+
+                    convertView.setTag(holderBidOn);
+                }
+                // Accepted
+                else if (host.getCurrentTab() == 1)
+                {
+                    convertView = mInflater.inflate(R.layout.job_info_accepted, null);
+                    holderAccepted = new MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted();
+
+                    holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
+
+                    holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
+                    holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
+
+                    convertView.setTag(holderAccepted);
+                }
+                // Completed
+                else if (host.getCurrentTab() == 2)
                 {
                     convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
 
-                    holder = new MyJobsFragment.MyCustomAdapter.GroupViewHolderName();
+                    holderCompleted = new MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted();
 
-                    holder.textViewJobName = convertView.findViewById(R.id.textName);
-                    holder.textViewJobName.setText(mData.get(position).getAdvertName());
+                    holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderCompleted.textViewJobName.setText(mData.get(position).getAdvertName());
 
-                    convertView.setTag(holder);
-                    // Bid On & Accepted Jobs
-                } else
-                {
-                    convertView = mInflater.inflate(R.layout.job_info_list, null);
-
-                    holder2 = new MyJobsFragment.MyCustomAdapter.GroupViewHolder();
-
-                    holder2.textViewName = convertView.findViewById(R.id.textName);
-                    holder2.textViewFrom = convertView.findViewById(R.id.textFrom);
-                    holder2.textViewTo = convertView.findViewById(R.id.textTo);
-
-                    holder2.textViewName.setText(mData.get(position).getAdvertName());
-                    holder2.textViewFrom.setText(mData.get(position).getColL1());
-                    holder2.textViewTo.setText(mData.get(position).getDelL1());
-
-                    convertView.setTag(holder2);
+                    convertView.setTag(holderCompleted);
                 }
             } else
             {
-                if(host.getCurrentTab() == 2)
+                if (host.getCurrentTab() == 0)
                 {
-                    holder = (MyJobsFragment.MyCustomAdapter.GroupViewHolderName) convertView.getTag();
-                }
-                else
+                    holderBidOn = (MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn) convertView.getTag();
+                } else if (host.getCurrentTab() == 1)
                 {
-                    holder2 = (MyJobsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
+                    holderAccepted = (MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted) convertView.getTag();
+                } else if (host.getCurrentTab() == 2)
+                {
+                    holderCompleted = (MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted) convertView.getTag();
                 }
             }
 
             return convertView;
         }
 
-        public class GroupViewHolder
+        public class GroupViewHolderBidOn
         {
-            public TextView textViewName;
-            public TextView textViewFrom;
-            public TextView textViewTo;
+            public TextView textViewJobName;
+            public TextView textViewJobDescription;
         }
 
-        public class GroupViewHolderName
+        public class GroupViewHolderAccepted
+        {
+            public TextView textViewJobName;
+            public TextView textViewDescription;
+        }
+
+        public class GroupViewHolderCompleted
         {
             public TextView textViewJobName;
         }
