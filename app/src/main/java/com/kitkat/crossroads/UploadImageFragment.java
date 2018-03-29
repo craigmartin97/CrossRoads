@@ -228,8 +228,10 @@ public class UploadImageFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        // Get the current user
         final FirebaseUser user = auth.getCurrentUser();
 
+        // Redirect user to there gallery and get them to select an image
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
             progressDialog = new ProgressDialog(getActivity());
@@ -242,6 +244,11 @@ public class UploadImageFragment extends Fragment
         }
     }
 
+    /**
+     * Setting image that has been selected and turning it into a bitmap.
+     * Putting it into an input scream and sending it to be modified
+     * @param uri
+     */
     public void setUpImageTransfer(Uri uri)
     {
         progressDialog.dismiss();
@@ -257,6 +264,14 @@ public class UploadImageFragment extends Fragment
         }
     }
 
+    /**
+     * Send the image to be rotated dependant upon its needs
+     *
+     * @param bitmap
+     * @param image_absolute_path
+     * @return
+     * @throws IOException
+     */
     public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException
     {
         android.support.media.ExifInterface exifInterface = new android.support.media.ExifInterface(image_absolute_path);
@@ -283,6 +298,13 @@ public class UploadImageFragment extends Fragment
         }
     }
 
+    /**
+     * If the uploaded image needed to be rotated
+     *
+     * @param bitmap
+     * @param degrees
+     * @return
+     */
     public static Bitmap rotate(Bitmap bitmap, float degrees)
     {
         Matrix matrix = new Matrix();
@@ -297,11 +319,26 @@ public class UploadImageFragment extends Fragment
         return bitmap1;
     }
 
+    /**
+     * If the uploaded image needed to be flipped
+     *
+     * @param bitmap
+     * @param horizontal
+     * @param vertical
+     * @return
+     */
     public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical)
     {
         Matrix matrix = new Matrix();
         matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        profileImage.setImageBitmap(bitmap1);
+
+        profileImage.buildDrawingCache();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        data = byteArrayOutputStream.toByteArray();
+        return bitmap1;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

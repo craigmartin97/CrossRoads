@@ -428,10 +428,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 bundle.putSerializable("Job", adapterActiveJobs.mData.get(position));
                 bundle.putSerializable("JobId", adapterActiveJobs.mDataKeys.get(position));
 
-                // setting selected
-//                adapterActiveJobs.mData.get(position).setIsSelected(true);
-//                adapterActiveJobs.notifyDataSetChanged();
-
                 MyJobsFragment.MyCustomAdapter adapterActiveJobsNew = createNewCustomAdapter(jobListActive);
                 adapterActiveJobsNew.mData.get(position).setIsSelected(true);
                 mAdapterAccepted = adapterActiveJobsNew;
