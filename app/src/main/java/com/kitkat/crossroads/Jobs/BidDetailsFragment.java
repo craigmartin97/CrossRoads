@@ -120,7 +120,11 @@ public class BidDetailsFragment extends Fragment
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
-        setJobInformationDetails(jobInformation);
+
+        final String user = auth.getCurrentUser().getUid().trim();
+        final String jobId = jobInformation.getJobID().toString().trim();
+
+        setJobInformationDetails(jobInformation, jobId, user);
 
         addItemsCollection();
         addItemsDelivery();
@@ -176,7 +180,7 @@ public class BidDetailsFragment extends Fragment
                 }
                 else
                 {
-                    submitBid(jobInformation);
+                    submitBid(jobId, user);
                 }
             }
         });
@@ -202,14 +206,10 @@ public class BidDetailsFragment extends Fragment
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
     }
 
-    private void submitBid(JobInformation jobInformation)
+    private void submitBid(String jobId, String user)
     {
         String userBid = editTextEditBid.getText().toString().trim();
-        String user = auth.getCurrentUser().getUid();
-        String jobId = jobInformation.getJobID().toString().trim();
-
         BidInformation bidInformation = new BidInformation(user, userBid);
-
         databaseReference.child("Bids").child(jobId).child(user).setValue(bidInformation);
     }
 
@@ -219,11 +219,27 @@ public class BidDetailsFragment extends Fragment
      *
      * @param jobInformation - Information passed from a bundle that contains that Job Information
      */
-    private void setJobInformationDetails(JobInformation jobInformation)
+    private void setJobInformationDetails(JobInformation jobInformation, String jobId, String user)
     {
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
+
+        databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                String userBid = dataSnapshot.child("userBid").getValue(String.class);
+                editTextEditBid.setText(userBid);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
 
         // Storing information in variables for later use
         colDate = jobInformation.getCollectionDate().toString();
