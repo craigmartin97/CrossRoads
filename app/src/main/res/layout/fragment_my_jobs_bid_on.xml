@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.kitkat.crossroads.Jobs.JobBidsFragment">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,9 +24,10 @@
                     android:id="@+id/textViewJobInformation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
                     android:fontFamily="@font/bebasneueregular"
                     android:paddingTop="10dp"
-                    android:text="Job Information"
+                    android:text="My Completed Jobs"
                     android:textAlignment="center"
                     android:textSize="30dp"
                     tools:layout_editor_absoluteX="163dp" />
@@ -33,7 +35,11 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/customborderrounded">
 
                     <ImageView
                         android:id="@+id/imageView"
@@ -41,37 +47,35 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="27dp"
-                        android:layout_marginTop="14dp"
                         android:src="@drawable/selfie" />
 
                     <TextView
                         android:id="@+id/textViewJobName1"
-                        android:layout_width="100dp"
-                        android:textSize="18sp"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignTop="@+id/imageView"
                         android:layout_marginStart="29dp"
-                        android:layout_marginTop="40dp"
+                        android:layout_marginTop="21dp"
                         android:layout_toEndOf="@+id/imageView"
-                        android:text="JobName Here" />
+                        android:text="JobName Here"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/textViewJobDescription1"
-                        android:layout_width="100dp"
-                        android:textSize="14sp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
-                        android:layout_marginTop="26dp"
-                        android:text="JobDescription Here" />
+                        android:layout_marginTop="16dp"
+                        android:text="JobDescription Here"
+                        android:textSize="14sp" />
 
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view3"
@@ -83,8 +87,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view"
@@ -96,8 +100,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view2"
@@ -109,19 +113,28 @@
 
                 </ExpandableListView>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:background="@drawable/customborderrounded"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20sp"
+                android:layout_marginRight="20sp"
+                android:layout_marginLeft="20sp"
+                android:layout_marginBottom="20sp">
 
                 <EditText
                     android:id="@+id/editBid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="49dp"
+                    android:layout_marginEnd="34dp"
                     android:layout_toStartOf="@+id/buttonEditBid"
                     android:hint="Your Bid"
                     android:textSize="18sp" />
@@ -131,9 +144,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignTop="@+id/editBid"
-                    android:layout_marginEnd="71dp"
-                    android:text="Submit Bid" />
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="35dp"
+                    android:background="#2bbc9b"
+                    android:padding="15sp"
+                    android:text="Submit New Bid"
+                    android:textColor="#FFFFFF" />
 
             </RelativeLayout>
         </LinearLayout>

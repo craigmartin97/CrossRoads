@@ -86,6 +86,8 @@ public class MyCompletedJobs extends Fragment
      */
     private FirebaseAuth auth;
 
+    private String jobId;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -111,10 +113,7 @@ public class MyCompletedJobs extends Fragment
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
 
-        final String user = auth.getCurrentUser().getUid().trim();
-        final String jobId = jobInformation.getJobID().toString().trim();
-
-        setJobInformationDetails(jobInformation, jobId, user);
+        setJobInformationDetails(jobInformation);
 
         addItemsCollection();
         addItemsDelivery();
@@ -183,19 +182,19 @@ public class MyCompletedJobs extends Fragment
      *
      * @param jobInformation - Information passed from a bundle that contains that Job Information
      */
-    private void setJobInformationDetails(JobInformation jobInformation, String jobId, String user)
+    private void setJobInformationDetails(JobInformation jobInformation)
     {
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
 
-        databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
+        databaseReference.child("Bids").child(jobId).child(databaseConnections.getCurrentUser()).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
-                textViewUsersBid.setText(userBid);
+                textViewUsersBid.setText("Agreed Fee:       £" + userBid);
             }
 
             @Override
@@ -226,6 +225,7 @@ public class MyCompletedJobs extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
+        jobId = (String) bundle.getSerializable("JobId");
         return (JobInformation) bundle.getSerializable("Job");
     }
 

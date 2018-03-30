@@ -1,13 +1,8 @@
 package com.kitkat.crossroads.Jobs;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.CrossRoads;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.R;
@@ -122,12 +114,12 @@ public class BidDetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.info_list_my_bids_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_jobs_bid_on, container, false);
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
 
-        setJobInformationDetails(jobInformation, jobId);
+        setJobInformationDetails(jobInformation);
 
         addItemsCollection();
         addItemsDelivery();
@@ -222,7 +214,7 @@ public class BidDetailsFragment extends Fragment
      *
      * @param jobInformation - Information passed from a bundle that contains that Job Information
      */
-    private void setJobInformationDetails(JobInformation jobInformation, String jobId)
+    private void setJobInformationDetails(JobInformation jobInformation)
     {
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
@@ -266,8 +258,7 @@ public class BidDetailsFragment extends Fragment
     {
         Bundle bundle = getArguments();
         jobId = (String) bundle.getSerializable("JobId");
-        JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
-        return jobInformation;
+        return (JobInformation) bundle.getSerializable("Job");
     }
 
     /**
