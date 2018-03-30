@@ -80,14 +80,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      * Stores the jobs key
      */
     private final ArrayList<String> jobListKey = new ArrayList<>();
+    private final ArrayList<String> jobListKeyActive = new ArrayList<>();
+    private final ArrayList<String> jobListKeyComplete = new ArrayList<>();
+
 
     private SearchView jobSearchBidOn, jobSearchAccepted, jobSearchCompleted;
     private TabHost host;
     private String tabTag;
 
     private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
-
-    private TextView text;
 
     /**
      * OnCreate is called on the creation of Fragment to create a new
@@ -369,12 +370,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             */
             if (jobsListArray.contains(ds3.getKey()) && getJobInformation(ds3).getJobStatus().equals("Pending"))
             {
+                jobListKey.add(ds3.getKey());
                 jobList.add(getJobInformation(ds3));
             }
         }
 
         // Display information in ListView
         final MyJobsFragment.MyCustomAdapter adapter = createNewCustomAdapter(jobList);
+        adapter.addKeyArray(jobListKey);
         mAdapterBidOn = adapter;
         jobListViewBidOn.setAdapter(adapter);
 
@@ -387,6 +390,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Job", adapter.mData.get(position));
+                bundle.putSerializable("JobId", adapter.mDataKeys.get(position));
                 bidDetailsFragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
             }
@@ -405,14 +409,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             if (getJobInformation(ds4).getJobStatus().equals("Active") && getJobInformation(ds4).getCourierID().equals(auth.getCurrentUser().getUid()))
             {
                 // Add the key and information
-                jobListKey.add(ds4.getKey());
+                jobListKeyActive.add(ds4.getKey());
                 jobListActive.add(getJobInformation(ds4));
             }
         }
 
         // Display the Job in the ListView
         final MyJobsFragment.MyCustomAdapter adapterActiveJobs = createNewCustomAdapter(jobListActive);
-        adapterActiveJobs.addKeyArray(jobListKey);
+        adapterActiveJobs.addKeyArray(jobListKeyActive);
         mAdapterAccepted = adapterActiveJobs;
         jobListViewMyAcJobs.setAdapter(adapterActiveJobs);
 
@@ -442,12 +446,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             // If the status if complete and the current users job
             if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
             {
+                jobListKeyComplete.add(ds5.getKey());
                 jobListComplete.add(getJobInformation(ds5));
             }
         }
 
         // Display in the ListView
         final MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
+        adapterCompletedJobs.addKeyArray(jobListKeyComplete);
         mAdapterCompleted = adapterCompletedJobs;
         jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
 
@@ -456,11 +462,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
             {
-                BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+                MyCompletedJobs myCompletedJobs = new MyCompletedJobs();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Job", adapterCompletedJobs.mData.get(position));
-                bidDetailsFragment.setArguments(bundle);
-                getFragmentManager().beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
+                bundle.putSerializable("JobId", adapterCompletedJobs.mDataKeys.get(position));
+                myCompletedJobs.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.content, myCompletedJobs).addToBackStack("tag").commit();
             }
         });
     }

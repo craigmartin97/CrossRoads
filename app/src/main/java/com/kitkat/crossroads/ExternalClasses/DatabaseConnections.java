@@ -16,39 +16,29 @@ import com.google.firebase.storage.StorageReference;
 public class DatabaseConnections extends AppCompatActivity
 {
     private FirebaseAuth auth;
-    private DatabaseReference databaseReference;
-    private DatabaseReference myRef;
-    private FirebaseUser user;
-    private StorageReference storageReference;
 
     public FirebaseAuth getAuth()
     {
-        auth = FirebaseAuth.getInstance();
-        return auth;
+        return FirebaseAuth.getInstance();
     }
 
     public DatabaseReference getDatabaseReference()
     {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        return databaseReference;
+        return FirebaseDatabase.getInstance().getReference();
     }
 
     public DatabaseReference getMyRef()
     {
-        myRef = FirebaseDatabase.getInstance().getReference();
-        return myRef;
-    }
-
-    public FirebaseUser getUser()
-    {
-        auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        return user;
+        return FirebaseDatabase.getInstance().getReference();
     }
 
     public StorageReference getStorageReference()
     {
-        storageReference = FirebaseStorage.getInstance().getReference();
-        return storageReference;
+        return FirebaseStorage.getInstance().getReference();
+    }
+
+    public String getCurrentUser()
+    {
+        return getAuth().getCurrentUser().getUid();
     }
 }

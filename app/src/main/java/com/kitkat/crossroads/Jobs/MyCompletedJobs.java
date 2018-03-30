@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,17 +38,12 @@ import java.util.List;
  * They can also view their bid they made and edit that bid.
  * They can also delete the bid from here as well.
  */
-public class BidDetailsFragment extends Fragment
+public class MyCompletedJobs extends Fragment
 {
     /**
      * Text Views to display the jobs name and description
      */
-    private TextView jobName, jobDescription;
-
-    /**
-     * Edit view for editing the users bid
-     */
-    private EditText editTextEditBid;
+    private TextView jobName, jobDescription, textViewUsersBid;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -92,16 +86,6 @@ public class BidDetailsFragment extends Fragment
      */
     private FirebaseAuth auth;
 
-    /**
-     * Button to submit a new bid
-     */
-    private Button buttonEditBid;
-
-    /**
-     * Access the jobId the user pressed on
-     */
-    private String jobId;
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -122,12 +106,15 @@ public class BidDetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.info_list_my_bids_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_completed_jobs, container, false);
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
 
-        setJobInformationDetails(jobInformation, jobId);
+        final String user = auth.getCurrentUser().getUid().trim();
+        final String jobId = jobInformation.getJobID().toString().trim();
+
+        setJobInformationDetails(jobInformation, jobId, user);
 
         addItemsCollection();
         addItemsDelivery();
@@ -171,24 +158,6 @@ public class BidDetailsFragment extends Fragment
             }
         });
 
-        buttonEditBid.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if(TextUtils.isEmpty(editTextEditBid.getText()))
-                {
-                    Toast.makeText(getActivity(), "Enter a bid!!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                else
-                {
-                    submitBid(jobId, databaseConnections.getCurrentUser());
-                }
-            }
-        });
-
-
         return view;
     }
 
@@ -201,19 +170,11 @@ public class BidDetailsFragment extends Fragment
     {
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        editTextEditBid = (EditText) view.findViewById(R.id.editBid);
-        buttonEditBid = (Button) view.findViewById(R.id.buttonEditBid);
+        textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
-    }
-
-    private void submitBid(String jobId, String user)
-    {
-        String userBid = editTextEditBid.getText().toString().trim();
-        BidInformation bidInformation = new BidInformation(user, userBid);
-        databaseReference.child("Bids").child(jobId).child(user).setValue(bidInformation);
     }
 
     /**
@@ -222,19 +183,19 @@ public class BidDetailsFragment extends Fragment
      *
      * @param jobInformation - Information passed from a bundle that contains that Job Information
      */
-    private void setJobInformationDetails(JobInformation jobInformation, String jobId)
+    private void setJobInformationDetails(JobInformation jobInformation, String jobId, String user)
     {
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
 
-        databaseReference.child("Bids").child(jobId).child(databaseConnections.getCurrentUser()).addValueEventListener(new ValueEventListener()
+        databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
-                editTextEditBid.setText(userBid);
+                textViewUsersBid.setText(userBid);
             }
 
             @Override
@@ -265,9 +226,7 @@ public class BidDetailsFragment extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable("JobId");
-        JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
-        return jobInformation;
+        return (JobInformation) bundle.getSerializable("Job");
     }
 
     /**

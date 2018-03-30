@@ -50,7 +50,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private FirebaseAuth auth;
     private DatabaseReference myRef;
     private StorageReference storageReference;
-    private FirebaseUser user;
+    private String user;
 
     private DatabaseConnections databaseConnections = new DatabaseConnections();
 
@@ -295,7 +295,7 @@ public class CreateProfileActivity extends AppCompatActivity
     {
         auth = databaseConnections.getAuth();
         myRef = databaseConnections.getMyRef();
-        user = databaseConnections.getUser();
+        user = databaseConnections.getCurrentUser();
         storageReference = databaseConnections.getStorageReference();
 
         if (auth.getCurrentUser() == null)
@@ -307,7 +307,7 @@ public class CreateProfileActivity extends AppCompatActivity
 
     private void uploadUsersProfileImage()
     {
-        final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(imageUri.getLastPathSegment());
+        final StorageReference filePath = storageReference.child("Images").child(user).child(imageUri.getLastPathSegment());
         filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
         {
             @Override
@@ -315,7 +315,7 @@ public class CreateProfileActivity extends AppCompatActivity
             {
                 customToastMessage("Profile Image Uploaded Successfully");
                 Uri downloadUri = taskSnapshot.getDownloadUrl();
-                myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
+                myRef.child("Users").child(user).child("profileImage").setValue(downloadUri.toString());
                 dismissDialog();
             }
         }).addOnFailureListener(new OnFailureListener()
