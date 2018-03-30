@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.kitkat.crossroads.Jobs.JobBidsFragment">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,45 +34,47 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/customborderrounded">
 
                     <ImageView
                         android:id="@+id/imageView"
                         android:layout_width="180dp"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="27dp"
-                        android:layout_marginTop="14dp"
                         android:src="@drawable/selfie" />
 
                     <TextView
                         android:id="@+id/textViewJobName1"
                         android:layout_width="100dp"
-                        android:textSize="18sp"
                         android:layout_height="match_parent"
                         android:layout_alignTop="@+id/imageView"
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="40dp"
                         android:layout_toEndOf="@+id/imageView"
-                        android:text="JobName Here" />
+                        android:text="JobName Here"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/textViewJobDescription1"
                         android:layout_width="100dp"
-                        android:textSize="14sp"
                         android:layout_height="match_parent"
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
                         android:layout_marginTop="26dp"
-                        android:text="JobDescription Here" />
+                        android:text="JobDescription Here"
+                        android:textSize="14sp" />
 
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view3"
@@ -83,8 +86,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view"
@@ -96,8 +99,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view2"
@@ -107,34 +110,36 @@
                     android:dividerHeight="3dp"
                     android:pointerIcon="arrow"></ExpandableListView>
 
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
             </LinearLayout>
 
-
             <RelativeLayout
+                android:id="@+id/signature_pad_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/buttons_container"
-                android:id="@+id/signature_pad_container"
-                >
+                android:layout_marginTop="20sp">
 
                 <FrameLayout
+                    android:id="@+id/frameLayout"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_marginBottom="0dp"
                     android:layout_above="@+id/signature_pad_description"
-                    android:id="@+id/frameLayout" />
+                    android:layout_marginBottom="0dp"
+                    android:background="@android:color/darker_gray" />
 
                 <TextView
                     android:id="@+id/signature_pad_description"
                     android:layout_width="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/darker_gray"
-                    android:layout_marginBottom="0dp"
                     android:layout_alignParentBottom="true"
-                    android:text="Signature" />
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="0dp"
+                    android:text="Signature"
+                    android:textColor="@android:color/darker_gray" />
 
                 <com.github.gcacace.signaturepad.views.SignaturePad
                     android:id="@+id/signature_pad"
@@ -142,36 +147,36 @@
                     android:layout_height="80dp"
                     android:layout_alignParentStart="true"
                     android:layout_below="@+id/frameLayout"
-                    android:background="@drawable/custombordertransparent"/>
+                    android:background="@drawable/custombordertransparent" />
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/buttons_container"
-                android:paddingTop="5dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:orientation="horizontal"
-                android:layout_alignParentBottom="true">
+                android:paddingTop="5dp">
 
                 <Button
                     android:id="@+id/clear_button"
                     android:layout_width="0dp"
-                    android:background="#FFFFFF"
-                    android:textColor="#FFFFFF"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF"
+                    android:enabled="false"
                     android:text="Clear"
-                    android:enabled="false" />
+                    android:textColor="#FFFFFF" />
 
                 <Button
                     android:id="@+id/job_complete_button"
-                    android:background="#FFFFFF"
-                    android:textColor="#FFFFFF"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF"
+                    android:enabled="false"
                     android:text="Job Complete"
-                    android:enabled="false" />
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
 
 
