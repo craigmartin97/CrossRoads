@@ -416,7 +416,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         mAdapterAccepted = adapterActiveJobs;
         jobListViewMyAcJobs.setAdapter(adapterActiveJobs);
 
-        // Press the object and display the information and sign the job of with signature pad
         jobListViewMyAcJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -424,15 +423,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             {
                 ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
                 Bundle bundle = new Bundle();
-
                 bundle.putSerializable("Job", adapterActiveJobs.mData.get(position));
                 bundle.putSerializable("JobId", adapterActiveJobs.mDataKeys.get(position));
-
-                MyJobsFragment.MyCustomAdapter adapterActiveJobsNew = createNewCustomAdapter(jobListActive);
-                adapterActiveJobsNew.mData.get(position).setIsSelected(true);
-                mAdapterAccepted = adapterActiveJobsNew;
-                jobListViewMyAcJobs.setAdapter(adapterActiveJobsNew);
-
                 activeJobDetailsFragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
             }
@@ -561,13 +553,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         }
 
-        public void updateData(ArrayList<JobInformation> updatedData)
-        {
-            mData.clear();
-            mData = updatedData;
-            this.notifyDataSetChanged();
-        }
-
         @Override
         public boolean areAllItemsEnabled()
         {
@@ -617,19 +602,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                     holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
                     holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
-
-                    // Link to answer someone gave me - https://stackoverflow.com/questions/49496786/change-textview-text-to-normal-after-the-object-has-been-pressed/49497350?noredirect=1#comment86002608_49497350
-                    // Font bold when unselected
-                    // When the user is selecting an item, title could be bold to begin with otherwise if previously selected it could be normal.
-                    if (mData.get(position).isSelected())
-                    {
-                        holderAccepted.textViewJobName.setTypeface(null, Typeface.NORMAL);
-                    }
-                    // font when the item has never been selected
-                    else
-                    {
-                        holderAccepted.textViewJobName.setTypeface(null, Typeface.BOLD);
-                    }
 
                     // TODO - Was going to add the the users bid into this here, however it's difficult as the bid isnt stored in the jobs table
                     // TODO - I tried to add it in, looped through the bids table and found the bids with the mDataKeys. But it always displayed the last value.

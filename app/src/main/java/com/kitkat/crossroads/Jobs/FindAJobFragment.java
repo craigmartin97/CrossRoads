@@ -125,8 +125,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         sortBySpinner = view.findViewById(R.id.sortBySpinner);
 
-
-
         filterApplyButton = view.findViewById(R.id.filterApplyButton);
         filterClearButton = view.findViewById(R.id.filterClearButton);
         filterName = view.findViewById(R.id.edittextFilterName);
@@ -134,9 +132,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         filterColTime = view.findViewById(R.id.editTextFilterColTime);
         filterColFrom = view.findViewById(R.id.editTextFilterColFrom);
         filterDelTo = view.findViewById(R.id.editTextFilterDelTo);
-
-
-
 
         String[] sortBy = new String[]{
                 "Sort By",

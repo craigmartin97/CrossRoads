@@ -260,7 +260,9 @@ public class JobDetailsFragment extends Fragment
 
         BidInformation bidInformation = new BidInformation(userID, userBid);
 
-        databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
+        databaseReference.child("Bids").child(jobID).child(userID).setValue(bidInformation);
+
+//        databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
 
         startActivity(new Intent(getActivity(), CrossRoads.class));
     }

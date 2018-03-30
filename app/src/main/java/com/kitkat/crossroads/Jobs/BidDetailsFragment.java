@@ -46,6 +46,11 @@ public class BidDetailsFragment extends Fragment
     private TextView jobName, jobDescription;
 
     /**
+     * Edit view for editing the users bid
+     */
+    private EditText editTextEditBid;
+
+    /**
      * Strings to store the jobs information passed in by a bundle
      */
     private String colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize;
@@ -71,10 +76,32 @@ public class BidDetailsFragment extends Fragment
      */
     ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
 
+    /**
+     * Accessing database connections to Firebase auth, database and storage
+     */
+    private DatabaseConnections databaseConnections = new DatabaseConnections();
+
+    /**
+     * Creating variable to store the connection to the Firebase Database
+     */
+    private DatabaseReference databaseReference;
+
+    /**
+     * Creating reference to storage the Firebase authentication connection
+     */
+    private FirebaseAuth auth;
+
+    /**
+     * Button to submit a new bid
+     */
+    private Button buttonEditBid;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        databaseReference = databaseConnections.getDatabaseReference();
+        auth = databaseConnections.getAuth();
     }
 
     /**
@@ -137,6 +164,24 @@ public class BidDetailsFragment extends Fragment
             }
         });
 
+        buttonEditBid.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if(TextUtils.isEmpty(editTextEditBid.getText()))
+                {
+                    Toast.makeText(getActivity(), "Enter a bid!!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else
+                {
+                    submitBid(jobInformation);
+                }
+            }
+        });
+
+
         return view;
     }
 
@@ -149,10 +194,23 @@ public class BidDetailsFragment extends Fragment
     {
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
+        editTextEditBid = (EditText) view.findViewById(R.id.editBid);
+        buttonEditBid = (Button) view.findViewById(R.id.buttonEditBid);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
+    }
+
+    private void submitBid(JobInformation jobInformation)
+    {
+        String userBid = editTextEditBid.getText().toString().trim();
+        String user = auth.getCurrentUser().getUid();
+        String jobId = jobInformation.getJobID().toString().trim();
+
+        BidInformation bidInformation = new BidInformation(user, userBid);
+
+        databaseReference.child("Bids").child(jobId).child(user).setValue(bidInformation);
     }
 
     /**
