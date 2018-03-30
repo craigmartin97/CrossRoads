@@ -1,6 +1,5 @@
 package com.kitkat.crossroads.Profile;
 
-import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -25,14 +24,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.MyFirebaseInstanceIDService;
 import com.kitkat.crossroads.R;
 
 import java.io.ByteArrayOutputStream;
@@ -50,7 +45,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private FirebaseAuth auth;
     private DatabaseReference myRef;
     private StorageReference storageReference;
-    private FirebaseUser user;
+    private String user;
 
     private DatabaseConnections databaseConnections = new DatabaseConnections();
 
@@ -295,7 +290,7 @@ public class CreateProfileActivity extends AppCompatActivity
     {
         auth = databaseConnections.getAuth();
         myRef = databaseConnections.getMyRef();
-        user = databaseConnections.getUser();
+        user = databaseConnections.getCurrentUser();
         storageReference = databaseConnections.getStorageReference();
 
         if (auth.getCurrentUser() == null)
@@ -307,7 +302,7 @@ public class CreateProfileActivity extends AppCompatActivity
 
     private void uploadUsersProfileImage()
     {
-        final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(imageUri.getLastPathSegment());
+        final StorageReference filePath = storageReference.child("Images").child(user).child(imageUri.getLastPathSegment());
         filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
         {
             @Override
@@ -315,7 +310,7 @@ public class CreateProfileActivity extends AppCompatActivity
             {
                 customToastMessage("Profile Image Uploaded Successfully");
                 Uri downloadUri = taskSnapshot.getDownloadUrl();
-                myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
+                myRef.child("Users").child(user).child("profileImage").setValue(downloadUri.toString());
                 dismissDialog();
             }
         }).addOnFailureListener(new OnFailureListener()

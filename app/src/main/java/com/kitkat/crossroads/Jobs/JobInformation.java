@@ -15,7 +15,6 @@ public class JobInformation implements Serializable
     private String advertName, advertDescription, jobSize, jobType, posterID, jobID, courierID, collectionDate, collectionTime;
     private String colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode;
     private String jobStatus;
-    private boolean isSelected;
 
     public JobInformation()
     {
@@ -42,8 +41,6 @@ public class JobInformation implements Serializable
         this.delPostcode = delPostcode;
         this.jobStatus = jobStatus;
     }
-
-
 
     public void setJobID(String jobID)
     {
@@ -144,16 +141,6 @@ public class JobInformation implements Serializable
 
     public String getJobStatus() {
         return jobStatus;
-    }
-
-    public boolean isSelected()
-    {
-        return isSelected;
-    }
-
-    public void setIsSelected(boolean isSelected)
-    {
-        this.isSelected = isSelected;
     }
 
     public String getWholeString()

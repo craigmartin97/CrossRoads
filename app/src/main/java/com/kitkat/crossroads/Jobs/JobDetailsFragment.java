@@ -22,7 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.CrossRoads;
+import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.R;
 
 
@@ -260,7 +260,7 @@ public class JobDetailsFragment extends Fragment
 
         BidInformation bidInformation = new BidInformation(userID, userBid);
 
-        databaseReference.child("Bids").child(jobID).push().setValue(bidInformation);
+        databaseReference.child("Bids").child(jobID).child(userID).setValue(bidInformation);
 
         startActivity(new Intent(getActivity(), CrossRoads.class));
     }

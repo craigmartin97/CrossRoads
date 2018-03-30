@@ -1,16 +1,7 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.MainActivity;
 
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -45,14 +36,9 @@ import com.kitkat.crossroads.Jobs.MyJobsFragment;
 import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
 import com.kitkat.crossroads.Profile.EditProfileFragment;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
+import com.kitkat.crossroads.R;
+import com.kitkat.crossroads.UploadImageFragment;
 import com.squareup.picasso.Picasso;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 
 public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {

@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.FirebaseMessagingServices;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,6 +14,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.kitkat.crossroads.R;
 
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
         Log.d(TAG, "Notification Message BODY: " + remoteMessage.getNotification().getBody());
         Log.d(TAG, "Notification Message DATA: " + remoteMessage.getData().toString());
 
-//Calling method to generate notification
+    //Calling method to generate notification
         sendNotification(remoteMessage.getNotification().getTitle(),
                 remoteMessage.getNotification().getBody(), remoteMessage.getData());
     }
