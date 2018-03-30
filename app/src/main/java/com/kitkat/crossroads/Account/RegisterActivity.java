@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.kitkat.crossroads.CrossRoads;
+import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.R;

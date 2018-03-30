@@ -23,12 +23,12 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name=".FirebaseMessagingServices.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".MyFirebaseInstanceIDService">
+        <service android:name=".FirebaseMessagingServices.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -41,7 +41,7 @@
         <activity android:name=".Profile.CreateProfileActivity" />
         <activity android:name=".Account.ResetPasswordActivity" />
         <activity
-            android:name=".CrossRoads"
+            android:name=".MainActivity.CrossRoads"
             android:configChanges="orientation|screenSize"
             android:label=" "
             android:theme="@style/AppTheme.NoActionBar"></activity>
