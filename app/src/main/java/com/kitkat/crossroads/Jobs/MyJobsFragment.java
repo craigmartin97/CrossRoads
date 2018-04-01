@@ -592,9 +592,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                     holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
                     holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
+                    holderBidOn.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
+                    holderBidOn.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
 
                     holderBidOn.textViewJobName.setText(mData.get(position).getAdvertName());
                     holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
+                    holderBidOn.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
+                    holderBidOn.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelPostcode() + ", " + mData.get(position).getDelPostcode());
 
                     convertView.setTag(holderBidOn);
                 }
@@ -606,12 +610,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
                     holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
                     holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
+                    holderAccepted.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
+                    holderAccepted.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
 
                     holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
                     holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
-
-                    // TODO - Was going to add the the users bid into this here, however it's difficult as the bid isnt stored in the jobs table
-                    // TODO - I tried to add it in, looped through the bids table and found the bids with the mDataKeys. But it always displayed the last value.
+                    holderAccepted.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
+                    holderAccepted.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelPostcode() + ", " + mData.get(position).getDelPostcode());
 
                     convertView.setTag(holderAccepted);
                 }
@@ -648,12 +653,16 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         {
             public TextView textViewJobName;
             public TextView textViewJobDescription;
+            public TextView textViewAddressFrom;
+            public TextView textViewAddressTo;
         }
 
         public class GroupViewHolderAccepted
         {
             public TextView textViewJobName;
             public TextView textViewDescription;
+            public TextView textViewAddressFrom;
+            public TextView textViewAddressTo;
         }
 
         public class GroupViewHolderCompleted
