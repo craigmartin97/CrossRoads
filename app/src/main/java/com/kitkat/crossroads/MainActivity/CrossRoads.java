@@ -34,6 +34,7 @@ import com.kitkat.crossroads.Jobs.FindAJobFragment;
 import com.kitkat.crossroads.Jobs.MyAdvertsFragment;
 import com.kitkat.crossroads.Jobs.MyJobsFragment;
 import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
+import com.kitkat.crossroads.Manifest;
 import com.kitkat.crossroads.Profile.EditProfileFragment;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
