@@ -66,24 +66,6 @@
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
 
-            <!--<LinearLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentStart="true"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/viewDesc"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:background="#FFFFFFFF"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:text=" Description:"-->
-            <!--android:textAlignment="viewStart"-->
-            <!--android:textColor="#FF000000"-->
-            <!--android:visibility="visible" />-->
-            <!--</LinearLayout>-->
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -110,23 +92,50 @@
             android:layout_alignParentStart="true"
             android:orientation="horizontal">
 
-            <!--<LinearLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentStart="true"-->
-            <!--android:orientation="vertical">-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:orientation="vertical">
 
-            <!--<TextView-->
-            <!--android:id="@+id/viewBid"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:background="#FFFFFFFF"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:text=" Bid:"-->
-            <!--android:textAlignment="viewStart"-->
-            <!--android:textColor="#FF000000"-->
-            <!--android:visibility="visible" />-->
-            <!--</LinearLayout>-->
+                <TextView
+                    android:id="@+id/textAddressFrom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFFFF"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="text"
+                    android:textAlignment="center"
+                    android:textColor="#FF000000"
+                    android:visibility="visible" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textAddressTo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFFFF"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="text"
+                    android:textAlignment="center"
+                    android:textColor="#FF000000"
+                    android:visibility="visible" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
