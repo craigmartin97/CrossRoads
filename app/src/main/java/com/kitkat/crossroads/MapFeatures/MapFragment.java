@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.MapFeatures;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -39,9 +39,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.kitkat.crossroads.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,13 +68,14 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             new LatLng(-40, -168), new LatLng(71, 136));
 
     private PlaceInfo placeInfo;
+    private Marker marker;
 
     private static final float DEFAULT_ZOOM = 15;
-
 
     // widgets
     private AutoCompleteTextView editTextSearch;
     private ImageView imageViewGps;
+    private ImageView imageViewInfo;
 
     public MapFragment()
     {
@@ -110,6 +113,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     {
         editTextSearch = view.findViewById(R.id.editTextSearch);
         imageViewGps = view.findViewById(R.id.ic_gps);
+        imageViewInfo = view.findViewById(R.id.placeInfo);
     }
 
     @Override
@@ -120,7 +124,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
 
     private void init()
     {
-        Log.d(TAG, "Init: initalizing");
+        Log.d(TAG, "Init: initializing");
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getActivity())
@@ -158,6 +162,30 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             {
                 Log.d(TAG, "onClick: Pressed GPS Image");
                 getDeviceCurrentLocation();
+            }
+        });
+
+        imageViewInfo.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.d(TAG, "onClick: clicked place info");
+                try
+                {
+                    if(marker.isInfoWindowShown())
+                    {
+                        marker.hideInfoWindow();
+                    }
+                    else
+                    {
+                        Log.d(TAG, "onCLick" + placeInfo.toString());
+                        marker.showInfoWindow();
+                    }
+                } catch(NullPointerException e)
+                {
+                    Log.e(TAG, "onClick: Error" + e.getMessage());
+                }
             }
         });
 
@@ -245,6 +273,40 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         {
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
+    }
+
+    private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo)
+    {
+        Log.d(TAG, "moveCamera: moving the camera lat: " + latLng.latitude + ",  long" + latLng.longitude);
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        gMap.clear();
+        gMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getActivity()));
+
+        if(placeInfo != null)
+        {
+            try
+            {
+                String details =
+                                "Address: " + placeInfo.getAddress() + "\n" +
+                                "Phone Number: " + placeInfo.getPhoneNumber() + "\n" +
+                                "Website: " + placeInfo.getWebsiteUri() + "\n" +
+                                "Price Rating: " + placeInfo.getRating() + "\n";
+
+                MarkerOptions options = new MarkerOptions().position(latLng).title(placeInfo.getName()).snippet(details);
+                marker = gMap.addMarker(options);
+
+            } catch(NullPointerException e)
+            {
+                Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage());
+            }
+        }
+        else
+        {
+            gMap.addMarker(new MarkerOptions().position(latLng));
+        }
+
+        hideKeyboard();
     }
 
     private void moveCamera(LatLng latLng, float zoom, String title)
@@ -385,7 +447,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             if(!places.getStatus().isSuccess())
             {
                 Log.d(TAG, "onResult: Places Query did not complete: " + places.getStatus().toString());
-                // Prevent memeory leak must release
+                // Prevent memory leak must release
                 places.release();
                 return;
             }
@@ -411,11 +473,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                     Log.e(TAG, "onResult: NullPointerException " + e.getMessage());
                 }
 
-                moveCamera(new LatLng(place.getViewport().getCenter().latitude, place.getViewport().getCenter().longitude), DEFAULT_ZOOM, placeInfo.getName());
+                moveCamera(new LatLng(place.getViewport().getCenter().latitude, place.getViewport().getCenter().longitude), DEFAULT_ZOOM, placeInfo);
                 places.release();
             }
         }
     };
-
-
 }
