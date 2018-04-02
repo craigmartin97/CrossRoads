@@ -67,5 +67,16 @@
             android:id="@+id/placeInfo"
             android:src="@drawable/ic_info"/>
 
+        <ImageView
+            android:id="@+id/check"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignStart="@+id/placeInfo"
+            android:layout_below="@+id/placeInfo"
+            android:layout_marginTop="15dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/check" />
+
+
     </RelativeLayout>
 </FrameLayout>

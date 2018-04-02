@@ -1,6 +1,7 @@
 package com.kitkat.crossroads.MapFeatures;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -19,6 +20,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +78,10 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     private AutoCompleteTextView editTextSearch;
     private ImageView imageViewGps;
     private ImageView imageViewInfo;
+    private ImageView imageViewCheck;
+    private TextView chooseLocationText;
+    private Button yesButton;
+    private Button noButton;
 
     public MapFragment()
     {
@@ -102,10 +108,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         getViewsByIds(view);
-
         getLocationPermission();
-
-
         return view;
     }
 
@@ -114,7 +117,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         editTextSearch = view.findViewById(R.id.editTextSearch);
         imageViewGps = view.findViewById(R.id.ic_gps);
         imageViewInfo = view.findViewById(R.id.placeInfo);
+        imageViewCheck = view.findViewById(R.id.check);
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
@@ -134,9 +139,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                 .build();
 
         editTextSearch.setOnItemClickListener(mAutocompleteItemClickListener);
-
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient, LAT_LNG_BOUNDS, null);
-
         editTextSearch.setAdapter(placeAutocompleteAdapter);
 
         editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
@@ -173,19 +176,76 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                 Log.d(TAG, "onClick: clicked place info");
                 try
                 {
-                    if(marker.isInfoWindowShown())
+                    if (marker.isInfoWindowShown())
                     {
                         marker.hideInfoWindow();
-                    }
-                    else
+                    } else
                     {
                         Log.d(TAG, "onCLick" + placeInfo.toString());
                         marker.showInfoWindow();
                     }
-                } catch(NullPointerException e)
+                } catch (NullPointerException e)
                 {
                     Log.e(TAG, "onClick: Error" + e.getMessage());
                 }
+            }
+        });
+
+        imageViewCheck.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.d(TAG, "onClick: Pressed The Tick Image");
+                Toast.makeText(getActivity(), "Pressed Tick", Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                View viewPopup = getLayoutInflater().inflate(R.layout.popup_confirm_location, null);
+
+                chooseLocationText = viewPopup.findViewById(R.id.selectLocationText);
+                yesButton = viewPopup.findViewById(R.id.yesButton);
+                noButton = viewPopup.findViewById(R.id.noButton);
+
+                alertDialog.setTitle("Choose Location?");
+                alertDialog.setView(viewPopup);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
+
+                chooseLocationText = viewPopup.findViewById(R.id.selectLocationText);
+
+                try
+                {
+                    if (placeInfo != null)
+                    {
+                        chooseLocationText.setText(placeInfo.getName() + ", " + placeInfo.getAddress().toString());
+                    }
+                } catch (NullPointerException e)
+                {
+                    Toast.makeText(getActivity(), "Please Search For A Location First", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, e.getMessage());
+                }
+
+                yesButton = viewPopup.findViewById(R.id.yesButton);
+                noButton = viewPopup.findViewById(R.id.noButton);
+
+                yesButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Toast.makeText(getActivity(), "Pressed The Yes Button", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                noButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+
             }
         });
 
@@ -212,8 +272,12 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             Address address = list.get(0);
             Log.d(TAG, "Found A Location");
 
+            placeInfo = new PlaceInfo();
+            placeInfo.setAddress(address.getAddressLine(0));
+            placeInfo.setName(address.getFeatureName().toString());
+
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
-                    address.getAddressLine(0));
+                    placeInfo);
         } else
         {
             Toast.makeText(getActivity(), "Can't Find That Address, Try Again", Toast.LENGTH_SHORT).show();
@@ -240,12 +304,12 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                         {
                             // Found Location
                             Log.d(TAG, "onComplete: Found Location");
-                            Location currentLocation = (Location) task.getResult();
+                            Location devicesCurrentLocation = (Location) task.getResult();
                             List<Address> list = new ArrayList<>();
                             Geocoder geocoder = new Geocoder(getActivity());
                             try
                             {
-                                list = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+                                list = geocoder.getFromLocation(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude(), 1);
                             } catch (IOException io)
                             {
                                 Log.e(TAG, io.getMessage());
@@ -254,7 +318,10 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                             if (list.size() > 0)
                             {
                                 Address address = list.get(0);
-                                moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
+                                placeInfo = new PlaceInfo();
+                                placeInfo.setAddress(address.getAddressLine(0));
+                                placeInfo.setName(address.getFeatureName().toString());
+                                moveCamera(new LatLng(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude()), DEFAULT_ZOOM, placeInfo);
                             } else
                             {
                                 Toast.makeText(getActivity(), "Could'nt Find Location, Please Try Again", Toast.LENGTH_SHORT).show();
@@ -283,25 +350,23 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         gMap.clear();
         gMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getActivity()));
 
-        if(placeInfo != null)
+        if (placeInfo != null)
         {
             try
             {
                 String details =
-                                "Address: " + placeInfo.getAddress() + "\n" +
+                        "Address: " + placeInfo.getAddress() + "\n" +
                                 "Phone Number: " + placeInfo.getPhoneNumber() + "\n" +
                                 "Website: " + placeInfo.getWebsiteUri() + "\n" +
                                 "Price Rating: " + placeInfo.getRating() + "\n";
 
                 MarkerOptions options = new MarkerOptions().position(latLng).title(placeInfo.getName()).snippet(details);
                 marker = gMap.addMarker(options);
-
-            } catch(NullPointerException e)
+            } catch (NullPointerException e)
             {
                 Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage());
             }
-        }
-        else
+        } else
         {
             gMap.addMarker(new MarkerOptions().position(latLng));
         }
@@ -309,16 +374,16 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         hideKeyboard();
     }
 
-    private void moveCamera(LatLng latLng, float zoom, String title)
-    {
-        Log.d(TAG, "moveCamera: moving the camera lat: " + latLng.latitude + ",  long" + latLng.longitude);
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-
-        MarkerOptions options = new MarkerOptions().position(latLng).title(title);
-        gMap.addMarker(options);
-
-        hideKeyboard();
-    }
+//    private void moveCamera(LatLng latLng, float zoom, String title)
+//    {
+//        Log.d(TAG, "moveCamera: moving the camera lat: " + latLng.latitude + ",  long" + latLng.longitude);
+//        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+//
+//        MarkerOptions options = new MarkerOptions().position(latLng).title(title);
+//        gMap.addMarker(options);
+//
+//        hideKeyboard();
+//    }
 
     private void initMap()
     {
@@ -419,7 +484,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     }
 
     /*
-        Auto Complete API AutoComplete Suggestions
+       Auto Complete API AutoComplete Suggestions
      */
 
     private AdapterView.OnItemClickListener mAutocompleteItemClickListener = new AdapterView.OnItemClickListener()
@@ -430,7 +495,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             hideKeyboard();
 
             final AutocompletePrediction item = placeAutocompleteAdapter.getItem(i);
-            final String placeId =  item.getPlaceId();
+            final String placeId = item.getPlaceId();
 
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
 
@@ -444,14 +509,13 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         @Override
         public void onResult(@NonNull PlaceBuffer places)
         {
-            if(!places.getStatus().isSuccess())
+            if (!places.getStatus().isSuccess())
             {
                 Log.d(TAG, "onResult: Places Query did not complete: " + places.getStatus().toString());
                 // Prevent memory leak must release
                 places.release();
                 return;
-            }
-            else
+            } else
             {
                 final Place place = places.get(0);
                 try
@@ -468,12 +532,13 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
 
                     Log.d(TAG, "onResult: " + placeInfo.toString());
 
-                } catch(NullPointerException e)
+                } catch (NullPointerException e)
                 {
                     Log.e(TAG, "onResult: NullPointerException " + e.getMessage());
                 }
 
                 moveCamera(new LatLng(place.getViewport().getCenter().latitude, place.getViewport().getCenter().longitude), DEFAULT_ZOOM, placeInfo);
+                editTextSearch.getText().clear();
                 places.release();
             }
         }
