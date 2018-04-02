@@ -51,43 +51,99 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This class is used to display a Map to the user to select a location or use their current
+ * location. The user can see information about that information as well such as the phone number,
+ * website Uri, the name and full address.
+ */
 public class MapFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
 
+    /**
+     * Tag used for Logs and debugging
+     */
     private static final String TAG = "MapFragment";
+
+    /**
+     * Accessing the users locations, after they have gave permission
+     */
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
 
+    /**
+     * Boolean value to store the users permission
+     */
     private boolean locationPermissionGranted = false;
-
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+
+    /**
+     * Google map
+     */
     private GoogleMap gMap;
+    /**
+     * Get the users current location their device is in
+     */
     private FusedLocationProviderClient fusedLocationProviderClient;
+
+    /**
+     * Adapter, created by google, to display a list of potential locations as the user is typing
+     */
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
+
+    /**
+     * The main entry point for Google Play services integration
+     */
     private GoogleApiClient mGoogleApiClient;
+
+    /**
+     * Lat and Long Bounds that are used. This covers across the entire world
+     */
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
 
-    private PlaceInfo placeInfo;
+    /**
+     * Storing the location details
+     */
+    private PlaceInfo placeInfo = new PlaceInfo();
+
+    /**
+     * Marker to place a marker on the map
+     */
     private Marker marker;
 
+    /**
+     * The default zoom to be used for the map
+     */
     private static final float DEFAULT_ZOOM = 15;
 
-    // widgets
+    /**
+     * Widgets that are found on the View, fragment_map
+     */
     private AutoCompleteTextView editTextSearch;
     private ImageView imageViewGps;
     private ImageView imageViewInfo;
     private ImageView imageViewCheck;
+
+    /**
+     * Widgets found on the popup_accept_location
+     */
     private TextView chooseLocationText;
     private Button yesButton;
     private Button noButton;
+
+    private String jobInformation;
 
     public MapFragment()
     {
         // Empty
     }
 
+    /**
+     * NOT USED At them moment, retained if we need to pass a bundle in, in the future or
+     * set database connections
+     *
+     * @return - fragment
+     */
     public static MapFragment newInstance()
     {
         MapFragment fragment = new MapFragment();
@@ -108,10 +164,26 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         getViewsByIds(view);
+
+        Bundle bundle = getArguments();
+        try
+        {
+            jobInformation = (String) bundle.getSerializable("JobInfo");
+            Toast.makeText(getActivity(), "HERE TESTER", Toast.LENGTH_SHORT).show();
+        }catch (NullPointerException e)
+        {
+            Log.e(TAG, e.getMessage());
+        }
+
         getLocationPermission();
         return view;
     }
 
+    /**
+     * Setting all of the widgets in the view to global variables for later use
+     *
+     * @param view
+     */
     private void getViewsByIds(View view)
     {
         editTextSearch = view.findViewById(R.id.editTextSearch);
@@ -127,6 +199,12 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
 
     }
 
+    /**
+     * Initializing the map
+     * Creates the GoogleApiClient to be able to find the locations and suggestions
+     * All of the buttons, current location, information and selecting that location are all set
+     * and created in this method
+     */
     private void init()
     {
         Log.d(TAG, "Init: initializing");
@@ -142,6 +220,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient, LAT_LNG_BOUNDS, null);
         editTextSearch.setAdapter(placeAutocompleteAdapter);
 
+        // Enter a location to search for
         editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override
@@ -152,22 +231,26 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                         keyEvent.getAction() == KeyEvent.ACTION_DOWN ||
                         keyEvent.getAction() == KeyEvent.KEYCODE_ENTER)
                 {
+                    // Find that location
                     geoLocate();
                 }
                 return false;
             }
         });
 
+        // Press the GPS image
         imageViewGps.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
                 Log.d(TAG, "onClick: Pressed GPS Image");
+                // Get the current location and move the camera to that location
                 getDeviceCurrentLocation();
             }
         });
 
+        // Press the Info image
         imageViewInfo.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -176,12 +259,14 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                 Log.d(TAG, "onClick: clicked place info");
                 try
                 {
+                    // If the window is currently open
                     if (marker.isInfoWindowShown())
                     {
                         marker.hideInfoWindow();
                     } else
                     {
                         Log.d(TAG, "onCLick" + placeInfo.toString());
+                        // Display the information in a new box
                         marker.showInfoWindow();
                     }
                 } catch (NullPointerException e)
@@ -191,6 +276,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             }
         });
 
+        // Press the check image
         imageViewCheck.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -199,13 +285,15 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                 Log.d(TAG, "onClick: Pressed The Tick Image");
                 Toast.makeText(getActivity(), "Pressed Tick", Toast.LENGTH_SHORT).show();
 
+                // Create a new Alert dialog for the user to interact with
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                // Inflate layout, and get widgets
                 View viewPopup = getLayoutInflater().inflate(R.layout.popup_confirm_location, null);
-
                 chooseLocationText = viewPopup.findViewById(R.id.selectLocationText);
                 yesButton = viewPopup.findViewById(R.id.yesButton);
                 noButton = viewPopup.findViewById(R.id.noButton);
 
+                // Show the dialog and edit info in it
                 alertDialog.setTitle("Choose Location?");
                 alertDialog.setView(viewPopup);
                 final AlertDialog dialog = alertDialog.create();
@@ -215,9 +303,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
 
                 try
                 {
+                    // If their is information to display
                     if (placeInfo != null)
                     {
-                        chooseLocationText.setText(placeInfo.getName() + ", " + placeInfo.getAddress().toString());
+                        // Change the text in the alert dialog to the address
+                        chooseLocationText.setText(placeInfo.getAddress().toString());
                     }
                 } catch (NullPointerException e)
                 {
@@ -225,6 +315,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                     Log.e(TAG, e.getMessage());
                 }
 
+                // Setting widgets to variables
                 yesButton = viewPopup.findViewById(R.id.yesButton);
                 noButton = viewPopup.findViewById(R.id.noButton);
 
@@ -233,7 +324,8 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                     @Override
                     public void onClick(View view)
                     {
-                        Toast.makeText(getActivity(), "Pressed The Yes Button", Toast.LENGTH_SHORT).show();
+                        // get the address, store it in the database under the job
+                        // get the address, pass it back to the postAJobFramgent?
                     }
                 });
 
@@ -252,6 +344,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         hideKeyboard();
     }
 
+    /**
+     * Find a location that the user has entered and move the camera to that location
+     */
     private void geoLocate()
     {
         Log.d(TAG, "geoLocate: geoLocating");
@@ -272,7 +367,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             Address address = list.get(0);
             Log.d(TAG, "Found A Location");
 
-            placeInfo = new PlaceInfo();
             placeInfo.setAddress(address.getAddressLine(0));
             placeInfo.setName(address.getFeatureName().toString());
 
@@ -285,6 +379,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         }
     }
 
+    /**
+     * Get the devices current location after the user has agreed to that permission
+     */
     private void getDeviceCurrentLocation()
     {
         Log.d(TAG, "getDeviceCurrentLocation: Getting the devices current location");
@@ -318,7 +415,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                             if (list.size() > 0)
                             {
                                 Address address = list.get(0);
-                                placeInfo = new PlaceInfo();
                                 placeInfo.setAddress(address.getAddressLine(0));
                                 placeInfo.setName(address.getFeatureName().toString());
                                 moveCamera(new LatLng(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude()), DEFAULT_ZOOM, placeInfo);
@@ -342,6 +438,13 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         }
     }
 
+    /**
+     * Move the camera to a new location that the user has selected or the current locaiton
+     *
+     * @param latLng
+     * @param zoom
+     * @param placeInfo
+     */
     private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo)
     {
         Log.d(TAG, "moveCamera: moving the camera lat: " + latLng.latitude + ",  long" + latLng.longitude);
@@ -374,17 +477,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         hideKeyboard();
     }
 
-//    private void moveCamera(LatLng latLng, float zoom, String title)
-//    {
-//        Log.d(TAG, "moveCamera: moving the camera lat: " + latLng.latitude + ",  long" + latLng.longitude);
-//        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-//
-//        MarkerOptions options = new MarkerOptions().position(latLng).title(title);
-//        gMap.addMarker(options);
-//
-//        hideKeyboard();
-//    }
-
+    /**
+     * Create the inital map that the user will be displayed, they will be showed the
+     * current location of their device upon creation.
+     * If they havent agreed to the permission they will be returned to a blank fragment.
+     */
     private void initMap()
     {
         Log.d(TAG, "initMap: initializing map");
@@ -424,6 +521,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         });
     }
 
+    /**
+     * Checking the users permission that they selected, accept or deny
+     */
     private void getLocationPermission()
     {
         Log.d(TAG, "Getting location permissions");
@@ -504,6 +604,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         }
     };
 
+    /**
+     * Setting the place location information
+     */
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallBack = new ResultCallback<PlaceBuffer>()
     {
         @Override
@@ -520,7 +623,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                 final Place place = places.get(0);
                 try
                 {
-                    placeInfo = new PlaceInfo();
                     placeInfo.setName(place.getName().toString());
                     placeInfo.setAddress(place.getAddress().toString());
                     placeInfo.setPhoneNumber(place.getPhoneNumber().toString());

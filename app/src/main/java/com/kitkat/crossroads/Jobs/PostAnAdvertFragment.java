@@ -364,15 +364,22 @@ public class PostAnAdvertFragment extends Fragment
 
     private void init(View view)
     {
-        Button mapButton = view.findViewById(R.id.buttonMap);
+        final Button mapButton = view.findViewById(R.id.buttonMap);
         mapButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
+                MapFragment mapFragment = new MapFragment();
+                Bundle bundle = new Bundle();
+
+                String adName = editTextAdName.getText().toString();
+                bundle.putSerializable("JobInfo", adName);
+                mapFragment.setArguments(bundle);
+
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content, new MapFragment()).commit();
+                fragmentTransaction.replace(R.id.content, mapFragment).commit();
             }
         });
     }
