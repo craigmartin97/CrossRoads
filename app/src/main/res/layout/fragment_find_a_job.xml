@@ -25,7 +25,7 @@
             android:textSize="30dp"
             tools:layout_editor_absoluteX="163dp"
             tools:layout_editor_absoluteY="16dp" />
-        
+
         <SearchView
             android:id="@+id/searchViewJob"
             android:layout_width="match_parent"
@@ -34,261 +34,223 @@
             android:queryHint="Name, Location, Size, etc." />
 
         <LinearLayout
-            android:layout_marginHorizontal="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginTop="5dp">
 
             <Button
                 android:id="@+id/filterButton"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="Filter"
-                android:tag="#2bbc9b"
                 android:background="#2bbc9b"
+                android:tag="#2bbc9b"
+                android:text="Filter"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <Spinner
                 android:id="@+id/sortBySpinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:autofillHints="Sort By">
-            </Spinner>
+                android:autofillHints="Sort By"></Spinner>
 
 
         </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/filterLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:orientation="vertical"
-        android:layout_marginHorizontal="5dp"
-        android:background="@drawable/customborder"
-        android:tag="Closed"
-        android:visibility="visible">
 
-
-
-
-            <EditText
-                android:id="@+id/edittextFilterName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/customborderrounded"
-                android:padding="10dp"
-                android:textSize="12sp"
-                android:visibility="visible"
-                android:hint="Advert Name"
-                android:layout_marginVertical="2dp"
-                android:gravity="center"
-                />
-
-
-
-
-
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal">
-
-
-
-            <RelativeLayout
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="3dp"
-                android:layout_weight=".28"
-                android:background="@drawable/customspinnerborderrounded"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
-
-                <Spinner
-                    android:id="@+id/spinnerSizeFrom"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:layout_marginLeft="5dp"
-                    android:spinnerMode="dropdown" />
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/ic_launcher_foreground" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="to"
-                android:layout_margin="5dp"
-                android:layout_gravity="center_vertical"/>
-
-            <RelativeLayout
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="3dp"
-                android:layout_weight=".28"
-                android:background="@drawable/customspinnerborderrounded"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical">
-
-                <Spinner
-                    android:id="@+id/spinnerSizeTo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:layout_marginLeft="5dp"
-                    android:spinnerMode="dropdown" />
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/ic_launcher_foreground" />
-
-            </RelativeLayout>
-
-            </LinearLayout>
-
-
-
-
-        <LinearLayout
+            android:id="@+id/filterLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:orientation="horizontal">
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/customborder"
+            android:orientation="vertical"
+            android:tag="Closed"
+            android:visibility="gone">
 
 
 
 
-            <CheckBox
-                android:id="@+id/singleItemCheck"
-                android:layout_width="175dp"
-                android:layout_height="wrap_content"
-                android:text="Single Item"
-                android:buttonTint="#2bbc9b"
-                />
-            <CheckBox
-                android:id="@+id/multipleItemsCheck"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:text="Multiple Items"
-                android:buttonTint="#2bbc9b"
-                />
+                <EditText
+                    android:id="@+id/edittextFilterName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="2dp"
+                    android:background="@drawable/customborderrounded"
+                    android:gravity="center"
+                    android:hint="Advert Name"
+                    android:padding="10dp"
+                    android:textColorHint="#000000"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginVertical="2dp"
+                    android:orientation="horizontal">
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="3dp"
+                        android:layout_weight=".28"
+                        android:background="@drawable/customspinnerborderrounded"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/filterSpinnerSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
+                            android:spinnerMode="dropdown" />
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:src="@mipmap/ic_launcher_foreground" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:orientation="horizontal">
+
+
+                    <CheckBox
+                        android:id="@+id/singleItemCheck"
+                        android:layout_width="175dp"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="#2bbc9b"
+                        android:text="Single Item" />
+
+                    <CheckBox
+                        android:id="@+id/multipleItemsCheck"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="#2bbc9b"
+                        android:text="Multiple Items" />
+
+                </LinearLayout>
+
+
+                <EditText
+                    android:id="@+id/editTextFilterColDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="2dp"
+                    android:background="@drawable/customborderrounded"
+                    android:gravity="center"
+                    android:hint="Collection Date"
+                    android:paddingLeft="10dp"
+                    android:paddingVertical="10dp"
+                    android:textColorHint="#000000"
+                    android:textSize="12sp"
+                    android:visibility="visible"
+
+                    />
+
+
+                <EditText
+                    android:id="@+id/editTextFilterColTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="2dp"
+                    android:background="@drawable/customborderrounded"
+                    android:gravity="center"
+                    android:hint="Collection Time"
+                    android:paddingLeft="10dp"
+                    android:paddingVertical="10dp"
+                    android:textColorHint="#000000"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
+
+
+                <EditText
+                    android:id="@+id/editTextFilterColFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="2dp"
+                    android:background="@drawable/customborderrounded"
+                    android:gravity="center"
+                    android:hint="Colletion From"
+                    android:paddingLeft="10dp"
+                    android:paddingVertical="10dp"
+                    android:textColorHint="#000000"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
+
+                <EditText
+                    android:id="@+id/editTextFilterDelTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="2dp"
+                    android:background="@drawable/customborderrounded"
+                    android:gravity="center"
+                    android:hint="Delivery To"
+                    android:paddingLeft="10dp"
+                    android:paddingVertical="10dp"
+                    android:textColorHint="#000000"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/filterClearButton"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:background="#2bbc9b"
+                        android:text="Clear"
+                        android:textColor="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/filterApplyButton"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="#2bbc9b"
+                        android:text="Apply Filter"
+                        android:textColor="#FFFFFF" />
+                    />
+
+                </LinearLayout>
 
         </LinearLayout>
+        </ScrollView>
 
-
-
-            <EditText
-                android:id="@+id/editTextFilterColDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/customborderrounded"
-                android:paddingLeft="10dp"
-                android:paddingVertical="10dp"
-                android:layout_marginVertical="2dp"
-                android:textSize="12sp"
-                android:visibility="visible"
-                android:hint="Collection Date"
-                android:gravity="center"
-
-                />
-
-
-
-
-            <EditText
-                android:id="@+id/editTextFilterColTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/customborderrounded"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:layout_marginVertical="2dp"
-                android:paddingVertical="10dp"
-                android:textSize="12sp"
-                android:visibility="visible"
-                android:hint="Collection Time"/>
-
-
-            <EditText
-                android:id="@+id/editTextFilterColFrom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/customborderrounded"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingVertical="10dp"
-                android:layout_marginVertical="2dp"
-                android:textSize="12sp"
-                android:visibility="visible"
-                android:hint="Colletion From"/>
-
-        <EditText
-            android:id="@+id/editTextFilterDelTo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/customborderrounded"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:paddingVertical="10dp"
-            android:layout_marginVertical="2dp"
-            android:textSize="12sp"
-            android:visibility="visible"
-            android:hint="Delivery To"/>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
-
-            <Button
-                android:id="@+id/filterClearButton"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:text="Clear"
-                android:background="#2bbc9b"
-                android:layout_marginRight="5dp"
-                android:textColor="#FFFFFF"/>
-
-            <Button
-                android:id="@+id/filterApplyButton"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:text="Apply Filter"
-                android:background="#2bbc9b"
-                android:layout_marginLeft="5dp"
-                android:textColor="#FFFFFF"/>
-            />
-
-        </LinearLayout>
-    </LinearLayout>
         <requestFocus />
 
         <ListView
