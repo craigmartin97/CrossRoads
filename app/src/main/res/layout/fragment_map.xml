@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kitkat.crossroads.MapFragment">
+    tools:context="com.kitkat.crossroads.MapFeatures.MapFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -56,6 +56,27 @@
             android:scaleType="centerCrop"
             android:id="@+id/ic_gps"
             android:src="@drawable/ic_gps" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/relLayout1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerCrop"
+            android:id="@+id/placeInfo"
+            android:src="@drawable/ic_info"/>
+
+        <ImageView
+            android:id="@+id/check"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignStart="@+id/placeInfo"
+            android:layout_below="@+id/placeInfo"
+            android:layout_marginTop="15dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/check" />
+
 
     </RelativeLayout>
 </FrameLayout>

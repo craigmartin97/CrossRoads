@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.MapFeatures;
 
 import android.net.Uri;
 

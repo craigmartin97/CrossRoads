@@ -3,11 +3,9 @@ package com.kitkat.crossroads.Jobs;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -37,7 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Account.LoginActivity;
-import com.kitkat.crossroads.MapFragment;
+import com.kitkat.crossroads.MapFeatures.MapFragment;
 import com.kitkat.crossroads.R;
 
 import java.util.Calendar;
@@ -194,7 +191,6 @@ public class PostAnAdvertFragment extends Fragment
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
-
             }
         });
         editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
@@ -212,7 +208,6 @@ public class PostAnAdvertFragment extends Fragment
             public void onClick(View v)
             {
 
-
                 if (TextUtils.isEmpty(editTextAdName.getText()))
                 {
                     editTextAdName.setText("");
@@ -226,7 +221,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextAdDescription.setHintTextColor(Color.RED);
                     editTextAdDescription.setHint("Please enter Advert Description!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 }
                 if (TextUtils.isEmpty(editTextColDate.getText()))
                 {
@@ -234,7 +228,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextColDate.setHintTextColor(Color.RED);
                     editTextColDate.setHint("Please enter a Collection Date!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 }
                 if (TextUtils.isEmpty(editTextColTime.getText()))
                 {
@@ -242,7 +235,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextColTime.setHintTextColor(Color.RED);
                     editTextColTime.setHint("Please enter a Collection Time!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 }
                 if (TextUtils.isEmpty(editTextColAddL1.getText()))
                 {
@@ -250,7 +242,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextColAddL1.setHintTextColor(Color.RED);
                     editTextColAddL1.setHint("Please enter Address Line 1!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 }
                 if (TextUtils.isEmpty(editTextColAddTown.getText()))
                 {
@@ -258,7 +249,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextColAddTown.setHintTextColor(Color.RED);
                     editTextColAddTown.setHint("Please enter a Town!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 }
                 if ((!(editTextColAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextColAddPostcode.getText())))
                 {
@@ -266,7 +256,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextColAddPostcode.setHintTextColor(Color.RED);
                     editTextColAddPostcode.setHint("Please enter valid Postcode!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 }
                 if (TextUtils.isEmpty(editTextDelAddL1.getText()))
                 {
@@ -274,7 +263,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextDelAddL1.setHintTextColor(Color.RED);
                     editTextDelAddL1.setHint("Please enter Address Line 1!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 }
                 if (TextUtils.isEmpty(editTextDelAddTown.getText()))
                 {
@@ -282,7 +270,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextDelAddTown.setHintTextColor(Color.RED);
                     editTextDelAddTown.setHint("Please enter a Town!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 }
                 if ((!(editTextDelAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextDelAddPostcode.getText())))
                 {
@@ -290,7 +277,6 @@ public class PostAnAdvertFragment extends Fragment
                     editTextDelAddPostcode.setHintTextColor(Color.RED);
                     editTextDelAddPostcode.setHint("Please enter valid Postcode!");
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-
                 } else
                 {
                     saveJobInformation();
@@ -300,6 +286,48 @@ public class PostAnAdvertFragment extends Fragment
                 }
             }
         });
+
+        try
+        {
+            Bundle bundle = getArguments();
+            if(bundle.getSerializable("JobInfo") != null)
+            {
+                JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
+//                if(!jobInformation.getAdvertName().equals(""))
+//                {
+//                    editTextAdName.setText(jobInformation.getAdvertName());
+//                }
+                if(!jobInformation.getAdvertDescription().equals(""))
+                {
+                    editTextAdDescription.setText(jobInformation.getAdvertDescription());
+                }
+                editTextAdName.setText(jobInformation.getAdvertName());
+            }
+
+            if(bundle.getSerializable("JobAddress") != null)
+            {
+                String address = (String) bundle.getSerializable("JobAddress");
+                String country = address.substring(address.lastIndexOf(",") + 1);
+
+                int indexOfComma = address.indexOf(",");
+                int indexOfCommaSecond = address.indexOf(",", address.indexOf(",") + 1);
+
+                String addressLineOne = address.substring(0,indexOfComma);
+                String addressLineTwo = address.substring(indexOfComma + 2,indexOfCommaSecond);
+
+                int indexOfWhiteSpace = addressLineTwo.indexOf(" ");
+
+                String addressTown = addressLineTwo.substring(0,indexOfWhiteSpace);
+                String addressPostCode = addressLineTwo.substring(indexOfWhiteSpace + 1, addressLineTwo.length());
+
+                editTextColAddL1.setText(addressLineOne);
+                editTextColAddTown.setText(addressTown);
+                editTextColAddPostcode.setText(addressPostCode);
+            }
+        } catch(NullPointerException e)
+        {
+            Log.e(TAG, e.getMessage());
+        }
 
         return view;
     }
@@ -367,15 +395,43 @@ public class PostAnAdvertFragment extends Fragment
 
     private void init(View view)
     {
-        Button mapButton = view.findViewById(R.id.buttonMap);
+        final Button mapButton = view.findViewById(R.id.buttonMap);
         mapButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
+                MapFragment mapFragment = new MapFragment();
+                Bundle bundle = new Bundle();
+
+                String adName = editTextAdName.getText().toString().trim();
+                String adDescription = editTextAdDescription.getText().toString().trim();
+                String jobSize = editTextJobSize.getSelectedItem().toString().trim();
+                String jobType = editTextJobType.getSelectedItem().toString().trim();
+                String colDate = editTextColDate.getText().toString().trim();
+                String colTime = editTextColTime.getText().toString().trim();
+                String colL1 = editTextColAddL1.getText().toString().trim();
+                String colL2 = editTextColAddL2.getText().toString().trim();
+                String colTown = editTextColAddTown.getText().toString().trim();
+                String colPostcode = editTextColAddPostcode.getText().toString().trim().toUpperCase();
+                String delL1 = editTextDelAddL1.getText().toString().trim();
+                String delL2 = editTextDelAddL2.getText().toString().trim();
+                String delTown = editTextDelAddTown.getText().toString().trim();
+                String delPostcode = editTextDelAddPostcode.getText().toString().trim().toUpperCase();
+                String courierID = " ";
+                String posterID = " ";
+                String jobStatus = " ";
+
+                // job info obj
+                final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
+                        courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
+
+                bundle.putSerializable("JobInfo", jobInformation);
+                mapFragment.setArguments(bundle);
+
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content, new MapFragment()).commit();
+                fragmentTransaction.replace(R.id.content, mapFragment).commit();
             }
         });
     }

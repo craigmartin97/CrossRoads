@@ -1,4 +1,4 @@
-package com.kitkat.crossroads;
+package com.kitkat.crossroads.MapFeatures;
 /*
  * Copyright (C) 2015 Google Inc. All Rights Reserved.
  *
@@ -41,7 +41,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 /**
