@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -45,6 +47,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
 import com.kitkat.crossroads.R;
 
 import java.io.IOException;
@@ -131,7 +135,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     private Button yesButton;
     private Button noButton;
 
-    private String jobInformation;
+    private JobInformation jobInformation;
 
     public MapFragment()
     {
@@ -153,6 +157,14 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     }
 
     @Override
+    public void onPause()
+    {
+        super.onPause();
+        mGoogleApiClient.stopAutoManage(getActivity());
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -165,15 +177,17 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         getViewsByIds(view);
 
-        Bundle bundle = getArguments();
         try
         {
-            jobInformation = (String) bundle.getSerializable("JobInfo");
-            Toast.makeText(getActivity(), "HERE TESTER", Toast.LENGTH_SHORT).show();
-        }catch (NullPointerException e)
+            Bundle bundle = getArguments();
+            jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
+
+        } catch(NullPointerException e)
         {
             Log.e(TAG, e.getMessage());
         }
+        Bundle bundle = getArguments();
+
 
         getLocationPermission();
         return view;
@@ -324,8 +338,20 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                     @Override
                     public void onClick(View view)
                     {
-                        // get the address, store it in the database under the job
-                        // get the address, pass it back to the postAJobFramgent?
+
+                        PostAnAdvertFragment postAnAdvertFragment = new PostAnAdvertFragment();
+                        Bundle bundle = new Bundle();
+
+                        bundle.putSerializable("JobInfo", jobInformation);
+                        bundle.putSerializable("JobAddress", placeInfo.getAddress());
+                        postAnAdvertFragment.setArguments(bundle);
+
+                        dialog.dismiss();
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.content, postAnAdvertFragment).commit();
+
                     }
                 });
 
@@ -600,7 +626,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
 
             placeResult.setResultCallback(mUpdatePlaceDetailsCallBack);
-
         }
     };
 
