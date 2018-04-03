@@ -287,42 +287,21 @@ public class PostAnAdvertFragment extends Fragment
             }
         });
 
+        // Get map info
         try
         {
             Bundle bundle = getArguments();
             if(bundle.getSerializable("JobInfo") != null)
             {
                 JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
-//                if(!jobInformation.getAdvertName().equals(""))
-//                {
-//                    editTextAdName.setText(jobInformation.getAdvertName());
-//                }
-                if(!jobInformation.getAdvertDescription().equals(""))
-                {
-                    editTextAdDescription.setText(jobInformation.getAdvertDescription());
-                }
+                editTextAdDescription.setText(jobInformation.getAdvertDescription());
                 editTextAdName.setText(jobInformation.getAdvertName());
             }
 
             if(bundle.getSerializable("JobAddress") != null)
             {
                 String address = (String) bundle.getSerializable("JobAddress");
-                String country = address.substring(address.lastIndexOf(",") + 1);
-
-                int indexOfComma = address.indexOf(",");
-                int indexOfCommaSecond = address.indexOf(",", address.indexOf(",") + 1);
-
-                String addressLineOne = address.substring(0,indexOfComma);
-                String addressLineTwo = address.substring(indexOfComma + 2,indexOfCommaSecond);
-
-                int indexOfWhiteSpace = addressLineTwo.indexOf(" ");
-
-                String addressTown = addressLineTwo.substring(0,indexOfWhiteSpace);
-                String addressPostCode = addressLineTwo.substring(indexOfWhiteSpace + 1, addressLineTwo.length());
-
-                editTextColAddL1.setText(addressLineOne);
-                editTextColAddTown.setText(addressTown);
-                editTextColAddPostcode.setText(addressPostCode);
+                editTextColAddL1.setText(address.toString());
             }
         } catch(NullPointerException e)
         {
