@@ -71,7 +71,7 @@
             android:background="@drawable/customborder"
             android:orientation="vertical"
             android:tag="Closed"
-            android:visibility="gone">
+            android:visibility="visible">
 
 
 
