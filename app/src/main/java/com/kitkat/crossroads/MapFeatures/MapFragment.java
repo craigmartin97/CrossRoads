@@ -135,7 +135,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     private Button yesButton;
     private Button noButton;
 
-    private JobInformation jobInformation;
+    private JobInformation jobInformation, jobInformation2;
 
     public MapFragment()
     {
@@ -181,14 +181,28 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(getActivity())
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(getActivity(), this)
+                .build();
+
         placeInfo = new PlaceInformation();
         getViewsByIds(view);
 
         try
         {
             Bundle bundle = getArguments();
-            jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
-
+            if(bundle.getSerializable("JobInfo") != null)
+            {
+                jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
+            }
+            if(bundle.getSerializable("JobInfoDel") != null)
+            {
+                jobInformation2 = (JobInformation) bundle.getSerializable("JobInfoDel");
+                Toast.makeText(getActivity(), "HERE", Toast.LENGTH_SHORT).show();
+            }
         } catch (NullPointerException e)
         {
             Log.e(TAG, e.getMessage());
@@ -227,13 +241,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     private void init()
     {
         Log.d(TAG, "Init: initializing");
-
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(getActivity())
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(getActivity(), this)
-                .build();
 
         editTextSearch.setOnItemClickListener(mAutocompleteItemClickListener);
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient, LAT_LNG_BOUNDS, null);
@@ -346,7 +353,16 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                         PostAnAdvertFragment postAnAdvertFragment = new PostAnAdvertFragment();
                         Bundle bundle = new Bundle();
 
-                        bundle.putSerializable("JobInfo", jobInformation);
+                        if(jobInformation != null)
+                        {
+                            bundle.putSerializable("JobInfo", jobInformation);
+                        }
+
+                        if(jobInformation2 != null)
+                        {
+                            bundle.putSerializable("JobInfoDel", jobInformation2);
+                        }
+
                         bundle.putSerializable("JobAddress", placeInfo);
                         postAnAdvertFragment.setArguments(bundle);
 
