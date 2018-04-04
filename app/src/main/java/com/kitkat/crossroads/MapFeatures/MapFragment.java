@@ -447,12 +447,64 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                             if (list.size() > 0)
                             {
                                 Address address = list.get(0);
-                                placeInfo.setSubThoroughfare(address.getSubThoroughfare());
-                                placeInfo.setThoroughfare(address.getThoroughfare());
-                                placeInfo.setLocality(address.getLocality());
+                                if(address.getSubThoroughfare() != null)
+                                {
+                                    placeInfo.setSubThoroughfare(address.getSubThoroughfare());
+                                }
+                                else
+                                {
+                                    placeInfo.setSubThoroughfare(devicesCurrentLocation.);
+                                }
+
+                                if(address.getSubThoroughfare() != null)
+                                {
+                                    placeInfo.setThoroughfare(address.getThoroughfare());
+                                }
+                                else
+                                {
+                                    placeInfo.setSubThoroughfare("");
+                                }
+
+                                if(address.getLocality() != null)
+                                {
+                                    placeInfo.setLocality(address.getLocality());
+                                }
+                                else if(address.getSubLocality() != null)
+                                {
+                                    placeInfo.setLocality(address.getSubLocality());
+                                }
+                                else if(address.getSubAdminArea() != null)
+                                {
+                                    placeInfo.setLocality(address.getSubAdminArea());
+                                }
+                                else if(address.getAdminArea() != null)
+                                {
+                                    placeInfo.setLocality(address.getAdminArea());
+                                }
+                                else
+                                {
+                                    placeInfo.setLocality("");
+                                }
+
                                 placeInfo.setPostCode(address.getPostalCode());
-                                placeInfo.setPhoneNumber(address.getPhone());
-                                placeInfo.setWebsiteUrl(address.getUrl());
+
+                                if(address.getPhone() != null)
+                                {
+                                    placeInfo.setPhoneNumber(place.getPhoneNumber().toString());
+                                }
+                                else
+                                {
+                                    placeInfo.setPhoneNumber("N/A");
+                                }
+
+                                if(address.getUrl() != null)
+                                {
+                                    placeInfo.setWebsiteUrl(place.getWebsiteUri().toString());
+                                }
+                                else
+                                {
+                                    placeInfo.setWebsiteUrl("N/A");
+                                }
                                 moveCamera(new LatLng(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude()), DEFAULT_ZOOM, placeInfo);
                             } else
                             {
