@@ -1,10 +1,12 @@
 package com.kitkat.crossroads.MapFeatures;
 
+import java.io.Serializable;
+
 /**
  * Created by craig on 03/04/18.
  */
 
-public class PlaceInformation
+public class PlaceInformation implements Serializable
 {
     private String subThoroughfare;
     private String thoroughfare;
