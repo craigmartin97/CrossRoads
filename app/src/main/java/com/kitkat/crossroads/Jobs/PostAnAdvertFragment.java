@@ -35,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.MapFeatures.MapFragment;
+import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
 
 import java.util.Calendar;
@@ -300,8 +301,11 @@ public class PostAnAdvertFragment extends Fragment
 
             if(bundle.getSerializable("JobAddress") != null)
             {
-                String address = (String) bundle.getSerializable("JobAddress");
-                editTextColAddL1.setText(address.toString());
+                PlaceInformation address = (PlaceInformation) bundle.getSerializable("JobAddress");
+                editTextColAddL1.setText(address.getSubThoroughfare());
+                editTextColAddL2.setText(address.getThoroughfare());
+                editTextColAddTown.setText(address.getLocality());
+                editTextColAddPostcode.setText(address.getPostCode());
             }
         } catch(NullPointerException e)
         {

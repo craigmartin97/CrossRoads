@@ -34,8 +34,10 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -109,7 +111,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     /**
      * Storing the location details
      */
-    private PlaceInformation placeInfo = new PlaceInformation();
+    private PlaceInformation placeInfo;
 
     /**
      * Marker to place a marker on the map
@@ -182,6 +184,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        placeInfo = new PlaceInformation();
         getViewsByIds(view);
 
         try
@@ -343,12 +346,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                     @Override
                     public void onClick(View view)
                     {
-
                         PostAnAdvertFragment postAnAdvertFragment = new PostAnAdvertFragment();
                         Bundle bundle = new Bundle();
 
                         bundle.putSerializable("JobInfo", jobInformation);
-                        bundle.putSerializable("JobAddress", placeInfo.getSubThoroughfare() + " " + placeInfo.getThoroughfare() + " " + placeInfo.getLocality() + " " + placeInfo.getPostCode());
+                        bundle.putSerializable("JobAddress", placeInfo);
                         postAnAdvertFragment.setArguments(bundle);
 
                         dialog.dismiss();
@@ -356,7 +358,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         fragmentTransaction.replace(R.id.content, postAnAdvertFragment).commit();
-
                     }
                 });
 
@@ -397,12 +398,62 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         {
             Address address = list.get(0);
             Log.d(TAG, "Found A Location");
-            placeInfo.setSubThoroughfare(address.getSubThoroughfare());
-            placeInfo.setThoroughfare(address.getThoroughfare());
-            placeInfo.setLocality(address.getLocality());
+
+            if(address.getSubThoroughfare() != null)
+            {
+                placeInfo.setSubThoroughfare(address.getSubThoroughfare());
+            }
+
+            if(address.getSubThoroughfare() != null)
+            {
+                placeInfo.setThoroughfare(address.getThoroughfare());
+            }
+            else
+            {
+                placeInfo.setSubThoroughfare("");
+            }
+
+            if(address.getLocality() != null)
+            {
+                placeInfo.setLocality(address.getLocality());
+            }
+            else if(address.getSubLocality() != null)
+            {
+                placeInfo.setLocality(address.getSubLocality());
+            }
+            else if(address.getSubAdminArea() != null)
+            {
+                placeInfo.setLocality(address.getSubAdminArea());
+            }
+            else if(address.getAdminArea() != null)
+            {
+                placeInfo.setLocality(address.getAdminArea());
+            }
+            else
+            {
+                placeInfo.setLocality("");
+            }
+
             placeInfo.setPostCode(address.getPostalCode());
-            placeInfo.setPhoneNumber(address.getPhone());
-            placeInfo.setWebsiteUrl(address.getUrl());
+
+            if(address.getPhone() != null)
+            {
+                placeInfo.setPhoneNumber(address.getPhone().toString());
+            }
+            else
+            {
+                placeInfo.setPhoneNumber("N/A");
+            }
+
+            if(address.getUrl() != null)
+            {
+                placeInfo.setWebsiteUrl(address.getUrl().toString());
+            }
+            else
+            {
+                placeInfo.setWebsiteUrl("N/A");
+            }
+
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, placeInfo);
         } else
         {
@@ -418,7 +469,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     {
         Log.d(TAG, "getDeviceCurrentLocation: Getting the devices current location");
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
         try
         {
             if (locationPermissionGranted)
@@ -447,13 +497,10 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                             if (list.size() > 0)
                             {
                                 Address address = list.get(0);
+
                                 if(address.getSubThoroughfare() != null)
                                 {
                                     placeInfo.setSubThoroughfare(address.getSubThoroughfare());
-                                }
-                                else
-                                {
-                                    placeInfo.setSubThoroughfare(devicesCurrentLocation.);
                                 }
 
                                 if(address.getSubThoroughfare() != null)
@@ -490,7 +537,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
 
                                 if(address.getPhone() != null)
                                 {
-                                    placeInfo.setPhoneNumber(place.getPhoneNumber().toString());
+                                    placeInfo.setPhoneNumber(address.getPhone().toString());
                                 }
                                 else
                                 {
@@ -499,12 +546,13 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
 
                                 if(address.getUrl() != null)
                                 {
-                                    placeInfo.setWebsiteUrl(place.getWebsiteUri().toString());
+                                    placeInfo.setWebsiteUrl(address.getUrl().toString());
                                 }
                                 else
                                 {
                                     placeInfo.setWebsiteUrl("N/A");
                                 }
+
                                 moveCamera(new LatLng(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude()), DEFAULT_ZOOM, placeInfo);
                             } else
                             {
@@ -546,7 +594,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             try
             {
                 String details =
-                        "Address: " + placeInfo.getSubThoroughfare() + ", " + placeInfo.getThoroughfare() + ", " + placeInfo.getLocality() + ", " + placeInfo.getPostCode() + "\n" +
+                        "Address: " + placeInfo.getSubThoroughfare() + " " + placeInfo.getThoroughfare() + " " + placeInfo.getLocality() + " " + placeInfo.getPostCode() + "\n" +
                                 "Phone Number: " + placeInfo.getPhoneNumber() + "\n" +
                                 "Website: " + placeInfo.getWebsiteUrl() + "\n";
 
@@ -719,7 +767,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                     if (list.size() > 0)
                     {
                         Address address = list.get(0);
-
                         if(address.getSubThoroughfare() != null)
                         {
                             placeInfo.setSubThoroughfare(address.getSubThoroughfare());
@@ -729,13 +776,14 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                             placeInfo.setSubThoroughfare(place.getName().toString());
                         }
 
-                        if(address.getSubThoroughfare() != null)
+
+                        if(address.getThoroughfare() != null)
                         {
                             placeInfo.setThoroughfare(address.getThoroughfare());
                         }
                         else
                         {
-                            placeInfo.setSubThoroughfare("");
+                            placeInfo.setThoroughfare("");
                         }
 
                         if(address.getLocality() != null)
@@ -778,8 +826,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                         {
                             placeInfo.setWebsiteUrl("N/A");
                         }
-
-
                     }
 
                     Log.d(TAG, "onResult: " + placeInfo.toString());
