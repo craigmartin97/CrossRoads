@@ -271,16 +271,36 @@
                 android:hint="Postcode"
                 android:inputType="textPostalAddress" />
 
+            <Button
+                android:id="@+id/buttonUploadImages"
+                android:layout_width="300sp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextJobDelPostcode"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="34dp"
+                android:background="#2bbc9b"
+                android:text="Upload Multiple Images"
+                android:textColor="#FFFFFF" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycleViewImages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/buttonUploadImages"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="13dp">
+
+            </android.support.v7.widget.RecyclerView>
+
 
             <Button
                 android:id="@+id/buttonAddJob"
                 android:layout_width="300sp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/editTextJobDelPostcode"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="40dp"
-                android:layout_marginTop="16dp"
+                android:layout_alignStart="@+id/buttonUploadImages"
+                android:layout_marginTop="36dp"
                 android:background="#2bbc9b"
+                android:layout_below="@+id/recycleViewImages"
                 android:text="Post Advert"
                 android:textColor="#FFFFFF" />
 

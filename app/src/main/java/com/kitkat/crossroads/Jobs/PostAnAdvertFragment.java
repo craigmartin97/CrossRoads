@@ -4,12 +4,18 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +32,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,19 +41,28 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.ExternalClasses.UploadListAdapter;
 import com.kitkat.crossroads.MapFeatures.MapFragment;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class PostAnAdvertFragment extends Fragment
 {
+    private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int GALLERY_INTENT = 2;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private static final String TAG = "PostAnActivityFragment";
 
     private DataSnapshot jobReference;
+    private StorageReference storageReference;
 
     private FirebaseAuth auth;
 
@@ -54,8 +71,12 @@ public class PostAnAdvertFragment extends Fragment
     private EditText editTextDelAddL1, editTextDelAddL2, editTextDelAddTown, editTextDelAddPostcode;
     private Spinner editTextJobSize, editTextJobType;
     private ScrollView scrollView;
+    private RecyclerView recyclerViewImages;
 
-    private Button buttonPostAd;
+    private List<String> fileNameList, fileDoneList;
+    private UploadListAdapter uploadListAdapter;
+
+    private Button buttonPostAd, buttonUploadImages;
 
     private DatabaseReference databaseReference;
 
@@ -81,13 +102,14 @@ public class PostAnAdvertFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
         // Inflate the layout for this fragment
 
         auth = FirebaseAuth.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         if (auth.getCurrentUser() == null)
         {
@@ -105,6 +127,21 @@ public class PostAnAdvertFragment extends Fragment
         FirebaseUser user = auth.getCurrentUser();
 
         buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
+        buttonUploadImages = (Button) view.findViewById(R.id.buttonUploadImages);
+        recyclerViewImages = (RecyclerView) view.findViewById(R.id.recycleViewImages);
+
+        buttonUploadImages.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Picture"), GALLERY_INTENT);
+            }
+        });
 
         scrollView = (ScrollView) view.findViewById(R.id.advertScrollView);
 
@@ -387,6 +424,91 @@ public class PostAnAdvertFragment extends Fragment
         }
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        fileNameList = new ArrayList<>();
+        fileDoneList = new ArrayList<>();
+        uploadListAdapter = new UploadListAdapter(fileNameList, fileDoneList);
+        recyclerViewImages.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewImages.setAdapter(uploadListAdapter);
+
+
+        if(data.getClipData() != null)
+        {
+            int totalItems = data.getClipData().getItemCount();
+            for(int i = 0; i < totalItems; i++)
+            {
+                Uri fileUri = data.getClipData().getItemAt(i).getUri();
+                String fileName = getFileName(fileUri);
+                fileNameList.add(fileName);
+                fileDoneList.add("Uploading");
+                uploadListAdapter.notifyDataSetChanged();
+
+                final int finalI = i;
+                String userId= auth.getCurrentUser().getUid();
+                StorageReference storageReference = this.storageReference.child("JobImages").child(userId).child(fileName);
+                storageReference.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                    {
+                        Toast.makeText(getActivity(), "Uploaded Images", Toast.LENGTH_SHORT).show();
+                        fileDoneList.remove(finalI);
+                        fileDoneList.add(finalI, "Done");
+                        uploadListAdapter.notifyDataSetChanged();
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                        Toast.makeText(getActivity(), "Failed To Upload Images, Try Again", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+
+            Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
+
+        }
+        else if(data.getData() != null)
+        {
+            Toast.makeText(getActivity(), "Selected Single File", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public String getFileName(Uri uri)
+    {
+        String result = null;
+        if(uri.getScheme().equals("content"))
+        {
+            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+            try
+            {
+                if(cursor != null && cursor.moveToFirst())
+                {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally
+            {
+                cursor.close();
+            }
+        }
+        if(result == null)
+        {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if(cut != -1)
+            {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
     private void saveJobInformation()
