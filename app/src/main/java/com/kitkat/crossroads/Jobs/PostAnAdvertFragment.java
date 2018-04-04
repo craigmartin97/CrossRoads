@@ -294,9 +294,47 @@ public class PostAnAdvertFragment extends Fragment
             Bundle bundle = getArguments();
             if(bundle.getSerializable("JobInfo") != null)
             {
+//                String adName = editTextAdName.getText().toString().trim();
+//                String adDescription = editTextAdDescription.getText().toString().trim();
+//                String jobSize = editTextJobSize.getSelectedItem().toString().trim();
+//                String jobType = editTextJobType.getSelectedItem().toString().trim();
+//                String colDate = editTextColDate.getText().toString().trim();
+//                String colTime = editTextColTime.getText().toString().trim();
+//                String colL1 = editTextColAddL1.getText().toString().trim();
+//                String colL2 = editTextColAddL2.getText().toString().trim();
+//                String colTown = editTextColAddTown.getText().toString().trim();
+//                String colPostcode = editTextColAddPostcode.getText().toString().trim().toUpperCase();
+//                String delL1 = editTextDelAddL1.getText().toString().trim();
+//                String delL2 = editTextDelAddL2.getText().toString().trim();
+//                String delTown = editTextDelAddTown.getText().toString().trim();
+//                String delPostcode = editTextDelAddPostcode.getText().toString().trim().toUpperCase();
+
+
                 JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
-                editTextAdDescription.setText(jobInformation.getAdvertDescription());
                 editTextAdName.setText(jobInformation.getAdvertName());
+                editTextAdDescription.setText(jobInformation.getAdvertDescription());
+
+                ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
+                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                int counter = 0;
+                for(int i = 0; i < adapter2.getCount(); i++)
+                {
+                    if(jobInformation.getJobSize().equals(adapter2.getItem(i)))
+                    {
+                        editTextJobSize.setSelection(i);
+                    }
+                    else
+                    {
+                        counter++;
+                    }
+                }
+                editTextColDate.setText(jobInformation.getCollectionDate());
+                editTextColTime.setText(jobInformation.getCollectionTime());
+                editTextDelAddL1.setText(jobInformation.getDelL1());
+                editTextDelAddL2.setText(jobInformation.getDelL2());
+                editTextDelAddTown.setText(jobInformation.getDelTown());
+                editTextDelAddPostcode.setText(jobInformation.getDelPostcode());
             }
 
             if(bundle.getSerializable("JobAddress") != null)
