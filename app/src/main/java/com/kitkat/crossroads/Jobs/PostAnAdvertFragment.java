@@ -571,7 +571,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 }
             }
         });
-
         // Map 2 for Delivery
         editTextSearch2.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
