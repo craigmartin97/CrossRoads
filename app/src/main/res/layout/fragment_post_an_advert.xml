@@ -282,16 +282,14 @@
                 android:text="Upload Multiple Images"
                 android:textColor="#FFFFFF" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycleViewImages"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/jobImage1"
+                android:layout_width="100dp"
+                android:layout_height="115dp"
+                android:layout_alignStart="@+id/buttonUploadImages"
                 android:layout_below="@+id/buttonUploadImages"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="13dp">
-
-            </android.support.v7.widget.RecyclerView>
-
+                android:layout_marginStart="29dp"
+                android:layout_marginTop="16dp" />
 
             <Button
                 android:id="@+id/buttonAddJob"
@@ -300,7 +298,7 @@
                 android:layout_alignStart="@+id/buttonUploadImages"
                 android:layout_marginTop="36dp"
                 android:background="#2bbc9b"
-                android:layout_below="@+id/recycleViewImages"
+                android:layout_below="@+id/jobImage1"
                 android:text="Post Advert"
                 android:textColor="#FFFFFF" />
 

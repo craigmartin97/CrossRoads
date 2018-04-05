@@ -2,20 +2,22 @@ package com.kitkat.crossroads.Jobs;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -45,19 +48,26 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
-import com.kitkat.crossroads.ExternalClasses.UploadListAdapter;
 import com.kitkat.crossroads.MapFeatures.MapFragment;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
+import com.kitkat.crossroads.UploadImageFragment;
 
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
-import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class PostAnAdvertFragment extends Fragment
 {
-    private static final int RESULT_LOAD_IMAGE = 1;
+    private static ImageView profileImage;
+    private Uri imageUri;
+    private static byte[] data;
     private static final int GALLERY_INTENT = 2;
+    private ProgressDialog progressDialog;
+
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private static final String TAG = "PostAnActivityFragment";
 
@@ -71,10 +81,6 @@ public class PostAnAdvertFragment extends Fragment
     private EditText editTextDelAddL1, editTextDelAddL2, editTextDelAddTown, editTextDelAddPostcode;
     private Spinner editTextJobSize, editTextJobType;
     private ScrollView scrollView;
-    private RecyclerView recyclerViewImages;
-
-    private List<String> fileNameList, fileDoneList;
-    private UploadListAdapter uploadListAdapter;
 
     private Button buttonPostAd, buttonUploadImages;
 
@@ -122,26 +128,14 @@ public class PostAnAdvertFragment extends Fragment
             initButton2(view);
         }
 
+        profileImage = view.findViewById(R.id.jobImage1);
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         FirebaseUser user = auth.getCurrentUser();
 
         buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
         buttonUploadImages = (Button) view.findViewById(R.id.buttonUploadImages);
-        recyclerViewImages = (RecyclerView) view.findViewById(R.id.recycleViewImages);
-
-        buttonUploadImages.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Picture"), GALLERY_INTENT);
-            }
-        });
 
         scrollView = (ScrollView) view.findViewById(R.id.advertScrollView);
 
@@ -423,6 +417,17 @@ public class PostAnAdvertFragment extends Fragment
             Log.e(TAG, e.getMessage());
         }
 
+        buttonUploadImages.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, GALLERY_INTENT);
+            }
+        });
+
         return view;
     }
 
@@ -430,85 +435,118 @@ public class PostAnAdvertFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        // Get the current user
+        UploadImageFragment imageFragment = new UploadImageFragment();
+        final FirebaseUser user = auth.getCurrentUser();
 
-        fileNameList = new ArrayList<>();
-        fileDoneList = new ArrayList<>();
-        uploadListAdapter = new UploadListAdapter(fileNameList, fileDoneList);
-        recyclerViewImages.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerViewImages.setAdapter(uploadListAdapter);
-
-
-        if(data.getClipData() != null)
+        // Redirect user to there gallery and get them to select an image
+        if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
-            int totalItems = data.getClipData().getItemCount();
-            for(int i = 0; i < totalItems; i++)
-            {
-                Uri fileUri = data.getClipData().getItemAt(i).getUri();
-                String fileName = getFileName(fileUri);
-                fileNameList.add(fileName);
-                fileDoneList.add("Uploading");
-                uploadListAdapter.notifyDataSetChanged();
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("Displaying Image...");
+            progressDialog.show();
 
-                final int finalI = i;
-                String userId= auth.getCurrentUser().getUid();
-                StorageReference storageReference = this.storageReference.child("JobImages").child(userId).child(fileName);
-                storageReference.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-                {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                    {
-                        Toast.makeText(getActivity(), "Uploaded Images", Toast.LENGTH_SHORT).show();
-                        fileDoneList.remove(finalI);
-                        fileDoneList.add(finalI, "Done");
-                        uploadListAdapter.notifyDataSetChanged();
-                    }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-                        Toast.makeText(getActivity(), "Failed To Upload Images, Try Again", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-            }
-
-            Toast.makeText(getActivity(), "Selected Multiple Files", Toast.LENGTH_SHORT).show();
-
-        }
-        else if(data.getData() != null)
-        {
-            Toast.makeText(getActivity(), "Selected Single File", Toast.LENGTH_SHORT).show();
+            imageUri = data.getData();
+            final Uri uri = data.getData();
+            setUpImageTransfer(uri);
         }
     }
 
-    public String getFileName(Uri uri)
+    /**
+     * Setting image that has been selected and turning it into a bitmap.
+     * Putting it into an input scream and sending it to be modified
+     * @param uri
+     */
+    public void setUpImageTransfer(Uri uri)
     {
-        String result = null;
-        if(uri.getScheme().equals("content"))
+        progressDialog.dismiss();
+        try
         {
-            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-            try
-            {
-                if(cursor != null && cursor.moveToFirst())
-                {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            } finally
-            {
-                cursor.close();
-            }
-        }
-        if(result == null)
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            ContentResolver contentResolver = getActivity().getContentResolver();
+            InputStream inputStream = contentResolver.openInputStream(uri);
+            modifyOrientation(bitmap, inputStream);
+        } catch (IOException e)
         {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if(cut != -1)
-            {
-                result = result.substring(cut + 1);
-            }
+            e.getStackTrace();
         }
-        return result;
+    }
+
+    /**
+     * Send the image to be rotated dependant upon its needs
+     *
+     * @param bitmap
+     * @param image_absolute_path
+     * @return
+     * @throws IOException
+     */
+    public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException
+    {
+        android.support.media.ExifInterface exifInterface = new android.support.media.ExifInterface(image_absolute_path);
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation)
+        {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotate(bitmap, 90);
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotate(bitmap, 180);
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotate(bitmap, 270);
+
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                return flip(bitmap, true, false);
+
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                return flip(bitmap, false, true);
+            default:
+                return bitmap;
+        }
+    }
+
+    /**
+     * If the uploaded image needed to be rotated
+     *
+     * @param bitmap
+     * @param degrees
+     * @return
+     */
+    public static Bitmap rotate(Bitmap bitmap, float degrees)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        profileImage.setImageBitmap(bitmap1);
+
+        profileImage.buildDrawingCache();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        data = byteArrayOutputStream.toByteArray();
+        return bitmap1;
+    }
+
+    /**
+     * If the uploaded image needed to be flipped
+     *
+     * @param bitmap
+     * @param horizontal
+     * @param vertical
+     * @return
+     */
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical)
+    {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        profileImage.setImageBitmap(bitmap1);
+
+        profileImage.buildDrawingCache();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        data = byteArrayOutputStream.toByteArray();
+        return bitmap1;
     }
 
     private void saveJobInformation()
@@ -643,6 +681,25 @@ public class PostAnAdvertFragment extends Fragment
                 String courierID = " ";
                 String posterID = " ";
                 String jobStatus = " ";
+
+                final StorageReference filePath = storageReference.child("Images").child(auth.getCurrentUser().getUid()).child(imageUri.getLastPathSegment());
+                filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                    {
+                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 // job info obj
                 final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
