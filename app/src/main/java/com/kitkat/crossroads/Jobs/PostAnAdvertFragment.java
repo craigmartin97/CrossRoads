@@ -42,9 +42,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
@@ -107,6 +105,8 @@ public class PostAnAdvertFragment extends Fragment
 
     private static final int Error_Dialog_Request = 9001;
 
+    private ArrayAdapter<CharSequence> adapter1, adapter2;
+
     public PostAnAdvertFragment()
     {
         // Required empty public constructor
@@ -124,6 +124,7 @@ public class PostAnAdvertFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        databaseConnections();
     }
 
     @Override
@@ -131,9 +132,6 @@ public class PostAnAdvertFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
-        // Inflate the layout for this fragment
-
-        databaseConnections();
         getViewsByIds(view);
 
         if(isServicesOK())
@@ -142,15 +140,109 @@ public class PostAnAdvertFragment extends Fragment
             initButton2(view);
         }
 
+        createOnClickListeners();
+
+        // Get map info
+        try
+        {
+            Bundle bundle = getArguments();
+            if(bundle.getSerializable("JobInfo") != null)
+            {
+                JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
+                getJobInformation(jobInformation);
+
+                editTextDelAddL1.setText(jobInformation.getDelL1());
+                editTextDelAddL2.setText(jobInformation.getDelL2());
+                editTextDelAddTown.setText(jobInformation.getDelTown());
+                editTextDelAddPostcode.setText(jobInformation.getDelPostcode());
+
+                if(bundle.getSerializable("JobAddress") != null)
+                {
+                    PlaceInformation address = (PlaceInformation) bundle.getSerializable("JobAddress");
+                    editTextColAddL1.setText(address.getSubThoroughfare());
+                    editTextColAddL2.setText(address.getThoroughfare());
+                    editTextColAddTown.setText(address.getLocality());
+                    editTextColAddPostcode.setText(address.getPostCode());
+                }
+            }
+
+            if(bundle.getSerializable("JobInfoDel") != null)
+            {
+                JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfoDel");
+                getJobInformation(jobInformation);
+
+                editTextColAddL1.setText(jobInformation.getColL1());
+                editTextColAddL2.setText(jobInformation.getColL2());
+                editTextColAddTown.setText(jobInformation.getColTown());
+                editTextColAddPostcode.setText(jobInformation.getColPostcode());
+
+                PlaceInformation address = (PlaceInformation) bundle.getSerializable("JobAddress");
+                editTextDelAddL1.setText(address.getSubThoroughfare());
+                editTextDelAddL2.setText(address.getThoroughfare());
+                editTextDelAddTown.setText(address.getLocality());
+                editTextDelAddPostcode.setText(address.getPostCode());
+            }
 
 
-        editTextJobSize.setAdapter(createSpinnerAdapter(R.array.job_sizes));
+        } catch(NullPointerException e)
+        {
+            Log.e(TAG, e.getMessage());
+        }
+        return view;
+    }
 
-        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        editTextJobType.setAdapter(adapter1);
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        auth = databaseConnections.getAuth();
+        user = databaseConnections.getCurrentUser();
+        databaseReference = databaseConnections.getDatabaseReference();
+        storageReference = databaseConnections.getStorageReference();
 
+        if (auth.getCurrentUser() == null)
+        {
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+        }
+    }
 
+    private void getViewsByIds(View view)
+    {
+        // Set the widgets to variables
+        profileImage = view.findViewById(R.id.jobImage1);
+        buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
+        buttonUploadImages = (Button) view.findViewById(R.id.buttonUploadImages);
+        scrollView = (ScrollView) view.findViewById(R.id.advertScrollView);
+        editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
+        editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
+        editTextJobSize = (Spinner) view.findViewById(R.id.editTextJobSize);
+        editTextJobType = (Spinner) view.findViewById(R.id.editTextJobType);
+        editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
+        editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
+        editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
+        editTextColAddL2 = (EditText) view.findViewById(R.id.editTextJobColL2);
+        editTextColAddTown = (EditText) view.findViewById(R.id.editTextJobColTown);
+        editTextColAddPostcode = (EditText) view.findViewById(R.id.editTextJobColPostcode);
+        editTextDelAddL1 = (EditText) view.findViewById(R.id.editTextJobDelL1);
+        editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
+        editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
+        editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
+
+        // Create adapters for drop down lists
+        adapter1 = createSpinnerAdapter(R.array.job_sizes);
+        adapter2 = createSpinnerAdapter(R.array.job_types);
+        editTextJobSize.setAdapter(adapter1);
+        editTextJobType.setAdapter(adapter2);
+    }
+
+    private ArrayAdapter<CharSequence> createSpinnerAdapter(int arrayField)
+    {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), arrayField, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
+    }
+
+    private void createOnClickListeners()
+    {
         editTextColDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -170,12 +262,12 @@ public class PostAnAdvertFragment extends Fragment
                 dialog.show();
             }
         });
+
         dateSetListener = new DatePickerDialog.OnDateSetListener()
         {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
             {
-
                 month = month + 1;
                 Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
 
@@ -196,7 +288,8 @@ public class PostAnAdvertFragment extends Fragment
                     String newDay = "0" + dayOfMonth;
                     String newMonth = "0" + month;
                     editTextColDate.setText(newDay + "/" + newMonth + "/" + year);
-                } else
+                }
+                else
                 {
                     editTextColDate.setText(dayOfMonth + "/" + month + "/" + year);
                 }
@@ -205,7 +298,6 @@ public class PostAnAdvertFragment extends Fragment
 
         editTextColTime.setOnClickListener(new View.OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
@@ -230,186 +322,63 @@ public class PostAnAdvertFragment extends Fragment
 
         buttonPostAd.setOnClickListener(new View.OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
 
+                String enterDes = "Please Enter A Description";
+                String enterTown = "Please Enter A Town";
+                String enterAddress1 = "Please Enter An Address Line 1";
+                String enterAddress2 = "Please Enter An Address Line 2";
+                String enterPostCode = "Please Enter A Valid PostCode";
+
                 if (TextUtils.isEmpty(editTextAdName.getText()))
                 {
-                    editTextAdName.setText("");
-                    editTextAdName.setHintTextColor(Color.RED);
-                    editTextAdName.setHint("Please enter Advert Name!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
                 }
                 if (TextUtils.isEmpty(editTextAdDescription.getText()))
                 {
-                    editTextAdDescription.setText("");
-                    editTextAdDescription.setHintTextColor(Color.RED);
-                    editTextAdDescription.setHint("Please enter Advert Description!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
-                }
-                if (TextUtils.isEmpty(editTextColDate.getText()))
-                {
-                    editTextColDate.setText("");
-                    editTextColDate.setHintTextColor(Color.RED);
-                    editTextColDate.setHint("Please enter a Collection Date!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
-                }
-                if (TextUtils.isEmpty(editTextColTime.getText()))
-                {
-                    editTextColTime.setText("");
-                    editTextColTime.setHintTextColor(Color.RED);
-                    editTextColTime.setHint("Please enter a Collection Time!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
                 }
                 if (TextUtils.isEmpty(editTextColAddL1.getText()))
                 {
-                    editTextColAddL1.setText("");
-                    editTextColAddL1.setHintTextColor(Color.RED);
-                    editTextColAddL1.setHint("Please enter Address Line 1!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextColAddL1,enterAddress1);
+                }
+                if(TextUtils.isEmpty(editTextColAddL2.getText()))
+                {
+                    ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
                 }
                 if (TextUtils.isEmpty(editTextColAddTown.getText()))
                 {
-                    editTextColAddTown.setText("");
-                    editTextColAddTown.setHintTextColor(Color.RED);
-                    editTextColAddTown.setHint("Please enter a Town!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextColAddTown, enterTown);
                 }
-                if ((!(editTextColAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextColAddPostcode.getText())))
+                if ((!(editTextColAddPostcode.getText().toString().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(editTextColAddPostcode.getText())))
                 {
-                    editTextColAddPostcode.setText("");
-                    editTextColAddPostcode.setHintTextColor(Color.RED);
-                    editTextColAddPostcode.setHint("Please enter valid Postcode!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
                 }
                 if (TextUtils.isEmpty(editTextDelAddL1.getText()))
                 {
-                    editTextDelAddL1.setText("");
-                    editTextDelAddL1.setHintTextColor(Color.RED);
-                    editTextDelAddL1.setHint("Please enter Address Line 1!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
+                }
+                if(TextUtils.isEmpty(editTextColAddL2.getText()))
+                {
+                    ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
                 }
                 if (TextUtils.isEmpty(editTextDelAddTown.getText()))
                 {
-                    editTextDelAddTown.setText("");
-                    editTextDelAddTown.setHintTextColor(Color.RED);
-                    editTextDelAddTown.setHint("Please enter a Town!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextDelAddTown, enterTown);
                 }
-                if ((!(editTextDelAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextDelAddPostcode.getText())))
+                if ((!(editTextDelAddPostcode.getText().toString().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(editTextDelAddPostcode.getText())))
                 {
-                    editTextDelAddPostcode.setText("");
-                    editTextDelAddPostcode.setHintTextColor(Color.RED);
-                    editTextDelAddPostcode.setHint("Please enter valid Postcode!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
-                } else
+                    ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
+                }
+                else
                 {
                     saveJobInformation();
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack("tag").commit();
+                    newFragmentTransaction(new FindAJobFragment());
                 }
             }
         });
-
-        // Get map info
-        try
-        {
-            Bundle bundle = getArguments();
-            if(bundle.getSerializable("JobInfo") != null)
-            {
-                JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
-                editTextAdName.setText(jobInformation.getAdvertName());
-                editTextAdDescription.setText(jobInformation.getAdvertDescription());
-
-                ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
-                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
-                adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                for(int i = 0; i < adapter2.getCount(); i++)
-                {
-                    if(jobInformation.getJobSize().equals(adapter2.getItem(i)))
-                    {
-                        editTextJobSize.setSelection(i);
-                    }
-                }
-
-                for(int i = 0; i < adapter3.getCount(); i++)
-                {
-                    if(jobInformation.getJobType().equals(adapter3.getItem(i)))
-                    {
-                        editTextJobType.setSelection(i);
-                    }
-                }
-
-                editTextColDate.setText(jobInformation.getCollectionDate());
-                editTextColTime.setText(jobInformation.getCollectionTime());
-                editTextDelAddL1.setText(jobInformation.getDelL1());
-                editTextDelAddL2.setText(jobInformation.getDelL2());
-                editTextDelAddTown.setText(jobInformation.getDelTown());
-                editTextDelAddPostcode.setText(jobInformation.getDelPostcode());
-
-                if(bundle.getSerializable("JobAddress") != null)
-                {
-                    PlaceInformation address = (PlaceInformation) bundle.getSerializable("JobAddress");
-                    editTextColAddL1.setText(address.getSubThoroughfare());
-                    editTextColAddL2.setText(address.getThoroughfare());
-                    editTextColAddTown.setText(address.getLocality());
-                    editTextColAddPostcode.setText(address.getPostCode());
-                }
-            }
-
-            if(bundle.getSerializable("JobInfoDel") != null)
-            {
-                JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfoDel");
-                editTextAdName.setText(jobInformation.getAdvertName());
-                editTextAdDescription.setText(jobInformation.getAdvertDescription());
-
-                ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
-                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
-                adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                for(int i = 0; i < adapter2.getCount(); i++)
-                {
-                    if(jobInformation.getJobSize().equals(adapter2.getItem(i)))
-                    {
-                        editTextJobSize.setSelection(i);
-                    }
-                }
-
-                for(int i = 0; i < adapter3.getCount(); i++)
-                {
-                    if(jobInformation.getJobType().equals(adapter3.getItem(i)))
-                    {
-                        editTextJobType.setSelection(i);
-                    }
-                }
-
-                editTextColDate.setText(jobInformation.getCollectionDate());
-                editTextColTime.setText(jobInformation.getCollectionTime());
-                editTextColAddL1.setText(jobInformation.getColL1());
-                editTextColAddL2.setText(jobInformation.getColL2());
-                editTextColAddTown.setText(jobInformation.getColTown());
-                editTextColAddPostcode.setText(jobInformation.getColPostcode());
-
-                PlaceInformation address = (PlaceInformation) bundle.getSerializable("JobAddress");
-                editTextDelAddL1.setText(address.getSubThoroughfare());
-                editTextDelAddL2.setText(address.getThoroughfare());
-                editTextDelAddTown.setText(address.getLocality());
-                editTextDelAddPostcode.setText(address.getPostCode());
-            }
-
-
-        } catch(NullPointerException e)
-        {
-            Log.e(TAG, e.getMessage());
-        }
 
         buttonUploadImages.setOnClickListener(new View.OnClickListener()
         {
@@ -421,63 +390,57 @@ public class PostAnAdvertFragment extends Fragment
                 startActivityForResult(intent, GALLERY_INTENT);
             }
         });
-
-        return view;
     }
 
-    private void databaseConnections()
+    private void ifWidgetTextIsNull(EditText text, String message)
     {
-        DatabaseConnections databaseConnections = new DatabaseConnections();
-        auth = databaseConnections.getAuth();
-        user = databaseConnections.getCurrentUser();
-        databaseReference = databaseConnections.getDatabaseReference();
-        storageReference = databaseConnections.getStorageReference();
+        text.setText("");
+        text.setHintTextColor(Color.RED);
+        text.setHint(message);
+        scrollView.fullScroll(ScrollView.FOCUS_UP);
+    }
 
-        if (auth.getCurrentUser() == null)
+    private void newFragmentTransaction(Fragment fragmentToTransferTo)
+    {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
+    }
+
+    private void getJobInformation(JobInformation jobInformation)
+    {
+        editTextAdName.setText(jobInformation.getAdvertName());
+        editTextAdDescription.setText(jobInformation.getAdvertDescription());
+
+        for(int i = 0; i < adapter1.getCount(); i++)
         {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
+            if(jobInformation.getJobSize().equals(adapter1.getItem(i)))
+            {
+                editTextJobSize.setSelection(i);
+            }
         }
+
+        for(int i = 0; i < adapter2.getCount(); i++)
+        {
+            if(jobInformation.getJobType().equals(adapter2.getItem(i)))
+            {
+                editTextJobType.setSelection(i);
+            }
+        }
+
+        editTextColDate.setText(jobInformation.getCollectionDate());
+        editTextColTime.setText(jobInformation.getCollectionTime());
     }
 
-    private void getViewsByIds(View view)
+    private String getPostCodeRegex()
     {
-        profileImage = view.findViewById(R.id.jobImage1);
-
-
-        buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
-        buttonUploadImages = (Button) view.findViewById(R.id.buttonUploadImages);
-        scrollView = (ScrollView) view.findViewById(R.id.advertScrollView);
-        editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
-        editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
-        editTextJobSize = (Spinner) view.findViewById(R.id.editTextJobSize);
-        editTextJobType = (Spinner) view.findViewById(R.id.editTextJobType);
-        editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
-        editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
-        editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
-        editTextColAddL2 = (EditText) view.findViewById(R.id.editTextJobColL2);
-        editTextColAddTown = (EditText) view.findViewById(R.id.editTextJobColTown);
-        editTextColAddPostcode = (EditText) view.findViewById(R.id.editTextJobColPostcode);
-        editTextDelAddL1 = (EditText) view.findViewById(R.id.editTextJobDelL1);
-        editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
-        editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
-        editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
+        return "^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$";
     }
-
-    private ArrayAdapter<CharSequence> createSpinnerAdapter(int arrayField)
-    {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), arrayField, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        // Get the current user
-        UploadImageFragment imageFragment = new UploadImageFragment();
-        final FirebaseUser user = auth.getCurrentUser();
 
         // Redirect user to there gallery and get them to select an image
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
