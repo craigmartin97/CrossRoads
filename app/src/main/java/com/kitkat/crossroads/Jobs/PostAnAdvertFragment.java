@@ -48,6 +48,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.MapFeatures.MapFragment;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
@@ -62,6 +63,31 @@ import static android.app.Activity.RESULT_OK;
 
 public class PostAnAdvertFragment extends Fragment
 {
+    /**
+     * Get the authentication to the Firebase Authentication area
+     */
+    private FirebaseAuth auth;
+
+    /**
+     * Get the CurrentUsers ID
+     */
+    private String user;
+
+    /**
+     * Get the reference to the Firebase Database
+     */
+    private DatabaseReference databaseReference;
+
+    /**
+     * Store the jobReference
+     */
+    private DataSnapshot jobReference;
+
+    /**
+     * Get the reference to the Firebase Storage area to store the Jobs Image In
+     */
+    private StorageReference storageReference;
+
     private static ImageView profileImage;
     private Uri imageUri;
     private static byte[] data;
@@ -71,11 +97,6 @@ public class PostAnAdvertFragment extends Fragment
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private static final String TAG = "PostAnActivityFragment";
 
-    private DataSnapshot jobReference;
-    private StorageReference storageReference;
-
-    private FirebaseAuth auth;
-
     private EditText editTextAdName, editTextAdDescription, editTextColDate, editTextColTime;
     private EditText editTextColAddL1, editTextColAddL2, editTextColAddTown, editTextColAddPostcode;
     private EditText editTextDelAddL1, editTextDelAddL2, editTextDelAddTown, editTextDelAddPostcode;
@@ -83,8 +104,6 @@ public class PostAnAdvertFragment extends Fragment
     private ScrollView scrollView;
 
     private Button buttonPostAd, buttonUploadImages;
-
-    private DatabaseReference databaseReference;
 
     private static final int Error_Dialog_Request = 9001;
 
@@ -114,13 +133,8 @@ public class PostAnAdvertFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
         // Inflate the layout for this fragment
 
-        auth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
-
-        if (auth.getCurrentUser() == null)
-        {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-        }
+        databaseConnections();
+        getViewsByIds(view);
 
         if(isServicesOK())
         {
@@ -128,28 +142,15 @@ public class PostAnAdvertFragment extends Fragment
             initButton2(view);
         }
 
-        profileImage = view.findViewById(R.id.jobImage1);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        FirebaseUser user = auth.getCurrentUser();
+        editTextJobSize.setAdapter(createSpinnerAdapter(R.array.job_sizes));
 
-        buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
-        buttonUploadImages = (Button) view.findViewById(R.id.buttonUploadImages);
-
-        scrollView = (ScrollView) view.findViewById(R.id.advertScrollView);
-
-        editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
-        editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
-        editTextJobSize = (Spinner) view.findViewById(R.id.editTextJobSize);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        editTextJobSize.setAdapter(adapter);
-        editTextJobType = (Spinner) view.findViewById(R.id.editTextJobType);
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         editTextJobType.setAdapter(adapter1);
-        editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
+
+
         editTextColDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -201,7 +202,7 @@ public class PostAnAdvertFragment extends Fragment
                 }
             }
         };
-        editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
+
         editTextColTime.setOnClickListener(new View.OnClickListener()
         {
 
@@ -226,14 +227,7 @@ public class PostAnAdvertFragment extends Fragment
                 mTimePicker.show();
             }
         });
-        editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
-        editTextColAddL2 = (EditText) view.findViewById(R.id.editTextJobColL2);
-        editTextColAddTown = (EditText) view.findViewById(R.id.editTextJobColTown);
-        editTextColAddPostcode = (EditText) view.findViewById(R.id.editTextJobColPostcode);
-        editTextDelAddL1 = (EditText) view.findViewById(R.id.editTextJobDelL1);
-        editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
-        editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
-        editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
+
         buttonPostAd.setOnClickListener(new View.OnClickListener()
         {
 
@@ -431,6 +425,52 @@ public class PostAnAdvertFragment extends Fragment
         return view;
     }
 
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        auth = databaseConnections.getAuth();
+        user = databaseConnections.getCurrentUser();
+        databaseReference = databaseConnections.getDatabaseReference();
+        storageReference = databaseConnections.getStorageReference();
+
+        if (auth.getCurrentUser() == null)
+        {
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+        }
+    }
+
+    private void getViewsByIds(View view)
+    {
+        profileImage = view.findViewById(R.id.jobImage1);
+
+
+        buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
+        buttonUploadImages = (Button) view.findViewById(R.id.buttonUploadImages);
+        scrollView = (ScrollView) view.findViewById(R.id.advertScrollView);
+        editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
+        editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
+        editTextJobSize = (Spinner) view.findViewById(R.id.editTextJobSize);
+        editTextJobType = (Spinner) view.findViewById(R.id.editTextJobType);
+        editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
+        editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
+        editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
+        editTextColAddL2 = (EditText) view.findViewById(R.id.editTextJobColL2);
+        editTextColAddTown = (EditText) view.findViewById(R.id.editTextJobColTown);
+        editTextColAddPostcode = (EditText) view.findViewById(R.id.editTextJobColPostcode);
+        editTextDelAddL1 = (EditText) view.findViewById(R.id.editTextJobDelL1);
+        editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
+        editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
+        editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
+    }
+
+    private ArrayAdapter<CharSequence> createSpinnerAdapter(int arrayField)
+    {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), arrayField, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -569,6 +609,25 @@ public class PostAnAdvertFragment extends Fragment
         String jobStatus = "Pending";
         String courierID = " ";
 
+        final StorageReference filePath = storageReference.child("Images").child(auth.getCurrentUser().getUid()).child(imageUri.getLastPathSegment());
+        filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+        {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+            {
+                Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                progressDialog.dismiss();
+                Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         FirebaseUser user = auth.getCurrentUser();
 
         String posterID = user.getUid().toString().trim();
@@ -681,25 +740,6 @@ public class PostAnAdvertFragment extends Fragment
                 String courierID = " ";
                 String posterID = " ";
                 String jobStatus = " ";
-
-                final StorageReference filePath = storageReference.child("Images").child(auth.getCurrentUser().getUid()).child(imageUri.getLastPathSegment());
-                filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-                {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                    {
-                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                    }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-                        progressDialog.dismiss();
-                        Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
-                    }
-                });
 
                 // job info obj
                 final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
