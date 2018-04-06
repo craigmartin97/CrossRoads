@@ -4,16 +4,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -35,10 +32,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,15 +46,19 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
+import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
+import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MapFeatures.MapFragment;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
-import com.kitkat.crossroads.UploadImageFragment;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -88,7 +91,7 @@ public class PostAnAdvertFragment extends Fragment
 
     private static ImageView profileImage;
     private Uri imageUri;
-    private static byte[] data;
+    private static byte[] compressData;
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
 
@@ -98,6 +101,7 @@ public class PostAnAdvertFragment extends Fragment
     private EditText editTextAdName, editTextAdDescription, editTextColDate, editTextColTime;
     private EditText editTextColAddL1, editTextColAddL2, editTextColAddTown, editTextColAddPostcode;
     private EditText editTextDelAddL1, editTextDelAddL2, editTextDelAddTown, editTextDelAddPostcode;
+    private ExpandableListView expandableListView;
     private Spinner editTextJobSize, editTextJobType;
     private ScrollView scrollView;
 
@@ -106,6 +110,12 @@ public class PostAnAdvertFragment extends Fragment
     private static final int Error_Dialog_Request = 9001;
 
     private ArrayAdapter<CharSequence> adapter1, adapter2;
+
+    private GoogleMap gMap;
+
+    private ScrollView mScrollView;
+
+    private View mView;
 
     public PostAnAdvertFragment()
     {
@@ -132,6 +142,35 @@ public class PostAnAdvertFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
+        mView = view;
+
+        if (gMap == null)
+        {
+            getChildFragmentManager().findFragmentById(R.id.map);
+            SupportMapFragment mapFragment = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(new OnMapReadyCallback()
+            {
+                @Override
+                public void onMapReady(GoogleMap googleMap)
+                {
+                    gMap = googleMap;
+                    gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    gMap.getUiSettings().setZoomControlsEnabled(true);
+
+                    mScrollView = mView.findViewById(R.id.advertScrollView); //parent scrollview in xml, give your scrollview id value
+                    ((WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map))
+                            .setListener(new WorkaroundMapFragment.OnTouchListener()
+                            {
+                                @Override
+                                public void onTouch()
+                                {
+                                    mScrollView.requestDisallowInterceptTouchEvent(true);
+                                }
+                            });
+                }
+            });
+        }
+
         getViewsByIds(view);
 
         if(isServicesOK())
@@ -182,8 +221,6 @@ public class PostAnAdvertFragment extends Fragment
                 editTextDelAddTown.setText(address.getLocality());
                 editTextDelAddPostcode.setText(address.getPostCode());
             }
-
-
         } catch(NullPointerException e)
         {
             Log.e(TAG, e.getMessage());
@@ -208,24 +245,25 @@ public class PostAnAdvertFragment extends Fragment
     private void getViewsByIds(View view)
     {
         // Set the widgets to variables
+        expandableListView = view.findViewById(R.id.expandable_list_view3);
         profileImage = view.findViewById(R.id.jobImage1);
-        buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
-        buttonUploadImages = (Button) view.findViewById(R.id.buttonUploadImages);
-        scrollView = (ScrollView) view.findViewById(R.id.advertScrollView);
-        editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
-        editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
-        editTextJobSize = (Spinner) view.findViewById(R.id.editTextJobSize);
-        editTextJobType = (Spinner) view.findViewById(R.id.editTextJobType);
-        editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
-        editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
-        editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
-        editTextColAddL2 = (EditText) view.findViewById(R.id.editTextJobColL2);
-        editTextColAddTown = (EditText) view.findViewById(R.id.editTextJobColTown);
-        editTextColAddPostcode = (EditText) view.findViewById(R.id.editTextJobColPostcode);
-        editTextDelAddL1 = (EditText) view.findViewById(R.id.editTextJobDelL1);
-        editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
-        editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
-        editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
+        buttonPostAd = view.findViewById(R.id.buttonAddJob);
+        buttonUploadImages = view.findViewById(R.id.buttonUploadImages);
+        scrollView = view.findViewById(R.id.advertScrollView);
+        editTextAdName = view.findViewById(R.id.editTextAdName);
+        editTextAdDescription = view.findViewById(R.id.editTextAdDescription);
+        editTextJobSize = view.findViewById(R.id.editTextJobSize);
+        editTextJobType = view.findViewById(R.id.editTextJobType);
+        editTextColDate = view.findViewById(R.id.editTextJobColDate);
+        editTextColTime = view.findViewById(R.id.editTextJobColTime);
+        editTextColAddL1 = view.findViewById(R.id.editTextJobColL1);
+        editTextColAddL2 = view.findViewById(R.id.editTextJobColL2);
+        editTextColAddTown = view.findViewById(R.id.editTextJobColTown);
+        editTextColAddPostcode = view.findViewById(R.id.editTextJobColPostcode);
+        editTextDelAddL1 = view.findViewById(R.id.editTextJobDelL1);
+        editTextDelAddL2 = view.findViewById(R.id.editTextJobDelL2);
+        editTextDelAddTown = view.findViewById(R.id.editTextJobDelTown);
+        editTextDelAddPostcode = view.findViewById(R.id.editTextJobDelPostcode);
 
         // Create adapters for drop down lists
         adapter1 = createSpinnerAdapter(R.array.job_sizes);
@@ -325,50 +363,48 @@ public class PostAnAdvertFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-
-                String enterDes = "Please Enter A Description";
                 String enterTown = "Please Enter A Town";
                 String enterAddress1 = "Please Enter An Address Line 1";
                 String enterAddress2 = "Please Enter An Address Line 2";
                 String enterPostCode = "Please Enter A Valid PostCode";
 
-                if (TextUtils.isEmpty(editTextAdName.getText()))
+                if (TextUtils.isEmpty(getTextInAdNameWidget()))
                 {
                     ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
                 }
-                if (TextUtils.isEmpty(editTextAdDescription.getText()))
+                if (TextUtils.isEmpty(getTextInAdDescWidget()))
                 {
                     ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
                 }
-                if (TextUtils.isEmpty(editTextColAddL1.getText()))
+                if (TextUtils.isEmpty(getTextInColAd1Wiget()))
                 {
                     ifWidgetTextIsNull(editTextColAddL1,enterAddress1);
                 }
-                if(TextUtils.isEmpty(editTextColAddL2.getText()))
+                if(TextUtils.isEmpty(getTextInColAd2Widget()))
                 {
                     ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
                 }
-                if (TextUtils.isEmpty(editTextColAddTown.getText()))
+                if (TextUtils.isEmpty(getTextInColTownWidget()))
                 {
                     ifWidgetTextIsNull(editTextColAddTown, enterTown);
                 }
-                if ((!(editTextColAddPostcode.getText().toString().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(editTextColAddPostcode.getText())))
+                if ((!(getTextInColPostCodeWidget().toString().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
                 {
                     ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
                 }
-                if (TextUtils.isEmpty(editTextDelAddL1.getText()))
+                if (TextUtils.isEmpty(getTextInDelAd1Widget()))
                 {
                     ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
                 }
-                if(TextUtils.isEmpty(editTextColAddL2.getText()))
+                if(TextUtils.isEmpty(getTextInDelAd2Widget()))
                 {
                     ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
                 }
-                if (TextUtils.isEmpty(editTextDelAddTown.getText()))
+                if (TextUtils.isEmpty(getTextInDelTownWidget()))
                 {
                     ifWidgetTextIsNull(editTextDelAddTown, enterTown);
                 }
-                if ((!(editTextDelAddPostcode.getText().toString().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(editTextDelAddPostcode.getText())))
+                if ((!(getTextInDelPostCodeWidget().toString().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
                 {
                     ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
                 }
@@ -437,6 +473,76 @@ public class PostAnAdvertFragment extends Fragment
         return "^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$";
     }
 
+    private String getTextInAdNameWidget()
+    {
+        return editTextAdName.getText().toString().trim();
+    }
+
+    private String getTextInAdDescWidget()
+    {
+        return editTextAdDescription.getText().toString().trim();
+    }
+
+    private String getTextInJobSizeWidget()
+    {
+        return editTextJobSize.getSelectedItem().toString().trim();
+    }
+
+    private String getTextInJobTypeWidget()
+    {
+        return editTextJobType.getSelectedItem().toString().trim();
+    }
+
+    private String getTextInCollectionDateWidget()
+    {
+        return editTextColDate.getText().toString().trim();
+    }
+
+    private String getTextInCollectionTimeWidget()
+    {
+        return editTextColTime.getText().toString().trim();
+    }
+
+    private String getTextInColAd1Wiget()
+    {
+        return editTextColAddL1.getText().toString().trim();
+    }
+
+    private String getTextInColAd2Widget()
+    {
+        return editTextColAddL2.getText().toString().trim();
+    }
+
+    private String getTextInColTownWidget()
+    {
+        return editTextColAddTown.getText().toString().trim();
+    }
+
+    private String getTextInColPostCodeWidget()
+    {
+        return editTextColAddPostcode.getText().toString().trim();
+    }
+
+    private String getTextInDelAd1Widget()
+    {
+        return editTextDelAddL1.getText().toString().trim();
+    }
+
+    private String getTextInDelAd2Widget()
+    {
+        return editTextDelAddL2.getText().toString().trim();
+    }
+
+    private String getTextInDelTownWidget()
+    {
+        return editTextDelAddTown.getText().toString().trim();
+    }
+
+    private String getTextInDelPostCodeWidget()
+    {
+        return editTextDelAddPostcode.getText().toString().trim();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -451,129 +557,30 @@ public class PostAnAdvertFragment extends Fragment
 
             imageUri = data.getData();
             final Uri uri = data.getData();
-            setUpImageTransfer(uri);
+
+            try
+            {
+                ExifInterfaceImageRotater exifInterfaceImageRotater = new ExifInterfaceImageRotater();
+                profileImage.setImageBitmap(exifInterfaceImageRotater.setUpImageTransfer(uri, getActivity().getContentResolver()));
+                profileImage.buildDrawingCache();
+                profileImage.getDrawingCache();
+                Bitmap bitmap = profileImage.getDrawingCache();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                compressData = byteArrayOutputStream.toByteArray();
+                progressDialog.dismiss();
+
+            } catch (Exception e)
+            {
+                Log.e(TAG, "Error Uploading Image: " + e.getMessage());
+            }
         }
-    }
-
-    /**
-     * Setting image that has been selected and turning it into a bitmap.
-     * Putting it into an input scream and sending it to be modified
-     * @param uri
-     */
-    public void setUpImageTransfer(Uri uri)
-    {
-        progressDialog.dismiss();
-        try
-        {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-            ContentResolver contentResolver = getActivity().getContentResolver();
-            InputStream inputStream = contentResolver.openInputStream(uri);
-            modifyOrientation(bitmap, inputStream);
-        } catch (IOException e)
-        {
-            e.getStackTrace();
-        }
-    }
-
-    /**
-     * Send the image to be rotated dependant upon its needs
-     *
-     * @param bitmap
-     * @param image_absolute_path
-     * @return
-     * @throws IOException
-     */
-    public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException
-    {
-        android.support.media.ExifInterface exifInterface = new android.support.media.ExifInterface(image_absolute_path);
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        switch (orientation)
-        {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotate(bitmap, 90);
-
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotate(bitmap, 180);
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotate(bitmap, 270);
-
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                return flip(bitmap, true, false);
-
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                return flip(bitmap, false, true);
-            default:
-                return bitmap;
-        }
-    }
-
-    /**
-     * If the uploaded image needed to be rotated
-     *
-     * @param bitmap
-     * @param degrees
-     * @return
-     */
-    public static Bitmap rotate(Bitmap bitmap, float degrees)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        profileImage.setImageBitmap(bitmap1);
-
-        profileImage.buildDrawingCache();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        data = byteArrayOutputStream.toByteArray();
-        return bitmap1;
-    }
-
-    /**
-     * If the uploaded image needed to be flipped
-     *
-     * @param bitmap
-     * @param horizontal
-     * @param vertical
-     * @return
-     */
-    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical)
-    {
-        Matrix matrix = new Matrix();
-        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        profileImage.setImageBitmap(bitmap1);
-
-        profileImage.buildDrawingCache();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        data = byteArrayOutputStream.toByteArray();
-        return bitmap1;
     }
 
     private void saveJobInformation()
     {
-        String adName = editTextAdName.getText().toString().trim();
-        String adDescription = editTextAdDescription.getText().toString().trim();
-        String jobSize = editTextJobSize.getSelectedItem().toString().trim();
-        String jobType = editTextJobType.getSelectedItem().toString().trim();
-        String colDate = editTextColDate.getText().toString().trim();
-        String colTime = editTextColTime.getText().toString().trim();
-        String colL1 = editTextColAddL1.getText().toString().trim();
-        String colL2 = editTextColAddL2.getText().toString().trim();
-        String colTown = editTextColAddTown.getText().toString().trim();
-        String colPostcode = editTextColAddPostcode.getText().toString().trim().toUpperCase();
-        String delL1 = editTextDelAddL1.getText().toString().trim();
-        String delL2 = editTextDelAddL2.getText().toString().trim();
-        String delTown = editTextDelAddTown.getText().toString().trim();
-        String delPostcode = editTextDelAddPostcode.getText().toString().trim().toUpperCase();
-
-        String jobStatus = "Pending";
-        String courierID = " ";
-
         final StorageReference filePath = storageReference.child("Images").child(auth.getCurrentUser().getUid()).child(imageUri.getLastPathSegment());
-        filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+        filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
         {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
@@ -591,12 +598,12 @@ public class PostAnAdvertFragment extends Fragment
             }
         });
 
-        FirebaseUser user = auth.getCurrentUser();
+        String jobStatus = "Pending";
 
-        String posterID = user.getUid().toString().trim();
-
-        final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
-                courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
+        final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
+                " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget()
+                , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
+                , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus);
 
 
         databaseReference.child("Jobs").push().setValue(jobInformation);
@@ -626,10 +633,7 @@ public class PostAnAdvertFragment extends Fragment
             }
         });
 
-
         Toast.makeText(getActivity(), "Job Added!", Toast.LENGTH_SHORT).show();
-
-
     }
 
     private void init(View view)
@@ -643,27 +647,11 @@ public class PostAnAdvertFragment extends Fragment
                 MapFragment mapFragment = new MapFragment();
                 Bundle bundle = new Bundle();
 
-                String adName = editTextAdName.getText().toString().trim();
-                String adDescription = editTextAdDescription.getText().toString().trim();
-                String jobSize = editTextJobSize.getSelectedItem().toString().trim();
-                String jobType = editTextJobType.getSelectedItem().toString().trim();
-                String colDate = editTextColDate.getText().toString().trim();
-                String colTime = editTextColTime.getText().toString().trim();
-                String colL1 = editTextColAddL1.getText().toString().trim();
-                String colL2 = editTextColAddL2.getText().toString().trim();
-                String colTown = editTextColAddTown.getText().toString().trim();
-                String colPostcode = editTextColAddPostcode.getText().toString().trim().toUpperCase();
-                String delL1 = editTextDelAddL1.getText().toString().trim();
-                String delL2 = editTextDelAddL2.getText().toString().trim();
-                String delTown = editTextDelAddTown.getText().toString().trim();
-                String delPostcode = editTextDelAddPostcode.getText().toString().trim().toUpperCase();
-                String courierID = " ";
-                String posterID = " ";
-                String jobStatus = " ";
-
                 // job info obj
-                final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
-                        courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
+                final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), " ",
+                        " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget(), getTextInColAd2Widget()
+                        , getTextInColTownWidget(), getTextInColPostCodeWidget(), getTextInDelAd1Widget(),
+                        getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), " ");
 
                 bundle.putSerializable("JobInfo", jobInformation);
                 mapFragment.setArguments(bundle);
@@ -686,27 +674,10 @@ public class PostAnAdvertFragment extends Fragment
                 MapFragment mapFragment = new MapFragment();
                 Bundle bundle = new Bundle();
 
-                String adName = editTextAdName.getText().toString().trim();
-                String adDescription = editTextAdDescription.getText().toString().trim();
-                String jobSize = editTextJobSize.getSelectedItem().toString().trim();
-                String jobType = editTextJobType.getSelectedItem().toString().trim();
-                String colDate = editTextColDate.getText().toString().trim();
-                String colTime = editTextColTime.getText().toString().trim();
-                String colL1 = editTextColAddL1.getText().toString().trim();
-                String colL2 = editTextColAddL2.getText().toString().trim();
-                String colTown = editTextColAddTown.getText().toString().trim();
-                String colPostcode = editTextColAddPostcode.getText().toString().trim().toUpperCase();
-                String delL1 = editTextDelAddL1.getText().toString().trim();
-                String delL2 = editTextDelAddL2.getText().toString().trim();
-                String delTown = editTextDelAddTown.getText().toString().trim();
-                String delPostcode = editTextDelAddPostcode.getText().toString().trim().toUpperCase();
-                String courierID = " ";
-                String posterID = " ";
-                String jobStatus = " ";
-
-                // job info obj
-                final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
-                        courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
+                final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), " ",
+                        " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget(), getTextInColAd2Widget()
+                        , getTextInColTownWidget(), getTextInColPostCodeWidget(), getTextInDelAd1Widget(),
+                        getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), " ");
 
                 bundle.putSerializable("JobInfoDel", jobInformation);
                 mapFragment.setArguments(bundle);
