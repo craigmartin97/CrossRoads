@@ -31,7 +31,7 @@
                     android:background="@drawable/customborderrounded">
 
                     <ImageView
-                        android:id="@+id/imageView"
+                        android:id="@+id/jobImageAccepted"
                         android:layout_width="180dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -42,10 +42,10 @@
                         android:id="@+id/textViewJobName1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/imageView"
+                        android:layout_alignTop="@+id/jobImageAccepted"
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
-                        android:layout_toEndOf="@+id/imageView"
+                        android:layout_toEndOf="@+id/jobImageAccepted"
                         android:text="JobName Here"
                         android:textSize="18sp" />
 

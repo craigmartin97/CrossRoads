@@ -1,7 +1,6 @@
-package com.kitkat.crossroads.MapFeatures;
+package com.kitkat.crossroads.ExternalClasses;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -9,25 +8,20 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,9 +44,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
-import com.kitkat.crossroads.Jobs.JobInformation;
-import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
+import com.kitkat.crossroads.MapFeatures.CustomInfoWindowAdapter;
+import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
+import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
 
 import java.io.IOException;
@@ -60,11 +54,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used to display a Map to the user to select a location or use their current
- * location. The user can see information about that information as well such as the phone number,
- * website Uri, the name and full address.
+ * Created by craig on 08/04/18.
  */
-public class MapFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
+
+public class Map implements GoogleApiClient.OnConnectionFailedListener
 {
 
     /**
@@ -87,7 +80,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     /**
      * Google map
      */
-    private GoogleMap gMap;
+    private GoogleMap gMap, gMap2;
     /**
      * Get the users current location their device is in
      */
@@ -101,7 +94,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     /**
      * The main entry point for Google Play services integration
      */
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient1, mGoogleApiClient2;
 
     /**
      * Lat and Long Bounds that are used. This covers across the entire world
@@ -124,120 +117,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
      */
     private static final float DEFAULT_ZOOM = 15;
 
-    /**
-     * Widgets that are found on the View, fragment_map
-     */
-    private AutoCompleteTextView editTextSearch;
-    private ImageView imageViewGps;
-    private ImageView imageViewInfo;
-    private ImageView imageViewCheck;
-
-    /**
-     * Widgets found on the popup_accept_location
-     */
-    private TextView chooseLocationText;
-    private Button yesButton;
-    private Button noButton;
-
-    private JobInformation jobInformation, jobInformation2;
-
-    private ScrollView mScrollView;
+    private ScrollView mScrollView1, mScrollView2;
     private SupportMapFragment mapFragment;
     private FragmentActivity fragmentActivity;
     private View view;
-    private View mView;
-    private ViewGroup viewContainer;
-
-    public MapFragment()
-    {
-        // Empty
-    }
-
-    /**
-     * NOT USED At them moment, retained if we need to pass a bundle in, in the future or
-     * set database connections
-     *
-     * @return - fragment
-     */
-    public static MapFragment newInstance()
-    {
-        MapFragment fragment = new MapFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onPause()
-    {
-        try
-        {
-            super.onPause();
-            mGoogleApiClient.stopAutoManage(fragmentActivity);
-            mGoogleApiClient.disconnect();
-        } catch (NullPointerException e)
-        {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
-        mView = view;
-
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(fragmentActivity)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(fragmentActivity, this)
-                .build();
-
-        placeInfo = new PlaceInformation();
-        getViewsByIds(view);
-
-
-        try
-        {
-            Bundle bundle = getArguments();
-            if(bundle.getSerializable("JobInfo") != null)
-            {
-                jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
-            }
-            if(bundle.getSerializable("JobInfoDel") != null)
-            {
-                jobInformation2 = (JobInformation) bundle.getSerializable("JobInfoDel");
-            }
-        } catch (NullPointerException e)
-        {
-            Log.e(TAG, e.getMessage());
-        }
-//
-//        getLocationPermission(fragmentActivity.getApplicationContext(), mapFragment, fragmentActivity, );
-        return view;
-    }
-
-    /**
-     * Setting all of the widgets in the view to global variables for later use
-     *
-     * @param view
-     */
-    private void getViewsByIds(View view)
-    {
-        editTextSearch = view.findViewById(R.id.editTextSearch);
-        imageViewGps = view.findViewById(R.id.ic_gps);
-        imageViewInfo = view.findViewById(R.id.placeInfo);
-        imageViewCheck = view.findViewById(R.id.check);
-    }
-
+    private FragmentManager fragmentManager;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
@@ -254,167 +138,21 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     private void init()
     {
         Log.d(TAG, "Init: initializing");
-
-        //editTextSearch.setOnItemClickListener(mAutocompleteItemClickListener);
-        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(fragmentActivity, mGoogleApiClient, LAT_LNG_BOUNDS, null);
-        //editTextSearch.setAdapter(placeAutocompleteAdapter);
-
-        // Enter a location to search for
-//        editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
-//        {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent)
-//            {
-//                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-//                        actionId == EditorInfo.IME_ACTION_DONE ||
-//                        keyEvent.getAction() == KeyEvent.ACTION_DOWN ||
-//                        keyEvent.getAction() == KeyEvent.KEYCODE_ENTER)
-//                {
-//                    // Find that location
-//                    geoLocate();
-//                }
-//                return false;
-//            }
-//        });
-
-        // Press the GPS image
-//        imageViewGps.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Log.d(TAG, "onClick: Pressed GPS Image");
-//                // Get the current location and move the camera to that location
-//                getDeviceCurrentLocation();
-//            }
-//        });
-
-        // Press the Info image
-//        imageViewInfo.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Log.d(TAG, "onClick: clicked place info");
-//                try
-//                {
-//                    // If the window is currently open
-//                    if (marker.isInfoWindowShown())
-//                    {
-//                        marker.hideInfoWindow();
-//                    } else
-//                    {
-//                        Log.d(TAG, "onCLick" + placeInfo.toString());
-//                        // Display the information in a new box
-//                        marker.showInfoWindow();
-//                    }
-//                } catch (NullPointerException e)
-//                {
-//                    Log.e(TAG, "onClick: Error" + e.getMessage());
-//                }
-//            }
-//        });
-
-        // Press the check image
-//        imageViewCheck.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Log.d(TAG, "onClick: Pressed The Tick Image");
-//                Toast.makeText(fragmentActivity, "Pressed Tick", Toast.LENGTH_SHORT).show();
-//
-//                // Create a new Alert dialog for the user to interact with
-//                AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
-//                // Inflate layout, and get widgets
-//                View viewPopup = getLayoutInflater().inflate(R.layout.popup_confirm_location, null);
-//                chooseLocationText = viewPopup.findViewById(R.id.selectLocationText);
-//                yesButton = viewPopup.findViewById(R.id.yesButton);
-//                noButton = viewPopup.findViewById(R.id.noButton);
-//
-//                // Show the dialog and edit info in it
-//                alertDialog.setTitle("Choose Location?");
-//                alertDialog.setView(viewPopup);
-//                final AlertDialog dialog = alertDialog.create();
-//                dialog.show();
-//
-//                chooseLocationText = viewPopup.findViewById(R.id.selectLocationText);
-//
-//                try
-//                {
-//                    // If their is information to display
-//                    if (placeInfo != null)
-//                    {
-//                        // Change the text in the alert dialog to the address
-//                        chooseLocationText.setText(placeInfo.getSubThoroughfare() + " " + placeInfo.getThoroughfare() + " " + placeInfo.getLocality() + " " + placeInfo.getPostCode());
-//                    }
-//                } catch (NullPointerException e)
-//                {
-//                    Toast.makeText(fragmentActivity, "Please Search For A Location First", Toast.LENGTH_SHORT).show();
-//                    Log.e(TAG, e.getMessage());
-//                }
-//
-//                // Setting widgets to variables
-//                yesButton = viewPopup.findViewById(R.id.yesButton);
-//                noButton = viewPopup.findViewById(R.id.noButton);
-//
-//                yesButton.setOnClickListener(new View.OnClickListener()
-//                {
-//                    @Override
-//                    public void onClick(View view)
-//                    {
-//                        PostAnAdvertFragment postAnAdvertFragment = new PostAnAdvertFragment();
-//                        Bundle bundle = new Bundle();
-//
-//                        if(jobInformation != null)
-//                        {
-//                            bundle.putSerializable("JobInfo", jobInformation);
-//                        }
-//
-//                        if(jobInformation2 != null)
-//                        {
-//                            bundle.putSerializable("JobInfoDel", jobInformation2);
-//                        }
-//
-//                        bundle.putSerializable("JobAddress", placeInfo);
-//                        postAnAdvertFragment.setArguments(bundle);
-//
-//                        dialog.dismiss();
-//
-//                        FragmentManager fragmentManager = getFragmentManager();
-//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                        fragmentTransaction.replace(R.id.content, postAnAdvertFragment).commit();
-//                    }
-//                });
-//
-//                noButton.setOnClickListener(new View.OnClickListener()
-//                {
-//                    @Override
-//                    public void onClick(View view)
-//                    {
-//                        dialog.dismiss();
-//                    }
-//                });
-//
-//            }
-//        });
-
         hideKeyboard();
     }
 
     /**
      * Find a location that the user has entered and move the camera to that location
      */
-    private void geoLocate()
+    public void geoLocate(String searchLocation)
     {
         Log.d(TAG, "geoLocate: geoLocating");
-        String searchString = editTextSearch.getText().toString().trim();
         Geocoder geocoder = new Geocoder(fragmentActivity);
         List<Address> list = new ArrayList<>();
 
         try
         {
-            list = geocoder.getFromLocationName(searchString, 1);
+            list = geocoder.getFromLocationName(searchLocation, 1);
         } catch (IOException e)
         {
             Log.e(TAG, "geoLocate: IOException " + e.getMessage());
@@ -425,57 +163,50 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             Address address = list.get(0);
             Log.d(TAG, "Found A Location");
 
-            if(address.getSubThoroughfare() != null)
+            if (address.getSubThoroughfare() != null)
             {
                 placeInfo.setSubThoroughfare(address.getSubThoroughfare());
             }
 
-            if(address.getSubThoroughfare() != null)
+            if (address.getSubThoroughfare() != null)
             {
                 placeInfo.setThoroughfare(address.getThoroughfare());
-            }
-            else
+            } else
             {
                 placeInfo.setSubThoroughfare("");
             }
 
-            if(address.getLocality() != null)
+            if (address.getLocality() != null)
             {
                 placeInfo.setLocality(address.getLocality());
-            }
-            else if(address.getSubLocality() != null)
+            } else if (address.getSubLocality() != null)
             {
                 placeInfo.setLocality(address.getSubLocality());
-            }
-            else if(address.getSubAdminArea() != null)
+            } else if (address.getSubAdminArea() != null)
             {
                 placeInfo.setLocality(address.getSubAdminArea());
-            }
-            else if(address.getAdminArea() != null)
+            } else if (address.getAdminArea() != null)
             {
                 placeInfo.setLocality(address.getAdminArea());
-            }
-            else
+            } else
             {
                 placeInfo.setLocality("");
             }
 
             placeInfo.setPostCode(address.getPostalCode());
 
-            if(address.getPhone() != null)
+            if (address.getPhone() != null)
             {
                 placeInfo.setPhoneNumber(address.getPhone().toString());
-            }
-            else
+            } else
             {
                 placeInfo.setPhoneNumber("N/A");
             }
 
-            if(address.getUrl() != null)
+            if (address.getUrl() != null)
             {
                 placeInfo.setWebsiteUrl(address.getUrl().toString());
-            }
-            else
+            } else
             {
                 placeInfo.setWebsiteUrl("N/A");
             }
@@ -525,57 +256,50 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                             {
                                 Address address = list.get(0);
 
-                                if(address.getSubThoroughfare() != null)
+                                if (address.getSubThoroughfare() != null)
                                 {
                                     placeInfo.setSubThoroughfare(address.getSubThoroughfare());
                                 }
 
-                                if(address.getSubThoroughfare() != null)
+                                if (address.getSubThoroughfare() != null)
                                 {
                                     placeInfo.setThoroughfare(address.getThoroughfare());
-                                }
-                                else
+                                } else
                                 {
                                     placeInfo.setSubThoroughfare("");
                                 }
 
-                                if(address.getLocality() != null)
+                                if (address.getLocality() != null)
                                 {
                                     placeInfo.setLocality(address.getLocality());
-                                }
-                                else if(address.getSubLocality() != null)
+                                } else if (address.getSubLocality() != null)
                                 {
                                     placeInfo.setLocality(address.getSubLocality());
-                                }
-                                else if(address.getSubAdminArea() != null)
+                                } else if (address.getSubAdminArea() != null)
                                 {
                                     placeInfo.setLocality(address.getSubAdminArea());
-                                }
-                                else if(address.getAdminArea() != null)
+                                } else if (address.getAdminArea() != null)
                                 {
                                     placeInfo.setLocality(address.getAdminArea());
-                                }
-                                else
+                                } else
                                 {
                                     placeInfo.setLocality("");
                                 }
 
                                 placeInfo.setPostCode(address.getPostalCode());
 
-                                if(address.getPhone() != null)
+                                if (address.getPhone() != null)
                                 {
                                     placeInfo.setPhoneNumber(address.getPhone().toString());
-                                }
-                                else
+                                } else
                                 {
                                     placeInfo.setPhoneNumber("N/A");
                                 }
 
-                                if(address.getUrl() != null)
+                                if (address.getUrl() != null)
                                 {
                                     placeInfo.setWebsiteUrl(address.getUrl().toString());
-                                }
-                                else
+                                } else
                                 {
                                     placeInfo.setWebsiteUrl("N/A");
                                 }
@@ -628,6 +352,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                 MarkerOptions options = new MarkerOptions().position(latLng).title(placeInfo.getSubThoroughfare() + " " + placeInfo.getThoroughfare() + " "
                         + placeInfo.getLocality() + " " + placeInfo.getPostCode()).snippet(details);
                 marker = gMap.addMarker(options);
+                hideKeyboard(fragmentActivity);
             } catch (NullPointerException e)
             {
                 Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage());
@@ -637,7 +362,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             gMap.addMarker(new MarkerOptions().position(latLng));
         }
 
-        hideKeyboard();
+        hideKeyboard(fragmentActivity);
     }
 
     /**
@@ -654,20 +379,31 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
             @Override
             public void onMapReady(GoogleMap googleMap)
             {
-                    gMap = googleMap;
-                    gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                    gMap.getUiSettings().setZoomControlsEnabled(true);
+                gMap = googleMap;
+                gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                gMap.getUiSettings().setZoomControlsEnabled(true);
 
-                    mScrollView = view.findViewById(R.id.advertScrollView);
-                    ((WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map))
-                            .setListener(new WorkaroundMapFragment.OnTouchListener()
+                mScrollView1 = view.findViewById(R.id.advertScrollView);
+                ((WorkaroundMapFragment) fragmentManager.findFragmentById(R.id.map))
+                        .setListener(new WorkaroundMapFragment.OnTouchListener()
+                        {
+                            @Override
+                            public void onTouch()
                             {
-                                @Override
-                                public void onTouch()
-                                {
-                                    mScrollView.requestDisallowInterceptTouchEvent(true);
-                                }
-                            });
+                                mScrollView1.requestDisallowInterceptTouchEvent(true);
+                            }
+                        });
+
+                mScrollView2 = view.findViewById(R.id.advertScrollView);
+                ((WorkaroundMapFragment) fragmentManager.findFragmentById(R.id.map2))
+                        .setListener(new WorkaroundMapFragment.OnTouchListener()
+                        {
+                            @Override
+                            public void onTouch()
+                            {
+                                mScrollView2.requestDisallowInterceptTouchEvent(true);
+                            }
+                        });
 
                 if (locationPermissionGranted)
                 {
@@ -692,7 +428,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
     /**
      * Checking the users permission that they selected, accept or deny
      */
-    public void getLocationPermission(Context context, SupportMapFragment mapFragmentGiven, FragmentActivity fragmentActivityGiven, View viewGiven, ViewGroup container)
+    public void getLocationPermission(Context context, SupportMapFragment mapFragmentGiven, FragmentActivity fragmentActivityGiven, View viewGiven, FragmentManager fragmentManagerGiven)
     {
         Log.d(TAG, "Getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
@@ -708,7 +444,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                 mapFragment = mapFragmentGiven;
                 fragmentActivity = fragmentActivityGiven;
                 view = viewGiven;
-                viewContainer = container;
+                fragmentManager = fragmentManagerGiven;
                 initMap();
             } else
             {
@@ -722,7 +458,6 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         }
     }
 
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         Log.d(TAG, "onRequestPermissionCalled");
@@ -755,6 +490,11 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         fragmentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    public void hideKeyboard(FragmentActivity fragmentActivity)
+    {
+        fragmentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
     /*
        Auto Complete API AutoComplete Suggestions
      */
@@ -765,12 +505,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
         {
             hideKeyboard();
-
             final AutocompletePrediction item = placeAutocompleteAdapter.getItem(i);
             final String placeId = item.getPlaceId();
-
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
-
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient1, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallBack);
         }
     };
@@ -808,62 +545,54 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                     if (list.size() > 0)
                     {
                         Address address = list.get(0);
-                        if(address.getSubThoroughfare() != null)
+                        if (address.getSubThoroughfare() != null)
                         {
                             placeInfo.setSubThoroughfare(address.getSubThoroughfare());
-                        }
-                        else
+                        } else
                         {
                             placeInfo.setSubThoroughfare(place.getName().toString());
                         }
 
 
-                        if(address.getThoroughfare() != null)
+                        if (address.getThoroughfare() != null)
                         {
                             placeInfo.setThoroughfare(address.getThoroughfare());
-                        }
-                        else
+                        } else
                         {
                             placeInfo.setThoroughfare("");
                         }
 
-                        if(address.getLocality() != null)
+                        if (address.getLocality() != null)
                         {
                             placeInfo.setLocality(address.getLocality());
-                        }
-                        else if(address.getSubLocality() != null)
+                        } else if (address.getSubLocality() != null)
                         {
                             placeInfo.setLocality(address.getSubLocality());
-                        }
-                        else if(address.getSubAdminArea() != null)
+                        } else if (address.getSubAdminArea() != null)
                         {
                             placeInfo.setLocality(address.getSubAdminArea());
-                        }
-                        else if(address.getAdminArea() != null)
+                        } else if (address.getAdminArea() != null)
                         {
                             placeInfo.setLocality(address.getAdminArea());
-                        }
-                        else
+                        } else
                         {
                             placeInfo.setLocality("");
                         }
 
                         placeInfo.setPostCode(address.getPostalCode());
 
-                        if(address.getPhone() != null)
+                        if (address.getPhone() != null)
                         {
                             placeInfo.setPhoneNumber(place.getPhoneNumber().toString());
-                        }
-                        else
+                        } else
                         {
                             placeInfo.setPhoneNumber("N/A");
                         }
 
-                        if(address.getUrl() != null)
+                        if (address.getUrl() != null)
                         {
                             placeInfo.setWebsiteUrl(place.getWebsiteUri().toString());
-                        }
-                        else
+                        } else
                         {
                             placeInfo.setWebsiteUrl("N/A");
                         }
@@ -877,9 +606,33 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
                 }
 
                 moveCamera(new LatLng(place.getViewport().getCenter().latitude, place.getViewport().getCenter().longitude), DEFAULT_ZOOM, placeInfo);
-                editTextSearch.getText().clear();
                 places.release();
             }
         }
     };
+
+    public PlaceInformation getPlaceInfo()
+    {
+        if (placeInfo != null)
+        {
+            return placeInfo;
+        } else
+        {
+            return null;
+        }
+    }
+
+    public void setEditSearchAPIListener(AutoCompleteTextView editTextSearch, FragmentActivity fragmentActivity)
+    {
+        mGoogleApiClient1 = new GoogleApiClient
+                .Builder(fragmentActivity)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(fragmentActivity, 0, this)
+                .build();
+
+        editTextSearch.setOnItemClickListener(mAutocompleteItemClickListener);
+        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(fragmentActivity, mGoogleApiClient1, LAT_LNG_BOUNDS, null);
+        editTextSearch.setAdapter(placeAutocompleteAdapter);
+    }
 }

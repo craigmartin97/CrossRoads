@@ -1,5 +1,6 @@
 package com.kitkat.crossroads.Jobs;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,6 +16,7 @@ public class JobInformation implements Serializable
     private String advertName, advertDescription, jobSize, jobType, posterID, jobID, courierID, collectionDate, collectionTime;
     private String colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode;
     private String jobStatus;
+    private Uri jobImage;
 
     public JobInformation()
     {
@@ -40,6 +42,7 @@ public class JobInformation implements Serializable
         this.delTown = delTown;
         this.delPostcode = delPostcode;
         this.jobStatus = jobStatus;
+        this.jobImage = jobImage;
     }
 
     public void setJobID(String jobID)
@@ -141,6 +144,16 @@ public class JobInformation implements Serializable
 
     public String getJobStatus() {
         return jobStatus;
+    }
+
+    public Uri getJobImage()
+    {
+        return jobImage;
+    }
+
+    public void setJobImage(Uri jobImage)
+    {
+        this.jobImage = jobImage;
     }
 
     public String getWholeString()

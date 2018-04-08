@@ -3,9 +3,13 @@ package com.kitkat.crossroads.Jobs;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -27,13 +32,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,6 +82,8 @@ public class ActiveJobDetailsFragment extends Fragment {
     private Button mJobCompleteButton, mClearButton;
 
     private TextView textViewJobName1, textViewDescription1;
+
+    private ImageView jobImageAccepted;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -129,16 +141,31 @@ public class ActiveJobDetailsFragment extends Fragment {
 
         mClearButton = view.findViewById(R.id.clear_button);
         mJobCompleteButton = view.findViewById(R.id.job_complete_button);
+        jobImageAccepted = view.findViewById(R.id.jobImageAccepted);
 
 
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        String user = databaseConnections.getCurrentUser();
 
         Bundle bundle = this.getArguments();
         final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
         jobId = (String) bundle.getSerializable("JobId");
 
+        FileDownloadTask filePath = storageReference.child("JobImages").child(user).child(jobId).getFile(jobInformation.getJobImage());
+        Toast.makeText(getActivity(), "HERE", Toast.LENGTH_SHORT).show();
+
+        try
+        {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), jobInformation.getJobImage());
+            jobImageAccepted.setImageBitmap(bitmap);
+            Toast.makeText(getActivity(), "HERE", Toast.LENGTH_SHORT).show();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
         textViewJobName1.setText(jobInformation.getAdvertName());
         textViewDescription1.setText(jobInformation.getAdvertDescription());
