@@ -2,11 +2,16 @@ package com.kitkat.crossroads.Jobs;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -15,7 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,12 +34,22 @@ import java.util.List;
  * They can also view their bid they made and edit that bid.
  * They can also delete the bid from here as well.
  */
-public class MyCompletedJobs extends Fragment
+public class BidOnJobsFragment extends Fragment
 {
     /**
      * Text Views to display the jobs name and description
      */
-    private TextView jobName, jobDescription, textViewUsersBid;
+    private TextView jobName, jobDescription;
+
+    /**
+     * Edit view for editing the users bid
+     */
+    private EditText editTextEditBid;
+
+    /**
+     * ImageView for the JobsImage
+     */
+    private ImageView jobImageBidOn;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -61,9 +78,10 @@ public class MyCompletedJobs extends Fragment
     ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
 
     /**
-     * Accessing database connections to Firebase auth, database and storage
+     * Variable to store the current users Id
      */
-    private DatabaseConnections databaseConnections = new DatabaseConnections();
+    private String user;
+
 
     /**
      * Creating variable to store the connection to the Firebase Database
@@ -75,14 +93,24 @@ public class MyCompletedJobs extends Fragment
      */
     private FirebaseAuth auth;
 
+    /**
+     * Button to submit a new bid
+     */
+    private Button buttonEditBid;
+
+    /**
+     * Access the jobId the user pressed on
+     */
     private String jobId;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        DatabaseConnections databaseConnections = new DatabaseConnections();
         databaseReference = databaseConnections.getDatabaseReference();
         auth = databaseConnections.getAuth();
+        user = databaseConnections.getCurrentUser();
     }
 
     /**
@@ -97,7 +125,7 @@ public class MyCompletedJobs extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_my_completed_jobs, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_jobs_bid_on, container, false);
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
@@ -116,12 +144,14 @@ public class MyCompletedJobs extends Fragment
         expandableListView2.setAdapter(adapter2);
         expandableListView3.setAdapter(adapter3);
 
+        final ListViewHeight listViewHeight = new ListViewHeight();
+
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
         {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
-                activeJobDetailsFragment.setListViewHeight(parent, groupPosition);
+                listViewHeight.setExpandableListViewHeight(parent, groupPosition);
                 return false;
             }
         });
@@ -131,7 +161,7 @@ public class MyCompletedJobs extends Fragment
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
-                activeJobDetailsFragment.setListViewHeight(parent, groupPosition);
+                listViewHeight.setExpandableListViewHeight(parent, groupPosition);
                 return false;
             }
         });
@@ -141,10 +171,28 @@ public class MyCompletedJobs extends Fragment
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
-                activeJobDetailsFragment.setListViewHeight(parent, groupPosition);
+                listViewHeight.setExpandableListViewHeight(parent, groupPosition);
                 return false;
             }
         });
+
+        buttonEditBid.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if(TextUtils.isEmpty(editTextEditBid.getText()))
+                {
+                    Toast.makeText(getActivity(), "Enter a bid!!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else
+                {
+                    submitBid(jobId, user);
+                }
+            }
+        });
+
 
         return view;
     }
@@ -158,11 +206,20 @@ public class MyCompletedJobs extends Fragment
     {
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
+        jobImageBidOn = (ImageView) view.findViewById(R.id.jobImgageBidOn);
+        editTextEditBid = (EditText) view.findViewById(R.id.editBid);
+        buttonEditBid = (Button) view.findViewById(R.id.buttonEditBid);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
+    }
+
+    private void submitBid(String jobId, String user)
+    {
+        String userBid = editTextEditBid.getText().toString().trim();
+        BidInformation bidInformation = new BidInformation(user, userBid);
+        databaseReference.child("Bids").child(jobId).child(user).setValue(bidInformation);
     }
 
     /**
@@ -176,14 +233,15 @@ public class MyCompletedJobs extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageBidOn);
 
-        databaseReference.child("Bids").child(jobId).child(databaseConnections.getCurrentUser()).addValueEventListener(new ValueEventListener()
+        databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
-                textViewUsersBid.setText("Agreed Fee:       £" + userBid);
+                editTextEditBid.setText(userBid);
             }
 
             @Override
@@ -194,16 +252,19 @@ public class MyCompletedJobs extends Fragment
         });
 
         // Storing information in variables for later use
+        jobType = jobInformation.getJobType().toString();
+        jobSize = jobInformation.getJobSize().toString();
+
         colDate = jobInformation.getCollectionDate().toString();
         colTime = jobInformation.getCollectionTime().toString();
+
         colAddress = jobInformation.getColL1().toString() + ", " + jobInformation.getColL2().toString();
         colTown = jobInformation.getColTown().toString();
         colPostcode = jobInformation.getColPostcode().toString();
+
         delAddress = jobInformation.getDelL1().toString() + ", " + jobInformation.getDelL2().toString();
-        delTown = jobInformation.getColTown().toString();
-        delPostcode = jobInformation.getColPostcode().toString();
-        jobType = jobInformation.getJobType().toString();
-        jobSize = jobInformation.getJobSize().toString();
+        delTown = jobInformation.getDelTown().toString();
+        delPostcode = jobInformation.getDelPostcode().toString();
     }
 
     /**

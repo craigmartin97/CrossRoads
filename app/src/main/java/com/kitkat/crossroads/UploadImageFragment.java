@@ -6,32 +6,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,61 +23,34 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
 import com.squareup.picasso.Picasso;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import static android.app.Activity.RESULT_OK;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link UploadImageFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link UploadImageFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class UploadImageFragment extends Fragment
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     private FirebaseAuth auth;
-    private DatabaseReference myRef;
+    private DatabaseReference databaseReference;
     private FirebaseDatabase database;
     private StorageReference storageReference;
-    private FirebaseUser user;
+    private String user;
 
     private static ImageView profileImage;
     private Uri imageUri;
-    private static byte[] data;
+    private static byte[] compressData;
 
     private static final int GALLERY_INTENT = 2;
 
@@ -106,21 +61,10 @@ public class UploadImageFragment extends Fragment
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UploadImageFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UploadImageFragment newInstance(String param1, String param2)
+    public static UploadImageFragment newInstance()
     {
         UploadImageFragment fragment = new UploadImageFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -129,40 +73,21 @@ public class UploadImageFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        databaseConnections();
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-
         View view = inflater.inflate(R.layout.fragment_upload_image, container, false);
-
-        // Creating firebase links etc
-        database = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        user = auth.getCurrentUser();
-
-        // Setting buttons
-        database = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        user = auth.getCurrentUser();
 
         // Setting buttons
         profileImage = (ImageView) view.findViewById(R.id.imageViewProfileImage);
         Button uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadProfileImage);
         Button saveProfileImage = (Button) view.findViewById(R.id.buttonSaveProfileImage);
 
-        myRef.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener()
+        databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
@@ -198,15 +123,15 @@ public class UploadImageFragment extends Fragment
                 progressDialog.setMessage("Uploading Image Please Wait...");
                 progressDialog.show();
 
-                final StorageReference filePath = storageReference.child("Images").child(user.getUid()).child(imageUri.getLastPathSegment());
-                filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                final StorageReference filePath = storageReference.child("Images").child(user).child(imageUri.getLastPathSegment());
+                filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
                 {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                     {
                         Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        myRef.child("Users").child(user.getUid()).child("profileImage").setValue(downloadUri.toString());
+                        databaseReference.child("Users").child(user).child("profileImage").setValue(downloadUri.toString());
                         progressDialog.dismiss();
                     }
                 }).addOnFailureListener(new OnFailureListener()
@@ -224,12 +149,19 @@ public class UploadImageFragment extends Fragment
         return view;
     }
 
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        auth = databaseConnections.getAuth();
+        storageReference = databaseConnections.getStorageReference();
+        databaseReference = databaseConnections.getDatabaseReference();
+        user = databaseConnections.getCurrentUser();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        // Get the current user
-        final FirebaseUser user = auth.getCurrentUser();
 
         // Redirect user to there gallery and get them to select an image
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
@@ -240,105 +172,23 @@ public class UploadImageFragment extends Fragment
 
             imageUri = data.getData();
             final Uri uri = data.getData();
-            setUpImageTransfer(uri);
+
+            try
+            {
+                ExifInterfaceImageRotater exifInterfaceImageRotater = new ExifInterfaceImageRotater();
+                profileImage.setImageBitmap(exifInterfaceImageRotater.setUpImageTransfer(uri, getActivity().getContentResolver()));
+                profileImage.buildDrawingCache();
+                profileImage.getDrawingCache();
+                Bitmap bitmap = profileImage.getDrawingCache();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                compressData = byteArrayOutputStream.toByteArray();
+                progressDialog.dismiss();
+            } catch(Exception e)
+            {
+                Log.e("Error Uploading Image: ", e.getMessage());
+            }
         }
-    }
-
-    /**
-     * Setting image that has been selected and turning it into a bitmap.
-     * Putting it into an input scream and sending it to be modified
-     * @param uri
-     */
-    public void setUpImageTransfer(Uri uri)
-    {
-        progressDialog.dismiss();
-        try
-        {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-            ContentResolver contentResolver = getActivity().getContentResolver();
-            InputStream inputStream = contentResolver.openInputStream(uri);
-            modifyOrientation(bitmap, inputStream);
-        } catch (IOException e)
-        {
-            e.getStackTrace();
-        }
-    }
-
-    /**
-     * Send the image to be rotated dependant upon its needs
-     *
-     * @param bitmap
-     * @param image_absolute_path
-     * @return
-     * @throws IOException
-     */
-    public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException
-    {
-        android.support.media.ExifInterface exifInterface = new android.support.media.ExifInterface(image_absolute_path);
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        switch (orientation)
-        {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotate(bitmap, 90);
-
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotate(bitmap, 180);
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotate(bitmap, 270);
-
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                return flip(bitmap, true, false);
-
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                return flip(bitmap, false, true);
-            default:
-                return bitmap;
-        }
-    }
-
-    /**
-     * If the uploaded image needed to be rotated
-     *
-     * @param bitmap
-     * @param degrees
-     * @return
-     */
-    public static Bitmap rotate(Bitmap bitmap, float degrees)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        profileImage.setImageBitmap(bitmap1);
-
-        profileImage.buildDrawingCache();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        data = byteArrayOutputStream.toByteArray();
-        return bitmap1;
-    }
-
-    /**
-     * If the uploaded image needed to be flipped
-     *
-     * @param bitmap
-     * @param horizontal
-     * @param vertical
-     * @return
-     */
-    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical)
-    {
-        Matrix matrix = new Matrix();
-        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        profileImage.setImageBitmap(bitmap1);
-
-        profileImage.buildDrawingCache();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        data = byteArrayOutputStream.toByteArray();
-        return bitmap1;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

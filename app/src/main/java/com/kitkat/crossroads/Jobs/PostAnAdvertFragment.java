@@ -4,77 +4,105 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
-import com.kitkat.crossroads.MapFeatures.MapFragment;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
+import com.kitkat.crossroads.ExternalClasses.Map;
+import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
+import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
-import com.kitkat.crossroads.UploadImageFragment;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 
 import static android.app.Activity.RESULT_OK;
 
-public class PostAnAdvertFragment extends Fragment
+public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
-    private static ImageView profileImage;
+    /**
+     * Get the authentication to the Firebase Authentication area
+     */
+    private FirebaseAuth auth;
+
+    /**
+     * Get the CurrentUsers ID
+     */
+    private String user;
+
+    /**
+     * Get the reference to the Firebase Database
+     */
+    private DatabaseReference databaseReference;
+
+    /**
+     * Store the jobReference
+     */
+    private DataSnapshot jobReference;
+
+    /**
+     * Get the reference to the Firebase Storage area to store the Jobs Image In
+     */
+    private StorageReference storageReference;
+
+    private ImageView profileImage;
     private Uri imageUri;
-    private static byte[] data;
+    private static byte[] compressData;
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
 
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private static final String TAG = "PostAnActivityFragment";
-
-    private DataSnapshot jobReference;
-    private StorageReference storageReference;
-
-    private FirebaseAuth auth;
 
     private EditText editTextAdName, editTextAdDescription, editTextColDate, editTextColTime;
     private EditText editTextColAddL1, editTextColAddL2, editTextColAddTown, editTextColAddPostcode;
@@ -84,72 +112,176 @@ public class PostAnAdvertFragment extends Fragment
 
     private Button buttonPostAd, buttonUploadImages;
 
-    private DatabaseReference databaseReference;
-
     private static final int Error_Dialog_Request = 9001;
 
-    public PostAnAdvertFragment()
-    {
-        // Required empty public constructor
-    }
+    /**
+     * Widgets that are found on the View, fragment_map
+     */
+    private AutoCompleteTextView editTextSearch, editTextSearch2;
+    private ImageView imageViewGps, imageViewGps2;
+    private ImageView imageViewCheck, imageViewCheck2;
 
-    public static PostAnAdvertFragment newInstance(String param1, String param2)
-    {
-        PostAnAdvertFragment fragment = new PostAnAdvertFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    /**
+     * Widgets found on the popup_accept_location
+     */
+    private TextView chooseLocationText;
+    private Button yesButton;
+    private Button noButton;
+
+    private com.kitkat.crossroads.ExternalClasses.Map map1, map2;
+    private SupportMapFragment mapFragment, mapFragment2;
+    private View layoutView;
+
+    /**
+     * Lat and Long Bounds that are used. This covers across the entire world
+     */
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
+            new LatLng(-40, -168), new LatLng(71, 136));
+
+    private GoogleApiClient mGoogleApiClient1;
+
+    private GenericMethods genericMethods = new GenericMethods();
+
+    private Uri uri;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        databaseConnections();
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
-        // Inflate the layout for this fragment
+        final View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
+        layoutView = view;
 
-        auth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
+        // Collection Map
+        map1 = new Map();
+        map2 = new Map();
+        getViewsByIds(view);
+
+        // Create google api client, so user has pre-set options to select.
+        /*
+      The main entry point for Google Play services integration
+     */
+       mGoogleApiClient1 = new GoogleApiClient
+                .Builder(getActivity())
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(getActivity(), 0, this)
+                .build();
+
+        PlaceAutocompleteAdapter placeAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient1, LAT_LNG_BOUNDS, null);
+        map1.setPlaceAutocompleteAdapter(placeAutocompleteAdapter);
+        map1.setmGoogleApiClient1(mGoogleApiClient1);
+
+        map2.setPlaceAutocompleteAdapter(placeAutocompleteAdapter);
+        map2.setmGoogleApiClient1(mGoogleApiClient1);
+
+        editTextSearch.setOnItemClickListener(map1.mAutocompleteItemClickListener);
+        editTextSearch2.setOnItemClickListener(map2.mAutocompleteItemClickListener);
+
+        editTextSearch.setAdapter(placeAutocompleteAdapter);
+        editTextSearch2.setAdapter(placeAutocompleteAdapter);
+
+        // Collection Map
+        mapFragment = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(new OnMapReadyCallback()
+        {
+            @Override
+            public void onMapReady(GoogleMap googleMap)
+            {
+                map1.getLocationPermission(getActivity().getApplicationContext(), mapFragment, getActivity(), view, getChildFragmentManager());
+            }
+        });
+
+        // Delivery Map
+        mapFragment2 = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map2);
+        mapFragment2.getMapAsync(new OnMapReadyCallback()
+        {
+            @Override
+            public void onMapReady(GoogleMap googleMap)
+            {
+                map2.getLocationPermission(getActivity().getApplicationContext(), mapFragment2, getActivity(), view, getChildFragmentManager());
+            }
+        });
+
+        createOnClickListeners();
+
+        if (isServicesOK())
+        {
+            mapOnClickListeners();
+        }
+
+        return view;
+    }
+
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        auth = databaseConnections.getAuth();
+        user = databaseConnections.getCurrentUser();
+        databaseReference = databaseConnections.getDatabaseReference();
+        storageReference = databaseConnections.getStorageReference();
 
         if (auth.getCurrentUser() == null)
         {
             startActivity(new Intent(getActivity(), LoginActivity.class));
         }
+    }
 
-        if(isServicesOK())
-        {
-            init(view);
-            initButton2(view);
-        }
-
+    private void getViewsByIds(View view)
+    {
+        // Set the widgets to variables
         profileImage = view.findViewById(R.id.jobImage1);
+        profileImage.getLayoutParams().height = 0;
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        buttonPostAd = view.findViewById(R.id.buttonAddJob);
+        buttonUploadImages = view.findViewById(R.id.buttonUploadImages);
+        scrollView = view.findViewById(R.id.advertScrollView);
+        editTextAdName = view.findViewById(R.id.editTextAdName);
+        editTextAdDescription = view.findViewById(R.id.editTextAdDescription);
+        editTextJobSize = view.findViewById(R.id.editTextJobSize);
+        editTextJobType = view.findViewById(R.id.editTextJobType);
+        editTextColDate = view.findViewById(R.id.editTextJobColDate);
+        editTextColTime = view.findViewById(R.id.editTextJobColTime);
+        editTextColAddL1 = view.findViewById(R.id.editTextJobColL1);
+        editTextColAddL2 = view.findViewById(R.id.editTextJobColL2);
+        editTextColAddTown = view.findViewById(R.id.editTextJobColTown);
+        editTextColAddPostcode = view.findViewById(R.id.editTextJobColPostcode);
+        editTextDelAddL1 = view.findViewById(R.id.editTextJobDelL1);
+        editTextDelAddL2 = view.findViewById(R.id.editTextJobDelL2);
+        editTextDelAddTown = view.findViewById(R.id.editTextJobDelTown);
+        editTextDelAddPostcode = view.findViewById(R.id.editTextJobDelPostcode);
 
-        FirebaseUser user = auth.getCurrentUser();
+        // Create adapters for drop down lists
+        ArrayAdapter<CharSequence> adapter1 = createSpinnerAdapter(R.array.job_sizes);
+        ArrayAdapter<CharSequence> adapter2 = createSpinnerAdapter(R.array.job_types);
+        editTextJobSize.setAdapter(adapter1);
+        editTextJobType.setAdapter(adapter2);
 
-        buttonPostAd = (Button) view.findViewById(R.id.buttonAddJob);
-        buttonUploadImages = (Button) view.findViewById(R.id.buttonUploadImages);
+        // Widgets for the map
+        editTextSearch = view.findViewById(R.id.editTextSearch);
+        imageViewGps = view.findViewById(R.id.ic_gps);
+        imageViewCheck = view.findViewById(R.id.check);
 
-        scrollView = (ScrollView) view.findViewById(R.id.advertScrollView);
+        editTextSearch2 = view.findViewById(R.id.editTextSearch2);
+        imageViewGps2 = view.findViewById(R.id.ic_gps2);
+        imageViewCheck2 = view.findViewById(R.id.check2);
+    }
 
-        editTextAdName = (EditText) view.findViewById(R.id.editTextAdName);
-        editTextAdDescription = (EditText) view.findViewById(R.id.editTextAdDescription);
-        editTextJobSize = (Spinner) view.findViewById(R.id.editTextJobSize);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
+    private ArrayAdapter<CharSequence> createSpinnerAdapter(int arrayField)
+    {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), arrayField, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        editTextJobSize.setAdapter(adapter);
-        editTextJobType = (Spinner) view.findViewById(R.id.editTextJobType);
-        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        editTextJobType.setAdapter(adapter1);
-        editTextColDate = (EditText) view.findViewById(R.id.editTextJobColDate);
+        return adapter;
+    }
+
+    private void createOnClickListeners()
+    {
         editTextColDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -169,12 +301,12 @@ public class PostAnAdvertFragment extends Fragment
                 dialog.show();
             }
         });
+
         dateSetListener = new DatePickerDialog.OnDateSetListener()
         {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
             {
-
                 month = month + 1;
                 Log.d(TAG, "onDateSet: date: " + year + "/" + month + "/" + dayOfMonth);
 
@@ -201,10 +333,9 @@ public class PostAnAdvertFragment extends Fragment
                 }
             }
         };
-        editTextColTime = (EditText) view.findViewById(R.id.editTextJobColTime);
+
         editTextColTime.setOnClickListener(new View.OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
@@ -226,196 +357,63 @@ public class PostAnAdvertFragment extends Fragment
                 mTimePicker.show();
             }
         });
-        editTextColAddL1 = (EditText) view.findViewById(R.id.editTextJobColL1);
-        editTextColAddL2 = (EditText) view.findViewById(R.id.editTextJobColL2);
-        editTextColAddTown = (EditText) view.findViewById(R.id.editTextJobColTown);
-        editTextColAddPostcode = (EditText) view.findViewById(R.id.editTextJobColPostcode);
-        editTextDelAddL1 = (EditText) view.findViewById(R.id.editTextJobDelL1);
-        editTextDelAddL2 = (EditText) view.findViewById(R.id.editTextJobDelL2);
-        editTextDelAddTown = (EditText) view.findViewById(R.id.editTextJobDelTown);
-        editTextDelAddPostcode = (EditText) view.findViewById(R.id.editTextJobDelPostcode);
+
         buttonPostAd.setOnClickListener(new View.OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
+                String enterTown = "Please Enter A Town";
+                String enterAddress1 = "Please Enter An Address Line 1";
+                String enterAddress2 = "Please Enter An Address Line 2";
+                String enterPostCode = "Please Enter A Valid PostCode";
 
-                if (TextUtils.isEmpty(editTextAdName.getText()))
+                if (TextUtils.isEmpty(getTextInAdNameWidget()))
                 {
-                    editTextAdName.setText("");
-                    editTextAdName.setHintTextColor(Color.RED);
-                    editTextAdName.setHint("Please enter Advert Name!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
                 }
-                if (TextUtils.isEmpty(editTextAdDescription.getText()))
+                if (TextUtils.isEmpty(getTextInAdDescWidget()))
                 {
-                    editTextAdDescription.setText("");
-                    editTextAdDescription.setHintTextColor(Color.RED);
-                    editTextAdDescription.setHint("Please enter Advert Description!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
                 }
-                if (TextUtils.isEmpty(editTextColDate.getText()))
+                if (TextUtils.isEmpty(getTextInColAd1Wiget()))
                 {
-                    editTextColDate.setText("");
-                    editTextColDate.setHintTextColor(Color.RED);
-                    editTextColDate.setHint("Please enter a Collection Date!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
                 }
-                if (TextUtils.isEmpty(editTextColTime.getText()))
+                if (TextUtils.isEmpty(getTextInColAd2Widget()))
                 {
-                    editTextColTime.setText("");
-                    editTextColTime.setHintTextColor(Color.RED);
-                    editTextColTime.setHint("Please enter a Collection Time!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
                 }
-                if (TextUtils.isEmpty(editTextColAddL1.getText()))
+                if (TextUtils.isEmpty(getTextInColTownWidget()))
                 {
-                    editTextColAddL1.setText("");
-                    editTextColAddL1.setHintTextColor(Color.RED);
-                    editTextColAddL1.setHint("Please enter Address Line 1!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextColAddTown, enterTown);
                 }
-                if (TextUtils.isEmpty(editTextColAddTown.getText()))
+                if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
                 {
-                    editTextColAddTown.setText("");
-                    editTextColAddTown.setHintTextColor(Color.RED);
-                    editTextColAddTown.setHint("Please enter a Town!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
                 }
-                if ((!(editTextColAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextColAddPostcode.getText())))
+                if (TextUtils.isEmpty(getTextInDelAd1Widget()))
                 {
-                    editTextColAddPostcode.setText("");
-                    editTextColAddPostcode.setHintTextColor(Color.RED);
-                    editTextColAddPostcode.setHint("Please enter valid Postcode!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
                 }
-                if (TextUtils.isEmpty(editTextDelAddL1.getText()))
+                if (TextUtils.isEmpty(getTextInDelAd2Widget()))
                 {
-                    editTextDelAddL1.setText("");
-                    editTextDelAddL1.setHintTextColor(Color.RED);
-                    editTextDelAddL1.setHint("Please enter Address Line 1!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
                 }
-                if (TextUtils.isEmpty(editTextDelAddTown.getText()))
+                if (TextUtils.isEmpty(getTextInDelTownWidget()))
                 {
-                    editTextDelAddTown.setText("");
-                    editTextDelAddTown.setHintTextColor(Color.RED);
-                    editTextDelAddTown.setHint("Please enter a Town!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextDelAddTown, enterTown);
                 }
-                if ((!(editTextDelAddPostcode.getText().toString().matches("^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$"))) || (TextUtils.isEmpty(editTextDelAddPostcode.getText())))
+                if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
                 {
-                    editTextDelAddPostcode.setText("");
-                    editTextDelAddPostcode.setHintTextColor(Color.RED);
-                    editTextDelAddPostcode.setHint("Please enter valid Postcode!");
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
                 } else
                 {
                     saveJobInformation();
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack("tag").commit();
+                    newFragmentTransaction(new FindAJobFragment());
                 }
             }
         });
-
-        // Get map info
-        try
-        {
-            Bundle bundle = getArguments();
-            if(bundle.getSerializable("JobInfo") != null)
-            {
-                JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
-                editTextAdName.setText(jobInformation.getAdvertName());
-                editTextAdDescription.setText(jobInformation.getAdvertDescription());
-
-                ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
-                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
-                adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                for(int i = 0; i < adapter2.getCount(); i++)
-                {
-                    if(jobInformation.getJobSize().equals(adapter2.getItem(i)))
-                    {
-                        editTextJobSize.setSelection(i);
-                    }
-                }
-
-                for(int i = 0; i < adapter3.getCount(); i++)
-                {
-                    if(jobInformation.getJobType().equals(adapter3.getItem(i)))
-                    {
-                        editTextJobType.setSelection(i);
-                    }
-                }
-
-                editTextColDate.setText(jobInformation.getCollectionDate());
-                editTextColTime.setText(jobInformation.getCollectionTime());
-                editTextDelAddL1.setText(jobInformation.getDelL1());
-                editTextDelAddL2.setText(jobInformation.getDelL2());
-                editTextDelAddTown.setText(jobInformation.getDelTown());
-                editTextDelAddPostcode.setText(jobInformation.getDelPostcode());
-
-                if(bundle.getSerializable("JobAddress") != null)
-                {
-                    PlaceInformation address = (PlaceInformation) bundle.getSerializable("JobAddress");
-                    editTextColAddL1.setText(address.getSubThoroughfare());
-                    editTextColAddL2.setText(address.getThoroughfare());
-                    editTextColAddTown.setText(address.getLocality());
-                    editTextColAddPostcode.setText(address.getPostCode());
-                }
-            }
-
-            if(bundle.getSerializable("JobInfoDel") != null)
-            {
-                JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobInfoDel");
-                editTextAdName.setText(jobInformation.getAdvertName());
-                editTextAdDescription.setText(jobInformation.getAdvertDescription());
-
-                ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes, android.R.layout.simple_spinner_item);
-                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(getActivity(), R.array.job_types, android.R.layout.simple_spinner_item);
-                adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                for(int i = 0; i < adapter2.getCount(); i++)
-                {
-                    if(jobInformation.getJobSize().equals(adapter2.getItem(i)))
-                    {
-                        editTextJobSize.setSelection(i);
-                    }
-                }
-
-                for(int i = 0; i < adapter3.getCount(); i++)
-                {
-                    if(jobInformation.getJobType().equals(adapter3.getItem(i)))
-                    {
-                        editTextJobType.setSelection(i);
-                    }
-                }
-
-                editTextColDate.setText(jobInformation.getCollectionDate());
-                editTextColTime.setText(jobInformation.getCollectionTime());
-                editTextColAddL1.setText(jobInformation.getColL1());
-                editTextColAddL2.setText(jobInformation.getColL2());
-                editTextColAddTown.setText(jobInformation.getColTown());
-                editTextColAddPostcode.setText(jobInformation.getColPostcode());
-
-                PlaceInformation address = (PlaceInformation) bundle.getSerializable("JobAddress");
-                editTextDelAddL1.setText(address.getSubThoroughfare());
-                editTextDelAddL2.setText(address.getThoroughfare());
-                editTextDelAddTown.setText(address.getLocality());
-                editTextDelAddPostcode.setText(address.getPostCode());
-            }
-
-
-        } catch(NullPointerException e)
-        {
-            Log.e(TAG, e.getMessage());
-        }
 
         buttonUploadImages.setOnClickListener(new View.OnClickListener()
         {
@@ -427,17 +425,295 @@ public class PostAnAdvertFragment extends Fragment
                 startActivityForResult(intent, GALLERY_INTENT);
             }
         });
+    }
 
-        return view;
+    private void mapOnClickListeners()
+    {
+//        map1.setEditSearchAPIListener(editTextSearch, getActivity());
+        editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent)
+            {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        keyEvent.getAction() == KeyEvent.ACTION_DOWN ||
+                        keyEvent.getAction() == KeyEvent.KEYCODE_ENTER)
+                {
+                    // Find that location
+                    map1.geoLocate(editTextSearch.getText().toString().trim());
+                    editTextSearch.getText().clear();
+                    map1.hideKeyboard(getActivity());
+                }
+                return false;
+            }
+        });
+
+        imageViewGps.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.d(TAG, "onClick: Pressed GPS Image");
+                map1.getLocationPermission(getActivity().getApplicationContext(), mapFragment, getActivity(), layoutView, getChildFragmentManager());
+                map1.hideKeyboard(getActivity());
+            }
+        });
+
+        // Press the check image
+        imageViewCheck.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                // Create a new Alert dialog for the user to interact with
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+
+                // Inflate layout, and get widgets
+                View viewPopup = getLayoutInflater().inflate(R.layout.popup_confirm_location, null);
+                chooseLocationText = viewPopup.findViewById(R.id.selectLocationText);
+                yesButton = viewPopup.findViewById(R.id.yesButton);
+                noButton = viewPopup.findViewById(R.id.noButton);
+
+                // Show the dialog and edit info in it
+                alertDialog.setTitle("Choose Location?");
+                alertDialog.setView(viewPopup);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
+
+                try
+                {
+                    final PlaceInformation pInfo = map1.getPlaceInfo();
+
+                    if (pInfo != null)
+                    {
+                        // Change the text in the alert dialog to the address
+                        map1.hideKeyboard(getActivity());
+                        chooseLocationText.setText(pInfo.getSubThoroughfare() + " " + pInfo.getThoroughfare() + " " + pInfo.getLocality() + " " + pInfo.getPostCode());
+
+                        yesButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                editTextColAddL1.setText(pInfo.getSubThoroughfare());
+                                editTextColAddL2.setText(pInfo.getThoroughfare());
+                                editTextColAddTown.setText(pInfo.getLocality());
+                                editTextColAddPostcode.setText(pInfo.getPostCode());
+                                dialog.dismiss();
+                            }
+                        });
+
+                        noButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+
+                    }
+                } catch (NullPointerException e)
+                {
+                    genericMethods.customToastMessage("Please Search For A Location First", getActivity());
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        });
+
+
+        // Map 2 for Delivery
+//        map2.setEditSearchAPIListener(editTextSearch2, getActivity());
+        editTextSearch2.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent)
+            {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        keyEvent.getAction() == KeyEvent.ACTION_DOWN ||
+                        keyEvent.getAction() == KeyEvent.KEYCODE_ENTER)
+                {
+                    // Find that location
+                    map2.geoLocate(editTextSearch2.getText().toString().trim());
+                    editTextSearch2.getText().clear();
+                    map2.hideKeyboard(getActivity());
+                }
+                return false;
+            }
+        });
+
+        imageViewGps2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.d(TAG, "onClick: Pressed GPS Image");
+                map2.getLocationPermission(getActivity().getApplicationContext(), mapFragment2, getActivity(), layoutView, getChildFragmentManager());
+                map2.hideKeyboard(getActivity());
+            }
+        });
+
+        // Press the check image
+        imageViewCheck2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                // Create a new Alert dialog for the user to interact with
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+
+                // Inflate layout, and get widgets
+                View viewPopup = getLayoutInflater().inflate(R.layout.popup_confirm_location, null);
+                chooseLocationText = viewPopup.findViewById(R.id.selectLocationText);
+                yesButton = viewPopup.findViewById(R.id.yesButton);
+                noButton = viewPopup.findViewById(R.id.noButton);
+
+                // Show the dialog and edit info in it
+                alertDialog.setTitle("Choose Location?");
+                alertDialog.setView(viewPopup);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
+
+                try
+                {
+                    final PlaceInformation pInfo = map2.getPlaceInfo();
+
+                    if (pInfo != null)
+                    {
+                        // Change the text in the alert dialog to the address
+                        map2.hideKeyboard(getActivity());
+                        chooseLocationText.setText(pInfo.getSubThoroughfare() + " " + pInfo.getThoroughfare() + " " + pInfo.getLocality() + " " + pInfo.getPostCode());
+
+                        yesButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                editTextDelAddL1.setText(pInfo.getSubThoroughfare());
+                                editTextDelAddL2.setText(pInfo.getThoroughfare());
+                                editTextDelAddTown.setText(pInfo.getLocality());
+                                editTextDelAddPostcode.setText(pInfo.getPostCode());
+                                dialog.dismiss();
+                            }
+                        });
+
+                        noButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+
+                    }
+                } catch (NullPointerException e)
+                {
+                    genericMethods.customToastMessage("Please Search For A Location First", getActivity());
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        });
+
+
+    }
+
+    private void ifWidgetTextIsNull(EditText text, String message)
+    {
+        text.setText("");
+        text.setHintTextColor(Color.RED);
+        text.setHint(message);
+        scrollView.fullScroll(ScrollView.FOCUS_UP);
+    }
+
+    private void newFragmentTransaction(Fragment fragmentToTransferTo)
+    {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
+    }
+
+    private String getPostCodeRegex()
+    {
+        return "^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$";
+    }
+
+    private String getTextInAdNameWidget()
+    {
+        return editTextAdName.getText().toString().trim();
+    }
+
+    private String getTextInAdDescWidget()
+    {
+        return editTextAdDescription.getText().toString().trim();
+    }
+
+    private String getTextInJobSizeWidget()
+    {
+        return editTextJobSize.getSelectedItem().toString().trim();
+    }
+
+    private String getTextInJobTypeWidget()
+    {
+        return editTextJobType.getSelectedItem().toString().trim();
+    }
+
+    private String getTextInCollectionDateWidget()
+    {
+        return editTextColDate.getText().toString().trim();
+    }
+
+    private String getTextInCollectionTimeWidget()
+    {
+        return editTextColTime.getText().toString().trim();
+    }
+
+    private String getTextInColAd1Wiget()
+    {
+        return editTextColAddL1.getText().toString().trim();
+    }
+
+    private String getTextInColAd2Widget()
+    {
+        return editTextColAddL2.getText().toString().trim();
+    }
+
+    private String getTextInColTownWidget()
+    {
+        return editTextColAddTown.getText().toString().trim();
+    }
+
+    private String getTextInColPostCodeWidget()
+    {
+        return editTextColAddPostcode.getText().toString().trim();
+    }
+
+    private String getTextInDelAd1Widget()
+    {
+        return editTextDelAddL1.getText().toString().trim();
+    }
+
+    private String getTextInDelAd2Widget()
+    {
+        return editTextDelAddL2.getText().toString().trim();
+    }
+
+    private String getTextInDelTownWidget()
+    {
+        return editTextDelAddTown.getText().toString().trim();
+    }
+
+    private String getTextInDelPostCodeWidget()
+    {
+        return editTextDelAddPostcode.getText().toString().trim();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        // Get the current user
-        UploadImageFragment imageFragment = new UploadImageFragment();
-        final FirebaseUser user = auth.getCurrentUser();
 
         // Redirect user to there gallery and get them to select an image
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
@@ -448,295 +724,145 @@ public class PostAnAdvertFragment extends Fragment
 
             imageUri = data.getData();
             final Uri uri = data.getData();
-            setUpImageTransfer(uri);
+
+            try
+            {
+                ExifInterfaceImageRotater exifInterfaceImageRotater = new ExifInterfaceImageRotater();
+                profileImage.setImageBitmap(exifInterfaceImageRotater.setUpImageTransfer(uri, getActivity().getContentResolver()));
+                profileImage.buildDrawingCache();
+                profileImage.getDrawingCache();
+                BitmapDrawable drawable = (BitmapDrawable) profileImage.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                compressData = byteArrayOutputStream.toByteArray();
+                progressDialog.dismiss();
+                profileImage.setVisibility(View.VISIBLE);
+                profileImage.getLayoutParams().height = 115;
+
+            } catch (Exception e)
+            {
+                Log.e(TAG, "Error Uploading Image: " + e.getMessage());
+            }
         }
-    }
-
-    /**
-     * Setting image that has been selected and turning it into a bitmap.
-     * Putting it into an input scream and sending it to be modified
-     * @param uri
-     */
-    public void setUpImageTransfer(Uri uri)
-    {
-        progressDialog.dismiss();
-        try
-        {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-            ContentResolver contentResolver = getActivity().getContentResolver();
-            InputStream inputStream = contentResolver.openInputStream(uri);
-            modifyOrientation(bitmap, inputStream);
-        } catch (IOException e)
-        {
-            e.getStackTrace();
-        }
-    }
-
-    /**
-     * Send the image to be rotated dependant upon its needs
-     *
-     * @param bitmap
-     * @param image_absolute_path
-     * @return
-     * @throws IOException
-     */
-    public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException
-    {
-        android.support.media.ExifInterface exifInterface = new android.support.media.ExifInterface(image_absolute_path);
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        switch (orientation)
-        {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotate(bitmap, 90);
-
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotate(bitmap, 180);
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotate(bitmap, 270);
-
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                return flip(bitmap, true, false);
-
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                return flip(bitmap, false, true);
-            default:
-                return bitmap;
-        }
-    }
-
-    /**
-     * If the uploaded image needed to be rotated
-     *
-     * @param bitmap
-     * @param degrees
-     * @return
-     */
-    public static Bitmap rotate(Bitmap bitmap, float degrees)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        profileImage.setImageBitmap(bitmap1);
-
-        profileImage.buildDrawingCache();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        data = byteArrayOutputStream.toByteArray();
-        return bitmap1;
-    }
-
-    /**
-     * If the uploaded image needed to be flipped
-     *
-     * @param bitmap
-     * @param horizontal
-     * @param vertical
-     * @return
-     */
-    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical)
-    {
-        Matrix matrix = new Matrix();
-        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        profileImage.setImageBitmap(bitmap1);
-
-        profileImage.buildDrawingCache();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        data = byteArrayOutputStream.toByteArray();
-        return bitmap1;
     }
 
     private void saveJobInformation()
     {
-        String adName = editTextAdName.getText().toString().trim();
-        String adDescription = editTextAdDescription.getText().toString().trim();
-        String jobSize = editTextJobSize.getSelectedItem().toString().trim();
-        String jobType = editTextJobType.getSelectedItem().toString().trim();
-        String colDate = editTextColDate.getText().toString().trim();
-        String colTime = editTextColTime.getText().toString().trim();
-        String colL1 = editTextColAddL1.getText().toString().trim();
-        String colL2 = editTextColAddL2.getText().toString().trim();
-        String colTown = editTextColAddTown.getText().toString().trim();
-        String colPostcode = editTextColAddPostcode.getText().toString().trim().toUpperCase();
-        String delL1 = editTextDelAddL1.getText().toString().trim();
-        String delL2 = editTextDelAddL2.getText().toString().trim();
-        String delTown = editTextDelAddTown.getText().toString().trim();
-        String delPostcode = editTextDelAddPostcode.getText().toString().trim().toUpperCase();
+        final String key = databaseReference.child("Jobs").push().getKey();
 
-        String jobStatus = "Pending";
-        String courierID = " ";
-
-        FirebaseUser user = auth.getCurrentUser();
-
-        String posterID = user.getUid().toString().trim();
-
-        final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
-                courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
-
-
-        databaseReference.child("Jobs").push().setValue(jobInformation);
-
-        databaseReference.addValueEventListener(new ValueEventListener()
+        final StorageReference filePath = storageReference.child("JobImages").child(auth.getCurrentUser().getUid()).child(key).child(imageUri.getLastPathSegment());
+        filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
         {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
             {
-                jobReference = dataSnapshot.child("Jobs");
+                genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
 
-                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+                Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                for (DataSnapshot ds : jobListSnapShot)
-                {
-                    JobInformation j = ds.getValue(JobInformation.class);
-                    if(j.equals(jobInformation))
-                    {
-                        databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
+                String jobStatus = "Pending";
 
-            }
-        });
+                final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
+                        " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget()
+                        , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
+                        , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, downloadUri.toString());
 
+                databaseReference.child("Jobs").child(key).setValue(jobInformation);
 
-        Toast.makeText(getActivity(), "Job Added!", Toast.LENGTH_SHORT).show();
-
-
-    }
-
-    private void init(View view)
-    {
-        final Button mapButton = view.findViewById(R.id.buttonMap);
-        mapButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                MapFragment mapFragment = new MapFragment();
-                Bundle bundle = new Bundle();
-
-                String adName = editTextAdName.getText().toString().trim();
-                String adDescription = editTextAdDescription.getText().toString().trim();
-                String jobSize = editTextJobSize.getSelectedItem().toString().trim();
-                String jobType = editTextJobType.getSelectedItem().toString().trim();
-                String colDate = editTextColDate.getText().toString().trim();
-                String colTime = editTextColTime.getText().toString().trim();
-                String colL1 = editTextColAddL1.getText().toString().trim();
-                String colL2 = editTextColAddL2.getText().toString().trim();
-                String colTown = editTextColAddTown.getText().toString().trim();
-                String colPostcode = editTextColAddPostcode.getText().toString().trim().toUpperCase();
-                String delL1 = editTextDelAddL1.getText().toString().trim();
-                String delL2 = editTextDelAddL2.getText().toString().trim();
-                String delTown = editTextDelAddTown.getText().toString().trim();
-                String delPostcode = editTextDelAddPostcode.getText().toString().trim().toUpperCase();
-                String courierID = " ";
-                String posterID = " ";
-                String jobStatus = " ";
-
-                // job info obj
-                final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
-                        courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
-
-                bundle.putSerializable("JobInfo", jobInformation);
-                mapFragment.setArguments(bundle);
-
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content, mapFragment).commit();
-            }
-        });
-    }
-
-    private void initButton2(View view)
-    {
-        final Button mapButton = view.findViewById(R.id.buttonMap2);
-        mapButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                MapFragment mapFragment = new MapFragment();
-                Bundle bundle = new Bundle();
-
-                String adName = editTextAdName.getText().toString().trim();
-                String adDescription = editTextAdDescription.getText().toString().trim();
-                String jobSize = editTextJobSize.getSelectedItem().toString().trim();
-                String jobType = editTextJobType.getSelectedItem().toString().trim();
-                String colDate = editTextColDate.getText().toString().trim();
-                String colTime = editTextColTime.getText().toString().trim();
-                String colL1 = editTextColAddL1.getText().toString().trim();
-                String colL2 = editTextColAddL2.getText().toString().trim();
-                String colTown = editTextColAddTown.getText().toString().trim();
-                String colPostcode = editTextColAddPostcode.getText().toString().trim().toUpperCase();
-                String delL1 = editTextDelAddL1.getText().toString().trim();
-                String delL2 = editTextDelAddL2.getText().toString().trim();
-                String delTown = editTextDelAddTown.getText().toString().trim();
-                String delPostcode = editTextDelAddPostcode.getText().toString().trim().toUpperCase();
-                String courierID = " ";
-                String posterID = " ";
-                String jobStatus = " ";
-
-                final StorageReference filePath = storageReference.child("Images").child(auth.getCurrentUser().getUid()).child(imageUri.getLastPathSegment());
-                filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                databaseReference.addValueEventListener(new ValueEventListener()
                 {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                    public void onDataChange(DataSnapshot dataSnapshot)
                     {
-                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
+                        jobReference = dataSnapshot.child("Jobs");
+
+                        Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+
+                        for (DataSnapshot ds : jobListSnapShot)
+                        {
+                            JobInformation j = ds.getValue(JobInformation.class);
+                            if (j.equals(jobInformation))
+                            {
+                                databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
+                            }
+                        }
                     }
-                }).addOnFailureListener(new OnFailureListener()
-                {
+
                     @Override
-                    public void onFailure(@NonNull Exception e)
+                    public void onCancelled(DatabaseError databaseError)
                     {
-                        progressDialog.dismiss();
-                        Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
-                // job info obj
-                final JobInformation jobInformation = new JobInformation(adName, adDescription, jobSize, jobType, posterID,
-                        courierID, colDate, colTime, colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode, jobStatus);
 
-                bundle.putSerializable("JobInfoDel", jobInformation);
-                mapFragment.setArguments(bundle);
-
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content, mapFragment).commit();
+                progressDialog.dismiss();
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                genericMethods.customToastMessage("Failed To Upload!", getActivity());
+                progressDialog.dismiss();
             }
         });
+
+
+
+        Toast.makeText(getActivity(), "Job Added!", Toast.LENGTH_SHORT).show();
     }
 
-
-    public boolean isServicesOK()
+    private boolean isServicesOK()
     {
         Log.d(TAG, "IsServicesOK: checking google services version: ");
         int avaliable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getActivity());
 
-        if(avaliable == ConnectionResult.SUCCESS)
+        if (avaliable == ConnectionResult.SUCCESS)
         {
             // Can make map requests
             Log.d(TAG, "isServicesOK: Google Play Services Is Working");
             return true;
-        }
-        else if(GoogleApiAvailability.getInstance().isUserResolvableError(avaliable))
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(avaliable))
         {
             Log.d(TAG, "isServicesOK: An error has occured but it can be fixed");
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), avaliable, Error_Dialog_Request);
             dialog.show();
-        }
-        else
+        } else
         {
             Log.d(TAG, "isServicesError: Google Play Services Isnt Working, Unable To Resolve");
         }
         return false;
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+    {
+
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        mGoogleApiClient1.stopAutoManage(getActivity());
+        mGoogleApiClient1.disconnect();
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        mGoogleApiClient1.stopAutoManage(getActivity());
+        mGoogleApiClient1.disconnect();
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mGoogleApiClient1.stopAutoManage(getActivity());
+        mGoogleApiClient1.disconnect();
     }
 }
