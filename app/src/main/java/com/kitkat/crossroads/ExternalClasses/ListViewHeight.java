@@ -45,4 +45,9 @@ public class ListViewHeight
         listView.requestLayout();
 
     }
+
+    public void setExpandableListViewHeight(ExpandableListView parent, int groupPosition)
+    {
+        setListViewHeight(parent, groupPosition);
+    }
 }

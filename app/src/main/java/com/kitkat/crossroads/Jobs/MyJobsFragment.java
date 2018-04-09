@@ -3,11 +3,8 @@ package com.kitkat.crossroads.Jobs;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,7 +16,6 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,8 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -82,7 +76,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private final ArrayList<String> jobListKey = new ArrayList<>();
     private final ArrayList<String> jobListKeyActive = new ArrayList<>();
     private final ArrayList<String> jobListKeyComplete = new ArrayList<>();
-
 
     private SearchView jobSearchBidOn, jobSearchAccepted, jobSearchCompleted;
     private TabHost host;
@@ -146,6 +139,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         });
 
         setSearchOptions();
+
         return view;
     }
 
@@ -387,12 +381,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                BidDetailsFragment bidDetailsFragment = new BidDetailsFragment();
+                BidOnJobsFragment bidOnJobsFragment = new BidOnJobsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Job", adapter.mData.get(position));
                 bundle.putSerializable("JobId", adapter.mDataKeys.get(position));
-                bidDetailsFragment.setArguments(bundle);
-                getFragmentManager().beginTransaction().replace(R.id.content, bidDetailsFragment).addToBackStack("tag").commit();
+                bidOnJobsFragment.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.content, bidOnJobsFragment).addToBackStack("tag").commit();
             }
         });
     }
@@ -462,12 +456,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
             {
-                MyCompletedJobs myCompletedJobs = new MyCompletedJobs();
+                CompletedJobsFragment completedJobsFragment = new CompletedJobsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Job", adapterCompletedJobs.mData.get(position));
                 bundle.putSerializable("JobId", adapterCompletedJobs.mDataKeys.get(position));
-                myCompletedJobs.setArguments(bundle);
-                getFragmentManager().beginTransaction().replace(R.id.content, myCompletedJobs).addToBackStack("tag").commit();
+                completedJobsFragment.setArguments(bundle);
+                getFragmentManager().beginTransaction().replace(R.id.content, completedJobsFragment).addToBackStack("tag").commit();
             }
         });
     }

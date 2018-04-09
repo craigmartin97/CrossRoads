@@ -285,9 +285,4 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             }
         });
     }
-
-    private void customToastMessage(String message)
-    {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
 }
