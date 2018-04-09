@@ -30,6 +30,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Jobs.FindAJobFragment;
 import com.kitkat.crossroads.Jobs.MyAdvertsFragment;
 import com.kitkat.crossroads.Jobs.MyJobsFragment;
@@ -52,8 +53,8 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private StorageReference storageReference;
-    private DatabaseReference myRef;
-    private String userID;
+    private DatabaseReference databaseReference;
+    private String user;
     private ImageView profileImage;
 
     private String profileImageUrl;
@@ -65,13 +66,11 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        auth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("Users");
-
-        FirebaseUser user = auth.getCurrentUser();
-        userID = user.getUid();
-        storageReference = FirebaseStorage.getInstance().getReference();
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        auth = databaseConnections.getAuth();
+        databaseReference = databaseConnections.getDatabaseReference().child("Users");
+        user = databaseConnections.getCurrentUser();
+        storageReference = databaseConnections.getStorageReference();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,7 +81,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+        databaseReference.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
@@ -194,7 +193,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         ImageView logout = (ImageView) headerview.findViewById(R.id.imageLogout);
         profileImage = (ImageView) headerview.findViewById(R.id.navigationImage);
 
-        myRef.child(userID).addValueEventListener(new ValueEventListener()
+        databaseReference.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
@@ -202,11 +201,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                 String name = dataSnapshot.child("fullName").getValue(String.class);
                 profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
 
-                Log.d(TAG, "Name Is: " + name);
-                Log.d(TAG, "ProfileImage: " + profileImage);
-
                 navigationName.setText(name);
-
                 Picasso.get().load(profileImageUrl).fit().transform(new CircleTransformation()).into(profileImage);
             }
 

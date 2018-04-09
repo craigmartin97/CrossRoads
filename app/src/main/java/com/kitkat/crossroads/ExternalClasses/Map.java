@@ -499,7 +499,17 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
        Auto Complete API AutoComplete Suggestions
      */
 
-    private AdapterView.OnItemClickListener mAutocompleteItemClickListener = new AdapterView.OnItemClickListener()
+    public void setPlaceAutocompleteAdapter(PlaceAutocompleteAdapter placeAutocompleteAdapter)
+    {
+        this.placeAutocompleteAdapter = placeAutocompleteAdapter;
+    }
+
+    public void setmGoogleApiClient1(GoogleApiClient googleApiClient1)
+    {
+        this.mGoogleApiClient1 = googleApiClient1;
+    }
+
+    public AdapterView.OnItemClickListener mAutocompleteItemClickListener = new AdapterView.OnItemClickListener()
     {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
@@ -620,19 +630,5 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
         {
             return null;
         }
-    }
-
-    public void setEditSearchAPIListener(AutoCompleteTextView editTextSearch, FragmentActivity fragmentActivity)
-    {
-        mGoogleApiClient1 = new GoogleApiClient
-                .Builder(fragmentActivity)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(fragmentActivity, 0, this)
-                .build();
-
-        editTextSearch.setOnItemClickListener(mAutocompleteItemClickListener);
-        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(fragmentActivity, mGoogleApiClient1, LAT_LNG_BOUNDS, null);
-        editTextSearch.setAdapter(placeAutocompleteAdapter);
     }
 }

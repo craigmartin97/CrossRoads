@@ -63,7 +63,6 @@ public class ActiveJobDetailsFragment extends Fragment {
     private View view;
 
     private DatabaseReference myRef;
-    private FirebaseDatabase database;
 
     private StorageReference storageReference;
 
@@ -143,8 +142,6 @@ public class ActiveJobDetailsFragment extends Fragment {
         mJobCompleteButton = view.findViewById(R.id.job_complete_button);
         jobImageAccepted = view.findViewById(R.id.jobImageAccepted);
 
-
-        database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -154,18 +151,7 @@ public class ActiveJobDetailsFragment extends Fragment {
         final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
         jobId = (String) bundle.getSerializable("JobId");
 
-        FileDownloadTask filePath = storageReference.child("JobImages").child(user).child(jobId).getFile(jobInformation.getJobImage());
-        Toast.makeText(getActivity(), "HERE", Toast.LENGTH_SHORT).show();
-
-        try
-        {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), jobInformation.getJobImage());
-            jobImageAccepted.setImageBitmap(bitmap);
-            Toast.makeText(getActivity(), "HERE", Toast.LENGTH_SHORT).show();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/JobImages%2FP2oJ561YkNhzjfe42enE9GhFlUE2%2F-L9fJPxYGkLE8oRvRuuR%2F71093?alt=media&token=cfc7c112-5796-40cd-b6fd-b39ef6d7846e").resize(1000,1000).into(jobImageAccepted);
 
         textViewJobName1.setText(jobInformation.getAdvertName());
         textViewDescription1.setText(jobInformation.getAdvertDescription());

@@ -38,9 +38,12 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,9 +56,10 @@ import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
-import com.kitkat.crossroads.MapFeatures.MapFragment;
+import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
 
@@ -64,7 +68,7 @@ import java.util.Calendar;
 
 import static android.app.Activity.RESULT_OK;
 
-public class PostAnAdvertFragment extends Fragment
+public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
     /**
      * Get the authentication to the Firebase Authentication area
@@ -91,7 +95,7 @@ public class PostAnAdvertFragment extends Fragment
      */
     private StorageReference storageReference;
 
-    private static ImageView profileImage;
+    private ImageView profileImage;
     private Uri imageUri;
     private static byte[] compressData;
     private static final int GALLERY_INTENT = 2;
@@ -109,8 +113,6 @@ public class PostAnAdvertFragment extends Fragment
     private Button buttonPostAd, buttonUploadImages;
 
     private static final int Error_Dialog_Request = 9001;
-
-    private ArrayAdapter<CharSequence> adapter1, adapter2;
 
     /**
      * Widgets that are found on the View, fragment_map
@@ -130,6 +132,18 @@ public class PostAnAdvertFragment extends Fragment
     private SupportMapFragment mapFragment, mapFragment2;
     private View layoutView;
 
+    /**
+     * Lat and Long Bounds that are used. This covers across the entire world
+     */
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
+            new LatLng(-40, -168), new LatLng(71, 136));
+
+    private GoogleApiClient mGoogleApiClient1;
+
+    private GenericMethods genericMethods = new GenericMethods();
+
+    private Uri uri;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -146,6 +160,34 @@ public class PostAnAdvertFragment extends Fragment
 
         // Collection Map
         map1 = new Map();
+        map2 = new Map();
+        getViewsByIds(view);
+
+        // Create google api client, so user has pre-set options to select.
+        /*
+      The main entry point for Google Play services integration
+     */
+       mGoogleApiClient1 = new GoogleApiClient
+                .Builder(getActivity())
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(getActivity(), 0, this)
+                .build();
+
+        PlaceAutocompleteAdapter placeAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient1, LAT_LNG_BOUNDS, null);
+        map1.setPlaceAutocompleteAdapter(placeAutocompleteAdapter);
+        map1.setmGoogleApiClient1(mGoogleApiClient1);
+
+        map2.setPlaceAutocompleteAdapter(placeAutocompleteAdapter);
+        map2.setmGoogleApiClient1(mGoogleApiClient1);
+
+        editTextSearch.setOnItemClickListener(map1.mAutocompleteItemClickListener);
+        editTextSearch2.setOnItemClickListener(map2.mAutocompleteItemClickListener);
+
+        editTextSearch.setAdapter(placeAutocompleteAdapter);
+        editTextSearch2.setAdapter(placeAutocompleteAdapter);
+
+        // Collection Map
         mapFragment = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback()
         {
@@ -157,7 +199,6 @@ public class PostAnAdvertFragment extends Fragment
         });
 
         // Delivery Map
-        map2 = new Map();
         mapFragment2 = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map2);
         mapFragment2.getMapAsync(new OnMapReadyCallback()
         {
@@ -168,11 +209,9 @@ public class PostAnAdvertFragment extends Fragment
             }
         });
 
-        getViewsByIds(view);
-
         createOnClickListeners();
 
-        if(isServicesOK())
+        if (isServicesOK())
         {
             mapOnClickListeners();
         }
@@ -219,8 +258,8 @@ public class PostAnAdvertFragment extends Fragment
         editTextDelAddPostcode = view.findViewById(R.id.editTextJobDelPostcode);
 
         // Create adapters for drop down lists
-        adapter1 = createSpinnerAdapter(R.array.job_sizes);
-        adapter2 = createSpinnerAdapter(R.array.job_types);
+        ArrayAdapter<CharSequence> adapter1 = createSpinnerAdapter(R.array.job_sizes);
+        ArrayAdapter<CharSequence> adapter2 = createSpinnerAdapter(R.array.job_types);
         editTextJobSize.setAdapter(adapter1);
         editTextJobType.setAdapter(adapter2);
 
@@ -349,7 +388,7 @@ public class PostAnAdvertFragment extends Fragment
                 {
                     ifWidgetTextIsNull(editTextColAddTown, enterTown);
                 }
-                if ((!(getTextInColPostCodeWidget().toString().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
+                if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
                 {
                     ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
                 }
@@ -365,7 +404,7 @@ public class PostAnAdvertFragment extends Fragment
                 {
                     ifWidgetTextIsNull(editTextDelAddTown, enterTown);
                 }
-                if ((!(getTextInDelPostCodeWidget().toString().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
+                if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
                 {
                     ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
                 } else
@@ -390,7 +429,7 @@ public class PostAnAdvertFragment extends Fragment
 
     private void mapOnClickListeners()
     {
-        map1.setEditSearchAPIListener(editTextSearch, getActivity());
+//        map1.setEditSearchAPIListener(editTextSearch, getActivity());
         editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override
@@ -477,7 +516,7 @@ public class PostAnAdvertFragment extends Fragment
                     }
                 } catch (NullPointerException e)
                 {
-                    Toast.makeText(getActivity(), "Please Search For A Location First", Toast.LENGTH_SHORT).show();
+                    genericMethods.customToastMessage("Please Search For A Location First", getActivity());
                     Log.e(TAG, e.getMessage());
                 }
             }
@@ -572,7 +611,7 @@ public class PostAnAdvertFragment extends Fragment
                     }
                 } catch (NullPointerException e)
                 {
-                    Toast.makeText(getActivity(), "Please Search For A Location First", Toast.LENGTH_SHORT).show();
+                    genericMethods.customToastMessage("Please Search For A Location First", getActivity());
                     Log.e(TAG, e.getMessage());
                 }
             }
@@ -595,6 +634,7 @@ public class PostAnAdvertFragment extends Fragment
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
     }
+
     private String getPostCodeRegex()
     {
         return "^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$";
@@ -709,7 +749,7 @@ public class PostAnAdvertFragment extends Fragment
 
     private void saveJobInformation()
     {
-        String key = databaseReference.child("Jobs").push().getKey();
+        final String key = databaseReference.child("Jobs").push().getKey();
 
         final StorageReference filePath = storageReference.child("JobImages").child(auth.getCurrentUser().getUid()).child(key).child(imageUri.getLastPathSegment());
         filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
@@ -717,7 +757,46 @@ public class PostAnAdvertFragment extends Fragment
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
             {
-                Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
+
+                Uri downloadUri = taskSnapshot.getDownloadUrl();
+
+                String jobStatus = "Pending";
+
+                final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
+                        " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget()
+                        , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
+                        , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, downloadUri.toString());
+
+                databaseReference.child("Jobs").child(key).setValue(jobInformation);
+
+                databaseReference.addValueEventListener(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        jobReference = dataSnapshot.child("Jobs");
+
+                        Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+
+                        for (DataSnapshot ds : jobListSnapShot)
+                        {
+                            JobInformation j = ds.getValue(JobInformation.class);
+                            if (j.equals(jobInformation))
+                            {
+                                databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+
+                    }
+                });
+
+
                 progressDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener()
@@ -725,52 +804,17 @@ public class PostAnAdvertFragment extends Fragment
             @Override
             public void onFailure(@NonNull Exception e)
             {
+                genericMethods.customToastMessage("Failed To Upload!", getActivity());
                 progressDialog.dismiss();
-                Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        String jobStatus = "Pending";
 
-        final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
-                " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget()
-                , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
-                , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus);
-
-        databaseReference.child("Jobs").child(key).setValue(jobInformation);
-
-        jobInformation.setJobImage(imageUri);
-
-        databaseReference.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                jobReference = dataSnapshot.child("Jobs");
-
-                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
-
-                for (DataSnapshot ds : jobListSnapShot)
-                {
-                    JobInformation j = ds.getValue(JobInformation.class);
-                    if (j.equals(jobInformation))
-                    {
-                        databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
 
         Toast.makeText(getActivity(), "Job Added!", Toast.LENGTH_SHORT).show();
     }
 
-    public boolean isServicesOK()
+    private boolean isServicesOK()
     {
         Log.d(TAG, "IsServicesOK: checking google services version: ");
         int avaliable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getActivity());
@@ -790,5 +834,35 @@ public class PostAnAdvertFragment extends Fragment
             Log.d(TAG, "isServicesError: Google Play Services Isnt Working, Unable To Resolve");
         }
         return false;
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+    {
+
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        mGoogleApiClient1.stopAutoManage(getActivity());
+        mGoogleApiClient1.disconnect();
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        mGoogleApiClient1.stopAutoManage(getActivity());
+        mGoogleApiClient1.disconnect();
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mGoogleApiClient1.stopAutoManage(getActivity());
+        mGoogleApiClient1.disconnect();
     }
 }

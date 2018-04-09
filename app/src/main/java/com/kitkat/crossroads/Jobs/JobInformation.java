@@ -16,14 +16,14 @@ public class JobInformation implements Serializable
     private String advertName, advertDescription, jobSize, jobType, posterID, jobID, courierID, collectionDate, collectionTime;
     private String colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode;
     private String jobStatus;
-    private Uri jobImage;
+    private String jobImage;
 
     public JobInformation()
     {
 
     }
 
-    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobStatus)
+    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobStatus, String jobImage)
     {
         this.advertName = advertName;
         this.advertDescription = advertDescription;
@@ -50,7 +50,10 @@ public class JobInformation implements Serializable
         this.jobID = jobID;
     }
 
-    public void setJobStatus(String jobStatus){this.jobStatus = jobStatus;}
+    public void setJobStatus(String jobStatus)
+    {
+        this.jobStatus = jobStatus;
+    }
 
     public void setCourierID(String courierID)
     {
@@ -142,16 +145,17 @@ public class JobInformation implements Serializable
         return delPostcode;
     }
 
-    public String getJobStatus() {
+    public String getJobStatus()
+    {
         return jobStatus;
     }
 
-    public Uri getJobImage()
+    public String getJobImage()
     {
         return jobImage;
     }
 
-    public void setJobImage(Uri jobImage)
+    public void setJobImage(String jobImage)
     {
         this.jobImage = jobImage;
     }
