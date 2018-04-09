@@ -6,13 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,22 +36,13 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link JobBidsFragment.OnFragmentInteractionListener} interface
+ * {@link PendingAdverts.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link JobBidsFragment#newInstance} factory method to
+ * Use the {@link PendingAdverts#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextListener
+public class PendingAdverts extends Fragment implements SearchView.OnQueryTextListener
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private FirebaseAuth auth;
     private DatabaseReference myRef;
     private FirebaseDatabase database;
@@ -62,7 +54,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
     private String jobId, colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize;
 
-    private JobBidsFragment.MyCustomAdapter mAdapter;
+    private PendingAdverts.MyCustomAdapter mAdapter;
 
     private ArrayList<UserBidInformation> jobList = new ArrayList<>();
 
@@ -90,26 +82,15 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     private HashMap<String, List<String>> listHashMap2;
     private HashMap<String, List<String>> listHashMap3;
 
-    public JobBidsFragment()
+    public PendingAdverts()
     {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment JobBidsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static JobBidsFragment newInstance(String param1, String param2)
+    public static PendingAdverts newInstance(String param1, String param2)
     {
-        JobBidsFragment fragment = new JobBidsFragment();
+        PendingAdverts fragment = new PendingAdverts();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -118,11 +99,6 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -154,6 +130,14 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list_view);
         expandableListView2 = (ExpandableListView) view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = (ExpandableListView) view.findViewById(R.id.expandable_list_view3);
+
+        textViewJobName1 = view.findViewById(R.id.textViewJobName1);
+        textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
+        ImageView jobImagePending = view.findViewById(R.id.jobImagePending);
+
+        textViewJobName1.setText(jobInformation.getAdvertName());
+        textViewDescription1.setText(jobInformation.getAdvertDescription());
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImagePending);
 
         addItemsCollection();
         addItemsDelivery();
@@ -197,16 +181,6 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
         jobListView = view.findViewById(R.id.jobListView1);
 
-        textViewJobName1 = view.findViewById(R.id.textViewJobName1);
-        textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
-//        textViewJobSize1 = view.findViewById(R.id.textViewJobSize1);
-//        textViewJobType1 = view.findViewById(R.id.textViewJobType1);
-
-        textViewJobName1.setText(jobInformation.getAdvertName());
-        textViewDescription1.setText(jobInformation.getAdvertDescription());
-//        textViewJobSize1.setText(jobInformation.getJobSize());
-//        textViewJobType1.setText(jobInformation.getJobType());
-
         databaseReference.addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -218,7 +192,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
 
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
 
-                mAdapter = new JobBidsFragment.MyCustomAdapter();
+                mAdapter = new PendingAdverts.MyCustomAdapter();
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
@@ -472,11 +446,11 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             System.out.println("getView " + position + " " + convertView);
-            JobBidsFragment.MyCustomAdapter.GroupViewHolder holder;
+            PendingAdverts.MyCustomAdapter.GroupViewHolder holder;
             if (convertView == null)
             {
                 convertView = mInflater.inflate(R.layout.job_info_list_bid, null);
-                holder = new JobBidsFragment.MyCustomAdapter.GroupViewHolder();
+                holder = new PendingAdverts.MyCustomAdapter.GroupViewHolder();
                 holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewBid = convertView.findViewById(R.id.textBid);
                 holder.textViewRating = convertView.findViewById(R.id.textRating);
@@ -484,7 +458,7 @@ public class JobBidsFragment extends Fragment implements SearchView.OnQueryTextL
                 convertView.setTag(holder);
             } else
             {
-                holder = (JobBidsFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
+                holder = (PendingAdverts.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
             holder.textViewName.setText(mData.get(position).getFullName());

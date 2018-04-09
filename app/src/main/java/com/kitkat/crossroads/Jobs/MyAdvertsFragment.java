@@ -1,26 +1,22 @@
 package com.kitkat.crossroads.Jobs;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -215,13 +210,13 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
 
-                        JobBidsFragment jobBidsFragment = new JobBidsFragment();
+                        PendingAdverts pendingAdverts = new PendingAdverts();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("JobId", mAdapter.mData.get(position));
-                        jobBidsFragment.setArguments(bundle);
+                        pendingAdverts.setArguments(bundle);
 
                         FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, jobBidsFragment).addToBackStack("tag").commit();
+                        fragmentManager.beginTransaction().replace(R.id.content, pendingAdverts).addToBackStack("tag").commit();
                     }
                 });
 
