@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 
@@ -82,6 +83,8 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
     private HashMap<String, List<String>> listHashMap2;
     private HashMap<String, List<String>> listHashMap3;
 
+    private ListViewHeight listViewHeight = new ListViewHeight();
+
     public PendingAdverts()
     {
         // Required empty public constructor
@@ -115,7 +118,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
         Bundle bundle = this.getArguments();
         final JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobId");
 
-        jobId = jobInformation.getJobID();
+        jobId = (String) bundle.getSerializable("JobKeyId");
         colDate = jobInformation.getCollectionDate().toString();
         colTime = jobInformation.getCollectionTime().toString();
         colAddress = jobInformation.getColL1().toString() + ", " + jobInformation.getColL2().toString();
@@ -154,7 +157,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                setListViewHeight(parent,groupPosition);
+                listViewHeight.setListViewHeight(parent,groupPosition);
                 return false;
             }
         });
@@ -164,7 +167,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
-                setListViewHeight(parent,groupPosition);
+                listViewHeight.setListViewHeight(parent,groupPosition);
                 return false;
             }
         });
@@ -174,7 +177,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
-                setListViewHeight(parent, groupPosition);
+                listViewHeight.setListViewHeight(parent, groupPosition);
                 return false;
             }
         });
@@ -207,7 +210,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                             String userID = bid.getUserID();
                             String id = bid.getJobID();
 
-                            myRef.child("Users").child(userID).addValueEventListener(new ValueEventListener()
+                            databaseReference.child("Users").child(userID).addValueEventListener(new ValueEventListener()
                             {
                                 @Override
                                 public void onDataChange(DataSnapshot thisDataSnapshot)
@@ -242,91 +245,6 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
     }
 
 
-    private void setListViewHeight(ExpandableListView listView,
-                                   int group) {
-        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
-        int totalHeight = 0;
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
-                View.MeasureSpec.EXACTLY);
-        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
-            View groupItem = listAdapter.getGroupView(i, false, null, listView);
-            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-
-            totalHeight += groupItem.getMeasuredHeight();
-
-            if (((listView.isGroupExpanded(i)) && (i != group))
-                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
-                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
-                    View listItem = listAdapter.getChildView(i, j, false, null,
-                            listView);
-                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-
-                    totalHeight += listItem.getMeasuredHeight() + 5;
-
-                }
-            }
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        int height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
-        if (height < 10)
-            height = 200;
-        params.height = height;
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-
-    }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-        }
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText)
-    {
-        String text = newText;
-        mAdapter.filter(text);
-
-        return false;
-    }
-
-    interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
     private void addItemsCollection()
     {
@@ -582,4 +500,56 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
             notifyDataSetChanged();
         }
     }
+
+
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri)
+    {
+        if (mListener != null)
+        {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener)
+        {
+            mListener = (OnFragmentInteractionListener) context;
+        } else
+        {
+        }
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText)
+    {
+        String text = newText;
+        mAdapter.filter(text);
+
+        return false;
+    }
+
+    interface OnFragmentInteractionListener
+    {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
 }

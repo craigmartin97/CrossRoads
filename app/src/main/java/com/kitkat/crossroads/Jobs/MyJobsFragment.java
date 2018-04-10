@@ -5,7 +5,6 @@ import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.DatabaseReferences;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -83,6 +84,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
 
+    private DatabaseReferences databaseReferences = new DatabaseReferences();
+
+    private GenericMethods genericMethods = new GenericMethods();
+
     /**
      * OnCreate is called on the creation of Fragment to create a new
      * fragment.
@@ -97,18 +102,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         tabTag = "Active";
     }
 
-    /**
-     * OnCreateView creates all of the graphical initialisations and sets all of the
-     * actions of the fragment.
-     * <p>
-     * This method sets all of the Views elements, creates a new tab host
-     * and creates all of the content for the list views.
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return View
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -117,7 +110,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         getViewsByIds(view);
         setTabHosts();
-        createTabHost();
 
         databaseReference.addValueEventListener(new ValueEventListener()
         {
@@ -176,66 +168,17 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private void setTabHosts()
     {
-        host.setup();
-
         //Bid On Tab
-        TabHost.TabSpec spec = host.newTabSpec("Bid On");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("Bid On");
-        host.addTab(spec);
+        genericMethods.setupTabHost(host, R.id.tab2, "Bid On");
 
         //Active Tab
-        spec = host.newTabSpec("Active");
-        spec.setContent(R.id.tab1);
-        spec.setIndicator("Accepted");
-        host.addTab(spec);
+        genericMethods.setupTabHost(host, R.id.tab1, "Active");
 
         //Completed Tab
-        spec = host.newTabSpec("Completed Jobs");
-        spec.setContent(R.id.tab3);
-        spec.setIndicator("Completed");
-        host.addTab(spec);
-    }
+        genericMethods.setupTabHost(host, R.id.tab3, "Completed");
 
-    /**
-     * Create all of the tabs and display on the fragment
-     */
-    private void createTabHost()
-    {
-        host.setCurrentTabByTag(tabTag);
-
-        // Assigning the color for each tab
-        for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
-        {
-            TextView tv = host.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextColor(Color.parseColor("#FFFFFF"));
-        }
-
-        // For the current selected tab
-        host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
-        TextView tv = host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
-        tv.setTextColor(Color.parseColor("#2bbc9b"));
-
-        host.setOnTabChangedListener(new TabHost.OnTabChangeListener()
-        {
-            @Override
-            public void onTabChanged(String tabId)
-            {
-                for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
-                {
-                    host.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2bbc9b")); // unselected
-                    TextView tv = host.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
-                    tv.setTextColor(Color.parseColor("#FFFFFF"));
-                }
-
-                host.getTabWidget().getChildAt(host.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFFFFF")); // selected
-                host.getTabWidget().getChildAt(host.getCurrentTab());
-                TextView tv = host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
-                tv.setTextColor(Color.parseColor("#2bbc9b"));
-
-                tabTag = host.getCurrentTabTag();
-            }
-        });
+        // Create the colors and styling of the tab host
+        genericMethods.createTabHost(host, tabTag);
     }
 
     /**
@@ -255,7 +198,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private Iterable<DataSnapshot> getJobListChildren()
     {
-        return jobReference.getChildren();
+        return databaseReferences.getTableChildren(jobReference);
     }
 
     /**
@@ -318,8 +261,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private void createDataSnapShots(DataSnapshot dataSnapshot)
     {
-        bidReference = dataSnapshot.child("Bids");
-        jobReference = dataSnapshot.child("Jobs");
+        DatabaseReferences databaseReferences = new DatabaseReferences();
+        bidReference = databaseReferences.getTableReference(dataSnapshot, "Bids");
+        jobReference = databaseReferences.getTableReference(dataSnapshot, "Jobs");
     }
 
     /**
@@ -327,9 +271,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private void clearLists()
     {
-        jobList.clear();
-        jobListActive.clear();
-        jobListComplete.clear();
+        genericMethods.clearLists(jobList);
+        genericMethods.clearLists(jobListActive);
+        genericMethods.clearLists(jobListComplete);
     }
 
     /**
