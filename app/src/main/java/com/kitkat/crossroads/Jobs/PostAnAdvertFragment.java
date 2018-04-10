@@ -5,12 +5,14 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -98,6 +100,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private ImageView profileImage;
     private Uri imageUri;
     private static byte[] compressData;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
 
@@ -142,8 +145,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private GenericMethods genericMethods = new GenericMethods();
 
-    private Uri uri;
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -167,7 +168,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         /*
       The main entry point for Google Play services integration
      */
-       mGoogleApiClient1 = new GoogleApiClient
+        mGoogleApiClient1 = new GoogleApiClient
                 .Builder(getActivity())
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
@@ -339,7 +340,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View v)
             {
-                // TODO Auto-generated method stub
                 Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
@@ -420,9 +420,44 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, GALLERY_INTENT);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
+
+                alertDialog.setTitle("Upload Image With");
+                alertDialog.setView(mView);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
+
+                Button gallery = mView.findViewById(R.id.gallery);
+                Button camera = mView.findViewById(R.id.camera);
+
+                if (!hasCamera())
+                {
+                    camera.setEnabled(false);
+                } else
+                {
+                    camera.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                        }
+                    });
+                }
+
+                gallery.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, GALLERY_INTENT);
+                        dialog.dismiss();
+                    }
+                });
             }
         });
     }
@@ -522,9 +557,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             }
         });
 
-
         // Map 2 for Delivery
-//        map2.setEditSearchAPIListener(editTextSearch2, getActivity());
         editTextSearch2.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override
@@ -616,8 +649,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 }
             }
         });
-
-
     }
 
     private void ifWidgetTextIsNull(EditText text, String message)
@@ -715,36 +746,40 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         super.onActivityResult(requestCode, resultCode, data);
 
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Displaying Image...");
+        progressDialog.show();
+        final ExifInterfaceImageRotater exifInterfaceImageRotater = new ExifInterfaceImageRotater();
+
         // Redirect user to there gallery and get them to select an image
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Displaying Image...");
-            progressDialog.show();
-
             imageUri = data.getData();
             final Uri uri = data.getData();
 
             try
             {
-                ExifInterfaceImageRotater exifInterfaceImageRotater = new ExifInterfaceImageRotater();
                 profileImage.setImageBitmap(exifInterfaceImageRotater.setUpImageTransfer(uri, getActivity().getContentResolver()));
-                profileImage.buildDrawingCache();
-                profileImage.getDrawingCache();
-                BitmapDrawable drawable = (BitmapDrawable) profileImage.getDrawable();
-                Bitmap bitmap = drawable.getBitmap();
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                compressData = byteArrayOutputStream.toByteArray();
-                progressDialog.dismiss();
-                profileImage.setVisibility(View.VISIBLE);
-                profileImage.getLayoutParams().height = 115;
+                compressBitMapForStorage();
+                setJobImageHeight();
 
             } catch (Exception e)
             {
                 Log.e(TAG, "Error Uploading Image: " + e.getMessage());
             }
         }
+        // Redirect them to the Camera
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
+        {
+            Bundle extras = data.getExtras();
+            imageUri = data.getData();
+            Bitmap photo = (Bitmap) extras.get("data");
+            profileImage.setImageBitmap(photo);
+            compressBitMapForStorage();
+            setJobImageHeight();
+        }
+
+        progressDialog.dismiss();
     }
 
     private void saveJobInformation()
@@ -795,9 +830,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
                     }
                 });
-
-
                 progressDialog.dismiss();
+
             }
         }).addOnFailureListener(new OnFailureListener()
         {
@@ -809,9 +843,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             }
         });
 
-
-
-        Toast.makeText(getActivity(), "Job Added!", Toast.LENGTH_SHORT).show();
+        genericMethods.customToastMessage("Job Uploaded Successfully", getActivity());
     }
 
     private boolean isServicesOK()
@@ -834,6 +866,28 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             Log.d(TAG, "isServicesError: Google Play Services Isnt Working, Unable To Resolve");
         }
         return false;
+    }
+
+    private boolean hasCamera()
+    {
+        return getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
+
+    private void setJobImageHeight()
+    {
+        profileImage.setVisibility(View.VISIBLE);
+        profileImage.getLayoutParams().height = 115;
+    }
+
+    private void compressBitMapForStorage()
+    {
+        profileImage.buildDrawingCache();
+        profileImage.getDrawingCache();
+        BitmapDrawable drawable = (BitmapDrawable) profileImage.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        compressData = byteArrayOutputStream.toByteArray();
     }
 
     @Override
