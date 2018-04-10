@@ -20,62 +20,50 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textViewJobInformation"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/bebasneueregular"
-                    android:paddingTop="10dp"
-                    android:text="Job Information"
-                    android:textAlignment="center"
-                    android:textSize="30dp"
-                    tools:layout_editor_absoluteX="163dp" />
+                    android:layout_marginBottom="20sp"
+                    android:layout_marginLeft="20sp"
+                    android:layout_marginRight="20sp"
+                    android:layout_marginTop="20sp"
+                    android:background="@drawable/customborderrounded">
 
+                    <ImageView
+                        android:id="@+id/jobImagePending"
+                        android:layout_width="180dp"
+                        android:layout_height="150dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:adjustViewBounds="false" />
 
-                <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20sp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
-                android:layout_marginTop="20sp"
-                android:background="@drawable/customborderrounded">
+                    <TextView
+                        android:id="@+id/textViewJobName1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/jobImagePending"
+                        android:layout_marginStart="29dp"
+                        android:layout_marginTop="21dp"
+                        android:layout_toEndOf="@+id/jobImagePending"
+                        android:text="JobName Here"
+                        android:textSize="18sp" />
 
-                <ImageView
-                    android:id="@+id/jobImagePending"
-                    android:layout_width="180dp"
-                    android:layout_height="150dp"
-                    android:layout_alignParentBottom="true"
-                    android:adjustViewBounds="false"
-                    android:layout_alignParentStart="true" />
+                    <TextView
+                        android:id="@+id/textViewJobDescription1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignStart="@+id/textViewJobName1"
+                        android:layout_below="@+id/textViewJobName1"
+                        android:layout_marginTop="16dp"
+                        android:text="JobDescription Here"
+                        android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/textViewJobName1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/jobImagePending"
-                    android:layout_marginStart="29dp"
-                    android:layout_marginTop="21dp"
-                    android:layout_toEndOf="@+id/jobImagePending"
-                    android:text="JobName Here"
-                    android:textSize="18sp"/>
-
-                <TextView
-                    android:id="@+id/textViewJobDescription1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignStart="@+id/textViewJobName1"
-                    android:layout_below="@+id/textViewJobName1"
-                    android:layout_marginTop="16dp"
-                    android:text="JobDescription Here"
-                    android:textSize="14sp"  />
-
-            </RelativeLayout>
+                </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view3"
@@ -87,8 +75,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view"
@@ -100,8 +88,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
 
                 <ExpandableListView
                     android:id="@+id/expandable_list_view2"
@@ -111,17 +99,15 @@
                     android:dividerHeight="3dp"
                     android:pointerIcon="arrow"></ExpandableListView>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@drawable/customborderrounded" />
+
 
             </LinearLayout>
 
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@android:color/darker_gray" />
-
             <!-- ACTIVE BIDS PART -->
-
 
             <LinearLayout
                 android:layout_width="match_parent"

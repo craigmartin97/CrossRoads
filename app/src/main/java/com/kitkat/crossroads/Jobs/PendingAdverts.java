@@ -23,7 +23,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
@@ -33,57 +35,67 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PendingAdverts.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PendingAdverts#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PendingAdverts extends Fragment implements SearchView.OnQueryTextListener
 {
-    private FirebaseAuth auth;
-    private DatabaseReference myRef;
-    private FirebaseDatabase database;
+    /**
+     * Creating connection to the Firebase Database
+     */
     private DatabaseReference databaseReference;
 
+    /**
+     * Snapshot of the Bids table
+     */
     private DataSnapshot bidReference;
-    private DataSnapshot jobReference;
-    private DataSnapshot usersReference;
 
+    /**
+     * Strings to store the job information in
+     */
     private String jobId, colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize;
 
+    /**
+     * Adapter to be able to select a bid
+     */
     private PendingAdverts.MyCustomAdapter mAdapter;
 
+    /**
+     * List to store all of the the users bids
+     */
     private ArrayList<UserBidInformation> jobList = new ArrayList<>();
 
+    /**
+     * List view to display the information
+     */
     private ListView jobListView;
 
     private SearchView jobSearch;
 
     private OnFragmentInteractionListener mListener;
 
+    /**
+     * Display the jobs name and description in the header for the job
+     */
     private TextView textViewJobName1, textViewDescription1;
 
-    private ExpandableListView expandableListView;
-    private ExpandableListView expandableListView2;
-    private ExpandableListView expandableListView3;
+    /**
+     * Expandable list views to store the information and display upon users request
+     */
+    private ExpandableListView expandableListView, expandableListView2, expandableListView3;
 
-    private ExpandableListAdapter adapter;
-    private ExpandableListAdapter adapter2;
-    private ExpandableListAdapter adapter3;
+    /**
+     * Adaptres to create the expandable list views
+     */
+    private ExpandableListAdapter adapter, adapter2, adapter3;
 
-    private List<String> list;
-    private List<String> list2;
-    private List<String> list3;
+    /**
+     * Lists to hold the Jobs information
+     */
+    private List<String> list, list2, list3;
+    private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
 
-    private HashMap<String, List<String>> listHashMap;
-    private HashMap<String, List<String>> listHashMap2;
-    private HashMap<String, List<String>> listHashMap3;
-
-    private ListViewHeight listViewHeight = new ListViewHeight();
+    /**
+     * Display the image on the page
+     */
+    private ImageView jobImagePending;
 
     public PendingAdverts()
     {
@@ -102,6 +114,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        databaseConnections();
     }
 
     @Override
@@ -110,42 +123,148 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
     {
         View view = inflater.inflate(R.layout.fragment_job_bids, container, false);
 
-        database = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
-        databaseReference = database.getReference();
+        getViewsByIds(view);
+        JobInformation jobInformation = getBundleInformation();
 
-        Bundle bundle = this.getArguments();
-        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("JobId");
+        getJobInformationFromBundle(jobInformation);
+        setInformationInHeaderWidgets(jobInformation);
 
+        addItemsCollection();
+        addItemsDelivery();
+        addItemsJobInformation();
+
+        setExpandableListAdapters();
+
+        displayUsersBidsOnAd();
+
+        return view;
+    }
+
+    /**
+     * Add the collection information into a new list and into the expandable list view
+     */
+    private void addItemsCollection()
+    {
+        list = new ArrayList<>();
+        listHashMap = new HashMap<>();
+
+        list.add("Collection Information");
+
+        List<String> collectionInfo = new ArrayList<>();
+        collectionInfo.add(colDate);
+        collectionInfo.add(colTime);
+        collectionInfo.add(colAddress);
+        collectionInfo.add(colTown);
+        collectionInfo.add(colPostcode);
+
+        listHashMap.put(list.get(0), collectionInfo);
+    }
+
+    /**
+     * Add the delivery information into a new list and into an expandable list view
+     */
+    private void addItemsDelivery()
+    {
+        list2 = new ArrayList<>();
+        listHashMap2 = new HashMap<>();
+
+        list2.add("Delivery Information");
+
+        List<String> deliveryInfo = new ArrayList<>();
+        deliveryInfo.add(delAddress);
+        deliveryInfo.add(delTown);
+        deliveryInfo.add(delPostcode);
+
+        listHashMap2.put(list2.get(0), deliveryInfo);
+    }
+
+    /**
+     * Add the job information into a new list and into an expandable list view
+     */
+    private void addItemsJobInformation()
+    {
+        list3 = new ArrayList<>();
+        listHashMap3 = new HashMap<>();
+
+        list3.add("Job Information");
+
+        List<String> jobInformation = new ArrayList<>();
+        jobInformation.add(jobSize);
+        jobInformation.add(jobType);
+
+        listHashMap3.put(list3.get(0), jobInformation);
+    }
+
+    /**
+     * Create database connections to access the Firebase Database
+     */
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        databaseReference = databaseConnections.getDatabaseReference();
+    }
+
+    /**
+     * Setting all of the weidgets on the layout page to variables for future use and be able to access them
+     * @param view
+     */
+    private void getViewsByIds(View view)
+    {
+        expandableListView =  view.findViewById(R.id.expandable_list_view);
+        expandableListView2 = view.findViewById(R.id.expandable_list_view2);
+        expandableListView3 = view.findViewById(R.id.expandable_list_view3);
+        textViewJobName1 = view.findViewById(R.id.textViewJobName1);
+        textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
+        jobListView = view.findViewById(R.id.jobListView1);
+        jobImagePending = view.findViewById(R.id.jobImagePending);
+    }
+
+    /**
+     * Getting all arguments from the bundle that was passed across
+     *
+     * @return jobInformation
+     */
+    private JobInformation getBundleInformation()
+    {
+        Bundle bundle = getArguments();
         jobId = (String) bundle.getSerializable("JobKeyId");
+        return (JobInformation) bundle.getSerializable("JobId");
+    }
+
+    /**
+     * Set all of the job information to variable to add to the expandable lists
+     * @param jobInformation
+     */
+    private void getJobInformationFromBundle(JobInformation jobInformation)
+    {
         colDate = jobInformation.getCollectionDate().toString();
         colTime = jobInformation.getCollectionTime().toString();
         colAddress = jobInformation.getColL1().toString() + ", " + jobInformation.getColL2().toString();
         colTown = jobInformation.getColTown().toString();
         colPostcode = jobInformation.getColPostcode().toString();
         delAddress = jobInformation.getDelL1().toString() + ", " + jobInformation.getDelL2().toString();
-        delTown = jobInformation.getColTown().toString();
-        delPostcode = jobInformation.getColPostcode().toString();
+        delTown = jobInformation.getDelTown().toString();
+        delPostcode = jobInformation.getDelPostcode().toString();
         jobType = jobInformation.getJobType().toString();
         jobSize = jobInformation.getJobSize().toString();
+    }
 
-        expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list_view);
-        expandableListView2 = (ExpandableListView) view.findViewById(R.id.expandable_list_view2);
-        expandableListView3 = (ExpandableListView) view.findViewById(R.id.expandable_list_view3);
-
-        textViewJobName1 = view.findViewById(R.id.textViewJobName1);
-        textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
-        ImageView jobImagePending = view.findViewById(R.id.jobImagePending);
-
+    /**
+     * Setting job information in the header of the page such as name, description and the image
+     * @param jobInformation
+     */
+    private void setInformationInHeaderWidgets(JobInformation jobInformation)
+    {
         textViewJobName1.setText(jobInformation.getAdvertName());
         textViewDescription1.setText(jobInformation.getAdvertDescription());
         Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImagePending);
+    }
 
-        addItemsCollection();
-        addItemsDelivery();
-        addItemsJobInformation();
-
+    /**
+     * Creating the expandable list views and setting their heights
+     */
+    private void setExpandableListAdapters()
+    {
         adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
         adapter2 = new ExpandableListAdapter(getActivity(), list2, listHashMap2);
         adapter3 = new ExpandableListAdapter(getActivity(), list3, listHashMap3);
@@ -154,10 +273,14 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
         expandableListView2.setAdapter(adapter2);
         expandableListView3.setAdapter(adapter3);
 
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+        final ListViewHeight listViewHeight = new ListViewHeight();
+
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
             @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                listViewHeight.setListViewHeight(parent,groupPosition);
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
+                listViewHeight.setExpandableListViewHeight(parent, groupPosition);
                 return false;
             }
         });
@@ -167,7 +290,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
-                listViewHeight.setListViewHeight(parent,groupPosition);
+                listViewHeight.setExpandableListViewHeight(parent, groupPosition);
                 return false;
             }
         });
@@ -177,21 +300,23 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
             {
-                listViewHeight.setListViewHeight(parent, groupPosition);
+                listViewHeight.setExpandableListViewHeight(parent, groupPosition);
                 return false;
             }
         });
+    }
 
-        jobListView = view.findViewById(R.id.jobListView1);
-
+    /**
+     * Display all of the bids received on the advert and allow the user to accepta  bid
+     */
+    private void displayUsersBidsOnAd()
+    {
         databaseReference.addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 bidReference = dataSnapshot.child("Bids");
-                jobReference = dataSnapshot.child("Jobs");
-                usersReference = dataSnapshot.child("Users");
 
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
 
@@ -241,56 +366,8 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
 
             }
         });
-        return view;
     }
 
-
-
-    private void addItemsCollection()
-    {
-        list = new ArrayList<>();
-        listHashMap = new HashMap<>();
-
-        list.add("Collection Information");
-
-        List<String> collectionInfo = new ArrayList<>();
-        collectionInfo.add(colDate);
-        collectionInfo.add(colTime);
-        collectionInfo.add(colAddress);
-        collectionInfo.add(colTown);
-        collectionInfo.add(colPostcode);
-
-        listHashMap.put(list.get(0), collectionInfo);
-    }
-
-    private void addItemsDelivery()
-    {
-        list2 = new ArrayList<>();
-        listHashMap2 = new HashMap<>();
-
-        list2.add("Delivery Information");
-
-        List<String> deliveryInfo = new ArrayList<>();
-        deliveryInfo.add(delAddress);
-        deliveryInfo.add(delTown);
-        deliveryInfo.add(delPostcode);
-
-        listHashMap2.put(list2.get(0), deliveryInfo);
-    }
-
-    private void addItemsJobInformation()
-    {
-        list3 = new ArrayList<>();
-        listHashMap3 = new HashMap<>();
-
-        list3.add("Job Information");
-
-        List<String> jobInformation = new ArrayList<>();
-        jobInformation.add(jobSize);
-        jobInformation.add(jobType);
-
-        listHashMap3.put(list3.get(0), jobInformation);
-    }
 
 
     public class MyCustomAdapter extends BaseAdapter
@@ -397,7 +474,6 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                     final AlertDialog dialog = alertDialog.create();
                     dialog.show();
 
-                    TextView text = (TextView) mView.findViewById(R.id.acceptBidText);
                     Button yesButton = (Button) mView.findViewById(R.id.yesButton);
                     Button noButton = (Button) mView.findViewById(R.id.noButton);
 
@@ -412,8 +488,8 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
 
                             View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
 
-                            myRef.child("Jobs").child(jobId).child("courierID").setValue(mData.get(position).getUserID());
-                            myRef.child("Jobs").child(jobId).child("jobStatus").setValue("Active");
+                            databaseReference.child("Jobs").child(jobId).child("courierID").setValue(mData.get(position).getUserID());
+                            databaseReference.child("Jobs").child(jobId).child("jobStatus").setValue("Active");
 
                             alertDialog.setTitle("Bid Accepted");
                             alertDialog.setView(mView);

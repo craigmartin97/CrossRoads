@@ -36,17 +36,12 @@ public class ActiveAdverts extends Fragment
     /**
      * Text Views to display the jobs name and description
      */
-    private TextView jobName, jobDescription;
-
-    /**
-     * Edit view for editing the users bid
-     */
-    private EditText editTextEditBid;
+    private TextView jobName, jobDescription, textViewUsersBid;
 
     /**
      * ImageView for the JobsImage
      */
-    private ImageView jobImageBidOn;
+    private ImageView jobImageActive;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -70,30 +65,14 @@ public class ActiveAdverts extends Fragment
     private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
 
     /**
-     * Accessing ActiveJobDetailsFragment
-     */
-    ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
-
-    /**
      * Variable to store the current users Id
      */
     private String user;
-
 
     /**
      * Creating variable to store the connection to the Firebase Database
      */
     private DatabaseReference databaseReference;
-
-    /**
-     * Creating reference to storage the Firebase authentication connection
-     */
-    private FirebaseAuth auth;
-
-    /**
-     * Button to submit a new bid
-     */
-    private Button buttonEditBid;
 
     /**
      * Access the jobId the user pressed on
@@ -106,7 +85,6 @@ public class ActiveAdverts extends Fragment
         super.onCreate(savedInstanceState);
         DatabaseConnections databaseConnections = new DatabaseConnections();
         databaseReference = databaseConnections.getDatabaseReference();
-        auth = databaseConnections.getAuth();
         user = databaseConnections.getCurrentUser();
     }
 
@@ -122,7 +100,7 @@ public class ActiveAdverts extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_my_jobs_bid_on, container, false);
+        View view = inflater.inflate(R.layout.fragment_active_adverts, container, false);
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
@@ -173,24 +151,6 @@ public class ActiveAdverts extends Fragment
             }
         });
 
-        buttonEditBid.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if(TextUtils.isEmpty(editTextEditBid.getText()))
-                {
-                    Toast.makeText(getActivity(), "Enter a bid!!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                else
-                {
-                    submitBid(jobId, user);
-                }
-            }
-        });
-
-
         return view;
     }
 
@@ -203,20 +163,12 @@ public class ActiveAdverts extends Fragment
     {
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        jobImageBidOn = (ImageView) view.findViewById(R.id.jobImgageBidOn);
-        editTextEditBid = (EditText) view.findViewById(R.id.editBid);
-        buttonEditBid = (Button) view.findViewById(R.id.buttonEditBid);
+        jobImageActive = (ImageView) view.findViewById(R.id.jobImageActive);
+        textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
-    }
-
-    private void submitBid(String jobId, String user)
-    {
-        String userBid = editTextEditBid.getText().toString().trim();
-        BidInformation bidInformation = new BidInformation(user, userBid);
-        databaseReference.child("Bids").child(jobId).child(user).setValue(bidInformation);
     }
 
     /**
@@ -230,15 +182,16 @@ public class ActiveAdverts extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageBidOn);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive);
 
+        // Set the users accepted bid
         databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
-                editTextEditBid.setText(userBid);
+                textViewUsersBid.setText("Agreed Fee:       £" + userBid);
             }
 
             @Override
@@ -272,8 +225,8 @@ public class ActiveAdverts extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable("JobId");
-        return (JobInformation) bundle.getSerializable("Job");
+        jobId = (String) bundle.getSerializable("JobKeyId");
+        return (JobInformation) bundle.getSerializable("JobId");
     }
 
     /**

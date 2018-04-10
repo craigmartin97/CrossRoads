@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.ExpandableListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,8 @@ import com.kitkat.crossroads.Jobs.MyJobsFragment;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class GenericMethods
 {
@@ -116,5 +119,12 @@ public class GenericMethods
     {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
+    }
+
+    public ExpandableListAdapter createExpandableListAdapter(FragmentActivity fragmentActivity, List<String> list, HashMap<String, List<String>> listHashMap, ExpandableListView expandableListView)
+    {
+        ExpandableListAdapter adapter = new ExpandableListAdapter(fragmentActivity, list, listHashMap);
+        expandableListView.setAdapter(adapter);
+        return adapter;
     }
 }

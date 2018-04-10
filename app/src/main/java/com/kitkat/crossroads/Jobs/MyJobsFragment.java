@@ -1,8 +1,5 @@
 package com.kitkat.crossroads.Jobs;
 
-import android.content.Context;
-import android.database.DataSetObserver;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,11 +7,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -24,10 +19,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.DatabaseReferences;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
+import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * MyJobsFragment displays all of the jobs associated with the current user signed in
@@ -82,7 +77,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private TabHost host;
     private String tabTag;
 
-    private MyJobsFragment.MyCustomAdapter mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
+    private MyCustomAdapterForTabViews mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
 
     private DatabaseReferences databaseReferences = new DatabaseReferences();
 
@@ -242,19 +237,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     /**
-     * Create a new Custom Adapter, when the user selects a job it will grab the data
-     *
-     * @param jobInformation
-     * @return adapter
-     */
-    private MyJobsFragment.MyCustomAdapter createNewCustomAdapter(ArrayList<JobInformation> jobInformation)
-    {
-        MyJobsFragment.MyCustomAdapter adapter = new MyJobsFragment.MyCustomAdapter();
-        adapter.addArray(jobInformation);
-        return adapter;
-    }
-
-    /**
      * Assign class variables the Firebase tables
      *
      * @param dataSnapshot
@@ -314,10 +296,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display information in ListView
-        final MyJobsFragment.MyCustomAdapter adapter = createNewCustomAdapter(jobList);
-        adapter.addKeyArray(jobListKey);
-        mAdapterBidOn = adapter;
-        jobListViewBidOn.setAdapter(adapter);
+        mAdapterBidOn = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host);
+        mAdapterBidOn.addKeyArray(jobListKey);
+        mAdapterBidOn.addArray(jobList);
+
+        jobListViewBidOn.setAdapter(mAdapterBidOn);
 
         // Press on the object and go view all the Job Information and Bids
         jobListViewBidOn.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -327,8 +310,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             {
                 BidOnJobsFragment bidOnJobsFragment = new BidOnJobsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("Job", adapter.mData.get(position));
-                bundle.putSerializable("JobId", adapter.mDataKeys.get(position));
+                bundle.putSerializable("Job", mAdapterBidOn.mData.get(position));
+                bundle.putSerializable("JobId", mAdapterBidOn.mDataKeys.get(position));
                 bidOnJobsFragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.content, bidOnJobsFragment).addToBackStack("tag").commit();
             }
@@ -353,10 +336,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display the Job in the ListView
-        final MyJobsFragment.MyCustomAdapter adapterActiveJobs = createNewCustomAdapter(jobListActive);
-        adapterActiveJobs.addKeyArray(jobListKeyActive);
-        mAdapterAccepted = adapterActiveJobs;
-        jobListViewMyAcJobs.setAdapter(adapterActiveJobs);
+        mAdapterAccepted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host);
+        mAdapterAccepted.addKeyArray(jobListKeyActive);
+        mAdapterAccepted.addArray(jobListActive);
+
+        jobListViewMyAcJobs.setAdapter(mAdapterAccepted);
 
         jobListViewMyAcJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -365,8 +349,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             {
                 ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("Job", adapterActiveJobs.mData.get(position));
-                bundle.putSerializable("JobId", adapterActiveJobs.mDataKeys.get(position));
+                bundle.putSerializable("Job", mAdapterAccepted.mData.get(position));
+                bundle.putSerializable("JobId", mAdapterAccepted.mDataKeys.get(position));
                 activeJobDetailsFragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.content, activeJobDetailsFragment).addToBackStack(host.getCurrentTabTag()).commit();
             }
@@ -390,10 +374,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display in the ListView
-        final MyJobsFragment.MyCustomAdapter adapterCompletedJobs = createNewCustomAdapter(jobListComplete);
-        adapterCompletedJobs.addKeyArray(jobListKeyComplete);
-        mAdapterCompleted = adapterCompletedJobs;
-        jobListViewMyComJobs.setAdapter(adapterCompletedJobs);
+        mAdapterCompleted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host);
+        mAdapterCompleted.addKeyArray(jobListKeyComplete);
+        mAdapterCompleted.addArray(jobListComplete);
+
+        jobListViewMyComJobs.setAdapter(mAdapterCompleted);
 
         jobListViewMyComJobs.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -402,8 +387,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             {
                 CompletedJobsFragment completedJobsFragment = new CompletedJobsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("Job", adapterCompletedJobs.mData.get(position));
-                bundle.putSerializable("JobId", adapterCompletedJobs.mDataKeys.get(position));
+                bundle.putSerializable("Job", mAdapterCompleted.mData.get(position));
+                bundle.putSerializable("JobId", mAdapterCompleted.mDataKeys.get(position));
                 completedJobsFragment.setArguments(bundle);
                 getFragmentManager().beginTransaction().replace(R.id.content, completedJobsFragment).addToBackStack("tag").commit();
             }
@@ -423,220 +408,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         mAdapterAccepted.filter(newText);
         mAdapterCompleted.filter(newText);
         return false;
-    }
-
-    public class MyCustomAdapter extends BaseAdapter
-    {
-        private ArrayList<JobInformation> mData = new ArrayList<>();
-        private ArrayList<JobInformation> mDataOrig = new ArrayList<>();
-        private ArrayList<String> mDataKeys = new ArrayList<>();
-
-        private LayoutInflater mInflater;
-
-        public MyCustomAdapter()
-        {
-            if (isAdded())
-            {
-                mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            }
-        }
-
-        public void addItem(final JobInformation item)
-        {
-            mData.add(item);
-            mDataOrig.add(item);
-        }
-
-
-        public void addArray(final ArrayList<JobInformation> j)
-        {
-            mData.clear();
-            mDataOrig.clear();
-            mData = j;
-            mDataOrig = j;
-        }
-
-        public void addKeyArray(final ArrayList<String> k)
-        {
-            mDataKeys.clear();
-            mDataKeys = k;
-        }
-
-        @Override
-        public int getCount()
-        {
-            return mData.size();
-        }
-
-        @Override
-        public Object getItem(int position)
-        {
-            return mData.get(position);
-        }
-
-        @Override
-        public long getItemId(int position)
-        {
-            return 0;
-        }
-
-        @Override
-        public boolean hasStableIds()
-        {
-            return false;
-        }
-
-        @Override
-        public void registerDataSetObserver(DataSetObserver observer)
-        {
-
-        }
-
-        @Override
-        public void unregisterDataSetObserver(DataSetObserver observer)
-        {
-
-        }
-
-        @Override
-        public boolean areAllItemsEnabled()
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isEmpty()
-        {
-            return false;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent)
-        {
-            // Bid on holder
-            MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn holderBidOn;
-            // Accepted holder
-            final MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted holderAccepted;
-            // Completed holder
-            MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted holderCompleted;
-
-            if (convertView == null)
-            {
-                // Bid on
-                if (host.getCurrentTab() == 0)
-                {
-                    convertView = mInflater.inflate(R.layout.job_info_bid_on, null);
-                    holderBidOn = new MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn();
-
-                    holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
-                    holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
-                    holderBidOn.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
-                    holderBidOn.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
-
-                    holderBidOn.textViewJobName.setText(mData.get(position).getAdvertName());
-                    holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
-                    holderBidOn.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
-                    holderBidOn.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelPostcode() + ", " + mData.get(position).getDelPostcode());
-
-                    convertView.setTag(holderBidOn);
-                }
-                // Accepted
-                else if (host.getCurrentTab() == 1)
-                {
-                    convertView = mInflater.inflate(R.layout.job_info_accepted, null);
-                    holderAccepted = new MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted();
-
-                    holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
-                    holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
-                    holderAccepted.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
-                    holderAccepted.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
-
-                    holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
-                    holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
-                    holderAccepted.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
-                    holderAccepted.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelPostcode() + ", " + mData.get(position).getDelPostcode());
-
-                    convertView.setTag(holderAccepted);
-                }
-                // Completed
-                else if (host.getCurrentTab() == 2)
-                {
-                    convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
-
-                    holderCompleted = new MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted();
-
-                    holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
-                    holderCompleted.textViewJobName.setText(mData.get(position).getAdvertName());
-
-                    convertView.setTag(holderCompleted);
-                }
-            } else
-            {
-                if (host.getCurrentTab() == 0)
-                {
-                    holderBidOn = (MyJobsFragment.MyCustomAdapter.GroupViewHolderBidOn) convertView.getTag();
-                } else if (host.getCurrentTab() == 1)
-                {
-                    holderAccepted = (MyJobsFragment.MyCustomAdapter.GroupViewHolderAccepted) convertView.getTag();
-                } else if (host.getCurrentTab() == 2)
-                {
-                    holderCompleted = (MyJobsFragment.MyCustomAdapter.GroupViewHolderCompleted) convertView.getTag();
-                }
-            }
-
-            return convertView;
-        }
-
-        public class GroupViewHolderBidOn
-        {
-            public TextView textViewJobName;
-            public TextView textViewJobDescription;
-            public TextView textViewAddressFrom;
-            public TextView textViewAddressTo;
-        }
-
-        public class GroupViewHolderAccepted
-        {
-            public TextView textViewJobName;
-            public TextView textViewDescription;
-            public TextView textViewAddressFrom;
-            public TextView textViewAddressTo;
-        }
-
-        public class GroupViewHolderCompleted
-        {
-            public TextView textViewJobName;
-        }
-
-        public void filter(String charText)
-        {
-            ArrayList<JobInformation> jobs = new ArrayList<>();
-            ArrayList<JobInformation> jA = new ArrayList<>();
-            charText = charText.toLowerCase(Locale.getDefault());
-
-            if (charText.length() == 0)
-            {
-                mData = mDataOrig;
-            } else
-            {
-                for (JobInformation j : mDataOrig)
-                {
-                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
-                    {
-                        jobs.add(j);
-                        jA.add(j);
-                    } else
-                    {
-                        jA.add(j);
-                    }
-                }
-                mData.clear();
-                mData = jobs;
-                mDataOrig = jA;
-            }
-
-            notifyDataSetChanged();
-        }
     }
 
     @Override

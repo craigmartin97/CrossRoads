@@ -64,11 +64,6 @@ public class CompletedJobsFragment extends Fragment
     private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
 
     /**
-     * Accessing ActiveJobDetailsFragment
-     */
-    ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
-
-    /**
      * Creating variable to store the connection to the Firebase Database
      */
     private DatabaseReference databaseReference;

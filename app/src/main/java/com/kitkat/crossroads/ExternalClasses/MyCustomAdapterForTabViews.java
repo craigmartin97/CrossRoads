@@ -16,7 +16,7 @@ import com.kitkat.crossroads.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MyCustomAdapter extends BaseAdapter
+public class MyCustomAdapterForTabViews extends BaseAdapter
 {
     public ArrayList<JobInformation> mData = new ArrayList<>();
     public ArrayList<JobInformation> mDataOrig = new ArrayList<>();
@@ -25,7 +25,7 @@ public class MyCustomAdapter extends BaseAdapter
 
     public LayoutInflater mInflater;
 
-    public MyCustomAdapter(FragmentActivity fragmentActivity, boolean isAdded, TabHost host)
+    public MyCustomAdapterForTabViews(FragmentActivity fragmentActivity, boolean isAdded, TabHost host)
     {
         if (isAdded)
         {
@@ -108,11 +108,11 @@ public class MyCustomAdapter extends BaseAdapter
     public View getView(final int position, View convertView, ViewGroup parent)
     {
         // Bid on holder
-        MyCustomAdapter.GroupViewHolderBidOn holderBidOn;
+        MyCustomAdapterForTabViews.GroupViewHolderBidOn holderBidOn;
         // Accepted holder
-        final MyCustomAdapter.GroupViewHolderAccepted holderAccepted;
+        final MyCustomAdapterForTabViews.GroupViewHolderAccepted holderAccepted;
         // Completed holder
-        MyCustomAdapter.GroupViewHolderCompleted holderCompleted;
+        MyCustomAdapterForTabViews.GroupViewHolderCompleted holderCompleted;
 
         if (convertView == null)
         {
@@ -120,7 +120,7 @@ public class MyCustomAdapter extends BaseAdapter
             if (host.getCurrentTab() == 0)
             {
                 convertView = mInflater.inflate(R.layout.job_info_bid_on, null);
-                holderBidOn = new MyCustomAdapter.GroupViewHolderBidOn();
+                holderBidOn = new MyCustomAdapterForTabViews.GroupViewHolderBidOn();
 
                 holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
                 holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
@@ -138,7 +138,7 @@ public class MyCustomAdapter extends BaseAdapter
             else if (host.getCurrentTab() == 1)
             {
                 convertView = mInflater.inflate(R.layout.job_info_accepted, null);
-                holderAccepted = new MyCustomAdapter.GroupViewHolderAccepted();
+                holderAccepted = new MyCustomAdapterForTabViews.GroupViewHolderAccepted();
 
                 holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
                 holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
@@ -157,7 +157,7 @@ public class MyCustomAdapter extends BaseAdapter
             {
                 convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
 
-                holderCompleted = new MyCustomAdapter.GroupViewHolderCompleted();
+                holderCompleted = new MyCustomAdapterForTabViews.GroupViewHolderCompleted();
 
                 holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
                 holderCompleted.textViewJobName.setText(mData.get(position).getAdvertName());
@@ -168,13 +168,13 @@ public class MyCustomAdapter extends BaseAdapter
         {
             if (host.getCurrentTab() == 0)
             {
-                holderBidOn = (MyCustomAdapter.GroupViewHolderBidOn) convertView.getTag();
+                holderBidOn = (MyCustomAdapterForTabViews.GroupViewHolderBidOn) convertView.getTag();
             } else if (host.getCurrentTab() == 1)
             {
-                holderAccepted = (MyCustomAdapter.GroupViewHolderAccepted) convertView.getTag();
+                holderAccepted = (MyCustomAdapterForTabViews.GroupViewHolderAccepted) convertView.getTag();
             } else if (host.getCurrentTab() == 2)
             {
-                holderCompleted = (MyCustomAdapter.GroupViewHolderCompleted) convertView.getTag();
+                holderCompleted = (MyCustomAdapterForTabViews.GroupViewHolderCompleted) convertView.getTag();
             }
         }
 
