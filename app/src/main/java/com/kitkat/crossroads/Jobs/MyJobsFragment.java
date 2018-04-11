@@ -22,7 +22,10 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
 import com.kitkat.crossroads.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * MyJobsFragment displays all of the jobs associated with the current user signed in
@@ -113,7 +116,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             {
                 createDataSnapShots(dataSnapshot);
                 clearLists();
-                bidOnList();
+                try
+                {
+                    bidOnList();
+                } catch (ParseException e)
+                {
+                    e.printStackTrace();
+                }
                 acceptedList();
                 completeList();
             }
@@ -261,7 +270,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     /**
      * Get all the jobs I have currently bid on from the Firebase database
      */
-    private void bidOnList()
+    private void bidOnList() throws ParseException
     {
         final ArrayList<String> jobsListArray = new ArrayList<>();
 
@@ -290,8 +299,12 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             */
             if (jobsListArray.contains(ds3.getKey()) && getJobInformation(ds3).getJobStatus().equals("Pending"))
             {
-                jobListKey.add(ds3.getKey());
-                jobList.add(getJobInformation(ds3));
+                Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(genericMethods.getJobInformation(ds3).getCollectionDate());
+                if(new Date().before(sdf))
+                {
+                    jobListKey.add(ds3.getKey());
+                    jobList.add(getJobInformation(ds3));
+                }
             }
         }
 

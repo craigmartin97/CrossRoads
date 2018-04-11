@@ -13,7 +13,11 @@ import android.widget.TextView;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class MyCustomAdapterForTabViews extends BaseAdapter

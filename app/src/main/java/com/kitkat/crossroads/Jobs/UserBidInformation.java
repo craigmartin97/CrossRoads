@@ -11,14 +11,14 @@ import java.io.Serializable;
 public class UserBidInformation implements Serializable
 {
 
-    public String fullName, userBid, userID, jobID, courierId;
+    public String fullName, userBid, userID, jobID;
 
     public UserBidInformation()
     {
 
     }
 
-    public UserBidInformation(String fullName, String userBid, String userID, String jobID)
+    public UserBidInformation(String fullName, String userBid, String userID)
     {
         this.fullName = fullName;
         this.userBid = userBid;
@@ -66,15 +66,5 @@ public class UserBidInformation implements Serializable
 
     public void setJobID(String jobID) {
         this.jobID = jobID;
-    }
-
-    public String getCourierId()
-    {
-        return courierId;
-    }
-
-    public void setCourierId(String courierId)
-    {
-        this.courierId = courierId;
     }
 }

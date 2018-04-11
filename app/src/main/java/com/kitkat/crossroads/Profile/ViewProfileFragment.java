@@ -3,18 +3,22 @@ package com.kitkat.crossroads.Profile;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -31,11 +35,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static android.icu.lang.UProperty.INT_START;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,6 +86,11 @@ public class ViewProfileFragment extends Fragment
     private String passedUserID;
 
     private String profileImage;
+
+    private ExpandableListView expandableListView;
+    private ExpandableListAdapter adapter;
+    private List<String> list;
+    private HashMap<String, List<String>> listHashMap;
 
     public ViewProfileFragment()
     {
@@ -137,6 +152,7 @@ public class ViewProfileFragment extends Fragment
         checkBoxAdvertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
         checkBoxCourier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
         profileImageUri = (ImageView) view.findViewById(R.id.profileImage);
+        expandableListView = view.findViewById(R.id.expandable_list_view);
         userRatingBar = (RatingBar) view.findViewById(R.id.UserRatingsBar);
 
         databaseReference.child("Ratings").child(user).addValueEventListener(new ValueEventListener()
@@ -146,7 +162,7 @@ public class ViewProfileFragment extends Fragment
             {
                 long totalRating = 0;
                 long counter = 0;
-                // Iterate through entire bids table
+
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     long rating = ds.child("startReview").getValue(long.class);
@@ -169,6 +185,23 @@ public class ViewProfileFragment extends Fragment
 
             }
         });
+
+        addReviews();
+
+        adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
+        expandableListView.setAdapter(adapter);
+
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
+                ListViewHeight listViewHeight = new ListViewHeight();
+                listViewHeight.setExpandableListViewHeight(parent, groupPosition);
+                return false;
+            }
+        });
+
 
         Bundle bundle = this.getArguments();
 
@@ -390,6 +423,61 @@ public class ViewProfileFragment extends Fragment
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    /**
+     * Adding information into Expandable list collection information
+     */
+    private void addReviews()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        String user = databaseConnections.getCurrentUser();
+        final DatabaseReference databaseReference = databaseConnections.getDatabaseReference();
+
+        list = new ArrayList<>();
+        listHashMap = new HashMap<>();
+
+        list.add("Reviews");
+
+        final List<String> collectionInfo = new ArrayList<>();
+
+        databaseReference.child("Ratings").child(user).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    final String review = ds.child("review").getValue(String.class);
+                    String key = dataSnapshot.getKey();
+
+                    databaseReference.child("Users").child(key).addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(DataSnapshot data)
+                        {
+                            String fullName = data.child("fullName").getValue(String.class);
+                            collectionInfo.add(review + " - " + fullName);
+                            listHashMap.put(list.get(0), collectionInfo);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
+
     }
 
 

@@ -4,9 +4,12 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,14 +31,22 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.kitkat.crossroads.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -446,6 +457,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             return false;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
@@ -464,9 +476,28 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 holder = (FindAJobFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
+
+
             holder.textViewName.setText(mData.get(position).getAdvertName());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
+
+            try
+            {
+                Date currentTime = Calendar.getInstance().getTime();
+                Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(mData.get(position).getCollectionDate());
+                Date dateFormat2 = new SimpleDateFormat("hh:mm").parse(mData.get(position).getCollectionTime());
+
+                if(new Date().after(sdf) && currentTime.after(dateFormat2))
+                {
+                    mData.remove(position);
+                }
+
+            } catch (ParseException e)
+            {
+                e.printStackTrace();
+            }
+
             return convertView;
         }
 

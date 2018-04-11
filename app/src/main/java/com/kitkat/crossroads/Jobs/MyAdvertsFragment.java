@@ -24,7 +24,11 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
 import com.kitkat.crossroads.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTextListener
 {
@@ -113,7 +117,13 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
             {
                 createDataSnapShots(dataSnapshot);
                 clearLists();
-                pendingList();
+                try
+                {
+                    pendingList();
+                } catch (ParseException e)
+                {
+                    e.printStackTrace();
+                }
                 activeList();
                 completedAdverts();
             }
@@ -179,14 +189,19 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         return databaseReferences.getTableChildren(jobReference);
     }
 
-    private void pendingList()
+    private void pendingList() throws ParseException
     {
         for (DataSnapshot ds : getJobListChildren())
         {
             if (genericMethods.getJobInformation(ds).getPosterID().equals(user) && genericMethods.getJobInformation(ds).getJobStatus().equals("Pending"))
             {
-                jobListKey.add(ds.getKey());
-                jobList.add(genericMethods.getJobInformation(ds));
+                Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(genericMethods.getJobInformation(ds).getCollectionDate());
+
+                if(new Date().before(sdf))
+                {
+                    jobListKey.add(ds.getKey());
+                    jobList.add(genericMethods.getJobInformation(ds));
+                }
             }
         }
 

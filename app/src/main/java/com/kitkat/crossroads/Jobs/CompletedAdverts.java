@@ -314,6 +314,7 @@ public class CompletedAdverts extends Fragment
                 Button submitButton = (Button) mView.findViewById(R.id.submitButton);
                 Button cancelButton = (Button) mView.findViewById(R.id.cancelButton);
 
+
                 submitButton.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
