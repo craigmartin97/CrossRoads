@@ -166,8 +166,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
         // Create google api client, so user has pre-set options to select.
         /*
-      The main entry point for Google Play services integration
-     */
+            The main entry point for Google Play services integration
+        */
         mGoogleApiClient1 = new GoogleApiClient
                 .Builder(getActivity())
                 .addApi(Places.GEO_DATA_API)

@@ -1,23 +1,31 @@
 package com.kitkat.crossroads.Jobs;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
+import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.R;
+import com.kitkat.crossroads.Ratings.RatingsAndReviews;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -35,7 +43,7 @@ public class CompletedAdverts extends Fragment
     /**
      * Text Views to display the jobs name and description
      */
-    private TextView jobName, jobDescription, textViewUsersBid;
+    private TextView jobName, jobDescription, textViewUsersBid, leaveFeedback;
 
     /**
      * ImageView, to store and display the Jobs Image
@@ -96,7 +104,7 @@ public class CompletedAdverts extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_my_completed_jobs, container, false);
+        View view = inflater.inflate(R.layout.fragment_completed_adverts, container, false);
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
@@ -147,6 +155,8 @@ public class CompletedAdverts extends Fragment
             }
         });
 
+        leaveFeedbackPressed();
+
         return view;
     }
 
@@ -161,6 +171,7 @@ public class CompletedAdverts extends Fragment
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
         jobImageCompleted = (ImageView) view.findViewById(R.id.jobImageCompleted);
         textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
+        leaveFeedback = (TextView) view.findViewById(R.id.textViewLeaveFeedback);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
@@ -277,5 +288,57 @@ public class CompletedAdverts extends Fragment
         jobInformation.add(jobType);
 
         listHashMap3.put(list3.get(0), jobInformation);
+    }
+
+    /**
+     * If the leave feedback text has been pressed, display the popup to leave feedback
+     */
+    private void leaveFeedbackPressed()
+    {
+        leaveFeedback.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+
+                View mView = getLayoutInflater().inflate(R.layout.popup_leave_feedback, null);
+
+                alertDialog.setTitle("Leave Feedback");
+                alertDialog.setView(mView);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
+
+                final TextView leaveFeedback = (TextView) mView.findViewById(R.id.editTextLeaveFeedback);
+                final RatingBar ratingBar = (RatingBar) mView.findViewById(R.id.ratingBarFeedback);
+                Button submitButton = (Button) mView.findViewById(R.id.submitButton);
+                Button cancelButton = (Button) mView.findViewById(R.id.cancelButton);
+
+                submitButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+
+                        JobInformation jobInformation = getBundleInformation();
+                        String feedback = leaveFeedback.getText().toString().trim();
+                        float rating = ratingBar.getRating();
+                        RatingsAndReviews ratingsAndReviews = new RatingsAndReviews(rating, feedback);
+
+                        databaseReference.child("Ratings").child(jobInformation.getCourierID()).child(jobId).setValue(ratingsAndReviews);
+                        Toast.makeText(getActivity(), "Pressed Submit!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                cancelButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        dialog.cancel();
+                    }
+                });
+            }
+        });
     }
 }

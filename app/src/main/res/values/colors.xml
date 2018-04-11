@@ -3,4 +3,6 @@
     <color name="colorPrimary">#2bbc9b</color> <!--foreground colour -->
     <color name="colorPrimaryDark">#406280</color> <!--background colour-->
     <color name="colorAccent">#bbe4db</color>
+    <color name="colorGolden">#cece63</color>
+    <color name="colorLightGrey">#d0d5dd</color>
 </resources>
