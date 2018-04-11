@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class RatingsAndReviews implements Serializable
 {
-    private float startReview;
+    private float starReview;
     private String review;
 
     public RatingsAndReviews()
@@ -13,18 +13,18 @@ public class RatingsAndReviews implements Serializable
 
     public RatingsAndReviews(float startReview, String review)
     {
-        this.startReview = startReview;
+        this.starReview = startReview;
         this.review = review;
     }
 
     public float getStartReview()
     {
-        return startReview;
+        return starReview;
     }
 
-    public void setStartReview(float startReview)
+    public void setStartReview(float starReview)
     {
-        this.startReview = startReview;
+        this.starReview = starReview;
     }
 
     public String getReview()

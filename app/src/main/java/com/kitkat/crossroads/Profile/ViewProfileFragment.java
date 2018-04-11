@@ -1,6 +1,9 @@
 package com.kitkat.crossroads.Profile;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,12 +30,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -61,7 +63,7 @@ public class ViewProfileFragment extends Fragment
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef;
+    private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private DataSnapshot reviewReference;
     private RatingBar userRatingBar;
@@ -119,35 +121,50 @@ public class ViewProfileFragment extends Fragment
 
         final ArrayList<ReviewInformation> reviewListArray = new ArrayList<>();
 
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        String user = databaseConnections.getCurrentUser();
+
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
+        databaseReference = mFirebaseDatabase.getReference();
 
-        ValueEventListener ratings = myRef.addValueEventListener(new ValueEventListener()
+        fullName = (TextView) view.findViewById(R.id.textViewName);
+        phoneNumber = (TextView) view.findViewById(R.id.textViewPhoneNumber);
+        addressOne = (TextView) view.findViewById(R.id.textViewAddressOne);
+        addressTwo = (TextView) view.findViewById(R.id.textViewAddressTwo);
+        town = (TextView) view.findViewById(R.id.textViewTown);
+        postCode = (TextView) view.findViewById(R.id.textViewPostCode);
+        checkBoxAdvertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
+        checkBoxCourier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
+        profileImageUri = (ImageView) view.findViewById(R.id.profileImage);
+        userRatingBar = (RatingBar) view.findViewById(R.id.UserRatingsBar);
+
+        databaseReference.child("Ratings").child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                reviewReference = dataSnapshot.child("Ratings").child(mAuth.getCurrentUser().getUid());
-                Iterable<DataSnapshot> reviewListSnapShot = reviewReference.getChildren();
-
-                for (DataSnapshot ds : reviewListSnapShot)
+                long totalRating = 0;
+                long counter = 0;
+                // Iterate through entire bids table
+                for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
-                    reviewListArray.add(ds.getValue(ReviewInformation.class));
+                    long rating = ds.child("startReview").getValue(long.class);
+
+                    totalRating += rating;
+                    counter++;
+
+                    totalRating = totalRating / counter;
+
+                    int usersRating = Math.round(totalRating);
+                    userRatingBar.setNumStars(usersRating);
+                    Drawable drawable = userRatingBar.getProgressDrawable();
+                    drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
-        userRatingBar = (RatingBar) view.findViewById(R.id.UserRatingsBar);
-        userRatingBar.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
             {
 
             }
@@ -163,19 +180,8 @@ public class ViewProfileFragment extends Fragment
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference().child("Users");
-        FirebaseUser user = mAuth.getCurrentUser();
+        databaseReference = mFirebaseDatabase.getReference().child("Users");
         storageReference = FirebaseStorage.getInstance().getReference();
-
-        fullName = (TextView) view.findViewById(R.id.textViewName);
-        phoneNumber = (TextView) view.findViewById(R.id.textViewPhoneNumber);
-        addressOne = (TextView) view.findViewById(R.id.textViewAddressOne);
-        addressTwo = (TextView) view.findViewById(R.id.textViewAddressTwo);
-        town = (TextView) view.findViewById(R.id.textViewTown);
-        postCode = (TextView) view.findViewById(R.id.textViewPostCode);
-        checkBoxAdvertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
-        checkBoxCourier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
-        profileImageUri = (ImageView) view.findViewById(R.id.profileImage);
 
         mAuthListener = new FirebaseAuth.AuthStateListener()
         {
@@ -199,7 +205,7 @@ public class ViewProfileFragment extends Fragment
 
         if (passedUserID != null)
         {
-            myRef.child(passedUserID).addValueEventListener(new ValueEventListener()
+            databaseReference.child(passedUserID).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -255,7 +261,7 @@ public class ViewProfileFragment extends Fragment
             });
         } else
         {
-            myRef.child(user.getUid()).addValueEventListener(new ValueEventListener()
+            databaseReference.child(user).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)

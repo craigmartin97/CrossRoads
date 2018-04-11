@@ -2,6 +2,9 @@ package com.kitkat.crossroads.Jobs;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +17,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -319,8 +323,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                 bidReference = dataSnapshot.child("Bids");
 
                 Iterable<DataSnapshot> bidListSnapShot = bidReference.getChildren();
-
-                mAdapter = new PendingAdverts.MyCustomAdapter();
+                final PendingAdverts.MyCustomAdapter adapter = new MyCustomAdapter();
 
                 for (DataSnapshot ds : bidListSnapShot)
                 {
@@ -332,7 +335,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                         {
                             final UserBidInformation bid = ds1.getValue(UserBidInformation.class);
                             String usersBid = bid.getUserBid();
-                            String userID = bid.getUserID();
+                            final String userID = bid.getUserID();
                             String id = bid.getJobID();
 
                             databaseReference.child("Users").child(userID).addValueEventListener(new ValueEventListener()
@@ -342,11 +345,15 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                                 {
                                     String name = thisDataSnapshot.child("fullName").getValue(String.class);
                                     bid.setFullName(name);
+                                    bid.setCourierId(userID);
+                                    bid.setJobID(jobId);
                                     bid.getFullName();
+                                    bid.getCourierId();
+                                    bid.getJobID();
                                     jobList.add(bid);
 
-                                    mAdapter.addArray(jobList);
-                                    jobListView.setAdapter(mAdapter);
+                                    adapter.addArray(jobList);
+                                    jobListView.setAdapter(adapter);
                                 }
 
                                 @Override
@@ -358,6 +365,9 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                         }
                     }
                 }
+
+
+
             }
 
             @Override
@@ -441,86 +451,119 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             System.out.println("getView " + position + " " + convertView);
-            PendingAdverts.MyCustomAdapter.GroupViewHolder holder;
+            final PendingAdverts.MyCustomAdapter.GroupViewHolder holder;
             if (convertView == null)
             {
                 convertView = mInflater.inflate(R.layout.job_info_list_bid, null);
                 holder = new PendingAdverts.MyCustomAdapter.GroupViewHolder();
                 holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewBid = convertView.findViewById(R.id.textBid);
-                holder.textViewRating = convertView.findViewById(R.id.textRating);
+                holder.ratingBarSeeFeedback = convertView.findViewById(R.id.ratingBarSeeFeedback);
                 holder.acceptBidButton = convertView.findViewById(R.id.acceptBidButton);
+
+                holder.textViewName.setText(mData.get(position).getFullName());
+                holder.textViewBid.setText(mData.get(position).getUserBid());
+
+
+                databaseReference.child("Ratings").child(mData.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        long totalRating = 0;
+                        long counter = 0;
+                        // Iterate through entire bids table
+                        for (DataSnapshot ds : dataSnapshot.getChildren())
+                        {
+                                long rating = ds.child("startReview").getValue(long.class);
+
+                                totalRating += rating;
+                                counter++;
+
+                                totalRating = totalRating / counter;
+
+                                int usersRating = Math.round(totalRating);
+                                holder.ratingBarSeeFeedback.setNumStars(usersRating);
+                                Drawable drawable = holder.ratingBarSeeFeedback.getProgressDrawable();
+                                drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+
+                    }
+                });
+
+                holder.acceptBidButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                        View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
+
+                        alertDialog.setTitle("Accept Bid?");
+                        alertDialog.setView(mView);
+                        final AlertDialog dialog = alertDialog.create();
+                        dialog.show();
+
+                        Button yesButton = (Button) mView.findViewById(R.id.yesButton);
+                        Button noButton = (Button) mView.findViewById(R.id.noButton);
+
+                        yesButton.setOnClickListener(new View.OnClickListener()
+                        {
+
+
+                            @Override
+                            public void onClick(View v)
+                            {
+                                dialog.cancel();
+
+                                View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
+
+                                databaseReference.child("Jobs").child(jobId).child("courierID").setValue(mData.get(position).getUserID());
+                                databaseReference.child("Jobs").child(jobId).child("jobStatus").setValue("Active");
+
+                                alertDialog.setTitle("Bid Accepted");
+                                alertDialog.setView(mView);
+                                final AlertDialog dialog = alertDialog.create();
+                                dialog.show();
+
+                                TextView text = (TextView) mView.findViewById(R.id.bidAccepted);
+                                Button okButton = (Button) mView.findViewById(R.id.okButton);
+
+                                okButton.setOnClickListener(new View.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(View v)
+                                    {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                            }
+                        });
+
+                        noButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                dialog.cancel();
+                            }
+                        });
+                    }
+                });
+
                 convertView.setTag(holder);
             } else
             {
                 holder = (PendingAdverts.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-            holder.textViewName.setText(mData.get(position).getFullName());
-            holder.textViewBid.setText(mData.get(position).getUserBid());
-            holder.textViewRating.setText(mData.get(position).getUserID());
-
-            holder.acceptBidButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-
-                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                    View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
-
-                    alertDialog.setTitle("Accept Bid?");
-                    alertDialog.setView(mView);
-                    final AlertDialog dialog = alertDialog.create();
-                    dialog.show();
-
-                    Button yesButton = (Button) mView.findViewById(R.id.yesButton);
-                    Button noButton = (Button) mView.findViewById(R.id.noButton);
-
-                    yesButton.setOnClickListener(new View.OnClickListener()
-                    {
-
-
-                        @Override
-                        public void onClick(View v)
-                        {
-                            dialog.cancel();
-
-                            View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
-
-                            databaseReference.child("Jobs").child(jobId).child("courierID").setValue(mData.get(position).getUserID());
-                            databaseReference.child("Jobs").child(jobId).child("jobStatus").setValue("Active");
-
-                            alertDialog.setTitle("Bid Accepted");
-                            alertDialog.setView(mView);
-                            final AlertDialog dialog = alertDialog.create();
-                            dialog.show();
-
-                            TextView text = (TextView) mView.findViewById(R.id.bidAccepted);
-                            Button okButton = (Button) mView.findViewById(R.id.okButton);
-
-                            okButton.setOnClickListener(new View.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(View v)
-                                {
-                                    dialog.cancel();
-                                }
-                            });
-
-                        }
-                    });
-
-                    noButton.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            dialog.cancel();
-                        }
-                    });
-                }
-            });
             return convertView;
         }
 
@@ -540,7 +583,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
         {
             public TextView textViewName;
             public TextView textViewBid;
-            public TextView textViewRating;
+            public RatingBar ratingBarSeeFeedback;
             public Button acceptBidButton;
         }
 
