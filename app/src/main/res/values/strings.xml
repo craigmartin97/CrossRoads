@@ -25,6 +25,9 @@
     <string name="create_account">Create Account</string>
     <string name="my_bids">My Bids</string>
     <string name="my_complete_jobs">My Complete Jobs</string>
+    <string name="submit_button">Submit</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="leave_feedback">Leave Feedback</string>
     <string-array name="job_sizes">
         <item>Small</item>
         <item>Medium</item>

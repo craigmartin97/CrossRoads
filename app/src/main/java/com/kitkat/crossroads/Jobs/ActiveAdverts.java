@@ -1,13 +1,19 @@
 package com.kitkat.crossroads.Jobs;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,12 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-/**
- * This class displays the job information for a job they have just bid on.
- * They can also view their bid they made and edit that bid.
- * They can also delete the bid from here as well.
- */
-public class CompletedJobsFragment extends Fragment
+public class ActiveAdverts extends Fragment
 {
     /**
      * Text Views to display the jobs name and description
@@ -38,9 +39,9 @@ public class CompletedJobsFragment extends Fragment
     private TextView jobName, jobDescription, textViewUsersBid;
 
     /**
-     * ImageView, to store and display the Jobs Image
+     * ImageView for the JobsImage
      */
-    private ImageView jobImageCompleted;
+    private ImageView jobImageActive;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -64,15 +65,18 @@ public class CompletedJobsFragment extends Fragment
     private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
 
     /**
+     * Variable to store the current users Id
+     */
+    private String user;
+
+    /**
      * Creating variable to store the connection to the Firebase Database
      */
     private DatabaseReference databaseReference;
 
     /**
-     * Getting the current users Id
+     * Access the jobId the user pressed on
      */
-    private String user;
-
     private String jobId;
 
     @Override
@@ -96,7 +100,7 @@ public class CompletedJobsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_my_completed_jobs, container, false);
+        View view = inflater.inflate(R.layout.fragment_active_adverts, container, false);
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
@@ -159,7 +163,7 @@ public class CompletedJobsFragment extends Fragment
     {
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        jobImageCompleted = (ImageView) view.findViewById(R.id.jobImageCompleted);
+        jobImageActive = (ImageView) view.findViewById(R.id.jobImageActive);
         textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
@@ -178,8 +182,9 @@ public class CompletedJobsFragment extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageCompleted);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive);
 
+        // Set the users accepted bid
         databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -197,6 +202,9 @@ public class CompletedJobsFragment extends Fragment
         });
 
         // Storing information in variables for later use
+        jobType = jobInformation.getJobType().toString();
+        jobSize = jobInformation.getJobSize().toString();
+
         colDate = jobInformation.getCollectionDate().toString();
         colTime = jobInformation.getCollectionTime().toString();
 
@@ -207,9 +215,6 @@ public class CompletedJobsFragment extends Fragment
         delAddress = jobInformation.getDelL1().toString() + ", " + jobInformation.getDelL2().toString();
         delTown = jobInformation.getDelTown().toString();
         delPostcode = jobInformation.getDelPostcode().toString();
-
-        jobType = jobInformation.getJobType().toString();
-        jobSize = jobInformation.getJobSize().toString();
     }
 
     /**
@@ -220,8 +225,8 @@ public class CompletedJobsFragment extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable("JobId");
-        return (JobInformation) bundle.getSerializable("Job");
+        jobId = (String) bundle.getSerializable("JobKeyId");
+        return (JobInformation) bundle.getSerializable("JobId");
     }
 
     /**

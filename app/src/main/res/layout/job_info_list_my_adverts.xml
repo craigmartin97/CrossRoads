@@ -110,20 +110,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!--<Button-->
-            <!--android:id="@+id/detailsButton"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="View Details"-->
-            <!--android:textSize="10dp" />-->
-
-        <!--<Button-->
-            <!--android:id="@+id/viewBidsButton"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="View Bids"-->
-            <!--android:textSize="10dp" />-->
-
     </LinearLayout>
 </RelativeLayout>
 

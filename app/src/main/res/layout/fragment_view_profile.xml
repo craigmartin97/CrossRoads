@@ -61,11 +61,21 @@
                         android:paddingTop="10dp"
                         android:stepSize=".5" />
 
+                    <ExpandableListView
+                        android:id="@+id/expandable_list_view"
+                        android:layout_width="match_parent"
+                        android:layout_below="@+id/UserRatingsBar"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:dividerHeight="3dp"
+                        android:pointerIcon="arrow">
+                    </ExpandableListView>
+
                     <LinearLayout
                         android:id="@+id/adL1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/UserRatingsBar"
+                        android:layout_below="@+id/expandable_list_view"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/customborder"
                         android:orientation="vertical">

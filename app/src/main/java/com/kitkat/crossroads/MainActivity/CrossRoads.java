@@ -203,6 +203,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
                 navigationName.setText(name);
                 Picasso.get().load(profileImageUrl).fit().transform(new CircleTransformation()).into(profileImage);
+//                Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(profileImage);
             }
 
             @Override

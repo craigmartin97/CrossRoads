@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.kitkat.crossroads.Jobs.PendingAdverts">
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,31 +19,32 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
+
                 <RelativeLayout
                     android:layout_width="match_parent"
+                    android:background="@drawable/customborderrounded"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20sp"
-                    android:layout_marginLeft="20sp"
-                    android:layout_marginRight="20sp"
                     android:layout_marginTop="20sp"
-                    android:background="@drawable/customborderrounded">
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp">
 
                     <ImageView
-                        android:id="@+id/jobImagePending"
+                        android:id="@+id/jobImageCompleted"
                         android:layout_width="180dp"
                         android:layout_height="150dp"
                         android:layout_alignParentBottom="true"
-                        android:layout_alignParentStart="true"
-                        android:adjustViewBounds="false" />
+                        android:adjustViewBounds="false"
+                        android:layout_alignParentStart="true" />
 
                     <TextView
                         android:id="@+id/textViewJobName1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/jobImagePending"
+                        android:layout_alignTop="@+id/jobImageCompleted"
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
-                        android:layout_toEndOf="@+id/jobImagePending"
+                        android:layout_toEndOf="@+id/jobImageCompleted"
                         android:text="JobName Here"
                         android:textSize="18sp" />
 
@@ -97,7 +97,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:dividerHeight="3dp"
-                    android:pointerIcon="arrow"></ExpandableListView>
+                    android:pointerIcon="arrow">
+
+                </ExpandableListView>
 
                 <View
                     android:layout_width="match_parent"
@@ -107,38 +109,38 @@
 
             </LinearLayout>
 
-            <!-- ACTIVE BIDS PART -->
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
+                android:background="@drawable/customborderrounded"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/textViewAcceptedBid"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/bebasneueregular"
-                    android:text="Active bids"
                     android:textAlignment="center"
-                    android:textSize="30dp"
-                    tools:layout_editor_absoluteX="163dp"
-                    tools:layout_editor_absoluteY="16dp" />
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:paddingBottom="10dp"
+                    android:textColor="#000000"
+                    android:text="Agreed Fee:     £Users Bid"
+                    android:textSize="18sp" />
 
-                <SearchView
-                    android:id="@+id/searchViewJob"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:iconifiedByDefault="false"
-                    android:queryHint="Name, Location, Size, etc." />
-
-                <ListView
-                    android:id="@+id/jobListView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/textViewLeaveFeedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/textViewAcceptedBid"
+                    android:layout_centerHorizontal="true"
+                    android:text="Leave Feedback"
+                    android:textColor="#1a8cff"
+                    android:textColorLink="#1a8cff"
+                    android:textSize="18sp" />
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

@@ -45,7 +45,7 @@ public class JobDetailsFragment extends Fragment
     private FirebaseDatabase database;
     private DataSnapshot bidReference;
 
-    private String jobID;
+    private String jobID, fullName;
 
 
     private DatabaseReference databaseReference;
@@ -258,9 +258,24 @@ public class JobDetailsFragment extends Fragment
         String userID = user.getUid();
         String jobID = jobInformation.getJobID().toString().trim();
 
-        BidInformation bidInformation = new BidInformation(userID, userBid);
+        databaseReference.child("Users").child(userID).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                fullName = dataSnapshot.child("fullName").getValue(String.class);
+            }
 
-        databaseReference.child("Bids").child(jobID).child(userID).setValue(bidInformation);
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
+        UserBidInformation userBidInformation = new UserBidInformation(fullName, userID, userBid);
+
+        databaseReference.child("Bids").child(jobID).child(userID).setValue(userBidInformation);
 
         startActivity(new Intent(getActivity(), CrossRoads.class));
     }

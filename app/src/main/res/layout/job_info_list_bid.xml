@@ -93,19 +93,26 @@
                     android:textColor="#FF000000"
                     android:visibility="visible" />
 
-                <TextView
-                    android:id="@+id/textRating"
-                    android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@+id/textFrom"
-                    android:background="#FFFFFFFF"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="10dp"
-                    android:text="TextView"
-                    android:textAlignment="center"
-                    android:textColor="#FF000000"
-                    android:visibility="visible" />
+                <RatingBar
+                    android:id="@+id/ratingBarSeeFeedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/RatingBar"
+                    android:numStars="5" />
+
+                <!--<TextView-->
+                    <!--android:id="@+id/textRating"-->
+                    <!--android:layout_width="300dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:layout_toEndOf="@+id/textFrom"-->
+                    <!--android:background="#FFFFFFFF"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:paddingLeft="10dp"-->
+                    <!--android:text="TextView"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:textColor="#FF000000"-->
+                    <!--android:visibility="visible" />-->
 
             </LinearLayout>
         </LinearLayout>

@@ -18,7 +18,7 @@ public class UserBidInformation implements Serializable
 
     }
 
-    public UserBidInformation(String fullName, String userBid, String userID, String jobID)
+    public UserBidInformation(String fullName, String userBid, String userID)
     {
         this.fullName = fullName;
         this.userBid = userBid;
