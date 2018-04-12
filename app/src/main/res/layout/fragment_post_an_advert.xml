@@ -154,37 +154,37 @@
                 android:layout_below="@+id/buttonMap">
 
                 <LinearLayout
+                    android:id="@+id/mapLin"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:id="@+id/mapLin">
+                    android:layout_height="200dp">
 
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/map"
+                        android:name="com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/map"
-                        tools:context="com.kitkat.crossroads.Jobs.PostAnAdvertFragment"
-                        android:name="com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment" />
+                        tools:context="com.kitkat.crossroads.Jobs.PostAnAdvertFragment" />
 
                 </LinearLayout>
 
                 <RelativeLayout
+                    android:id="@+id/relLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"
-                    android:elevation="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/customborderrounded"
-                    android:id="@+id/relLayout1">
+                    android:elevation="10dp">
 
                     <ImageView
+                        android:id="@+id/magnify"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:id="@+id/magnify"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_magnify"/>
+                        android:src="@drawable/ic_magnify" />
 
                     <AutoCompleteTextView
                         android:id="@+id/editTextSearch"
@@ -193,40 +193,28 @@
                         android:layout_toRightOf="@+id/magnify"
                         android:background="@null"
                         android:hint="Enter An Address"
+                        android:imeOptions="actionSearch"
                         android:inputType="textAutoComplete"
                         android:textColor="#000000"
-                        android:textSize="15sp"
-                        android:imeOptions="actionSearch"/>
+                        android:textSize="15sp" />
                 </RelativeLayout>
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_below="@+id/relLayout1"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="centerCrop"
                     android:id="@+id/ic_gps"
+                    android:layout_width="47dp"
+                    android:layout_height="40dp"
+                    android:layout_alignStart="@+id/relLayout1"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_gps" />
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_below="@+id/relLayout1"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="centerCrop"
-                    android:id="@+id/placeInfo"
-                    android:src="@drawable/ic_info"/>
 
                 <ImageView
                     android:id="@+id/check"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignStart="@+id/placeInfo"
-                    android:layout_below="@+id/placeInfo"
-                    android:layout_marginTop="15dp"
+                    android:layout_height="43dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignStart="@+id/relLayout1"
                     android:scaleType="centerCrop"
                     android:src="@drawable/check" />
             </RelativeLayout>
@@ -306,7 +294,6 @@
                 android:text="MAP" />
 
 
-
             <RelativeLayout
                 android:id="@+id/relLayout3"
                 android:layout_width="match_parent"
@@ -314,37 +301,37 @@
                 android:layout_below="@+id/buttonMap2">
 
                 <LinearLayout
+                    android:id="@+id/mapLin2"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:id="@+id/mapLin2">
+                    android:layout_height="200dp">
 
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/map2"
+                        android:name="com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/map2"
-                        tools:context="com.kitkat.crossroads.Jobs.PostAnAdvertFragment"
-                        android:name="com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment" />
+                        tools:context="com.kitkat.crossroads.Jobs.PostAnAdvertFragment" />
 
                 </LinearLayout>
 
                 <RelativeLayout
+                    android:id="@+id/relLayout4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"
-                    android:elevation="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/customborderrounded"
-                    android:id="@+id/relLayout4">
+                    android:elevation="10dp">
 
                     <ImageView
+                        android:id="@+id/magnify2"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:id="@+id/magnify2"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_magnify"/>
+                        android:src="@drawable/ic_magnify" />
 
                     <AutoCompleteTextView
                         android:id="@+id/editTextSearch2"
@@ -353,40 +340,27 @@
                         android:layout_toRightOf="@+id/magnify2"
                         android:background="@null"
                         android:hint="Enter An Address"
+                        android:imeOptions="actionSearch"
                         android:inputType="textAutoComplete"
                         android:textColor="#000000"
-                        android:textSize="15sp"
-                        android:imeOptions="actionSearch"/>
+                        android:textSize="15sp" />
                 </RelativeLayout>
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_below="@+id/relLayout4"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:scaleType="centerCrop"
                     android:id="@+id/ic_gps2"
-                    android:src="@drawable/ic_gps" />
-
-                <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_below="@+id/relLayout4"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_alignStart="@+id/relLayout4"
+                    android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
-                    android:id="@+id/placeInfo2"
-                    android:src="@drawable/ic_info"/>
+                    android:src="@drawable/ic_gps" />
 
                 <ImageView
                     android:id="@+id/check2"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_alignStart="@+id/placeInfo2"
-                    android:layout_below="@+id/placeInfo2"
-                    android:layout_marginTop="15dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignStart="@+id/relLayout4"
                     android:scaleType="centerCrop"
                     android:src="@drawable/check" />
             </RelativeLayout>
