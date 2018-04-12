@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
 import java.text.ParseException;
@@ -50,15 +51,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FindAJobFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FindAJobFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FindAJobFragment extends Fragment implements SearchView.OnQueryTextListener
 {
 
@@ -93,15 +85,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FindAJobFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FindAJobFragment newInstance(String param1, String param2)
     {
         FindAJobFragment fragment = new FindAJobFragment();
@@ -247,8 +230,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.job_sizes_reverse, R.layout.spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSizeTo.setAdapter(adapter2);
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        final String user = databaseConnections.getCurrentUser();
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
 
@@ -271,7 +255,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                     j.setJobID(ds.getKey());
 
                     //display only jobs that are still open to bidding
-                    if (j.getJobStatus().equals("Pending"))
+                    if (j.getJobStatus().equals("Pending") && !j.getPosterID().equals(user))
                     {
                         jobList.add(j);
                     }
@@ -465,20 +449,21 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             FindAJobFragment.MyCustomAdapter.GroupViewHolder holder;
             if (convertView == null)
             {
-                convertView = mInflater.inflate(R.layout.job_info_list, null);
+                convertView = mInflater.inflate(R.layout.job_info_accepted, null);
                 holder = new FindAJobFragment.MyCustomAdapter.GroupViewHolder();
-                holder.textViewName = (TextView) convertView.findViewById(R.id.textName);
-                holder.textViewFrom = (TextView) convertView.findViewById(R.id.textFrom);
-                holder.textViewTo = (TextView) convertView.findViewById(R.id.textTo);
+                holder.textViewName =  convertView.findViewById(R.id.textName);
+                holder.textViewDesc = convertView.findViewById(R.id.textDesc);
+                holder.textViewFrom = convertView.findViewById(R.id.textAddressFrom);
+                holder.textViewTo = convertView.findViewById(R.id.textAddressTo);
+
                 convertView.setTag(holder);
             } else
             {
                 holder = (FindAJobFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-
-
             holder.textViewName.setText(mData.get(position).getAdvertName());
+            holder.textViewDesc.setText(mData.get(position).getAdvertDescription());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
 
@@ -516,6 +501,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         public class GroupViewHolder
         {
             public TextView textViewName;
+            public TextView textViewDesc;
             public TextView textViewFrom;
             public TextView textViewTo;
         }

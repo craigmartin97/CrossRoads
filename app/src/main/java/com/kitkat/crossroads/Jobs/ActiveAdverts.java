@@ -22,7 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
+import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 
@@ -37,6 +39,11 @@ public class ActiveAdverts extends Fragment
      * Text Views to display the jobs name and description
      */
     private TextView jobName, jobDescription, textViewUsersBid;
+
+    /**
+     * Button, when pressed, takes user to the couriers profile to view
+     */
+    private Button buttonViewCourierProfile;
 
     /**
      * ImageView for the JobsImage
@@ -107,6 +114,8 @@ public class ActiveAdverts extends Fragment
 
         setJobInformationDetails(jobInformation);
 
+        setButtonViewCourierProfile();
+
         addItemsCollection();
         addItemsDelivery();
         addItemsJobInformation();
@@ -165,10 +174,32 @@ public class ActiveAdverts extends Fragment
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
         jobImageActive = (ImageView) view.findViewById(R.id.jobImageActive);
         textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
+        buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
+    }
+
+    /**
+     * Setting the on click listener for the button to that the user to the courier profile
+     */
+    private void setButtonViewCourierProfile()
+    {
+        buttonViewCourierProfile.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                // If pressed take user to profile of courier
+                GenericMethods genericMethods = new GenericMethods();
+                ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("CourierId", getBundleInformation().getCourierID());
+                viewProfileFragment.setArguments(bundle);
+                genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
+            }
+        });
     }
 
     /**
