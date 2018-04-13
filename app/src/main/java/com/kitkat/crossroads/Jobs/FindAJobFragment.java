@@ -384,6 +384,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                         null, null, filterColFrom.getText().toString(), null, null, null, filterDelTo.getText().toString(), null, null, null);
 
                 mAdapter.filterArray(jobInformation);
+                filterLayout.setVisibility(View.GONE);
+                filterLayout.setTag("Closed");
 
             }
         });

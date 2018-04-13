@@ -71,7 +71,7 @@
             android:background="@drawable/customborder"
             android:orientation="vertical"
             android:tag="Closed"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
 
@@ -120,12 +120,13 @@
                             android:spinnerMode="dropdown" />
 
                         <ImageView
+                            android:padding="5dp"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_gravity="center"
-                            android:src="@mipmap/ic_launcher_foreground" />
+                            android:src="@mipmap/ic_launcher_arrow" />
 
                     </RelativeLayout>
 
