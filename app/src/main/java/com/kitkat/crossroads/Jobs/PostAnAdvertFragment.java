@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -61,6 +62,7 @@ import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
+import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
@@ -157,66 +159,80 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                              Bundle savedInstanceState)
     {
         final View view = inflater.inflate(R.layout.fragment_post_an_advert, container, false);
-        layoutView = view;
 
+        layoutView = view;
+        getViewsByIds(view);
         // Collection Map
         map1 = new Map();
         map2 = new Map();
-        getViewsByIds(view);
 
-        // Create google api client, so user has pre-set options to select.
-        /*
-            The main entry point for Google Play services integration
-        */
-        mGoogleApiClient1 = new GoogleApiClient
-                .Builder(getActivity())
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(getActivity(), 0, this)
-                .build();
-
-        PlaceAutocompleteAdapter placeAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient1, LAT_LNG_BOUNDS, null);
-        map1.setPlaceAutocompleteAdapter(placeAutocompleteAdapter);
-        map1.setmGoogleApiClient1(mGoogleApiClient1);
-
-        map2.setPlaceAutocompleteAdapter(placeAutocompleteAdapter);
-        map2.setmGoogleApiClient1(mGoogleApiClient1);
-
-        editTextSearch.setOnItemClickListener(map1.mAutocompleteItemClickListener);
-        editTextSearch2.setOnItemClickListener(map2.mAutocompleteItemClickListener);
-
-        editTextSearch.setAdapter(placeAutocompleteAdapter);
-        editTextSearch2.setAdapter(placeAutocompleteAdapter);
-
-        // Collection Map
-        mapFragment = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(new OnMapReadyCallback()
+        boolean result = ((CrossRoads)getActivity()).getLocationPermissionGranted();
+        if(result)
         {
-            @Override
-            public void onMapReady(GoogleMap googleMap)
+            Fragment fragment = getChildFragmentManager().findFragmentById(R.id.map);
+            // Create google api client, so user has pre-set options to select.
+            /*
+                The main entry point for Google Play services integration
+            */
+            mGoogleApiClient1 = new GoogleApiClient
+                    .Builder(getActivity())
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .enableAutoManage(getActivity(), 0, this)
+                    .build();
+
+            PlaceAutocompleteAdapter placeAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient1, LAT_LNG_BOUNDS, null);
+            map1.setPlaceAutocompleteAdapter(placeAutocompleteAdapter);
+            map1.setmGoogleApiClient1(mGoogleApiClient1);
+
+            map2.setPlaceAutocompleteAdapter(placeAutocompleteAdapter);
+            map2.setmGoogleApiClient1(mGoogleApiClient1);
+
+            editTextSearch.setOnItemClickListener(map1.mAutocompleteItemClickListener);
+            editTextSearch2.setOnItemClickListener(map2.mAutocompleteItemClickListener);
+
+            editTextSearch.setAdapter(placeAutocompleteAdapter);
+            editTextSearch2.setAdapter(placeAutocompleteAdapter);
+
+            // Collection Map
+            mapFragment = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(new OnMapReadyCallback()
             {
-                map1.getLocationPermission(getActivity().getApplicationContext(), mapFragment, getActivity(), view, getChildFragmentManager());
-            }
-        });
+                @Override
+                public void onMapReady(GoogleMap googleMap)
+                {
+                    map1.getLocationPermission(getActivity().getApplicationContext(), mapFragment, getActivity(), view, getChildFragmentManager());
+                }
+            });
 
-        // Delivery Map
-        mapFragment2 = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map2);
-        mapFragment2.getMapAsync(new OnMapReadyCallback()
-        {
-            @Override
-            public void onMapReady(GoogleMap googleMap)
+            // Delivery Map
+            mapFragment2 = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map2);
+            mapFragment2.getMapAsync(new OnMapReadyCallback()
             {
-                map2.getLocationPermission(getActivity().getApplicationContext(), mapFragment2, getActivity(), view, getChildFragmentManager());
+                @Override
+                public void onMapReady(GoogleMap googleMap)
+                {
+                    map2.getLocationPermission(getActivity().getApplicationContext(), mapFragment2, getActivity(), view, getChildFragmentManager());
+                }
+            });
+
+            if (isServicesOK())
+            {
+                mapOnClickListeners();
             }
-        });
-
-        createOnClickListeners();
-
-        if (isServicesOK())
+        }
+        else
         {
-            mapOnClickListeners();
+            RelativeLayout relativeLayout = view.findViewById(R.id.relLayout3);
+            relativeLayout.setVisibility(View.GONE);
+            relativeLayout.getLayoutParams().height = 0;
+
+            RelativeLayout relativeLayout1 = view.findViewById(R.id.relLayout2);
+            relativeLayout1.setVisibility(View.GONE);
+            relativeLayout1.getLayoutParams().height = 0;
         }
 
+        createOnClickListeners();
         return view;
     }
 
@@ -464,7 +480,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private void mapOnClickListeners()
     {
-//        map1.setEditSearchAPIListener(editTextSearch, getActivity());
         editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override
@@ -804,7 +819,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, downloadUri.toString());
 
                 databaseReference.child("Jobs").child(key).setValue(jobInformation);
-
                 databaseReference.addValueEventListener(new ValueEventListener()
                 {
                     @Override
@@ -900,23 +914,30 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     public void onPause()
     {
         super.onPause();
-        mGoogleApiClient1.stopAutoManage(getActivity());
-        mGoogleApiClient1.disconnect();
+
     }
 
     @Override
     public void onStop()
     {
         super.onStop();
-        mGoogleApiClient1.stopAutoManage(getActivity());
-        mGoogleApiClient1.disconnect();
+        if(((CrossRoads)getActivity()).getLocationPermissionGranted())
+        {
+            mGoogleApiClient1.stopAutoManage(getActivity());
+            mGoogleApiClient1.disconnect();
+        }
+
     }
 
     @Override
     public void onDetach()
     {
         super.onDetach();
-        mGoogleApiClient1.stopAutoManage(getActivity());
-        mGoogleApiClient1.disconnect();
+        if(((CrossRoads)getActivity()).getLocationPermissionGranted())
+        {
+            mGoogleApiClient1.stopAutoManage(getActivity());
+            mGoogleApiClient1.disconnect();
+        }
+
     }
 }

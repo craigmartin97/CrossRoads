@@ -1,9 +1,16 @@
 package com.kitkat.crossroads.MainActivity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,11 +21,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,12 +59,17 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
      * Firebase auth is a connection to Firebase Database
      */
     private FirebaseAuth auth;
-    private FirebaseDatabase mFirebaseDatabase;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private StorageReference storageReference;
     private DatabaseReference databaseReference;
     private String user;
     private ImageView profileImage;
+    private boolean locationPermissionGranted = false;
+    private final static int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    /**
+     * Accessing the users locations, after they have gave permission
+     */
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
 
     private String profileImageUrl;
 
@@ -72,46 +86,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         user = databaseConnections.getCurrentUser();
         storageReference = databaseConnections.getStorageReference();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        databaseReference.child(user).addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
-
-                if (advertiser == true && courier == false)
-                {
-                    getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-                } else if (advertiser == false && courier == true)
-                {
-                    getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-                } else if (advertiser == true && courier == true)
-                {
-                    getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        navigationButtonActions(navigationView);
+        getLocationPermission();
     }
 
     @Override
@@ -203,7 +178,6 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
                 navigationName.setText(name);
                 Picasso.get().load(profileImageUrl).fit().transform(new CircleTransformation()).into(profileImage);
-//                Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(profileImage);
             }
 
             @Override
@@ -226,11 +200,8 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             }
         });
 
-
         editProfile.setOnClickListener(new View.OnClickListener()
         {
-
-
             @Override
             public void onClick(View v)
             {
@@ -278,12 +249,116 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             }
         });
 
-        profileImage.setOnClickListener(new View.OnClickListener() {
+        profileImage.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).addToBackStack("tag").commit();
                 onBackPressed();
             }
         });
+    }
+
+    /**
+     * Checking the users permission that they selected, accept or deny
+     */
+    public void getLocationPermission()
+    {
+        Log.d(TAG, "Getting location permissions");
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (ContextCompat.checkSelfPermission(this,
+                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            if (ContextCompat.checkSelfPermission(this,
+                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                locationPermissionGranted = true;
+                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+            } else
+            {
+                // Denied
+                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        } else
+        {
+            // Denied
+            ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        Log.d(TAG, "onRequestPermissionCalled");
+
+        switch (requestCode)
+        {
+            case LOCATION_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0)
+                {
+                    for (int i = 0; i < grantResults.length; i++)
+                    {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
+                        {
+                            Log.d(TAG, "Permission Failed");
+                            displayContent();
+                            return;
+                        }
+                    }
+                    displayContent();
+                }
+        }
+    }
+
+    private void displayContent()
+    {
+        Log.d(TAG, "Permission Granted");
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        databaseReference.child(user).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+
+                if (advertiser == true && courier == false)
+                {
+                    getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+                } else if (advertiser == false && courier == true)
+                {
+                    getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+                } else if (advertiser == true && courier == true)
+                {
+                    getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationButtonActions(navigationView);
+    }
+
+    public boolean getLocationPermissionGranted()
+    {
+        return locationPermissionGranted;
     }
 }

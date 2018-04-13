@@ -442,7 +442,8 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                     // Iterate through entire bids table
                     for (DataSnapshot ds : dataSnapshot.getChildren())
                     {
-                        long rating = ds.child("startReview").getValue(long.class);
+                        long rating = ds.child("starReview").getValue(long.class);
+                        String id = mData.get(position).getUserID();
 
                         totalRating += rating;
                         counter++;
@@ -451,6 +452,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
 
                         int usersRating = Math.round(totalRating);
                         holder.ratingBarSeeFeedback.setNumStars(usersRating);
+                        holder.ratingBarSeeFeedback.getNumStars();
                         Drawable drawable = holder.ratingBarSeeFeedback.getProgressDrawable();
                         drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
                     }

@@ -11,18 +11,18 @@ public class RatingsAndReviews implements Serializable
     {
     }
 
-    public RatingsAndReviews(float startReview, String review)
+    public RatingsAndReviews(float starReview, String review)
     {
-        this.starReview = startReview;
+        this.starReview = starReview;
         this.review = review;
     }
 
-    public float getStartReview()
+    public float getStarReview()
     {
         return starReview;
     }
 
-    public void setStartReview(float starReview)
+    public void setStarReview(float starReview)
     {
         this.starReview = starReview;
     }
