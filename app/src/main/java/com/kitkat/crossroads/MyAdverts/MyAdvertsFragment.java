@@ -1,4 +1,4 @@
-package com.kitkat.crossroads.Jobs;
+package com.kitkat.crossroads.MyAdverts;
 
 import android.content.Context;
 import android.net.Uri;
@@ -22,12 +22,12 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.DatabaseReferences;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
+import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTextListener

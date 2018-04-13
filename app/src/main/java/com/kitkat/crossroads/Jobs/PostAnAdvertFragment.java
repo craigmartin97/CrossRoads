@@ -1,22 +1,30 @@
 package com.kitkat.crossroads.Jobs;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,7 +32,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -41,14 +51,26 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -63,12 +85,16 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
+import com.kitkat.crossroads.MapFeatures.CustomInfoWindowAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -133,7 +159,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private Button yesButton;
     private Button noButton;
 
-    private com.kitkat.crossroads.ExternalClasses.Map map1, map2;
+    private Map map1, map2;
     private SupportMapFragment mapFragment, mapFragment2;
     private View layoutView;
 
@@ -166,8 +192,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         map1 = new Map();
         map2 = new Map();
 
-        boolean result = ((CrossRoads)getActivity()).getLocationPermissionGranted();
-        if(result)
+        boolean result = ((CrossRoads) getActivity()).getLocationPermissionGranted();
+        if (result)
         {
             Fragment fragment = getChildFragmentManager().findFragmentById(R.id.map);
             // Create google api client, so user has pre-set options to select.
@@ -220,8 +246,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             {
                 mapOnClickListeners();
             }
-        }
-        else
+        } else
         {
             RelativeLayout relativeLayout = view.findViewById(R.id.relLayout3);
             relativeLayout.setVisibility(View.GONE);
@@ -571,7 +596,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 }
             }
         });
-
         // Map 2 for Delivery
         editTextSearch2.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
@@ -921,7 +945,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     public void onStop()
     {
         super.onStop();
-        if(((CrossRoads)getActivity()).getLocationPermissionGranted())
+        if (((CrossRoads) getActivity()).getLocationPermissionGranted())
         {
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
@@ -933,7 +957,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     public void onDetach()
     {
         super.onDetach();
-        if(((CrossRoads)getActivity()).getLocationPermissionGranted())
+        if (((CrossRoads) getActivity()).getLocationPermissionGranted())
         {
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();

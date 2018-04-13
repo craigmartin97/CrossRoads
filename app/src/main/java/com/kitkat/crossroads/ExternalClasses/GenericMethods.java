@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.kitkat.crossroads.Jobs.JobInformation;
-import com.kitkat.crossroads.Jobs.MyJobsFragment;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -119,6 +118,32 @@ public class GenericMethods
     {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
+    }
+
+    /**
+     * New bundle for job information
+     * @param tag
+     * @param jobInformation
+     * @return
+     */
+    public Bundle createNewBundleJobInformation(String tag, JobInformation jobInformation)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(tag, jobInformation);
+        return bundle;
+    }
+
+    /**
+     * Create new bundle for strings
+     * @param tag
+     * @param data
+     * @return
+     */
+    public Bundle createNewBundleStrings(String tag, String data)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(tag, data);
+        return bundle;
     }
 
     public ExpandableListAdapter createExpandableListAdapter(FragmentActivity fragmentActivity, List<String> list, HashMap<String, List<String>> listHashMap, ExpandableListView expandableListView)

@@ -1,8 +1,7 @@
-package com.kitkat.crossroads.Jobs;
+package com.kitkat.crossroads.MyJobs;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -25,6 +24,7 @@ import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
+import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 
