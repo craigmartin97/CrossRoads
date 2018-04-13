@@ -442,7 +442,10 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                     // Iterate through entire bids table
                     for (DataSnapshot ds : dataSnapshot.getChildren())
                     {
-                        long rating = ds.child("startReview").getValue(long.class);
+                        Toast.makeText(getActivity(), "Get", Toast.LENGTH_SHORT).show();
+                        long rating = ds.child("starReview").getValue(long.class);
+
+                        Toast.makeText(getActivity(), "Get2", Toast.LENGTH_SHORT).show();
 
                         totalRating += rating;
                         counter++;
