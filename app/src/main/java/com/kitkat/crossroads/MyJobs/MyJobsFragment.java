@@ -1,4 +1,4 @@
-package com.kitkat.crossroads.Jobs;
+package com.kitkat.crossroads.MyJobs;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +20,8 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.DatabaseReferences;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
+import com.kitkat.crossroads.Jobs.BidInformation;
+import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 
 import java.text.ParseException;

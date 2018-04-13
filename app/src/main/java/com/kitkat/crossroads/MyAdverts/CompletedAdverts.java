@@ -1,6 +1,5 @@
-package com.kitkat.crossroads.Jobs;
+package com.kitkat.crossroads.MyAdverts;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,16 +13,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
-import com.kitkat.crossroads.MainActivity.CrossRoads;
+import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Ratings.RatingsAndReviews;
 import com.squareup.picasso.Picasso;

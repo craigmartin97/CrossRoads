@@ -1,26 +1,25 @@
-package com.kitkat.crossroads.Jobs;
+package com.kitkat.crossroads.MyAdverts;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
+import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 
@@ -29,27 +28,22 @@ import java.util.HashMap;
 import java.util.List;
 
 
-/**
- * This class displays the job information for a job they have just bid on.
- * They can also view their bid they made and edit that bid.
- * They can also delete the bid from here as well.
- */
-public class BidOnJobsFragment extends Fragment
+public class ActiveAdverts extends Fragment
 {
     /**
      * Text Views to display the jobs name and description
      */
-    private TextView jobName, jobDescription;
+    private TextView jobName, jobDescription, textViewUsersBid;
 
     /**
-     * Edit view for editing the users bid
+     * Button, when pressed, takes user to the couriers profile to view
      */
-    private EditText editTextEditBid;
+    private Button buttonViewCourierProfile;
 
     /**
      * ImageView for the JobsImage
      */
-    private ImageView jobImageBidOn;
+    private ImageView jobImageActive;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -73,30 +67,14 @@ public class BidOnJobsFragment extends Fragment
     private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
 
     /**
-     * Accessing ActiveJobDetailsFragment
-     */
-    ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
-
-    /**
      * Variable to store the current users Id
      */
     private String user;
-
 
     /**
      * Creating variable to store the connection to the Firebase Database
      */
     private DatabaseReference databaseReference;
-
-    /**
-     * Creating reference to storage the Firebase authentication connection
-     */
-    private FirebaseAuth auth;
-
-    /**
-     * Button to submit a new bid
-     */
-    private Button buttonEditBid;
 
     /**
      * Access the jobId the user pressed on
@@ -109,7 +87,6 @@ public class BidOnJobsFragment extends Fragment
         super.onCreate(savedInstanceState);
         DatabaseConnections databaseConnections = new DatabaseConnections();
         databaseReference = databaseConnections.getDatabaseReference();
-        auth = databaseConnections.getAuth();
         user = databaseConnections.getCurrentUser();
     }
 
@@ -125,12 +102,14 @@ public class BidOnJobsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_my_jobs_bid_on, container, false);
+        View view = inflater.inflate(R.layout.fragment_active_adverts, container, false);
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
 
         setJobInformationDetails(jobInformation);
+
+        setButtonViewCourierProfile();
 
         addItemsCollection();
         addItemsDelivery();
@@ -176,24 +155,6 @@ public class BidOnJobsFragment extends Fragment
             }
         });
 
-        buttonEditBid.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if(TextUtils.isEmpty(editTextEditBid.getText()))
-                {
-                    Toast.makeText(getActivity(), "Enter a bid!!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                else
-                {
-                    submitBid(jobId, user);
-                }
-            }
-        });
-
-
         return view;
     }
 
@@ -206,20 +167,34 @@ public class BidOnJobsFragment extends Fragment
     {
         jobName = (TextView) view.findViewById(R.id.textViewJobName1);
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        jobImageBidOn = (ImageView) view.findViewById(R.id.jobImgageBidOn);
-        editTextEditBid = (EditText) view.findViewById(R.id.editBid);
-        buttonEditBid = (Button) view.findViewById(R.id.buttonEditBid);
+        jobImageActive = (ImageView) view.findViewById(R.id.jobImageActive);
+        textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
+        buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
     }
 
-    private void submitBid(String jobId, String user)
+    /**
+     * Setting the on click listener for the button to that the user to the courier profile
+     */
+    private void setButtonViewCourierProfile()
     {
-        String userBid = editTextEditBid.getText().toString().trim();
-        BidInformation bidInformation = new BidInformation(user, userBid);
-        databaseReference.child("Bids").child(jobId).child(user).setValue(bidInformation);
+        buttonViewCourierProfile.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                // If pressed take user to profile of courier
+                GenericMethods genericMethods = new GenericMethods();
+                ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("CourierId", getBundleInformation().getCourierID());
+                viewProfileFragment.setArguments(bundle);
+                genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
+            }
+        });
     }
 
     /**
@@ -233,15 +208,16 @@ public class BidOnJobsFragment extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageBidOn);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive);
 
+        // Set the users accepted bid
         databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
-                editTextEditBid.setText(userBid);
+                textViewUsersBid.setText("Agreed Fee:       £" + userBid);
             }
 
             @Override
@@ -275,8 +251,8 @@ public class BidOnJobsFragment extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable("JobId");
-        return (JobInformation) bundle.getSerializable("Job");
+        jobId = (String) bundle.getSerializable("JobKeyId");
+        return (JobInformation) bundle.getSerializable("JobId");
     }
 
     /**

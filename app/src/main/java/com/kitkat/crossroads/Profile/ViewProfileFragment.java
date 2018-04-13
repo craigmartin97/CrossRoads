@@ -111,6 +111,7 @@ public class ViewProfileFragment extends Fragment
         getBundleInformation();
 
         getUsersStarRating();
+        addReviews();
 
         adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
         expandableListView.setAdapter(adapter);
@@ -129,7 +130,7 @@ public class ViewProfileFragment extends Fragment
 
         if (courierId != null)
         {
-            databaseReference.child(courierId).addValueEventListener(new ValueEventListener()
+            databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -164,7 +165,7 @@ public class ViewProfileFragment extends Fragment
                         checkBoxAdvertiser.setChecked(true);
                         checkBoxCourier.setChecked(true);
                     }
-                    ;
+                    Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
                 }
 
                 @Override
@@ -175,7 +176,7 @@ public class ViewProfileFragment extends Fragment
             });
         } else
         {
-            databaseReference.child(user).addValueEventListener(new ValueEventListener()
+            databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -291,7 +292,7 @@ public class ViewProfileFragment extends Fragment
         if (bundle != null)
         {
             // Assign the courier Id to the String passed across
-            courierId = (String) bundle.getSerializable("CourierId");
+            courierId = (String) bundle.getSerializable("courierId");
         }
     }
 
@@ -308,7 +309,6 @@ public class ViewProfileFragment extends Fragment
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
                     assignStars(dataSnapshot);
-                    addReviews();
                 }
 
                 @Override
@@ -326,7 +326,6 @@ public class ViewProfileFragment extends Fragment
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
                     assignStars(dataSnapshot);
-                    addReviews();
                 }
 
                 @Override
