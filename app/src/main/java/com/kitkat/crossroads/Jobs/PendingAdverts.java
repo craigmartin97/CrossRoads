@@ -102,6 +102,8 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
      */
     private ImageView jobImagePending;
 
+    private Button viewActiveBids;
+
     public PendingAdverts()
     {
         // Required empty public constructor
@@ -223,6 +225,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
         textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
         jobListView = view.findViewById(R.id.jobListView1);
         jobImagePending = view.findViewById(R.id.jobImagePending);
+        viewActiveBids = view.findViewById(R.id.buttonViewActiveBids);
     }
 
     /**

@@ -542,6 +542,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 if(new Date().after(sdf) && currentTime.after(dateFormat2))
                 {
                     mData.remove(position);
+                    notifyDataSetChanged();
                 }
 
             } catch (ParseException e)
