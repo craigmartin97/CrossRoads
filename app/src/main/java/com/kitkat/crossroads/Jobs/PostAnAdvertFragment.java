@@ -195,7 +195,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         boolean result = ((CrossRoads) getActivity()).getLocationPermissionGranted();
         if (result)
         {
-            Fragment fragment = getChildFragmentManager().findFragmentById(R.id.map);
             // Create google api client, so user has pre-set options to select.
             /*
                 The main entry point for Google Play services integration
