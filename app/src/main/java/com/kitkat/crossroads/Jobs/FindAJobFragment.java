@@ -79,7 +79,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private EditText filterName, filterColDate, filterColTime, filterColFrom, filterDelTo;
     private CheckBox filterSingle, filterMultiple;
 
-
     public FindAJobFragment() {
         // Required empty public constructor
     }

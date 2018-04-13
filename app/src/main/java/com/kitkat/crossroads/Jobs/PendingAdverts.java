@@ -443,7 +443,7 @@ public class PendingAdverts extends Fragment implements SearchView.OnQueryTextLi
                     for (DataSnapshot ds : dataSnapshot.getChildren())
                     {
                         long rating = ds.child("starReview").getValue(long.class);
-                        String id = mData.get(position).getUserID();
+
 
                         totalRating += rating;
                         counter++;

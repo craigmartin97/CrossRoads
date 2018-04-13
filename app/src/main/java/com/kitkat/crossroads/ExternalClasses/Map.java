@@ -6,21 +6,15 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -440,7 +434,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
             if (ContextCompat.checkSelfPermission(context,
                     COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
-                locationPermissionGranted = true;
+                this.locationPermissionGranted = true;
                 mapFragment = mapFragmentGiven;
                 fragmentActivity = fragmentActivityGiven;
                 view = viewGiven;
@@ -453,35 +447,8 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
             }
         } else
         {
-            // Denied
+             //Denied
             ActivityCompat.requestPermissions(fragmentActivity, permissions, LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        Log.d(TAG, "onRequestPermissionCalled");
-        locationPermissionGranted = false;
-
-        switch (requestCode)
-        {
-            case LOCATION_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0)
-                {
-                    for (int i = 0; i < grantResults.length; i++)
-                    {
-                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
-                        {
-                            Log.d(TAG, "Permission Failed");
-                            locationPermissionGranted = false;
-                            return;
-                        }
-                    }
-
-                    Log.d(TAG, "Permission Granted");
-                    locationPermissionGranted = true;
-                    initMap();
-                }
         }
     }
 
