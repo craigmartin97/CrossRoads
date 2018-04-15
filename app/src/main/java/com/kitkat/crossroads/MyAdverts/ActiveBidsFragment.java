@@ -236,7 +236,6 @@ public class ActiveBidsFragment extends Fragment
                     @Override
                     public void onClick(View v)
                     {
-                        Toast.makeText(getActivity(), "PRESSED", Toast.LENGTH_SHORT).show();
                         ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
                         GenericMethods genericMethods = new GenericMethods();
                         viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", mData.get(position).getUserID()));
