@@ -1,23 +1,24 @@
 package com.kitkat.crossroads.ExternalClasses;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class MyCustomAdapterForTabViews extends BaseAdapter
@@ -28,11 +29,15 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     private TabHost host;
 
     public LayoutInflater mInflater;
+    private FragmentActivity fragmentActivity;
+    private LayoutInflater layoutInflater;
 
-    public MyCustomAdapterForTabViews(FragmentActivity fragmentActivity, boolean isAdded, TabHost host)
+    public MyCustomAdapterForTabViews(FragmentActivity fragmentActivity, boolean isAdded, TabHost host, LayoutInflater layoutInflater)
     {
         if (isAdded)
         {
+            this.fragmentActivity = fragmentActivity;
+            this.layoutInflater = layoutInflater;
             mInflater = (LayoutInflater) fragmentActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
@@ -164,7 +169,61 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                 holderCompleted = new MyCustomAdapterForTabViews.GroupViewHolderCompleted();
 
                 holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
+                holderCompleted.imageViewCross = convertView.findViewById(R.id.imageViewCross);
+
                 holderCompleted.textViewJobName.setText(mData.get(position).getAdvertName());
+                holderCompleted.imageViewCross.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        final DatabaseConnections databaseConnections = new DatabaseConnections();
+
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
+                        View mView = layoutInflater.inflate(R.layout.popup_creator, null);
+
+                        alertDialog.setTitle("Delete Job");
+                        alertDialog.setView(mView);
+                        final AlertDialog dialog = alertDialog.create();
+                        dialog.show();
+
+                        TextView customText = mView.findViewById(R.id.textViewCustomText);
+                        customText.setText("Are You Sure You Want To Delete " + mData.get(position).getAdvertName() + "?");
+
+                        Button yesButton = mView.findViewById(R.id.yesButton);
+                        Button noButton = mView.findViewById(R.id.noButton);
+
+                        yesButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                // My Adverts
+                                if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+                                {
+                                    databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).removeValue();
+                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).removeValue();
+                                }
+                                // My Jobs
+                                else
+                                {
+                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(databaseConnections.getCurrentUser()).removeValue();
+                                }
+                                notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        });
+
+                        noButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                });
 
                 convertView.setTag(holderCompleted);
             }
@@ -204,6 +263,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     public class GroupViewHolderCompleted
     {
         public TextView textViewJobName;
+        public ImageView imageViewCross;
     }
 
     public void filter(String charText)

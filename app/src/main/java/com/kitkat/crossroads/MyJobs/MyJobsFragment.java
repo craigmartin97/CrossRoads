@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -302,7 +303,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             if (jobsListArray.contains(ds3.getKey()) && getJobInformation(ds3).getJobStatus().equals("Pending"))
             {
                 Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(genericMethods.getJobInformation(ds3).getCollectionDate());
-                if(new Date().before(sdf))
+                if (new Date().before(sdf))
                 {
                     jobListKey.add(ds3.getKey());
                     jobList.add(getJobInformation(ds3));
@@ -311,7 +312,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display information in ListView
-        mAdapterBidOn = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host);
+        mAdapterBidOn = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater());
         mAdapterBidOn.addKeyArray(jobListKey);
         mAdapterBidOn.addArray(jobList);
 
@@ -351,7 +352,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display the Job in the ListView
-        mAdapterAccepted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host);
+        mAdapterAccepted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater());
         mAdapterAccepted.addKeyArray(jobListKeyActive);
         mAdapterAccepted.addArray(jobListActive);
 
@@ -378,18 +379,41 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private void completeList()
     {
         // Go through the Jobs table
-        for (DataSnapshot ds5 : getJobListChildren())
+        for (final DataSnapshot ds5 : getJobListChildren())
         {
-            // If the status if complete and the current users job
-            if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
+            databaseReference.child("Bids").child(ds5.getKey()).child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener()
             {
-                jobListKeyComplete.add(ds5.getKey());
-                jobListComplete.add(getJobInformation(ds5));
-            }
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
+                {
+                    // If the status if complete and the current users job
+                    if (getJobInformation(ds5).getJobStatus().equals("Complete") && dataSnapshot.getValue() != null)
+                    {
+                        jobListKeyComplete.add(ds5.getKey());
+                        jobListComplete.add(getJobInformation(ds5));
+                        Toast.makeText(getActivity(), "HERE HERE", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError)
+                {
+
+                }
+            });
+
+
+            // If the status if complete and the current users job
+//            if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
+//            {
+//                jobListKeyComplete.add(ds5.getKey());
+//                jobListComplete.add(getJobInformation(ds5));
+//            }
+
         }
 
         // Display in the ListView
-        mAdapterCompleted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host);
+        mAdapterCompleted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater());
         mAdapterCompleted.addKeyArray(jobListKeyComplete);
         mAdapterCompleted.addArray(jobListComplete);
 

@@ -273,7 +273,7 @@ public class JobDetailsFragment extends Fragment
             }
         });
 
-        UserBidInformation userBidInformation = new UserBidInformation(fullName, userID, userBid);
+        UserBidInformation userBidInformation = new UserBidInformation(fullName, userBid, userID);
 
         databaseReference.child("Bids").child(jobID).child(userID).setValue(userBidInformation);
 
