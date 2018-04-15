@@ -231,17 +231,17 @@ public class ActiveBidsFragment extends Fragment
                 holder.ratingBarSeeFeedback = convertView.findViewById(R.id.ratingBarSeeFeedback);
                 holder.acceptBidButton = convertView.findViewById(R.id.acceptBidButton);
 
-                holder.textViewName.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-                        GenericMethods genericMethods = new GenericMethods();
-                        viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", mData.get(position).getUserID()));
-                        genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
-                    }
-                });
+//                holder.textViewName.setOnClickListener(new View.OnClickListener()
+//                {
+//                    @Override
+//                    public void onClick(View v)
+//                    {
+//                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
+//                        GenericMethods genericMethods = new GenericMethods();
+//                        viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", mData.get(position).getUserID()));
+//                        genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
+//                    }
+//                });
                 convertView.setTag(holder);
             } else
             {

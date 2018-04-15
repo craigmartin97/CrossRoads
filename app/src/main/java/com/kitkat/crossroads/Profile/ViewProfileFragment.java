@@ -135,37 +135,7 @@ public class ViewProfileFragment extends Fragment
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
-                    String name = dataSnapshot.child("fullName").getValue(String.class);
-                    String number = dataSnapshot.child("phoneNumber").getValue(String.class);
-                    String address1 = dataSnapshot.child("addressOne").getValue(String.class);
-                    String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
-                    String usersTown = dataSnapshot.child("town").getValue(String.class);
-                    String postalCode = dataSnapshot.child("postCode").getValue(String.class);
-                    String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
-                    boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-                    boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
-
-                    fullName.setText(name);
-                    phoneNumber.setText(number);
-                    addressOne.setText(address1);
-                    addressTwo.setText(address2);
-                    town.setText(usersTown);
-                    postCode.setText(postalCode);
-
-                    if (advertiser == true && courier == false)
-                    {
-                        checkBoxAdvertiser.setChecked(true);
-                        checkBoxCourier.setChecked(false);
-                    } else if (advertiser == false && courier == true)
-                    {
-                        checkBoxAdvertiser.setChecked(false);
-                        checkBoxCourier.setChecked(true);
-                    } else if (advertiser == true && courier == true)
-                    {
-                        checkBoxAdvertiser.setChecked(true);
-                        checkBoxCourier.setChecked(true);
-                    }
-                    Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
+                    addUserInformation(dataSnapshot);
                 }
 
                 @Override
@@ -181,37 +151,7 @@ public class ViewProfileFragment extends Fragment
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
-                    String name = dataSnapshot.child("fullName").getValue(String.class);
-                    String number = dataSnapshot.child("phoneNumber").getValue(String.class);
-                    String address1 = dataSnapshot.child("addressOne").getValue(String.class);
-                    String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
-                    String usersTown = dataSnapshot.child("town").getValue(String.class);
-                    String postalCode = dataSnapshot.child("postCode").getValue(String.class);
-                    profileImage = dataSnapshot.child("profileImage").getValue(String.class);
-                    boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-                    boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
-
-                    fullName.setText(name);
-                    phoneNumber.setText(number);
-                    addressOne.setText(address1);
-                    addressTwo.setText(address2);
-                    town.setText(usersTown);
-                    postCode.setText(postalCode);
-
-                    if (advertiser == true && courier == false)
-                    {
-                        checkBoxAdvertiser.setChecked(true);
-                        checkBoxCourier.setChecked(false);
-                    } else if (advertiser == false && courier == true)
-                    {
-                        checkBoxAdvertiser.setChecked(false);
-                        checkBoxCourier.setChecked(true);
-                    } else if (advertiser == true && courier == true)
-                    {
-                        checkBoxAdvertiser.setChecked(true);
-                        checkBoxCourier.setChecked(true);
-                    }
-                    Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
+                    addUserInformation(dataSnapshot);
                 }
 
                 @Override
@@ -444,6 +384,41 @@ public class ViewProfileFragment extends Fragment
                 }
             });
         }
+    }
+
+    private void addUserInformation(DataSnapshot dataSnapshot)
+    {
+        String name = dataSnapshot.child("fullName").getValue(String.class);
+        String number = dataSnapshot.child("phoneNumber").getValue(String.class);
+        String address1 = dataSnapshot.child("addressOne").getValue(String.class);
+        String address2 = dataSnapshot.child("addressTwo").getValue(String.class);
+        String usersTown = dataSnapshot.child("town").getValue(String.class);
+        String postalCode = dataSnapshot.child("postCode").getValue(String.class);
+        String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+        boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+        boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+
+        fullName.setText(name);
+        phoneNumber.setText(number);
+        addressOne.setText(address1);
+        addressTwo.setText(address2);
+        town.setText(usersTown);
+        postCode.setText(postalCode);
+
+        if (advertiser == true && courier == false)
+        {
+            checkBoxAdvertiser.setChecked(true);
+            checkBoxCourier.setChecked(false);
+        } else if (advertiser == false && courier == true)
+        {
+            checkBoxAdvertiser.setChecked(false);
+            checkBoxCourier.setChecked(true);
+        } else if (advertiser == true && courier == true)
+        {
+            checkBoxAdvertiser.setChecked(true);
+            checkBoxCourier.setChecked(true);
+        }
+        Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
     }
 
     public void onButtonPressed(Uri uri)
