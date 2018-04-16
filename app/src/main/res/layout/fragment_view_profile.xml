@@ -115,8 +115,6 @@
                             android:id="@+id/textViewPhoneNumber"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/HeadingForPhoneNumber"
-                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
                             android:text="@string/viewphonenumber"
                             android:textAlignment="center" />
@@ -152,8 +150,6 @@
                             android:id="@+id/textViewAddressOne"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/HeadingForAddressOne"
-                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
                             android:text="@string/viewaddressone"
                             android:textAlignment="center" />
@@ -173,8 +169,6 @@
                             android:id="@+id/textViewAddressTwo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/HeadingForAddressTwo"
-                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
                             android:text="@string/viewaddresstwo"
                             android:textAlignment="center" />
@@ -193,8 +187,6 @@
                             android:id="@+id/textViewTown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/HeadingForTown"
-                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
                             android:text="@string/viewtown"
                             android:textAlignment="center" />
@@ -213,8 +205,6 @@
                             android:id="@+id/textViewPostCode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/HeadingForPostCode"
-                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
                             android:text="@string/viewpostcode"
                             android:textAlignment="center" />

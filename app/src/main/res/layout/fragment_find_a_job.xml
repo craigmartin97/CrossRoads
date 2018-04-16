@@ -165,7 +165,8 @@
                 android:paddingVertical="10dp"
                 android:textColorHint="#000000"
                 android:textSize="12sp"
-                android:visibility="visible"/>
+                android:visibility="visible" />
+
 
 
             <EditText
