@@ -22,7 +22,7 @@
             android:paddingTop="10dp"
             android:text="@string/find_a_job"
             android:textAlignment="center"
-            android:textSize="30dp"
+            android:textSize="30sp"
             tools:layout_editor_absoluteX="163dp"
             tools:layout_editor_absoluteY="16dp" />
 
