@@ -186,9 +186,10 @@ public class CompletedAdverts extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
+        String courierId = jobInformation.getCourierID();
         Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageCompleted);
 
-        databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
+        databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
