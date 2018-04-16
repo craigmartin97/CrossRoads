@@ -12,9 +12,8 @@
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity"/>
-
+            android:layout_height="wrap_content"
+            tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,20 +37,48 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white">
+                    android:orientation="vertical">
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/viewName"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:background="#FFFFFFFF"
+                            android:gravity="center_vertical"
+                            android:paddingVertical="10dp"
+                            android:text="@string/job"
+                            android:textAlignment="viewStart"
+                            android:textColor="#FF000000"
+                            android:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/textViewJobName1"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:background="#FFFFFFFF"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="10dp"
+                            android:paddingVertical="10dp"
+                            android:text="@string/text"
+                            android:textColor="#FF000000"
+
+                            android:visibility="visible" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/viewDesc"
                             android:layout_width="110dp"
                             android:layout_height="match_parent"
-                            android:layout_alignBottom="@id/textViewJobDescription1"
-                            android:layout_alignTop="@id/textViewJobDescription1"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
@@ -62,10 +89,8 @@
 
                         <TextView
                             android:id="@+id/textViewJobDescription1"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
                             android:layout_weight="3"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
@@ -80,15 +105,12 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/viewSize"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobSize1"
-                            android:layout_alignTop="@id/textViewJobSize1"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
@@ -101,8 +123,6 @@
                             android:id="@+id/textViewJobSize1"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
@@ -115,7 +135,6 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:orientation="horizontal">
 
                         <TextView
@@ -135,8 +154,6 @@
                             android:id="@+id/textViewJobType1"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
@@ -151,15 +168,12 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/viewColDate"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobColDate1"
-                            android:layout_alignTop="@id/textViewJobColDate1"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
@@ -173,8 +187,6 @@
                             android:id="@+id/textViewJobColDate1"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
@@ -188,15 +200,12 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/viewColTime1"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobColTime1"
-                            android:layout_alignTop="@id/textViewJobColTime1"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
@@ -210,8 +219,6 @@
                             android:id="@+id/textViewJobColTime1"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
@@ -224,15 +231,12 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/viewFrom"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobFrom1"
-                            android:layout_alignTop="@id/textViewJobFrom1"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
@@ -246,8 +250,6 @@
                             android:id="@+id/textViewJobFrom1"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textName"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
@@ -260,15 +262,12 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/viewTo"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/textViewJobTo1"
-                            android:layout_alignTop="@id/textViewJobTo1"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
@@ -281,8 +280,6 @@
                             android:id="@+id/textViewJobTo1"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toEndOf="@+id/textFrom"
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"

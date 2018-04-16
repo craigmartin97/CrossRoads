@@ -111,7 +111,6 @@
                 android:id="@+id/signature_pad_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/buttons_container"
                 android:layout_marginTop="20sp">
 
                 <FrameLayout
@@ -145,7 +144,6 @@
                 android:id="@+id/buttons_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:orientation="horizontal"
                 android:paddingTop="5dp">
 
