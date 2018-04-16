@@ -55,6 +55,35 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/textBid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFFFF"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="text"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:textColor="#FF000000"
+                    android:textSize="17sp"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:orientation="vertical">
+
+                <TextView
                     android:id="@+id/textDesc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

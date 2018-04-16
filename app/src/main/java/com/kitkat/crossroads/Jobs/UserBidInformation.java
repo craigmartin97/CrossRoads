@@ -12,17 +12,19 @@ public class UserBidInformation implements Serializable
 {
 
     public String fullName, userBid, userID, jobID;
+    public boolean active;
 
     public UserBidInformation()
     {
 
     }
 
-    public UserBidInformation(String fullName, String userBid, String userID)
+    public UserBidInformation(String fullName, String userBid, String userID, boolean active)
     {
         this.fullName = fullName;
         this.userBid = userBid;
         this.userID = userID;
+        this.active = active;
     }
 
     public String getFullName()
@@ -66,5 +68,15 @@ public class UserBidInformation implements Serializable
 
     public void setJobID(String jobID) {
         this.jobID = jobID;
+    }
+
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    public void setActive(boolean active)
+    {
+        this.active = active;
     }
 }

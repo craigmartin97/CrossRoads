@@ -55,12 +55,6 @@ import java.util.Locale;
 public class FindAJobFragment extends Fragment implements SearchView.OnQueryTextListener
 {
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private OnFragmentInteractionListener mListener;
 
     private DatabaseReference databaseReference;
@@ -84,12 +78,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         // Required empty public constructor
     }
 
-    public static FindAJobFragment newInstance(String param1, String param2)
+    public static FindAJobFragment newInstance()
     {
         FindAJobFragment fragment = new FindAJobFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,12 +90,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null)
-        {
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-            String mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -587,9 +573,12 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
                 holder = new FindAJobFragment.MyCustomAdapter.GroupViewHolder();
                 holder.textViewName = convertView.findViewById(R.id.textName);
+                holder.textViewBid = convertView.findViewById(R.id.textBid);
                 holder.textViewDesc = convertView.findViewById(R.id.textDesc);
                 holder.textViewFrom = convertView.findViewById(R.id.textAddressFrom);
                 holder.textViewTo = convertView.findViewById(R.id.textAddressTo);
+
+                holder.textViewBid.setVisibility(View.GONE);
 
                 convertView.setTag(holder);
             } else
@@ -640,6 +629,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             public TextView textViewDesc;
             public TextView textViewFrom;
             public TextView textViewTo;
+            public TextView textViewBid;
         }
 
         public void filter(String charText)

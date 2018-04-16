@@ -126,15 +126,18 @@ public class ActiveBidsFragment extends Fragment
     private void displayUsersBidsOnAd()
     {
         final String jobId = getBundleInformation();
+
         databaseReference.child("Bids").child(jobId).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
+                for (final DataSnapshot ds : dataSnapshot.getChildren())
                 {
+                    //String fullName = thisdataSnapshot.child("fullName").getValue(String.class);
                     final UserBidInformation bid = ds.getValue(UserBidInformation.class);
                     bid.setJobID(jobId);
+                    //bid.setFullName(fullName);
                     jobList.add(bid);
                 }
 
@@ -248,7 +251,7 @@ public class ActiveBidsFragment extends Fragment
                 holder = (MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
-            holder.textViewBid.setText(mData.get(position).getUserBid());
+            holder.textViewBid.setText("£" + mData.get(position).getUserBid());
 
             databaseReference.child("Ratings").child(mData.get(position).getUserID()).addValueEventListener(new ValueEventListener()
             {

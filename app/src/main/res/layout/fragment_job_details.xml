@@ -347,8 +347,8 @@
                         android:layout_below="@+id/textViewJobTo1"
                         android:layout_marginTop="24dp"
                         android:ems="10"
-                        android:hint="Bid"
-                        android:inputType="number"
+                        android:hint="£"
+                        android:inputType="numberDecimal"
                         app:layout_constraintTop_toBottomOf="@+id/textViewJobTo1"
                         tools:layout_editor_absoluteX="84dp" />
 
