@@ -186,12 +186,9 @@ public class ActiveAdverts extends Fragment
             @Override
             public void onClick(View view)
             {
-                // If pressed take user to profile of courier
-                GenericMethods genericMethods = new GenericMethods();
                 ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("CourierId", getBundleInformation().getCourierID());
-                viewProfileFragment.setArguments(bundle);
+                GenericMethods genericMethods = new GenericMethods();
+                viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", getBundleInformation().getCourierID()));
                 genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
             }
         });

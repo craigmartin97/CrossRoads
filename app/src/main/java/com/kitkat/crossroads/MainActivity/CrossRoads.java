@@ -214,7 +214,6 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();
 
-                TextView text = (TextView) mView.findViewById(R.id.logoutText);
                 Button logoutButton = (Button) mView.findViewById(R.id.logoutButton);
                 Button cancelButton = (Button) mView.findViewById(R.id.cancelButton);
 
@@ -299,6 +298,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                         }
                     }
                     displayContent();
+                    locationPermissionGranted = true;
                 }
         }
     }

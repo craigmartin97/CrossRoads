@@ -79,7 +79,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     private EditText filterName, filterColDate, filterColTime, filterColFrom, filterDelTo;
     private CheckBox filterSingle, filterMultiple;
 
-    public FindAJobFragment() {
+    public FindAJobFragment()
+    {
         // Required empty public constructor
     }
 
@@ -94,10 +95,12 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
+        if (getArguments() != null)
+        {
             String mParam1 = getArguments().getString(ARG_PARAM1);
             String mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -105,7 +108,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         final View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
 
         final LinearLayout filterLayout = view.findViewById(R.id.filterLayout);
@@ -140,27 +144,34 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         };
 
         final List<String> sortByList = new ArrayList<>(Arrays.asList(sortBy));
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByList) {
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByList)
+        {
             @Override
-            public boolean isEnabled(int position) {
-                if (position == 0) {
+            public boolean isEnabled(int position)
+            {
+                if (position == 0)
+                {
                     // Disable the first item from Spinner
                     // First item will be use for hint
                     return false;
-                } else {
+                } else
+                {
                     return true;
                 }
             }
 
             @Override
             public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
+                                        ViewGroup parent)
+            {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if (position == 0) {
+                if (position == 0)
+                {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                } else {
+                } else
+                {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
@@ -170,13 +181,16 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortBySpinner.setAdapter(adapter1);
 
-        sortBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sortBySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
                 // If user change the default selection
                 // First item is disable and it is used for hint
-                if (position > 0) {
+                if (position > 0)
+                {
                     // Notify the selected item text
                     Toast.makeText
                             (getActivity(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
@@ -185,21 +199,26 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent)
+            {
 
             }
         });
 
         filterButton = view.findViewById(R.id.filterButton);
 
-        filterButton.setOnClickListener(new View.OnClickListener() {
+        filterButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 
-                if (filterLayout.getTag().toString().equals("Closed")) {
+                if (filterLayout.getTag().toString().equals("Closed"))
+                {
                     filterLayout.setVisibility(View.VISIBLE);
                     filterLayout.setTag("Open");
-                } else {
+                } else
+                {
                     filterLayout.setVisibility(View.GONE);
                     filterLayout.setTag("Closed");
 
@@ -210,40 +229,50 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         filterSize = view.findViewById(R.id.filterSpinnerSize);
         final List<String> sizeList = new ArrayList<>(Arrays.asList(jobSizes));
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_custom, sizeList) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_custom, sizeList)
+        {
             @Override
-            public boolean isEnabled(int position) {
-                if (position == 0) {
+            public boolean isEnabled(int position)
+            {
+                if (position == 0)
+                {
                     // Disable the first item from Spinner
                     // First item will be use for hint
                     return false;
-                } else {
+                } else
+                {
                     return true;
                 }
             }
 
             @Override
             public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
+                                        ViewGroup parent)
+            {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if (position == 0) {
+                if (position == 0)
+                {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                } else {
+                } else
+                {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
             }
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filterSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        filterSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
                 // If user change the default selection
                 // First item is disable and it is used for hint
-                if (position > 0) {
+                if (position > 0)
+                {
                     // Notify the selected item text
                     Toast.makeText
                             (getActivity(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
@@ -252,26 +281,33 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent)
+            {
 
             }
         });
         filterSize.setAdapter(adapter);
 
         filterSingle = view.findViewById(R.id.singleItemCheck);
-        filterSingle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        filterSingle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (filterSingle.isChecked()) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (filterSingle.isChecked())
+                {
                     filterMultiple.setChecked(false);
                 }
             }
         });
         filterMultiple = view.findViewById(R.id.multipleItemsCheck);
-        filterMultiple.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        filterMultiple.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (filterMultiple.isChecked()) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (filterMultiple.isChecked())
+                {
                     filterSingle.setChecked(false);
                 }
             }
@@ -286,9 +322,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
                 jobList.clear();
 
                 jobReference = dataSnapshot.child("Jobs");
@@ -297,7 +335,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
                 mAdapter = new MyCustomAdapter();
 
-                for (DataSnapshot ds : jobListSnapShot) {
+                for (DataSnapshot ds : jobListSnapShot)
+                {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());
 
@@ -312,9 +351,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
 
-                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
                         JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("Job", mAdapter.mData.get(position));
@@ -326,7 +367,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError)
+            {
 
             }
         });
@@ -337,24 +379,27 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         jobSearch.setOnQueryTextListener(this);
 
-        filterApplyButton.setOnClickListener(new View.OnClickListener() {
+        filterApplyButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 
                 String filterType = null;
-                if (filterSingle.isChecked()) {
+                if (filterSingle.isChecked())
+                {
                     filterType = "Single Item";
                 }
-                if (filterMultiple.isChecked()) {
+                if (filterMultiple.isChecked())
+                {
                     filterType = "Multiple Items";
                 }
 
 
                 JobInformation jobInformation = new JobInformation(filterName.getText().toString(), null, filterSize.getSelectedItem().toString(),
 
-                                                                   filterType, null, null, filterColDate.getText().toString(), filterColTime.getText().toString(),
-                                                             null, null, filterColFrom.getText().toString(), null, null, null, filterDelTo.getText().toString(), null, null,null);
-
+                        filterType, null, null, filterColDate.getText().toString(), filterColTime.getText().toString(),
+                        null, null, filterColFrom.getText().toString(), null, null, null, filterDelTo.getText().toString(), null, null, null);
 
 
                 mAdapter.filterArray(jobInformation);
@@ -364,9 +409,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
         });
 
-        filterClearButton.setOnClickListener(new View.OnClickListener() {
+        filterClearButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 
                 filterName.setText("");
                 filterSize.setSelection(0);
@@ -393,35 +440,43 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
+    public void onButtonPressed(Uri uri)
+    {
+        if (mListener != null)
+        {
             mListener.onFragmentInteraction(uri);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnFragmentInteractionListener)
+        {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
+        } else
+        {
 
         }
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         mListener = null;
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String query)
+    {
         return false;
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(String newText)
+    {
 
         String text = newText;
         mAdapter.filter(text);
@@ -440,27 +495,32 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener
+    {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
 
-    public class MyCustomAdapter extends BaseAdapter {
+    public class MyCustomAdapter extends BaseAdapter
+    {
 
         private ArrayList<JobInformation> mData = new ArrayList();
         private ArrayList<JobInformation> mDataOrig = new ArrayList();
 
         private LayoutInflater mInflater;
 
-        public MyCustomAdapter() {
+        public MyCustomAdapter()
+        {
 
-            if (isAdded()) {
+            if (isAdded())
+            {
                 mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
         }
 
-        public void addItem(final JobInformation item) {
+        public void addItem(final JobInformation item)
+        {
             mData.clear();
             mDataOrig.clear();
 
@@ -469,7 +529,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         }
 
 
-        public void addArray(final ArrayList<JobInformation> j) {
+        public void addArray(final ArrayList<JobInformation> j)
+        {
             mData.clear();
             mDataOrig.clear();
 
@@ -479,38 +540,45 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
 
         @Override
-        public void registerDataSetObserver(DataSetObserver observer) {
+        public void registerDataSetObserver(DataSetObserver observer)
+        {
 
         }
 
         @Override
-        public void unregisterDataSetObserver(DataSetObserver observer) {
+        public void unregisterDataSetObserver(DataSetObserver observer)
+        {
 
         }
 
         @Override
-        public int getCount() {
+        public int getCount()
+        {
             return mData.size();
         }
 
         @Override
-        public Object getItem(int position) {
+        public Object getItem(int position)
+        {
             return mData.get(position);
         }
 
         @Override
-        public long getItemId(int position) {
+        public long getItemId(int position)
+        {
             return 0;
         }
 
         @Override
-        public boolean hasStableIds() {
+        public boolean hasStableIds()
+        {
             return false;
         }
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent)
+        {
             System.out.println("getView " + position + " " + convertView);
             FindAJobFragment.MyCustomAdapter.GroupViewHolder holder;
             if (convertView == null)
@@ -518,13 +586,14 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 convertView = mInflater.inflate(R.layout.job_info_accepted, null);
 
                 holder = new FindAJobFragment.MyCustomAdapter.GroupViewHolder();
-                holder.textViewName =  convertView.findViewById(R.id.textName);
+                holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewDesc = convertView.findViewById(R.id.textDesc);
                 holder.textViewFrom = convertView.findViewById(R.id.textAddressFrom);
                 holder.textViewTo = convertView.findViewById(R.id.textAddressTo);
 
                 convertView.setTag(holder);
-            } else {
+            } else
+            {
                 holder = (FindAJobFragment.MyCustomAdapter.GroupViewHolder) convertView.getTag();
             }
 
@@ -539,7 +608,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(mData.get(position).getCollectionDate());
                 Date dateFormat2 = new SimpleDateFormat("hh:mm").parse(mData.get(position).getCollectionTime());
 
-                if(new Date().after(sdf) && currentTime.after(dateFormat2))
+                if (new Date().after(sdf) && currentTime.after(dateFormat2))
                 {
                     mData.remove(position);
                     notifyDataSetChanged();
@@ -554,37 +623,46 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         }
 
         @Override
-        public boolean areAllItemsEnabled() {
+        public boolean areAllItemsEnabled()
+        {
             return false;
         }
 
         @Override
-        public boolean isEmpty() {
+        public boolean isEmpty()
+        {
             return false;
         }
 
-        public class GroupViewHolder {
+        public class GroupViewHolder
+        {
             public TextView textViewName;
             public TextView textViewDesc;
             public TextView textViewFrom;
             public TextView textViewTo;
         }
 
-        public void filter(String charText) {
+        public void filter(String charText)
+        {
 
             ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
             ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
             charText = charText.toLowerCase(Locale.getDefault());
 
-            if (charText.length() == 0) {
+            if (charText.length() == 0)
+            {
                 mData = mDataOrig;
-            } else {
+            } else
+            {
 
-                for (JobInformation j : mDataOrig) {
-                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText)) {
+                for (JobInformation j : mDataOrig)
+                {
+                    if (j.getWholeString().toLowerCase(Locale.getDefault()).contains(charText))
+                    {
                         jobs.add(j);
                         jA.add(j);
-                    } else {
+                    } else
+                    {
                         jA.add(j);
                     }
                 }
@@ -596,58 +674,72 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             notifyDataSetChanged();
         }
 
-        public void filterArray(JobInformation filterInfo) {
+        public void filterArray(JobInformation filterInfo)
+        {
 
             ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
             ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
 
 
-            for (JobInformation j : mDataOrig) {
+            for (JobInformation j : mDataOrig)
+            {
 
                 if (filterInfo.getAdvertName().equals("") && filterInfo.getJobSize().equals("Job Sizes") && filterInfo.getJobType() == null && filterInfo.getCollectionDate().equals("") &&
-                        filterInfo.getCollectionTime().equals("") && filterInfo.getColTown().equals("") && filterInfo.getDelTown().equals("")) {
+                        filterInfo.getCollectionTime().equals("") && filterInfo.getColTown().equals("") && filterInfo.getDelTown().equals(""))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else if (j.getAdvertName().toLowerCase(Locale.getDefault()).contains(filterInfo.getAdvertName().toLowerCase()) && (!filterInfo.getAdvertName().equals(""))) {
+                } else if (j.getAdvertName().toLowerCase(Locale.getDefault()).contains(filterInfo.getAdvertName().toLowerCase()) && (!filterInfo.getAdvertName().equals("")))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else if (j.getJobSize().toLowerCase(Locale.getDefault()).contains(filterInfo.getJobSize().toLowerCase()) && (!filterInfo.getJobSize().equals("Job Sizes"))) {
+                } else if (j.getJobSize().toLowerCase(Locale.getDefault()).contains(filterInfo.getJobSize().toLowerCase()) && (!filterInfo.getJobSize().equals("Job Sizes")))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else if (filterInfo.getJobType() != null) {
-                    if (j.getJobType().toLowerCase(Locale.getDefault()).contains(filterInfo.getJobType().toLowerCase())) {
+                } else if (filterInfo.getJobType() != null)
+                {
+                    if (j.getJobType().toLowerCase(Locale.getDefault()).contains(filterInfo.getJobType().toLowerCase()))
+                    {
                         jobs.add(j);
                         jA.add(j);
                         break;
                     }
-                } else if (j.getCollectionDate().toLowerCase(Locale.getDefault()).contains(filterInfo.getCollectionDate().toLowerCase()) && (!filterInfo.getCollectionDate().equals(""))) {
+                } else if (j.getCollectionDate().toLowerCase(Locale.getDefault()).contains(filterInfo.getCollectionDate().toLowerCase()) && (!filterInfo.getCollectionDate().equals("")))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else if (j.getCollectionTime().toLowerCase(Locale.getDefault()).contains(filterInfo.getCollectionTime().toLowerCase()) && (!filterInfo.getCollectionTime().equals(""))) {
+                } else if (j.getCollectionTime().toLowerCase(Locale.getDefault()).contains(filterInfo.getCollectionTime().toLowerCase()) && (!filterInfo.getCollectionTime().equals("")))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else if (j.getColTown().toLowerCase(Locale.getDefault()).contains(filterInfo.getColTown().toLowerCase()) && (!filterInfo.getColTown().equals(""))) {
+                } else if (j.getColTown().toLowerCase(Locale.getDefault()).contains(filterInfo.getColTown().toLowerCase()) && (!filterInfo.getColTown().equals("")))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else if (j.getColPostcode().toLowerCase(Locale.getDefault()).contains(filterInfo.getColTown().toLowerCase()) && (!filterInfo.getColTown().equals(""))) {
+                } else if (j.getColPostcode().toLowerCase(Locale.getDefault()).contains(filterInfo.getColTown().toLowerCase()) && (!filterInfo.getColTown().equals("")))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else if (j.getDelTown().toLowerCase(Locale.getDefault()).contains(filterInfo.getDelTown().toLowerCase()) && (!filterInfo.getDelTown().equals(""))) {
+                } else if (j.getDelTown().toLowerCase(Locale.getDefault()).contains(filterInfo.getDelTown().toLowerCase()) && (!filterInfo.getDelTown().equals("")))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else if (j.getDelPostcode().toLowerCase(Locale.getDefault()).contains(filterInfo.getDelTown().toLowerCase()) && (!filterInfo.getDelTown().equals(""))) {
+                } else if (j.getDelPostcode().toLowerCase(Locale.getDefault()).contains(filterInfo.getDelTown().toLowerCase()) && (!filterInfo.getDelTown().equals("")))
+                {
                     jobs.add(j);
                     jA.add(j);
                     break;
-                } else {
+                } else
+                {
                     jA.add(j);
                 }
 

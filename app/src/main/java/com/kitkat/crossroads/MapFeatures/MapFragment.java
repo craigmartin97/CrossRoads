@@ -327,7 +327,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.OnConnectio
 //                // Create a new Alert dialog for the user to interact with
 //                AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
 //                // Inflate layout, and get widgets
-//                View viewPopup = getLayoutInflater().inflate(R.layout.popup_confirm_location, null);
+//                View viewPopup = getLayoutInflater().inflate(R.layout.popup_creator, null);
 //                chooseLocationText = viewPopup.findViewById(R.id.selectLocationText);
 //                yesButton = viewPopup.findViewById(R.id.yesButton);
 //                noButton = viewPopup.findViewById(R.id.noButton);
