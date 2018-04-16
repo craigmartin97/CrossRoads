@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+<<<<<<< HEAD
+=======
+    <mapping directory="/home/scm-studs/q5063319/AndroidStudioProjects/CrossRoads" vcs="Git" />
+>>>>>>> pre rebase
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
 </project>
