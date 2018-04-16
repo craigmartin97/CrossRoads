@@ -90,7 +90,7 @@
             android:ellipsize="start"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="Address Line 1"
+            android:hint="@string/address_line_1"
             android:inputType="textPostalAddress"
             android:textColor="@color/colorPrimaryDark"
             android:textColorHint="#808080" />
@@ -106,7 +106,7 @@
             android:ellipsize="start"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="Address Line 2"
+            android:hint="@string/address_line_2"
             android:inputType="textPostalAddress"
             android:textColor="@color/colorPrimaryDark"
             android:textColorHint="#808080" />
@@ -122,7 +122,7 @@
             android:ellipsize="start"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="Town"
+            android:hint="@string/town"
             android:inputType="textPostalAddress"
             android:textColor="@color/colorPrimaryDark"
             android:textColorHint="#808080" />
@@ -139,7 +139,7 @@
             android:ellipsize="start"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="Postcode"
+            android:hint="@string/postcode"
             android:inputType="textPostalAddress"
             android:textColor="@color/colorPrimaryDark"
             android:textColorHint="#808080" />
@@ -152,7 +152,7 @@
             android:layout_marginEnd="18dp"
             android:layout_toStartOf="@+id/checkBoxAdvertiser"
             android:paddingLeft="30dp"
-            android:text="What Are You Primarily Going To Be Using The App For?"
+            android:text="@string/app_priority_use"
             android:textColor="#808080"
             android:textSize="16dp" />
 
@@ -168,7 +168,7 @@
             android:buttonTint="#2bbc9b"
             android:ems="10"
             android:padding="10dp"
-            android:text="Advertiser"
+            android:text="@string/advertiser"
 
             android:textColor="#2bbc9b"
             android:visibility="visible" />
@@ -185,7 +185,7 @@
             android:layout_marginEnd="15dp"
             android:buttonTint="#2bbc9b"
             android:padding="10dp"
-            android:text="Courier"
+            android:text="@string/courier"
             android:textColor="#2bbc9b"
             android:visibility="visible" />
 
@@ -197,7 +197,7 @@
             android:layout_centerHorizontal="true"
             android:background="#2bbc9b"
             android:padding="18dp"
-            android:text="Save Profile"
+            android:text="@string/save_profile"
             android:textColor="#FFFFFF" />
 
     </RelativeLayout>

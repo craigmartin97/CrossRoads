@@ -45,7 +45,7 @@
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
                         android:layout_toEndOf="@+id/jobImageActive"
-                        android:text="JobName Here"
+                        android:text="@string/jobname_here"
                         android:textSize="18sp" />
 
                     <TextView
@@ -55,7 +55,7 @@
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
                         android:layout_marginTop="16dp"
-                        android:text="JobDescription Here"
+                        android:text="@string/jobdescription_here"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -113,7 +113,7 @@
                 android:id="@+id/buttonViewCourierProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View Courier Profile" />
+                android:text="@string/view_courier_profile" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -132,7 +132,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:textColor="#000000"
-                    android:text="Agreed Fee:     £Users Bid"
+                    android:text="@string/agreed_fee_users_bid"
                     android:textSize="18sp" />
 
             </RelativeLayout>

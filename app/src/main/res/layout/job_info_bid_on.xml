@@ -32,11 +32,11 @@
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
-                    android:textSize="19sp"
-                    android:textStyle="bold"
-                    android:text="text"
+                    android:text="@string/text"
                     android:textAlignment="center"
                     android:textColor="#FF000000"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -62,7 +62,7 @@
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
-                    android:text="text"
+                    android:text="@string/text"
                     android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
@@ -88,7 +88,7 @@
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
-                    android:text="text"
+                    android:text="@string/text"
                     android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
@@ -114,7 +114,7 @@
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
-                    android:text="text"
+                    android:text="@string/text"
                     android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:visibility="visible" />

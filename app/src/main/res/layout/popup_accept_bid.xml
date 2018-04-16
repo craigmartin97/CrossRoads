@@ -19,7 +19,7 @@
         android:fontFamily="@font/bebasneueregular"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:text="Are You Sure You Want To Accept This Bid?"
+        android:text="@string/accept_bid_confirm"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="20dp" />
@@ -39,13 +39,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Yes"></Button>
+            android:text="@string/yes"></Button>
 
         <Button
             android:id="@+id/noButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="No"></Button>
+            android:text="@string/no"></Button>
     </LinearLayout>
 </LinearLayout>
