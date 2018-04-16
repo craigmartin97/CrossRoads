@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/magnify"
                 android:background="@null"
-                android:hint="Enter An Address"
+                android:hint="@string/enter_an_address"
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:imeOptions="actionSearch"/>

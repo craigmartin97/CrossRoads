@@ -41,6 +41,76 @@
         <item>Multiple Items</item>
     </string-array>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="address_line_1">Address Line 1</string>
+    <string name="address_line_2">Address Line 2</string>
+    <string name="town">Town</string>
+    <string name="postcode">Postcode</string>
+    <string name="app_priority_use">What Are You Primarily Going To Be Using The App For?</string>
+    <string name="advertiser">Advertiser</string>
+    <string name="courier">Courier</string>
+    <string name="upload_profile_image">Upload Profile Image</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="view_courier_profile">View Courier Profile</string>
+    <string name="agreed_fee_users_bid">Agreed Fee: £Users Bid</string>
+    <string name="active_bids">Active bids</string>
+    <string name="jobname_here">JobName Here</string>
+    <string name="jobdescription_here">JobDescription Here</string>
+    <string name="signature">Signature</string>
+    <string name="clear">Clear</string>
+    <string name="job_complete">Job Complete</string>
+    <string name="bid_details">Bid Details</string>
+    <string name="job">Job:</string>
+    <string name="text">text</string>
+    <string name="description">Description:</string>
+    <string name="job_size">Job Size:</string>
+    <string name="job_type">Job Type:</string>
+    <string name="textview">TextView</string>
+    <string name="bid">Bid</string>
+    <string name="edit_bid">Edit Bid</string>
+    <string name="current_bid">Current Bid:</string>
+    <string name="collection_date">Collection Date:</string>
+    <string name="collection_time">Collection Time:</string>
+    <string name="collection_from">Collection From:</string>
+    <string name="delivery_to">Delivery To:</string>
+    <string name="find_a_job">Find A Job</string>
+    <string name="single_item">Single Item</string>
+    <string name="multiple_items">Multiple Items</string>
+    <string name="apply_filter">Apply Filter</string>
+    <string name="filter">Filter</string>
+    <string name="view_your_bids_now">View Your Bids Now</string>
+    <string name="job_details">Job Details</string>
+    <string name="make_bid">Make Bid</string>
+    <string name="enter_an_address">Enter An Address</string>
+    <string name="my_pending_adverts">My Pending Adverts</string>
+    <string name="my_active_adverts">My Active Adverts</string>
+    <string name="my_completed_adverts">My Completed Adverts</string>
+    <string name="my_accepted_jobs">My Accepted Jobs</string>
+    <string name="your_bid">Your Bid</string>
+    <string name="submit_new_bid">Submit New Bid</string>
+    <string name="add_job">Add Job</string>
+    <string name="delivery_details">Delivery Details</string>
+    <string name="advert_name">Advert Name</string>
+    <string name="advert_description">Advert Description</string>
+    <string name="map">MAP</string>
+    <string name="delivery_address">Delivery Address</string>
+    <string name="upload_multiple_images">Upload Multiple Images</string>
+    <string name="post_advert">Post Advert</string>
+    <string name="save_profile_image">Save Profile Image</string>
+    <string name="accept_bid">Accept Bid</string>
+    <string name="filename_type">Filename.type</string>
+    <string name="android_studio">Android Studio</string>
+    <string name="android_studio_android_com">android.studio@android.com</string>
+    <string name="accept_bid_confirm">Are You Sure You Want To Accept This Bid?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="bid_accepted">Bid Accepted.</string>
+    <string name="ok">OK</string>
+    <string name="confirm_location_popup">Is this the location you wish to use?</string>
+    <string name="take_picture_with_camera">Take Picture With Camera</string>
+    <string name="use_image_from_gallery">Use image from gallery</string>
+    <string name="confirm_logout">Are You Sure You Want To LogOut?</string>
+    <string name="logout">Log Out</string>
+    <string name="cancel">Cancel</string>
 </resources>
 
 

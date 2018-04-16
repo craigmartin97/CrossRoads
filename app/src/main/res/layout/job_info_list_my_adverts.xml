@@ -30,7 +30,7 @@
                     android:layout_height="50dp"
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
-                    android:text=" Job:"
+                    android:text="@string/job"
                     android:textAlignment="viewStart"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
@@ -41,7 +41,7 @@
                     android:layout_height="50dp"
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
-                    android:text=" Collection From:"
+                    android:text="@string/collection_from"
                     android:textAlignment="viewStart"
 
                     android:textColor="#FF000000"
@@ -53,7 +53,7 @@
                     android:layout_height="50dp"
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
-                    android:text=" Delivery To:"
+                    android:text="@string/delivery_to"
                     android:textAlignment="viewStart"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
@@ -73,7 +73,7 @@
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
-                    android:text="text"
+                    android:text="@string/text"
                     android:textAlignment="center"
                     android:textColor="#FF000000"
 
@@ -88,7 +88,7 @@
                     android:layout_toEndOf="@+id/textName"
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
-                    android:text="TextView"
+                    android:text="@string/textview"
                     android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
@@ -102,7 +102,7 @@
                     android:background="#FFFFFFFF"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
-                    android:text="TextView"
+                    android:text="@string/textview"
                     android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:visibility="visible" />

@@ -29,7 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/bebasneueregular"
-                    android:text="Job Details"
+                    android:text="@string/job_details"
                     android:textAlignment="center"
                     android:textSize="30dp"
                     tools:layout_editor_absoluteX="163dp"
@@ -56,8 +56,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text=" Job:"
-                            android:textAlignment="viewStart"
+                            android:text="@string/job"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -69,7 +68,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
                             android:paddingVertical="10dp"
-                            android:text="text"
+                            android:text="@string/text"
                             android:textColor="#FF000000"
 
                             android:visibility="visible" />
@@ -90,8 +89,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text=" Description:"
-                            android:textAlignment="viewStart"
+                            android:text="@string/description"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -106,7 +104,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
                             android:paddingVertical="10dp"
-                            android:text="TextView"
+                            android:text="@string/textview"
                             android:textColor="#FF000000"
                             android:visibility="visible"
 
@@ -129,8 +127,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text=" Job Size:"
-                            android:textAlignment="viewStart"
+                            android:text="@string/job_size"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -144,7 +141,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
                             android:paddingVertical="10dp"
-                            android:text="TextView"
+                            android:text="@string/textview"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
                     </LinearLayout>
@@ -162,8 +159,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text=" Job Type:"
-                            android:textAlignment="viewStart"
+                            android:text="@string/job_type"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -178,7 +174,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
                             android:paddingVertical="10dp"
-                            android:text="TextView"
+                            android:text="@string/textview"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -200,9 +196,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text=" Collection Date:"
-
-                            android:textAlignment="viewStart"
+                            android:text="@string/collection_date"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -216,7 +210,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
                             android:paddingVertical="10dp"
-                            android:text="TextView"
+                            android:text="@string/textview"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
                     </LinearLayout>
@@ -237,9 +231,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text=" Collection Time:"
-
-                            android:textAlignment="viewStart"
+                            android:text="@string/collection_time"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -253,7 +245,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
                             android:paddingVertical="10dp"
-                            android:text="TextView"
+                            android:text="@string/textview"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
                     </LinearLayout>
@@ -273,9 +265,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text=" Collection From:"
-                            android:textAlignment="viewStart"
-
+                            android:text="@string/collection_from"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -289,7 +279,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
                             android:paddingVertical="10dp"
-                            android:text="TextView"
+                            android:text="@string/textview"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
                     </LinearLayout>
@@ -309,8 +299,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text=" Delivery To:"
-                            android:textAlignment="viewStart"
+                            android:text="@string/delivery_to"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -324,7 +313,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="10dp"
                             android:paddingVertical="10dp"
-                            android:text="TextView"
+                            android:text="@string/textview"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -347,10 +336,10 @@
                         android:layout_below="@+id/textViewJobTo1"
                         android:layout_marginTop="24dp"
                         android:ems="10"
+
                         android:hint="£"
                         android:inputType="numberDecimal"
-                        app:layout_constraintTop_toBottomOf="@+id/textViewJobTo1"
-                        tools:layout_editor_absoluteX="84dp" />
+                        />
 
                     <Button
                         android:id="@+id/buttonBid"
@@ -358,7 +347,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/editTextBid"
                         android:layout_marginTop="24dp"
-                        android:text="Make Bid"
+                        android:text="@string/make_bid"
                         app:layout_constraintTop_toBottomOf="@+id/editTextBid"
                         tools:layout_editor_absoluteX="148dp" />
                 </LinearLayout>

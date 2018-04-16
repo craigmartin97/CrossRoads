@@ -15,8 +15,7 @@
         android:focusableInTouchMode="true"
         android:paddingBottom="40dp">
 
-        <requestFocus />>
-
+        <requestFocus />
 
         <ImageView
             android:id="@+id/imageViewCBlack"

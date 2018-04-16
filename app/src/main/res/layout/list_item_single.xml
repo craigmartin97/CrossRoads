@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="Filename.type"/>
+            android:text="@string/filename_type"/>
 
         <ImageView
             android:id="@+id/imageViewLoading"
