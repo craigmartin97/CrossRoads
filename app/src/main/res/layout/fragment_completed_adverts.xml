@@ -59,15 +59,6 @@
                         android:text="@string/jobdescription_here"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/textViewAcceptedBid"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignStart="@+id/textViewJobName1"
-                        android:layout_below="@+id/textViewJobDescription1"
-                        android:layout_marginTop="16dp"
-                        android:text="Users Bid"
-                        android:textSize="14sp" />
 
                 </RelativeLayout>
 

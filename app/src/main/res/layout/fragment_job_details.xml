@@ -13,7 +13,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity">
+            tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -52,7 +52,6 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:text="@string/job"
-                            android:textAlignment="viewStart"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -83,7 +82,6 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:text="@string/description"
-                            android:textAlignment="viewStart"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -115,7 +113,6 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:text="@string/job_size"
-                            android:textAlignment="viewStart"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -145,7 +142,6 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:text="@string/job_type"
-                            android:textAlignment="viewStart"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -178,8 +174,6 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:text="@string/collection_date"
-
-                            android:textAlignment="viewStart"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -210,8 +204,6 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:text="@string/collection_time"
-
-                            android:textAlignment="viewStart"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -241,8 +233,6 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:text="@string/collection_from"
-                            android:textAlignment="viewStart"
-
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -272,7 +262,6 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
                             android:text="@string/delivery_to"
-                            android:textAlignment="viewStart"
                             android:textColor="#FF000000"
                             android:visibility="visible" />
 
@@ -291,12 +280,6 @@
                     </LinearLayout>
 
                 </RelativeLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
@@ -340,6 +323,5 @@
                             app:layout_constraintVertical_bias="0.444" />
 
                     </android.support.constraint.ConstraintLayout>
-                </LinearLayout>
     </ScrollView>
 </FrameLayout>
