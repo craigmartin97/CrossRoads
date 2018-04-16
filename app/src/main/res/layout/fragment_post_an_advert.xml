@@ -105,7 +105,7 @@
                 android:clickable="true"
                 android:ellipsize="start"
                 android:ems="10"
-                android:focusable="false"
+                android:focusable="true"
                 android:gravity="center_horizontal"
                 android:hint="@string/collection_date"
                 android:inputType="date"
@@ -121,7 +121,7 @@
                 android:clickable="true"
                 android:ellipsize="start"
                 android:ems="10"
-                android:focusable="false"
+                android:focusable="true"
                 android:gravity="center_horizontal"
                 android:hint="@string/collection_time"
                 android:inputType="time" />
