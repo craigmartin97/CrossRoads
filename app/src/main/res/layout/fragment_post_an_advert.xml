@@ -428,15 +428,6 @@
                 android:hint="@string/postcode"
                 android:inputType="textPostalAddress" />
 
-            <ImageView
-                android:id="@+id/jobImage1"
-                android:layout_width="188dp"
-                android:layout_height="184dp"
-                android:layout_below="@+id/editTextJobDelPostcode"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="0dp"
-                android:visibility="invisible" />
-
             <Button
                 android:id="@+id/buttonUploadImages"
                 android:layout_width="match_parent"
@@ -447,6 +438,16 @@
                 android:background="#2bbc9b"
                 android:text="@string/upload_multiple_images"
                 android:textColor="#FFFFFF" />
+
+            <ImageView
+                android:id="@+id/jobImage1"
+                android:layout_width="100dp"
+                android:layout_height="115dp"
+                android:layout_below="@+id/buttonUploadImages"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:visibility="invisible"
+                android:contentDescription="@null"/>
 
             <Button
                 android:id="@+id/buttonAddJob"

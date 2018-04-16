@@ -19,6 +19,10 @@
         android:textColor="#000000"
         android:textSize="20sp" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:id="@+id/LinearLayout02"
         android:layout_width="fill_parent"
