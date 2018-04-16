@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/bebasneueregular"
-            android:text="Active bids"
+            android:text="@string/active_bids"
             android:textAlignment="center"
             android:textSize="30dp"
             tools:layout_editor_absoluteX="163dp"

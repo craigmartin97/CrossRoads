@@ -46,7 +46,7 @@
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
                         android:layout_toEndOf="@+id/jobImageActive"
-                        android:text="JobName Here"
+                        android:text="@string/jobname_here"
                         android:textSize="18sp" />
 
                     <TextView
@@ -56,7 +56,7 @@
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
                         android:layout_marginTop="16dp"
-                        android:text="JobDescription Here"
+                        android:text="@string/jobdescription_here"
                         android:textSize="14sp" />
 
                     <TextView
@@ -117,7 +117,6 @@
                     android:layout_height="4dp"
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/customborderrounded" />
-
             </LinearLayout>
 
             <RelativeLayout
@@ -130,11 +129,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
+
                     android:layout_marginBottom="10dp"
                     android:background="#2bbc9b"
                     android:text="View Couriers Information"
                     android:textColor="#FFFFFF" />
-
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

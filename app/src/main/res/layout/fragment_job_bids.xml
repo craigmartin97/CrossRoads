@@ -45,7 +45,7 @@
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
                         android:layout_toEndOf="@+id/jobImagePending"
-                        android:text="JobName Here"
+                        android:text="@string/jobname_here"
                         android:textSize="18sp" />
 
                     <TextView
@@ -55,7 +55,7 @@
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
                         android:layout_marginTop="16dp"
-                        android:text="JobDescription Here"
+                        android:text="@string/jobdescription_here"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -123,7 +123,7 @@
                     android:layout_below="@+id/linearLayoutPassword"
                     android:layout_centerHorizontal="true"
                     android:background="#2bbc9b"
-                    android:text="View Your Bids Now"
+                    android:text="@string/view_your_bids_now"
                     android:textColor="#FFFFFF" />
 
             </LinearLayout>

@@ -16,12 +16,12 @@
         android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Take Picture With Camera"/>
+        android:text="@string/take_picture_with_camera"/>
 
     <Button
         android:id="@+id/gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Use image from gallery"/>
+        android:text="@string/use_image_from_gallery"/>
 
 </LinearLayout>

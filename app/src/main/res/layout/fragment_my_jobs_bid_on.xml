@@ -47,7 +47,7 @@
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
                         android:layout_toEndOf="@+id/jobImgageBidOn"
-                        android:text="JobName Here"
+                        android:text="@string/jobname_here"
                         android:textSize="18sp" />
 
                     <TextView
@@ -57,7 +57,7 @@
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
                         android:layout_marginTop="16dp"
-                        android:text="JobDescription Here"
+                        android:text="@string/jobdescription_here"
                         android:textSize="14sp" />
 
                 </RelativeLayout>

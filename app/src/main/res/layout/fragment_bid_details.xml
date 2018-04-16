@@ -1,8 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context="com.kitkat.crossroads.Jobs.JobDetailsFragment">
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,16 +10,19 @@
         android:layout_height="match_parent">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#FFFFFF"
             tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity">
 
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:background="#FFFFFF"
                 android:orientation="vertical"
                 android:padding="15dp">
 
@@ -28,16 +31,51 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/bebasneueregular"
-                    android:text="@string/job_details"
+                    android:text="@string/bid_details"
                     android:textAlignment="center"
                     android:textSize="30dp"
-                    android:textStyle="bold" />
+                    tools:layout_editor_absoluteX="163dp"
+                    tools:layout_editor_absoluteY="16dp" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/white">
+                    android:layout_alignParentStart="true"
+                    android:orientation="vertical">
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/viewName"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/textViewJobName1"
+                            android:layout_alignTop="@id/textViewJobName1"
+                            android:background="#FFFFFFFF"
+                            android:gravity="center_vertical"
+                            android:paddingVertical="10dp"
+                            android:text="@string/job"
+                            android:textAlignment="viewStart"
+                            android:textColor="#FF000000"
+                            android:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/textViewJobName1"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:background="#FFFFFFFF"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="10dp"
+                            android:paddingVertical="10dp"
+                            android:text="@string/text"
+                            android:textColor="#FF000000"
+
+                            android:visibility="visible" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -72,7 +110,9 @@
                             android:paddingVertical="10dp"
                             android:text="@string/textview"
                             android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:visibility="visible"
+
+                            />
                     </LinearLayout>
 
 
@@ -292,56 +332,74 @@
 
                     </LinearLayout>
 
-                </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/viewCurrentBid"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/textViewCurrentBid1"
+                            android:layout_alignTop="@id/textViewCurrentBid1"
+                            android:background="#FFFFFFFF"
+                            android:gravity="center_vertical"
+                            android:paddingVertical="10dp"
+                            android:text="@string/current_bid"
+                            android:textAlignment="viewStart"
+                            android:textColor="#FF000000"
+                            android:visibility="visible" />
+
+                        <TextView
+                            android:id="@+id/textViewCurrentBid1"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:background="#FFFFFFFF"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="10dp"
+                            android:paddingVertical="10dp"
+                            android:text="@string/text"
+                            android:textColor="#FF000000"
+
+                            android:visibility="visible" />
+                    </LinearLayout>
+
+                </LinearLayout>
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_alignParentStart="true"
+                    android:orientation="horizontal">
 
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="91dp">
+                    <EditText
+                        android:id="@+id/editTextBid"
+                        android:layout_width="225dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textViewJobTo1"
+                        android:layout_marginTop="24dp"
+                        android:ems="10"
+                        android:hint="@string/bid"
+                        android:inputType="number"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewJobTo1"
+                        tools:layout_editor_absoluteX="84dp" />
 
-                        <EditText
-                            android:id="@+id/editTextBid"
-                            android:layout_width="164dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:ems="10"
-                            android:hint="£"
-                            android:inputType="numberDecimal"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.28"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <Button
-                            android:id="@+id/buttonBid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:text="Make Bid"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.101"
-                            app:layout_constraintStart_toEndOf="@+id/editTextBid"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.444" />
-
-                    </android.support.constraint.ConstraintLayout>
+                    <Button
+                        android:id="@+id/buttonBid"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/editTextBid"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/edit_bid"
+                        app:layout_constraintTop_toBottomOf="@+id/editTextBid"
+                        tools:layout_editor_absoluteX="148dp" />
                 </LinearLayout>
+
+
+            </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 </FrameLayout>
