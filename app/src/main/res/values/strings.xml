@@ -13,7 +13,6 @@
     <string name="edit_your_profile">Edit Your Profile</string>
     <string name="create_your_profile">Create Your Profile</string>
     <string name="full_name">Full Name</string>
-    <string name="phone_number">Phone Number</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="recover_password">Forgot Password? Recover Password</string>
     <string name="reset_password">Reset Password</string>
@@ -111,6 +110,12 @@
     <string name="confirm_logout">Are You Sure You Want To LogOut?</string>
     <string name="logout">Log Out</string>
     <string name="cancel">Cancel</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="viewphonenumber">viewPhoneNumber</string>
+    <string name="viewaddressone">viewAddressOne</string>
+    <string name="viewaddresstwo">viewAddressTwo</string>
+    <string name="viewtown">viewTown</string>
+    <string name="viewpostcode">viewPostCode</string>
 </resources>
 
 

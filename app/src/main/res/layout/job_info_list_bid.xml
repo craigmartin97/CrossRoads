@@ -80,6 +80,17 @@
 
                 </LinearLayout>
         </LinearLayout>
+<<<<<<< HEAD
+=======
+
+        <Button
+            android:id="@+id/acceptBidButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/accept_bid"
+            android:textSize="10sp" />
+
+>>>>>>> sorted Image contentDescription and SP Fonts
     </LinearLayout>
 </RelativeLayout>
 

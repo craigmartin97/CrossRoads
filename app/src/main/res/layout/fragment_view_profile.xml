@@ -84,7 +84,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:src="@mipmap/phone"
-                            android:layout_marginTop="-26dp"/>
+                            android:layout_marginTop="-26dp"
+                            android:contentDescription="@null"/>
 
                         <TextView
                             android:id="@+id/HeadingForPhoneNumber"
@@ -93,7 +94,7 @@
                             android:layout_below="@+id/UserRatingsBar"
                             android:layout_centerHorizontal="true"
                             android:fontFamily="@font/bebasneueregular"
-                            android:text="Phone Number"
+                            android:text="@string/phone_number"
                             android:textAlignment="center"
                             android:textSize="24sp" />
 
@@ -104,7 +105,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/HeadingForPhoneNumber"
                             android:paddingTop="10dp"
-                            android:text="viewPhoneNumber"
+                            android:text="@string/viewphonenumber"
                             android:textAlignment="center" />
                     </LinearLayout>
 
@@ -121,7 +122,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:src="@mipmap/home"
-                            android:layout_marginTop="-26dp"/>
+                            android:layout_marginTop="-26dp"
+                            android:contentDescription="@null"/>
 
                         <TextView
                             android:id="@+id/HeadingForAddressOne"
@@ -129,7 +131,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/adL1"
                             android:fontFamily="@font/bebasneueregular"
-                            android:text="Address Line One"
+                            android:text="@string/address_line_1"
                             android:textAlignment="center"
                             android:textSize="24sp" />
 
@@ -140,7 +142,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/HeadingForAddressOne"
                             android:paddingTop="10dp"
-                            android:text="viewAddressOne"
+                            android:text="@string/viewaddressone"
                             android:textAlignment="center" />
 
 
@@ -151,7 +153,7 @@
                             android:layout_below="@+id/textViewAddressOne"
                             android:fontFamily="@font/bebasneueregular"
                             android:paddingTop="10dp"
-                            android:text="Address Line Two"
+                            android:text="@string/address_line_2"
                             android:textAlignment="center"
                             android:textSize="24sp" />
 
@@ -162,7 +164,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/HeadingForAddressTwo"
                             android:paddingTop="10dp"
-                            android:text="viewAddressTwo"
+                            android:text="@string/viewaddresstwo"
                             android:textAlignment="center" />
 
                         <TextView
@@ -172,7 +174,7 @@
                             android:layout_below="@+id/textViewAddressTwo"
                             android:fontFamily="@font/bebasneueregular"
                             android:paddingTop="10dp"
-                            android:text="Town"
+                            android:text="@string/town"
                             android:textAlignment="center"
                             android:textSize="24sp" />
 
@@ -183,7 +185,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/HeadingForTown"
                             android:paddingTop="10dp"
-                            android:text="viewTown"
+                            android:text="@string/viewtown"
                             android:textAlignment="center" />
 
                         <TextView
@@ -193,7 +195,7 @@
                             android:layout_alignBottom="@+id/textViewTown"
                             android:fontFamily="@font/bebasneueregular"
                             android:paddingTop="10dp"
-                            android:text="Post Code"
+                            android:text="@string/postcode"
                             android:textAlignment="center"
                             android:textSize="24sp" />
 
@@ -204,7 +206,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/HeadingForPostCode"
                             android:paddingTop="10dp"
-                            android:text="viewPostCode"
+                            android:text="@string/viewpostcode"
                             android:textAlignment="center" />
                     </LinearLayout>
 
@@ -221,11 +223,11 @@
 
                         <TextView
                             android:id="@+id/textViewCheckbox"
-                            android:fontFamily="@font/bebasneueregular"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/bebasneueregular"
                             android:gravity="center_horizontal|fill_horizontal|center"
-                            android:text="What Are You Primarily Going To Be Using The App For?"
+                            android:text="@string/app_priority_use"
                             android:textAlignment="center" />
 
                         <LinearLayout
@@ -235,26 +237,26 @@
 
                             <CheckBox
                                 android:id="@+id/checkBoxAdvertiser"
-                                android:fontFamily="@font/applegaramond"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="35dp"
                                 android:buttonTint="#2bbc9b"
                                 android:clickable="false"
                                 android:ems="10"
+                                android:fontFamily="@font/applegaramond"
                                 android:padding="10dp"
-                                android:text="Advertiser"
+                                android:text="@string/advertiser"
                                 android:textColor="#2bbc9b"
                                 android:visibility="visible" />
 
                             <CheckBox
                                 android:id="@+id/checkBoxCourier"
-                                android:fontFamily="@font/applegaramond"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:buttonTint="#2bbc9b"
                                 android:clickable="false"
-                                android:text="Courier"
+                                android:fontFamily="@font/applegaramond"
+                                android:text="@string/courier"
                                 android:textColor="#2bbc9b"
                                 android:visibility="visible" />
                         </LinearLayout>
