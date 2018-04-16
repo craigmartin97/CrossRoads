@@ -3,7 +3,10 @@ package com.kitkat.crossroads.ExternalClasses;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
@@ -35,12 +39,14 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     public LayoutInflater mInflater;
     private FragmentActivity fragmentActivity;
     private LayoutInflater layoutInflater;
+    private FragmentManager fragmentManager;
 
-    public MyCustomAdapterForTabViews(FragmentActivity fragmentActivity, boolean isAdded, TabHost host, LayoutInflater layoutInflater)
+    public MyCustomAdapterForTabViews(FragmentActivity fragmentActivity, boolean isAdded, TabHost host, LayoutInflater layoutInflater, FragmentManager fragmentManager)
     {
         if (isAdded)
         {
             this.fragmentActivity = fragmentActivity;
+            this.fragmentManager = fragmentManager;
             this.layoutInflater = layoutInflater;
             mInflater = (LayoutInflater) fragmentActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -136,6 +142,8 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                 holderBidOn = new MyCustomAdapterForTabViews.GroupViewHolderBidOn();
 
                 holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
+                holderBidOn.imageViewCross = convertView.findViewById(R.id.imageViewCross);
+                holderBidOn.imageViewEditPen = convertView.findViewById(R.id.imageViewEditPen);
                 holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
                 holderBidOn.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
                 holderBidOn.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
@@ -144,6 +152,127 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                 holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
                 holderBidOn.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
                 holderBidOn.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelPostcode() + ", " + mData.get(position).getDelPostcode());
+
+                holderBidOn.imageViewCross.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        final DatabaseConnections databaseConnections = new DatabaseConnections();
+
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
+                        View mView = layoutInflater.inflate(R.layout.popup_creator, null);
+
+                        alertDialog.setTitle("Delete Job");
+                        alertDialog.setView(mView);
+                        final AlertDialog dialog = alertDialog.create();
+                        dialog.show();
+
+                        TextView customText = mView.findViewById(R.id.textViewCustomText);
+                        customText.setText("Are You Sure You Want To Delete " + mData.get(position).getAdvertName() + "?");
+
+                        Button yesButton = mView.findViewById(R.id.yesButton);
+                        Button noButton = mView.findViewById(R.id.noButton);
+
+                        yesButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                // My Adverts
+                                if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+                                {
+                                    databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                        {
+                                            databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position))
+                                                    .child("jobStatus").setValue("Inactive");
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError)
+                                        {
+
+                                        }
+                                    });
+
+                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                        {
+                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position)
+                                                    .getCourierID()).child("active").setValue(false);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError)
+                                        {
+
+                                        }
+                                    });
+                                }
+                                // My Jobs
+                                else
+                                {
+                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                        {
+                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(databaseConnections.getCurrentUser()).child("active").setValue(false);
+                                            mData.remove(position);
+                                            mDataKeys.remove(position);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError)
+                                        {
+
+                                        }
+                                    });
+                                }
+
+                                notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        });
+
+                        noButton.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                });
+
+                DatabaseConnections databaseConnections = new DatabaseConnections();
+
+                // My Adverts
+                if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+                {
+                    holderBidOn.imageViewEditPen.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            GenericMethods genericMethods = new GenericMethods();
+                            PostAnAdvertFragment postAnAdvertFragment = new PostAnAdvertFragment();
+                            postAnAdvertFragment.setArguments(genericMethods.createNewBundleJobInformation("JobInfo", mData.get(position)));
+                            genericMethods.beginTransactionToFragment(fragmentManager, postAnAdvertFragment);
+                        }
+                    });
+                }
+                // My Jobs
+                else
+                {
+                    holderBidOn.imageViewEditPen.setVisibility(View.GONE);
+                }
 
                 convertView.setTag(holderBidOn);
             }
@@ -221,7 +350,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                             public void onClick(View view)
                             {
                                 // My Adverts
-                                if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+                                if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
                                 {
                                     databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
                                     {
@@ -239,21 +368,21 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                                         }
                                     });
 
-                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
-                                    {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot)
-                                        {
-                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position)
-                                                    .getCourierID()).child("active").setValue(false);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError)
-                                        {
-
-                                        }
-                                    });
+//                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+//                                    {
+//                                        @Override
+//                                        public void onDataChange(DataSnapshot dataSnapshot)
+//                                        {
+//                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position)
+//                                                    .getCourierID()).child("active").setValue(false);
+//                                        }
+//
+//                                        @Override
+//                                        public void onCancelled(DatabaseError databaseError)
+//                                        {
+//
+//                                        }
+//                                    });
                                 }
                                 // My Jobs
                                 else
@@ -314,6 +443,8 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         public TextView textViewJobDescription;
         public TextView textViewAddressFrom;
         public TextView textViewAddressTo;
+        public ImageView imageViewCross;
+        public ImageView imageViewEditPen;
     }
 
     public class GroupViewHolderAccepted

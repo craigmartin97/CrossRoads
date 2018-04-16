@@ -40,6 +40,23 @@
                     android:visibility="visible" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/imageViewEditPen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_edit_pen" />
+
+            <ImageView
+                android:id="@+id/imageViewCross"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_corss_close" />
         </LinearLayout>
 
 

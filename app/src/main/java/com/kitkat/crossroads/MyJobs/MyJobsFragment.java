@@ -288,7 +288,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 // if the User Id equals the current user added to a list
                 if (getBidInformation(ds1).getUserID().equals(auth.getCurrentUser().getUid()))
                 {
-                    jobsListArray.add(ds.getKey());
+                    boolean active = ds1.child("active").getValue(boolean.class);
+                    if(active)
+                    {
+                        jobsListArray.add(ds.getKey());
+                    }
                 }
             }
         }
@@ -303,6 +307,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
             if (jobsListArray.contains(ds3.getKey()) && getJobInformation(ds3).getJobStatus().equals("Pending"))
             {
                 Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(genericMethods.getJobInformation(ds3).getCollectionDate());
+
                 if (new Date().before(sdf))
                 {
                     jobListKey.add(ds3.getKey());
@@ -312,7 +317,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display information in ListView
-        mAdapterBidOn = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater());
+        mAdapterBidOn = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater(), getFragmentManager());
         mAdapterBidOn.addKeyArray(jobListKey);
         mAdapterBidOn.addArray(jobList);
 
@@ -352,7 +357,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display the Job in the ListView
-        mAdapterAccepted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater());
+        mAdapterAccepted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater(), getFragmentManager());
         mAdapterAccepted.addKeyArray(jobListKeyActive);
         mAdapterAccepted.addArray(jobListActive);
 
@@ -417,7 +422,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         }
 
         // Display in the ListView
-        mAdapterCompleted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater());
+        mAdapterCompleted = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater(), getFragmentManager());
         mAdapterCompleted.addKeyArray(jobListKeyComplete);
         mAdapterCompleted.addArray(jobListComplete);
 
