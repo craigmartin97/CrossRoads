@@ -42,7 +42,8 @@
                 android:id="@+id/imageViewCross"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_corss_close" />
+                android:src="@drawable/ic_corss_close"
+                android:contentDescription="@null"/>
 
             </LinearLayout>
         </LinearLayout>

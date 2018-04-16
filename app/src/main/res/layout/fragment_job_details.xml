@@ -13,7 +13,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity">
+            tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity"/>
 
 
             <LinearLayout
@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:orientation="vertical"
-                android:padding="15dp">
+                android:padding="15dp"/>
 
                 <TextView
                     android:id="@+id/textView5"
@@ -30,8 +30,9 @@
                     android:fontFamily="@font/bebasneueregular"
                     android:text="@string/job_details"
                     android:textAlignment="center"
-                    android:textSize="30dp"
-                    android:textStyle="bold" />
+                    android:textSize="30sp"
+                    tools:layout_editor_absoluteX="163dp"
+                    tools:layout_editor_absoluteY="16dp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"

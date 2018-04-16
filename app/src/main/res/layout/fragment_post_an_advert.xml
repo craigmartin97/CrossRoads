@@ -30,7 +30,7 @@
                 android:text="@string/add_job"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="35dp" />
+                android:textSize="35sp" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -43,7 +43,7 @@
                 android:text="@string/delivery_details"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/editTextAdName"
@@ -139,7 +139,7 @@
                 android:text=""
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/buttonMap1"
@@ -187,7 +187,8 @@
                         android:layout_height="15dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_magnify" />
+                        android:src="@drawable/ic_magnify"
+                        android:contentDescription="@null"/>
 
                     <AutoCompleteTextView
                         android:id="@+id/editTextSearch"
@@ -209,7 +210,8 @@
                     android:layout_alignStart="@+id/relLayout1"
                     android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_gps" />
+                    android:src="@drawable/ic_gps"
+                    android:contentDescription="@null"/>
 
 
                 <ImageView
@@ -220,7 +222,8 @@
                     android:layout_alignStart="@+id/relLayout1"
                     android:layout_below="@+id/ic_gps"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/check" />
+                    android:src="@drawable/check"
+                    android:contentDescription="@null"/>
             </RelativeLayout>
 
 
@@ -288,7 +291,7 @@
                 android:text="@string/delivery_address"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/buttonMap2"
@@ -335,7 +338,8 @@
                         android:layout_height="15dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_magnify" />
+                        android:src="@drawable/ic_magnify"
+                        android:contentDescription="@null"/>
 
                     <AutoCompleteTextView
                         android:id="@+id/editTextSearch2"
@@ -358,7 +362,8 @@
                     android:layout_alignStart="@+id/relLayout4"
                     android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_gps" />
+                    android:src="@drawable/ic_gps"
+                    android:contentDescription="@null"/>
 
                 <ImageView
                     android:id="@+id/check2"
@@ -367,7 +372,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignStart="@+id/relLayout4"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/check" />
+                    android:src="@drawable/check"
+                    android:contentDescription="@null"/>
             </RelativeLayout>
 
             <EditText

@@ -23,7 +23,8 @@
             android:layout_height="70dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/cblack" />
+            android:src="@drawable/cblack"
+            android:contentDescription="@null"/>
 
         <ImageView
             android:id="@+id/imageViewCRGreen"
@@ -31,7 +32,8 @@
             android:layout_height="60dp"
             android:layout_below="@+id/imageViewCBlack"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/crgreentext" />
+            android:src="@drawable/crgreentext"
+            android:contentDescription="@null"/>
 
 
         <TextView
@@ -60,7 +62,8 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
-                android:background="@drawable/email_icon" />
+                android:background="@drawable/email_icon"
+                android:contentDescription="@null"/>
 
             <EditText
                 android:id="@+id/editTextEmailLogin"
@@ -94,7 +97,8 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
-                android:background="@drawable/lock_icon" />
+                android:background="@drawable/lock_icon"
+                android:contentDescription="@null"/>
 
             <EditText
                 android:id="@+id/editTextPasswordLogin"
@@ -127,7 +131,8 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
-                android:background="@drawable/lock_icon" />
+                android:background="@drawable/lock_icon"
+                android:contentDescription="@null"/>
 
             <EditText
                 android:id="@+id/editTextPasswordConfirmLogin"
