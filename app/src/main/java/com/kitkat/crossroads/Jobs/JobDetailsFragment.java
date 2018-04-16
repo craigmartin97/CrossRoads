@@ -130,7 +130,6 @@ public class JobDetailsFragment extends Fragment
         jobTo.setText(jobInformation.getDelTown().toString());
         jobID = jobInformation.getJobID();
 
-
         buttonBid.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -147,7 +146,6 @@ public class JobDetailsFragment extends Fragment
                 }
             }
         });
-
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -251,19 +249,33 @@ public class JobDetailsFragment extends Fragment
         JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
 
         String userBid = editTextBid.getText().toString().trim();
+
+        if(!userBid.contains("."))
+        {
+            userBid = userBid + ".00";
+        }
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         user.getUid();
 
-        String userID = user.getUid();
-        String jobID = jobInformation.getJobID().toString().trim();
+        final String userID = user.getUid();
+        final String jobID = jobInformation.getJobID().toString().trim();
 
+        saveBidInDatabase(userID, jobID, userBid);
+    }
+
+    private void saveBidInDatabase(final String userID, final String jobID, final String userBid)
+    {
         databaseReference.child("Users").child(userID).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                fullName = dataSnapshot.child("fullName").getValue(String.class);
+                String fullName = dataSnapshot.child("fullName").getValue(String.class);
+                UserBidInformation userBidInformation = new UserBidInformation(fullName, userBid, userID, true);
+                databaseReference.child("Bids").child(jobID).child(userID).setValue(userBidInformation);
+                startActivity(new Intent(getActivity(), CrossRoads.class));
             }
 
             @Override
@@ -272,16 +284,5 @@ public class JobDetailsFragment extends Fragment
 
             }
         });
-
-        UserBidInformation userBidInformation = new UserBidInformation(fullName, userBid, userID);
-
-        databaseReference.child("Bids").child(jobID).child(userID).setValue(userBidInformation);
-
-        startActivity(new Intent(getActivity(), CrossRoads.class));
-    }
-
-    private void customToastMessage(String message)
-    {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

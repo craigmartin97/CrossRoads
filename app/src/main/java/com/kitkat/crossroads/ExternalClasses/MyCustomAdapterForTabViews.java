@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
@@ -153,11 +157,29 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                 holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
                 holderAccepted.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
                 holderAccepted.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
+                holderAccepted.textViewBid = convertView.findViewById(R.id.textBid);
 
                 holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
                 holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
                 holderAccepted.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
                 holderAccepted.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelPostcode() + ", " + mData.get(position).getDelPostcode());
+
+                DatabaseConnections databaseConnections = new DatabaseConnections();
+                databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position).getCourierID()).addValueEventListener(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        String acceptedBid = dataSnapshot.child("userBid").getValue(String.class);
+                        holderAccepted.textViewBid.setText("£" + acceptedBid);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+
+                    }
+                });
 
                 convertView.setTag(holderAccepted);
             }
@@ -201,13 +223,55 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                                 // My Adverts
                                 if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
                                 {
-                                    databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).removeValue();
-                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).removeValue();
+                                    databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                        {
+                                            databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position))
+                                                    .child("jobStatus").setValue("Inactive");
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError)
+                                        {
+
+                                        }
+                                    });
+
+                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                        {
+                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position)
+                                                    .getCourierID()).child("active").setValue(false);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError)
+                                        {
+
+                                        }
+                                    });
                                 }
                                 // My Jobs
                                 else
                                 {
-                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(databaseConnections.getCurrentUser()).removeValue();
+                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                        {
+                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(databaseConnections.getCurrentUser()).child("active").setValue(false);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError)
+                                        {
+
+                                        }
+                                    });
                                 }
                                 notifyDataSetChanged();
                                 dialog.dismiss();
@@ -258,6 +322,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         public TextView textViewDescription;
         public TextView textViewAddressFrom;
         public TextView textViewAddressTo;
+        public TextView textViewBid;
     }
 
     public class GroupViewHolderCompleted

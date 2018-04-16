@@ -389,9 +389,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     // If the status if complete and the current users job
                     if (getJobInformation(ds5).getJobStatus().equals("Complete") && dataSnapshot.getValue() != null)
                     {
-                        jobListKeyComplete.add(ds5.getKey());
-                        jobListComplete.add(getJobInformation(ds5));
-                        Toast.makeText(getActivity(), "HERE HERE", Toast.LENGTH_SHORT).show();
+                        boolean active = dataSnapshot.child("active").getValue(boolean.class);
+                        
+                        if(active)
+                        {
+                            jobListKeyComplete.add(ds5.getKey());
+                            jobListComplete.add(getJobInformation(ds5));
+                        }
                     }
                 }
 

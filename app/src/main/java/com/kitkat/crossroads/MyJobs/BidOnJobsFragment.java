@@ -23,6 +23,7 @@ import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.kitkat.crossroads.MyJobs.ActiveJobDetailsFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
@@ -74,11 +75,6 @@ public class BidOnJobsFragment extends Fragment
      */
     private List<String> list, list2, list3;
     private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
-
-    /**
-     * Accessing ActiveJobDetailsFragment
-     */
-    ActiveJobDetailsFragment activeJobDetailsFragment = new ActiveJobDetailsFragment();
 
     /**
      * Variable to store the current users Id
@@ -196,7 +192,6 @@ public class BidOnJobsFragment extends Fragment
             }
         });
 
-
         return view;
     }
 
@@ -218,10 +213,55 @@ public class BidOnJobsFragment extends Fragment
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
     }
 
-    private void submitBid(String jobId, String user)
+    private void submitBid(final String jobId, final String user)
     {
         String userBid = editTextEditBid.getText().toString().trim();
-        BidInformation bidInformation = new BidInformation(user, userBid);
+
+        if(userBid.contains("£"))
+        {
+            userBid = userBid.substring(userBid.lastIndexOf("£") + 1);
+
+            userBid = checkUserBidDecimal(userBid);
+            submitBid(jobId, user, userBid);
+        }
+        else
+        {
+            userBid = checkUserBidDecimal(userBid);
+            submitBid(jobId, user, userBid);
+        }
+    }
+
+    private String checkUserBidDecimal(String userBid)
+    {
+        if(!userBid.contains("."))
+        {
+            userBid = userBid + ".00";
+        }
+        return userBid;
+    }
+
+    private void submitBid(final String jobId, final String user, final String userBid)
+    {
+        databaseReference.child("Bids").child(jobId).child(user).addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                String fullName = dataSnapshot.child("fullName").getValue(String.class);
+                enterBidIntoFirebase(fullName, userBid);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+    }
+
+    private void enterBidIntoFirebase(String fullName, String userBid)
+    {
+        UserBidInformation bidInformation = new UserBidInformation(fullName, userBid, user, true);
         databaseReference.child("Bids").child(jobId).child(user).setValue(bidInformation);
     }
 
@@ -244,7 +284,7 @@ public class BidOnJobsFragment extends Fragment
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
-                editTextEditBid.setText(userBid);
+                editTextEditBid.setText("£" + userBid);
             }
 
             @Override
