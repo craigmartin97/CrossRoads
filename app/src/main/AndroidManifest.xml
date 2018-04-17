@@ -21,12 +21,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAf6uELO8s7OZpKPKhM3yvx0FSh_Bt--cc"/>
-
-
+            android:value="AIzaSyAf6uELO8s7OZpKPKhM3yvx0FSh_Bt--cc" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -63,10 +60,11 @@
             android:name=".MainActivity.CrossRoads"
             android:configChanges="orientation|screenSize"
             android:label=" "
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TermsAndConditions"
             android:configChanges="orientation|screenSize" />
+        <activity android:name=".Payment.PaymentDetails"></activity>
     </application>
 
 </manifest>

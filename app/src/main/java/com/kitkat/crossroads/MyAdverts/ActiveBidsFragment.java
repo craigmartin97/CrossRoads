@@ -1,5 +1,6 @@
 package com.kitkat.crossroads.MyAdverts;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,12 +30,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Payment.ConfigPaypal;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
+import com.kitkat.crossroads.Payment.PaymentDetails;
 import com.kitkat.crossroads.R;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -65,6 +70,7 @@ public class ActiveBidsFragment extends Fragment
      * List to store all of the the users bids
      */
     private ArrayList<UserBidInformation> jobList = new ArrayList<>();
+    private long commisionAmount;
 
     public static final int PAYPAL_REQUEST_CODE = 7171;
     public static final PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(ConfigPaypal.PAYPAL_CLIENT_ID); // Test Mode
@@ -197,6 +203,7 @@ public class ActiveBidsFragment extends Fragment
                         String userBidBefore = jobList.get(position).getUserBid().substring(0, jobList.get(position).getUserBid().indexOf("."));
                         long commission = Long.parseLong(userBidBefore);
                         commission = (long) (commission * 0.05);
+                        commisionAmount = commission;
                         Math.round(commission);
                         textViewCommission.setText("£" + (int) commission + ".00");
                         long userBidBef = Long.parseLong(userBidBefore);
@@ -235,13 +242,12 @@ public class ActiveBidsFragment extends Fragment
                             }
                         });
 
-                        final long finalCommission = commission;
                         payPal.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
                             {
-                                processPayment(finalCommission);
+                                processPayment();
                             }
                         });
                     }
@@ -256,9 +262,9 @@ public class ActiveBidsFragment extends Fragment
         });
     }
 
-    private void processPayment(long commission)
+    private void processPayment()
     {
-        PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(commission), "GBP"
+        PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(commisionAmount), "GBP"
                 , "Pay CrossRoads Commission",PayPalPayment.PAYMENT_INTENT_SALE);
 
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
@@ -279,13 +285,24 @@ public class ActiveBidsFragment extends Fragment
                 {
                     try
                     {
-                        String paymentDetails = confirmation.toJSONObject().toString()
-                    } catch()
+                        String paymentDetails = confirmation.toJSONObject().toString(4);
+                        startActivity(new Intent(getActivity(), PaymentDetails.class)
+                                .putExtra("PaymentDetails", paymentDetails)
+                                .putExtra("PaymentAmount", commisionAmount));
+                    } catch (JSONException e)
                     {
-
+                        e.printStackTrace();
                     }
                 }
             }
+            else if(resultCode == Activity.RESULT_CANCELED)
+            {
+                Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+        {
+            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
         }
     }
 
