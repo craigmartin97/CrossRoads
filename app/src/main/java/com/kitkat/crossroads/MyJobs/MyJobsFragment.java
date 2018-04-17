@@ -390,7 +390,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     if (getJobInformation(ds5).getJobStatus().equals("Complete") && dataSnapshot.getValue() != null)
                     {
                         boolean active = dataSnapshot.child("active").getValue(boolean.class);
-                        
+
                         if(active)
                         {
                             jobListKeyComplete.add(ds5.getKey());

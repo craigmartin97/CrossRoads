@@ -857,6 +857,11 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     }
 
+    private void saveEditJob()
+    {
+
+    }
+
     private boolean isServicesOK()
     {
         Log.d(TAG, "IsServicesOK: checking google services version: ");
