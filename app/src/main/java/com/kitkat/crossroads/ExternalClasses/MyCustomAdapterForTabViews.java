@@ -263,7 +263,12 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                         {
                             GenericMethods genericMethods = new GenericMethods();
                             PostAnAdvertFragment postAnAdvertFragment = new PostAnAdvertFragment();
-                            postAnAdvertFragment.setArguments(genericMethods.createNewBundleJobInformation("JobInfo", mData.get(position)));
+
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("JobInfo", mData.get(position));
+                            bundle.putSerializable("JobIdKey", mDataKeys.get(position));
+                            postAnAdvertFragment.setArguments(bundle);
+
                             genericMethods.beginTransactionToFragment(fragmentManager, postAnAdvertFragment);
                         }
                     });

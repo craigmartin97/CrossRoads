@@ -80,14 +80,6 @@
 
                 </LinearLayout>
         </LinearLayout>
-
-        <Button
-            android:id="@+id/acceptBidButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Accept Bid"
-            android:textSize="10dp" />
-
     </LinearLayout>
 </RelativeLayout>
 

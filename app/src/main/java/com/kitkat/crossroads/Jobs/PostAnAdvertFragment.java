@@ -64,6 +64,7 @@ import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
+import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 
@@ -74,6 +75,11 @@ import static android.app.Activity.RESULT_OK;
 
 public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
+//    public static final int PAYPAL_REQUEST_CODE = 7171;
+//    private static final PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(ConfigPaypal.PAYPAL_CLIENT_ID); // Test Mode
+//    private Button buttonPayNow;
+//    private String amount = "1.00";
+
     /**
      * Get the authentication to the Firebase Authentication area
      */
@@ -120,6 +126,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private static final int Error_Dialog_Request = 9001;
 
     private JobInformation jobInformation;
+    private String jobIdKey;
 
     /**
      * Widgets that are found on the View, fragment_map
@@ -173,22 +180,22 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         ArrayAdapter<CharSequence> adapter2 = createSpinnerAdapter(R.array.job_types);
 
         getBundleInformation();
-        if(jobInformation != null)
+        if (jobInformation != null)
         {
             editTextAdName.setText(jobInformation.getAdvertName());
             editTextAdDescription.setText(jobInformation.getAdvertDescription());
 
-            for(int i = 0; i < adapter1.getCount(); i++)
+            for (int i = 0; i < adapter1.getCount(); i++)
             {
-                if(jobInformation.getJobSize().equals(adapter1.getItem(i)))
+                if (jobInformation.getJobSize().equals(adapter1.getItem(i)))
                 {
                     editTextJobSize.setSelection(i);
                 }
             }
 
-            for(int i = 0; i < adapter2.getCount(); i++)
+            for (int i = 0; i < adapter2.getCount(); i++)
             {
-                if(jobInformation.getJobType().equals(adapter2.getItem(i)))
+                if (jobInformation.getJobType().equals(adapter2.getItem(i)))
                 {
                     editTextJobType.setSelection(i);
                 }
@@ -419,54 +426,19 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View v)
             {
-                String enterTown = "Please Enter A Town";
-                String enterAddress1 = "Please Enter An Address Line 1";
-                String enterAddress2 = "Please Enter An Address Line 2";
-                String enterPostCode = "Please Enter A Valid PostCode";
-
-                if (TextUtils.isEmpty(getTextInAdNameWidget()))
+                // Posting a new ad
+                if(jobIdKey == null)
                 {
-                    ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
-                }
-                if (TextUtils.isEmpty(getTextInAdDescWidget()))
-                {
-                    ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
-                }
-                if (TextUtils.isEmpty(getTextInColAd1Wiget()))
-                {
-                    ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
-                }
-                if (TextUtils.isEmpty(getTextInColAd2Widget()))
-                {
-                    ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
-                }
-                if (TextUtils.isEmpty(getTextInColTownWidget()))
-                {
-                    ifWidgetTextIsNull(editTextColAddTown, enterTown);
-                }
-                if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
-                {
-                    ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
-                }
-                if (TextUtils.isEmpty(getTextInDelAd1Widget()))
-                {
-                    ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
-                }
-                if (TextUtils.isEmpty(getTextInDelAd2Widget()))
-                {
-                    ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
-                }
-                if (TextUtils.isEmpty(getTextInDelTownWidget()))
-                {
-                    ifWidgetTextIsNull(editTextDelAddTown, enterTown);
-                }
-                if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
-                {
-                    ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
-                } else
-                {
+                    checkWidgetsContainText();
                     saveJobInformation();
                     newFragmentTransaction(new FindAJobFragment());
+                }
+                // Editing an ad
+                else
+                {
+                    checkWidgetsContainText();
+                    saveEditJob();
+                    newFragmentTransaction(new MyAdvertsFragment());
                 }
             }
         });
@@ -518,18 +490,68 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         });
     }
 
-    private void getBundleInformation()
+    private void processPayment()
     {
-        Bundle bundle = getArguments();
-        if(bundle != null)
+
+    }
+
+    private void checkWidgetsContainText()
+    {
+        String enterTown = "Please Enter A Town";
+        String enterAddress1 = "Please Enter An Address Line 1";
+        String enterAddress2 = "Please Enter An Address Line 2";
+        String enterPostCode = "Please Enter A Valid PostCode";
+
+        if (TextUtils.isEmpty(getTextInAdNameWidget()))
         {
-            jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
+            ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
+        }
+        if (TextUtils.isEmpty(getTextInAdDescWidget()))
+        {
+            ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
+        }
+        if (TextUtils.isEmpty(getTextInColAd1Wiget()))
+        {
+            ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
+        }
+        if (TextUtils.isEmpty(getTextInColAd2Widget()))
+        {
+            ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
+        }
+        if (TextUtils.isEmpty(getTextInColTownWidget()))
+        {
+            ifWidgetTextIsNull(editTextColAddTown, enterTown);
+        }
+        if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
+        {
+            ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
+        }
+        if (TextUtils.isEmpty(getTextInDelAd1Widget()))
+        {
+            ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
+        }
+        if (TextUtils.isEmpty(getTextInDelAd2Widget()))
+        {
+            ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
+        }
+        if (TextUtils.isEmpty(getTextInDelTownWidget()))
+        {
+            ifWidgetTextIsNull(editTextDelAddTown, enterTown);
+        }
+        if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
+        {
+            ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
         }
     }
 
-    private void setWidgetTextFromBundle()
+    private void getBundleInformation()
     {
-
+        Bundle bundle = getArguments();
+        if (bundle != null)
+        {
+            jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
+            jobIdKey = (String) bundle.getSerializable("JobIdKey");
+        }
     }
 
     private void mapOnClickListeners()
@@ -863,15 +885,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
 
                 Uri downloadUri = taskSnapshot.getDownloadUrl();
-
                 String jobStatus = "Pending";
 
-                final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
-                        " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget()
-                        , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
-                        , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, downloadUri.toString());
-
-                databaseReference.child("Jobs").child(key).setValue(jobInformation);
+                databaseReference.child("Jobs").child(key).setValue(setJobInformation(jobStatus, downloadUri));
                 databaseReference.addValueEventListener(new ValueEventListener()
                 {
                     @Override
@@ -917,6 +933,29 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private void saveEditJob()
     {
 
+        final StorageReference filePath = storageReference.child("JobImages").child(auth.getCurrentUser().getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
+        filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+        {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+            {
+                Uri downloadUri = taskSnapshot.getDownloadUrl();
+                String jobStatus = "Pending";
+
+                databaseReference.child("Jobs").child(jobIdKey).setValue(setJobInformation(jobStatus, downloadUri));
+                genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
+            }
+        });
+    }
+
+    private JobInformation setJobInformation(String jobStatus, Uri downloadUri)
+    {
+        final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
+                " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget()
+                , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
+                , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, downloadUri.toString());
+
+        return jobInformation;
     }
 
     private boolean isServicesOK()
