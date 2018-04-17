@@ -64,6 +64,12 @@
             android:name=".TermsAndConditions"
             android:configChanges="orientation|screenSize" />
         <activity android:name=".Account.RegisterActivity"></activity>
+
+        <meta-data android:name="firebase_messaging_auto_init_enabled"
+                android:value="false" />
+
     </application>
+
+
 
 </manifest>

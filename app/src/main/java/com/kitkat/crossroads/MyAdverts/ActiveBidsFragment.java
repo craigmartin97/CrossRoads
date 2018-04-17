@@ -24,6 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.Jobs.JobInformation;
@@ -32,7 +33,9 @@ import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class ActiveBidsFragment extends Fragment
@@ -313,7 +316,14 @@ public class ActiveBidsFragment extends Fragment
 
                             databaseReference.child("Jobs").child(getBundleInformation()).child("courierID").setValue(mData.get(position).getUserID());
                             databaseReference.child("Jobs").child(getBundleInformation()).child("jobStatus").setValue("Active");
-
+                            FirebaseFirestore dbs = FirebaseFirestore.getInstance();
+                            Map<String, Object> notificationMessage = new HashMap<>();
+                            String message = "Your bid has been accepted!";
+                            String jobID = mData.get(position).getJobID();
+                            notificationMessage.put("message", message);
+                            notificationMessage.put("Job", jobID);
+                            notificationMessage.put("From", user);
+                            databaseReference.child("Notifications").child(mData.get(position).getUserID()).push().setValue(notificationMessage);
                             alertDialog.setTitle("Bid Accepted");
                             alertDialog.setView(mView);
                             final AlertDialog dialog = alertDialog.create();
