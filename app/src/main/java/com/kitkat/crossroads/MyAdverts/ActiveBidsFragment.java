@@ -80,7 +80,7 @@ public class ActiveBidsFragment extends Fragment
         // Required empty public constructor
     }
 
-    public static ActiveBidsFragment newInstance(String param1, String param2)
+    public static ActiveBidsFragment newInstance()
     {
         ActiveBidsFragment fragment = new ActiveBidsFragment();
         Bundle args = new Bundle();
@@ -265,7 +265,7 @@ public class ActiveBidsFragment extends Fragment
     private void processPayment()
     {
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(commisionAmount), "GBP"
-                , "Pay CrossRoads Commission",PayPalPayment.PAYMENT_INTENT_SALE);
+                , "Pay CrossRoads Commission", PayPalPayment.PAYMENT_INTENT_SALE);
 
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
@@ -276,12 +276,12 @@ public class ActiveBidsFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(requestCode == PAYPAL_REQUEST_CODE)
+        if (requestCode == PAYPAL_REQUEST_CODE)
         {
-            if(requestCode == RESULT_OK)
+            if (resultCode == RESULT_OK)
             {
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-                if(confirmation != null)
+                if (confirmation != null)
                 {
                     try
                     {
@@ -294,13 +294,11 @@ public class ActiveBidsFragment extends Fragment
                         e.printStackTrace();
                     }
                 }
-            }
-            else if(resultCode == Activity.RESULT_CANCELED)
+            } else if (resultCode == Activity.RESULT_CANCELED)
             {
                 Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if(resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
         {
             Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
         }
