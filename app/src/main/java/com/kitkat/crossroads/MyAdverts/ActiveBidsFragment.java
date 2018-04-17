@@ -134,11 +134,13 @@ public class ActiveBidsFragment extends Fragment
             {
                 for (final DataSnapshot ds : dataSnapshot.getChildren())
                 {
-                    //String fullName = thisdataSnapshot.child("fullName").getValue(String.class);
-                    final UserBidInformation bid = ds.getValue(UserBidInformation.class);
-                    bid.setJobID(jobId);
-                    //bid.setFullName(fullName);
-                    jobList.add(bid);
+                    boolean active = ds.child("active").getValue(boolean.class);
+                    if(active)
+                    {
+                        final UserBidInformation bid = ds.getValue(UserBidInformation.class);
+                        bid.setJobID(jobId);
+                        jobList.add(bid);
+                    }
                 }
 
                 MyCustomAdapter myCustomAdapter = new MyCustomAdapter();
@@ -234,17 +236,6 @@ public class ActiveBidsFragment extends Fragment
                 holder.ratingBarSeeFeedback = convertView.findViewById(R.id.ratingBarSeeFeedback);
                 holder.acceptBidButton = convertView.findViewById(R.id.acceptBidButton);
 
-//                holder.textViewName.setOnClickListener(new View.OnClickListener()
-//                {
-//                    @Override
-//                    public void onClick(View v)
-//                    {
-//                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-//                        GenericMethods genericMethods = new GenericMethods();
-//                        viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", mData.get(position).getUserID()));
-//                        genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
-//                    }
-//                });
                 convertView.setTag(holder);
             } else
             {

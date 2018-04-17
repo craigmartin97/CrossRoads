@@ -65,6 +65,7 @@ import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
@@ -118,6 +119,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private static final int Error_Dialog_Request = 9001;
 
+    private JobInformation jobInformation;
+
     /**
      * Widgets that are found on the View, fragment_map
      */
@@ -164,6 +167,46 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         // Collection Map
         map1 = new Map();
         map2 = new Map();
+
+
+        ArrayAdapter<CharSequence> adapter1 = createSpinnerAdapter(R.array.job_sizes);
+        ArrayAdapter<CharSequence> adapter2 = createSpinnerAdapter(R.array.job_types);
+
+        getBundleInformation();
+        if(jobInformation != null)
+        {
+            editTextAdName.setText(jobInformation.getAdvertName());
+            editTextAdDescription.setText(jobInformation.getAdvertDescription());
+
+            for(int i = 0; i < adapter1.getCount(); i++)
+            {
+                if(jobInformation.getJobSize().equals(adapter1.getItem(i)))
+                {
+                    editTextJobSize.setSelection(i);
+                }
+            }
+
+            for(int i = 0; i < adapter2.getCount(); i++)
+            {
+                if(jobInformation.getJobType().equals(adapter2.getItem(i)))
+                {
+                    editTextJobType.setSelection(i);
+                }
+            }
+
+            editTextColDate.setText(jobInformation.getCollectionDate());
+            editTextColTime.setText(jobInformation.getCollectionTime());
+            editTextColAddL1.setText(jobInformation.getColL1());
+            editTextColAddL2.setText(jobInformation.getColL2());
+            editTextColAddTown.setText(jobInformation.getColTown());
+            editTextColAddPostcode.setText(jobInformation.getColPostcode());
+            editTextDelAddL1.setText(jobInformation.getDelL1());
+            editTextDelAddL2.setText(jobInformation.getDelL2());
+            editTextDelAddTown.setText(jobInformation.getDelTown());
+            editTextDelAddPostcode.setText(jobInformation.getDelTown());
+            Picasso.get().load(jobInformation.getJobImage()).into(profileImage);
+            setJobImageHeight();
+        }
 
         boolean result = ((CrossRoads) getActivity()).getLocationPermissionGranted();
         if (result)
@@ -473,6 +516,20 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 });
             }
         });
+    }
+
+    private void getBundleInformation()
+    {
+        Bundle bundle = getArguments();
+        if(bundle != null)
+        {
+            jobInformation = (JobInformation) bundle.getSerializable("JobInfo");
+        }
+    }
+
+    private void setWidgetTextFromBundle()
+    {
+
     }
 
     private void mapOnClickListeners()
