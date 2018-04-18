@@ -1,6 +1,9 @@
 package com.kitkat.crossroads.MyAdverts;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -24,15 +27,25 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.Payment.ConfigPaypal;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.ExternalClasses.GenericMethods;
-import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
-import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class ActiveBidsFragment extends Fragment
@@ -58,18 +71,19 @@ public class ActiveBidsFragment extends Fragment
      * List to store all of the the users bids
      */
     private ArrayList<UserBidInformation> jobList = new ArrayList<>();
+    private double commisionAmount;
+    private double totalAmount;
+    private BigDecimal totalDecimal;
 
-    /**
-     * Adapter to be able to select a bid
-     */
-    private ActiveBidsFragment.MyCustomAdapter mAdapter;
+    public static final int PAYPAL_REQUEST_CODE = 7171;
+    public static final PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(ConfigPaypal.PAYPAL_CLIENT_ID); // Test Mode
 
     public ActiveBidsFragment()
     {
         // Required empty public constructor
     }
 
-    public static ActiveBidsFragment newInstance(String param1, String param2)
+    public static ActiveBidsFragment newInstance()
     {
         ActiveBidsFragment fragment = new ActiveBidsFragment();
         Bundle args = new Bundle();
@@ -91,7 +105,26 @@ public class ActiveBidsFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_active_bids, container, false);
         getViewByIds(view);
         displayUsersBidsOnAd();
+
+        Intent intent = new Intent(getActivity(), PayPalService.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+        getActivity().startService(intent);
+
         return view;
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        getActivity().stopService(new Intent(getActivity(), PayPalService.class));
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        getActivity().stopService(new Intent(getActivity(), PayPalService.class));
+        super.onDestroy();
     }
 
     /**
@@ -130,20 +163,113 @@ public class ActiveBidsFragment extends Fragment
         databaseReference.child("Bids").child(jobId).addValueEventListener(new ValueEventListener()
         {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
+            public void onDataChange(final DataSnapshot dataSnapshot)
             {
                 for (final DataSnapshot ds : dataSnapshot.getChildren())
                 {
-                    //String fullName = thisdataSnapshot.child("fullName").getValue(String.class);
-                    final UserBidInformation bid = ds.getValue(UserBidInformation.class);
-                    bid.setJobID(jobId);
-                    //bid.setFullName(fullName);
-                    jobList.add(bid);
+                    boolean active = ds.child("active").getValue(boolean.class);
+                    if (active)
+                    {
+                        final UserBidInformation bid = ds.getValue(UserBidInformation.class);
+                        bid.setJobID(jobId);
+                        jobList.add(bid);
+                    }
                 }
 
-                MyCustomAdapter myCustomAdapter = new MyCustomAdapter();
+                final MyCustomAdapter myCustomAdapter = new MyCustomAdapter();
                 myCustomAdapter.addArray(jobList);
                 jobListView.setAdapter(myCustomAdapter);
+
+                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+                    {
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                        View mView = getLayoutInflater().inflate(R.layout.popup_accept_user_bid, null);
+
+                        alertDialog.setTitle("Accept Bid?");
+                        alertDialog.setView(mView);
+                        final AlertDialog dialog = alertDialog.create();
+                        dialog.show();
+
+                        TextView textViewName = mView.findViewById(R.id.textName);
+                        final RatingBar ratingBar = mView.findViewById(R.id.ratingBarSeeFeedback);
+                        TextView textViewBid = mView.findViewById(R.id.textBid);
+                        TextView textViewCommission = mView.findViewById(R.id.textCommission);
+                        TextView textViewTotal = mView.findViewById(R.id.textTotal);
+                        Button payPal = mView.findViewById(R.id.acceptBidButton);
+
+                        textViewName.setText(jobList.get(position).getFullName());
+                        textViewBid.setText("£" + jobList.get(position).getUserBid());
+
+                        String userBidBefore = jobList.get(position).getUserBid().substring(0, jobList.get(position).getUserBid().indexOf("."));
+                        totalAmount = Long.parseLong(userBidBefore);
+                        if(totalAmount < 20.00 || totalAmount < 20.0 || totalAmount < 20)
+                        {
+                            commisionAmount = 1.0;
+                            textViewCommission.setText("£" + (double) commisionAmount);
+                        }
+                        else
+                        {
+                            double commission = Long.parseLong(userBidBefore);
+                            commission = (double) (commission * 0.05);
+                            Math.round(commission);
+                            commisionAmount = commission;
+                            textViewCommission.setText("£" + (double) commission);
+                        }
+
+                        BigDecimal decimal = new BigDecimal(commisionAmount);
+                        long userBidBef = Long.parseLong(userBidBefore);
+                        Math.round(userBidBef);
+                        BigDecimal decimal1 = new BigDecimal(userBidBef);
+                        decimal = decimal.add(decimal1);
+                        totalDecimal = decimal.setScale(2, RoundingMode.CEILING);
+                        textViewTotal.setText("£" + totalDecimal);
+
+                        databaseReference.child("Ratings").child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+                        {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot)
+                            {
+                                long totalRating = 0;
+                                long counter = 0;
+                                // Iterate through entire bids table
+                                for (DataSnapshot ds : dataSnapshot.getChildren())
+                                {
+                                    long rating = ds.child("starReview").getValue(long.class);
+
+                                    totalRating += rating;
+                                    counter++;
+
+                                    totalRating = totalRating / counter;
+
+                                    int usersRating = Math.round(totalRating);
+                                    ratingBar.setNumStars(usersRating);
+                                    ratingBar.getNumStars();
+                                    Drawable drawable = ratingBar.getProgressDrawable();
+                                    drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError)
+                            {
+
+                            }
+                        });
+
+                        payPal.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                dialog.dismiss();
+                                processPayment();
+                            }
+                        });
+                    }
+                });
             }
 
             @Override
@@ -152,6 +278,74 @@ public class ActiveBidsFragment extends Fragment
 
             }
         });
+    }
+
+    private void processPayment()
+    {
+        PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalAmount + commisionAmount), "GBP"
+                , "Pay CrossRoads Commission", PayPalPayment.PAYMENT_INTENT_SALE);
+
+        Intent intent = new Intent(getActivity(), PaymentActivity.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
+        startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PAYPAL_REQUEST_CODE)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirmation != null)
+                {
+                    try
+                    {
+                        String paymentDetails = confirmation.toJSONObject().toString(4);
+                        JSONObject jsonObject = new JSONObject(paymentDetails);
+                        JSONObject jsonObject1 = jsonObject.getJSONObject("response");
+
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme);
+                        View mView = getLayoutInflater().inflate(R.layout.popup_payment_successful, null);
+
+                        alertDialog.setTitle("Payment Successful");
+                        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+                        alertDialog.setView(mView);
+                        final AlertDialog dialog = alertDialog.create();
+                        dialog.show();
+
+                        TextView textViewId = mView.findViewById(R.id.textId);
+                        TextView textViewAmount = mView.findViewById(R.id.textAmount);
+                        TextView textViewStatus = mView.findViewById(R.id.textStatus);
+
+                        textViewStatus.setText(jsonObject1.getString("state"));
+                        textViewAmount.setText("£" + totalDecimal);
+                        textViewId.setText(jsonObject1.getString("id"));
+
+
+
+                    } catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED)
+            {
+                Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+            }
+        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+        {
+            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public class MyCustomAdapter extends BaseAdapter
@@ -232,19 +426,7 @@ public class ActiveBidsFragment extends Fragment
                 holder.textViewName = convertView.findViewById(R.id.textName);
                 holder.textViewBid = convertView.findViewById(R.id.textBid);
                 holder.ratingBarSeeFeedback = convertView.findViewById(R.id.ratingBarSeeFeedback);
-                holder.acceptBidButton = convertView.findViewById(R.id.acceptBidButton);
 
-//                holder.textViewName.setOnClickListener(new View.OnClickListener()
-//                {
-//                    @Override
-//                    public void onClick(View v)
-//                    {
-//                        ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
-//                        GenericMethods genericMethods = new GenericMethods();
-//                        viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", mData.get(position).getUserID()));
-//                        genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
-//                    }
-//                });
                 convertView.setTag(holder);
             } else
             {
@@ -286,66 +468,66 @@ public class ActiveBidsFragment extends Fragment
                 }
             });
 
-            holder.acceptBidButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                    View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
-
-                    alertDialog.setTitle("Accept Bid?");
-                    alertDialog.setView(mView);
-                    final AlertDialog dialog = alertDialog.create();
-                    dialog.show();
-
-                    Button yesButton = (Button) mView.findViewById(R.id.yesButton);
-                    Button noButton = (Button) mView.findViewById(R.id.noButton);
-
-                    yesButton.setOnClickListener(new View.OnClickListener()
-                    {
-
-
-                        @Override
-                        public void onClick(View v)
-                        {
-                            dialog.cancel();
-
-                            View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
-
-                            databaseReference.child("Jobs").child(getBundleInformation()).child("courierID").setValue(mData.get(position).getUserID());
-                            databaseReference.child("Jobs").child(getBundleInformation()).child("jobStatus").setValue("Active");
-
-                            alertDialog.setTitle("Bid Accepted");
-                            alertDialog.setView(mView);
-                            final AlertDialog dialog = alertDialog.create();
-                            dialog.show();
-
-                            TextView text = (TextView) mView.findViewById(R.id.bidAccepted);
-                            Button okButton = (Button) mView.findViewById(R.id.okButton);
-
-                            okButton.setOnClickListener(new View.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(View v)
-                                {
-                                    dialog.cancel();
-                                }
-                            });
-
-                        }
-                    });
-
-                    noButton.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            dialog.cancel();
-                        }
-                    });
-                }
-            });
+//            holder.acceptBidButton.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override
+//                public void onClick(View v)
+//                {
+//                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+//                    View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
+//
+//                    alertDialog.setTitle("Accept Bid?");
+//                    alertDialog.setView(mView);
+//                    final AlertDialog dialog = alertDialog.create();
+//                    dialog.show();
+//
+//                    Button yesButton = (Button) mView.findViewById(R.id.yesButton);
+//                    Button noButton = (Button) mView.findViewById(R.id.noButton);
+//
+//                    yesButton.setOnClickListener(new View.OnClickListener()
+//                    {
+//
+//
+//                        @Override
+//                        public void onClick(View v)
+//                        {
+//                            dialog.cancel();
+//
+//                            View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
+//
+//                            databaseReference.child("Jobs").child(getBundleInformation()).child("courierID").setValue(mData.get(position).getUserID());
+//                            databaseReference.child("Jobs").child(getBundleInformation()).child("jobStatus").setValue("Active");
+//
+//                            alertDialog.setTitle("Bid Accepted");
+//                            alertDialog.setView(mView);
+//                            final AlertDialog dialog = alertDialog.create();
+//                            dialog.show();
+//
+//                            TextView text = (TextView) mView.findViewById(R.id.bidAccepted);
+//                            Button okButton = (Button) mView.findViewById(R.id.okButton);
+//
+//                            okButton.setOnClickListener(new View.OnClickListener()
+//                            {
+//                                @Override
+//                                public void onClick(View v)
+//                                {
+//                                    dialog.cancel();
+//                                }
+//                            });
+//
+//                        }
+//                    });
+//
+//                    noButton.setOnClickListener(new View.OnClickListener()
+//                    {
+//                        @Override
+//                        public void onClick(View v)
+//                        {
+//                            dialog.cancel();
+//                        }
+//                    });
+//                }
+//            });
 
             holder.textViewName.setText(mData.get(position).getFullName());
             return convertView;

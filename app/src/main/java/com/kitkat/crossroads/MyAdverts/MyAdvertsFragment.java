@@ -205,7 +205,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
             }
         }
 
-        mAdapter = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater());
+        mAdapter = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater(), getFragmentManager());
         mAdapter.addKeyArray(jobListKey);
         mAdapter.addArray(jobList);
 
@@ -232,7 +232,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
             }
         }
 
-        mAdapterActiveJobs = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater());
+        mAdapterActiveJobs = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater(), getFragmentManager());
         mAdapterActiveJobs.addArray(jobListActive);
         mAdapterActiveJobs.addKeyArray(jobListKeyActive);
 
@@ -258,7 +258,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                 jobListComplete.add(genericMethods.getJobInformation(ds));
             }
 
-            mAdapterCompleteJobs = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host,  getLayoutInflater());
+            mAdapterCompleteJobs = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host,  getLayoutInflater(), getFragmentManager());
             mAdapterCompleteJobs.addKeyArray(jobListKeyComplete);
             mAdapterCompleteJobs.addArray(jobListComplete);
 
