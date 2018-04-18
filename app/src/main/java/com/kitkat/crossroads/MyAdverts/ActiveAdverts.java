@@ -217,11 +217,8 @@ public class ActiveAdverts extends Fragment
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                System.out.print(jobId);
-                System.out.println(user);
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
                 textViewUsersBid.setText("Agreed Fee:       £" + userBid);
-                Toast.makeText(getActivity(), "HERE", Toast.LENGTH_SHORT).show();
             }
 
             @Override
