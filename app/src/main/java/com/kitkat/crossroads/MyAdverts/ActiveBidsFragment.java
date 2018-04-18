@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
 import com.kitkat.crossroads.Payment.ConfigPaypal;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
@@ -74,6 +76,8 @@ public class ActiveBidsFragment extends Fragment
     private double commisionAmount;
     private double totalAmount;
     private BigDecimal totalDecimal;
+
+    private int pos;
 
     public static final int PAYPAL_REQUEST_CODE = 7171;
     public static final PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(ConfigPaypal.PAYPAL_CLIENT_ID); // Test Mode
@@ -185,6 +189,7 @@ public class ActiveBidsFragment extends Fragment
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
                     {
+                        pos = position;
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                         View mView = getLayoutInflater().inflate(R.layout.popup_accept_user_bid, null);
 
@@ -201,28 +206,36 @@ public class ActiveBidsFragment extends Fragment
                         Button payPal = mView.findViewById(R.id.acceptBidButton);
 
                         textViewName.setText(jobList.get(position).getFullName());
-                        textViewBid.setText("£" + jobList.get(position).getUserBid());
+                        BigDecimal decimal = new BigDecimal(Double.parseDouble(jobList.get(position).getUserBid()));
+                        decimal = decimal.setScale(2, RoundingMode.CEILING);
+                        textViewBid.setText("£" + decimal);
 
                         String userBidBefore = jobList.get(position).getUserBid().substring(0, jobList.get(position).getUserBid().indexOf("."));
-                        totalAmount = Long.parseLong(userBidBefore);
-                        if(totalAmount < 20.00 || totalAmount < 20.0 || totalAmount < 20)
+                        totalAmount = decimal.longValue();
+
+                        if (totalAmount < 20.00 || totalAmount < 20.0 || totalAmount < 20)
                         {
-                            commisionAmount = 1.0;
-                            textViewCommission.setText("£" + (double) commisionAmount);
-                        }
-                        else
+                            commisionAmount = 1.00;
+                            decimal = new BigDecimal(1.00);
+                            decimal = decimal.setScale(2, RoundingMode.CEILING);
+                            textViewCommission.setText("£" + decimal);
+                        } else
                         {
                             double commission = Long.parseLong(userBidBefore);
                             commission = (double) (commission * 0.05);
                             Math.round(commission);
-                            commisionAmount = commission;
-                            textViewCommission.setText("£" + (double) commission);
+                            decimal = new BigDecimal(commission);
+                            decimal = decimal.setScale(2, RoundingMode.CEILING);
+                            commisionAmount = decimal.doubleValue();
+                            textViewCommission.setText("£" + decimal);
                         }
 
-                        BigDecimal decimal = new BigDecimal(commisionAmount);
+                        // Convert userBid from database into long. user bid
                         long userBidBef = Long.parseLong(userBidBefore);
                         Math.round(userBidBef);
                         BigDecimal decimal1 = new BigDecimal(userBidBef);
+
+                        decimal = new BigDecimal(commisionAmount);
                         decimal = decimal.add(decimal1);
                         totalDecimal = decimal.setScale(2, RoundingMode.CEILING);
                         textViewTotal.setText("£" + totalDecimal);
@@ -303,6 +316,11 @@ public class ActiveBidsFragment extends Fragment
                 {
                     try
                     {
+                        databaseReference.child("Jobs").child(getBundleInformation()).child("courierID").setValue(jobList.get(pos).getUserID());
+                        databaseReference.child("Jobs").child(getBundleInformation()).child("jobStatus").setValue("Active");
+                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).commit();
+
                         String paymentDetails = confirmation.toJSONObject().toString(4);
                         JSONObject jsonObject = new JSONObject(paymentDetails);
                         JSONObject jsonObject1 = jsonObject.getJSONObject("response");
@@ -330,9 +348,6 @@ public class ActiveBidsFragment extends Fragment
                         textViewStatus.setText(jsonObject1.getString("state"));
                         textViewAmount.setText("£" + totalDecimal);
                         textViewId.setText(jsonObject1.getString("id"));
-
-
-
                     } catch (JSONException e)
                     {
                         e.printStackTrace();
@@ -446,7 +461,6 @@ public class ActiveBidsFragment extends Fragment
                     for (DataSnapshot ds : dataSnapshot.getChildren())
                     {
                         long rating = ds.child("starReview").getValue(long.class);
-
 
                         totalRating += rating;
                         counter++;

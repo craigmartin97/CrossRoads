@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -81,6 +82,8 @@ public class ActiveAdverts extends Fragment
      */
     private String jobId;
 
+    private String courierId;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -106,6 +109,7 @@ public class ActiveAdverts extends Fragment
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
+        courierId = jobInformation.getCourierID();
 
         setJobInformationDetails(jobInformation);
 
@@ -208,13 +212,16 @@ public class ActiveAdverts extends Fragment
         Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive);
 
         // Set the users accepted bid
-        databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
+        databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
+                System.out.print(jobId);
+                System.out.println(user);
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
                 textViewUsersBid.setText("Agreed Fee:       £" + userBid);
+                Toast.makeText(getActivity(), "HERE", Toast.LENGTH_SHORT).show();
             }
 
             @Override
