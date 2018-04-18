@@ -2,6 +2,7 @@ package com.kitkat.crossroads.MyAdverts;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
@@ -10,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Payment.ConfigPaypal;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
-import com.kitkat.crossroads.Payment.PaymentDetails;
 import com.kitkat.crossroads.R;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
@@ -39,8 +38,10 @@ import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -70,7 +71,9 @@ public class ActiveBidsFragment extends Fragment
      * List to store all of the the users bids
      */
     private ArrayList<UserBidInformation> jobList = new ArrayList<>();
-    private long commisionAmount;
+    private double commisionAmount;
+    private double totalAmount;
+    private BigDecimal totalDecimal;
 
     public static final int PAYPAL_REQUEST_CODE = 7171;
     public static final PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(ConfigPaypal.PAYPAL_CLIENT_ID); // Test Mode
@@ -160,7 +163,7 @@ public class ActiveBidsFragment extends Fragment
         databaseReference.child("Bids").child(jobId).addValueEventListener(new ValueEventListener()
         {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
+            public void onDataChange(final DataSnapshot dataSnapshot)
             {
                 for (final DataSnapshot ds : dataSnapshot.getChildren())
                 {
@@ -201,14 +204,28 @@ public class ActiveBidsFragment extends Fragment
                         textViewBid.setText("£" + jobList.get(position).getUserBid());
 
                         String userBidBefore = jobList.get(position).getUserBid().substring(0, jobList.get(position).getUserBid().indexOf("."));
-                        long commission = Long.parseLong(userBidBefore);
-                        commission = (long) (commission * 0.05);
-                        commisionAmount = commission;
-                        Math.round(commission);
-                        textViewCommission.setText("£" + (int) commission + ".00");
+                        totalAmount = Long.parseLong(userBidBefore);
+                        if(totalAmount < 20.00 || totalAmount < 20.0 || totalAmount < 20)
+                        {
+                            commisionAmount = 1.0;
+                            textViewCommission.setText("£" + (double) commisionAmount);
+                        }
+                        else
+                        {
+                            double commission = Long.parseLong(userBidBefore);
+                            commission = (double) (commission * 0.05);
+                            Math.round(commission);
+                            commisionAmount = commission;
+                            textViewCommission.setText("£" + (double) commission);
+                        }
+
+                        BigDecimal decimal = new BigDecimal(commisionAmount);
                         long userBidBef = Long.parseLong(userBidBefore);
                         Math.round(userBidBef);
-                        textViewTotal.setText("£" + (int) (userBidBef - commission) + ".00");
+                        BigDecimal decimal1 = new BigDecimal(userBidBef);
+                        decimal = decimal.add(decimal1);
+                        totalDecimal = decimal.setScale(2, RoundingMode.CEILING);
+                        textViewTotal.setText("£" + totalDecimal);
 
                         databaseReference.child("Ratings").child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
                         {
@@ -247,6 +264,7 @@ public class ActiveBidsFragment extends Fragment
                             @Override
                             public void onClick(View v)
                             {
+                                dialog.dismiss();
                                 processPayment();
                             }
                         });
@@ -264,7 +282,7 @@ public class ActiveBidsFragment extends Fragment
 
     private void processPayment()
     {
-        PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(commisionAmount), "GBP"
+        PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalAmount + commisionAmount), "GBP"
                 , "Pay CrossRoads Commission", PayPalPayment.PAYMENT_INTENT_SALE);
 
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
@@ -286,9 +304,35 @@ public class ActiveBidsFragment extends Fragment
                     try
                     {
                         String paymentDetails = confirmation.toJSONObject().toString(4);
-                        startActivity(new Intent(getActivity(), PaymentDetails.class)
-                                .putExtra("PaymentDetails", paymentDetails)
-                                .putExtra("PaymentAmount", commisionAmount));
+                        JSONObject jsonObject = new JSONObject(paymentDetails);
+                        JSONObject jsonObject1 = jsonObject.getJSONObject("response");
+
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme);
+                        View mView = getLayoutInflater().inflate(R.layout.popup_payment_successful, null);
+
+                        alertDialog.setTitle("Payment Successful");
+                        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+                        alertDialog.setView(mView);
+                        final AlertDialog dialog = alertDialog.create();
+                        dialog.show();
+
+                        TextView textViewId = mView.findViewById(R.id.textId);
+                        TextView textViewAmount = mView.findViewById(R.id.textAmount);
+                        TextView textViewStatus = mView.findViewById(R.id.textStatus);
+
+                        textViewStatus.setText(jsonObject1.getString("state"));
+                        textViewAmount.setText("£" + totalDecimal);
+                        textViewId.setText(jsonObject1.getString("id"));
+
+
+
                     } catch (JSONException e)
                     {
                         e.printStackTrace();

@@ -64,7 +64,6 @@
         <activity
             android:name=".TermsAndConditions"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".Payment.PaymentDetails"></activity>
     </application>
 
 </manifest>
