@@ -29,7 +29,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Account.RegisterActivity"
+            android:name=".SplashScreen"
             android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -64,6 +64,17 @@
         <activity
             android:name=".TermsAndConditions"
             android:configChanges="orientation|screenSize" />
+        <activity android:name=".Account.RegisterActivity"></activity>
+
+        <meta-data android:name="firebase_messaging_auto_init_enabled"
+                android:value="false" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/iconcrossroadslogo" />
+        <meta-data android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
     </application>
+
+
 
 </manifest>
