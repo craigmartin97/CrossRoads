@@ -86,7 +86,6 @@
                 </LinearLayout>
         </LinearLayout>
 
-
         <Button
             android:id="@+id/acceptBidButton"
             android:layout_width="match_parent"
