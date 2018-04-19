@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     <mapping directory="/home/scm-studs/q5063319/AndroidStudioProjects/CrossRoads" vcs="Git" />
 >>>>>>> pre rebase
@@ -10,5 +11,9 @@
     <mapping directory="/home/scm-studs/q5063319/AndroidStudioProjects/CrossRoads" vcs="Git" />
 >>>>>>> 30345b8a57285562a8b501e2204d6973c112b3dc
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+=======
+    <mapping directory="" vcs="Git" />
+    <mapping directory="/home/scm-studs/q5063319/AndroidStudioProjects/CrossRoads" vcs="Git" />
+>>>>>>> pre rebase
   </component>
 </project>
