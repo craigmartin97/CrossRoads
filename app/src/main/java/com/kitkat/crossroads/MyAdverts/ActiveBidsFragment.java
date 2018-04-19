@@ -316,14 +316,6 @@ public class ActiveBidsFragment extends Fragment
 
                             databaseReference.child("Jobs").child(getBundleInformation()).child("courierID").setValue(mData.get(position).getUserID());
                             databaseReference.child("Jobs").child(getBundleInformation()).child("jobStatus").setValue("Active");
-                            FirebaseFirestore dbs = FirebaseFirestore.getInstance();
-                            Map<String, Object> notificationMessage = new HashMap<>();
-                            String message = "Your bid has been accepted!";
-                            String jobID = mData.get(position).getJobID();
-                            notificationMessage.put("message", message);
-                            notificationMessage.put("Job", jobID);
-                            notificationMessage.put("From", user);
-                            databaseReference.child("Notifications").child(mData.get(position).getUserID()).push().setValue(notificationMessage);
                             alertDialog.setTitle("Bid Accepted");
                             alertDialog.setView(mView);
                             final AlertDialog dialog = alertDialog.create();
