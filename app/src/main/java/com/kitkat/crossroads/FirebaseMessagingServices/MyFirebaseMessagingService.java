@@ -80,8 +80,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         notificationBuilder.setContentIntent(pendingIntent);
-
-
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
