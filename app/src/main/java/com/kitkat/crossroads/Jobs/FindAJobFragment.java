@@ -337,6 +337,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 mAdapter.addArray(jobList);
                 jobListView.setAdapter(mAdapter);
 
+
                 jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override
@@ -608,6 +609,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 e.printStackTrace();
             }
 
+            notifyDataSetChanged();
             return convertView;
         }
 

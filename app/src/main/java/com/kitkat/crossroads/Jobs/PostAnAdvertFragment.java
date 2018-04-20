@@ -431,7 +431,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 {
                     checkWidgetsContainText();
                     saveJobInformation();
-                    newFragmentTransaction(new FindAJobFragment());
                 }
                 // Editing an ad
                 else
@@ -505,42 +504,62 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         if (TextUtils.isEmpty(getTextInAdNameWidget()))
         {
             ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
+            return;
         }
         if (TextUtils.isEmpty(getTextInAdDescWidget()))
         {
             ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
+            return;
+        }
+        if(TextUtils.isEmpty(getTextInCollectionDateWidget()))
+        {
+            ifWidgetTextIsNull(editTextColDate, "Please Enter Collection Date!");
+            return;
+        }
+        if(TextUtils.isEmpty(getTextInCollectionDateWidget()))
+        {
+            ifWidgetTextIsNull(editTextColTime, "Please Enter Collection Time!");
+            return;
         }
         if (TextUtils.isEmpty(getTextInColAd1Wiget()))
         {
             ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
+            return;
         }
         if (TextUtils.isEmpty(getTextInColAd2Widget()))
         {
             ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
+            return;
         }
         if (TextUtils.isEmpty(getTextInColTownWidget()))
         {
             ifWidgetTextIsNull(editTextColAddTown, enterTown);
+            return;
         }
         if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
         {
             ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
+            return;
         }
         if (TextUtils.isEmpty(getTextInDelAd1Widget()))
         {
             ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
+            return;
         }
         if (TextUtils.isEmpty(getTextInDelAd2Widget()))
         {
             ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
+            return;
         }
         if (TextUtils.isEmpty(getTextInDelTownWidget()))
         {
             ifWidgetTextIsNull(editTextDelAddTown, enterTown);
+            return;
         }
         if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
         {
             ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
+            return;
         }
     }
 
@@ -876,56 +895,67 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         final String key = databaseReference.child("Jobs").push().getKey();
 
-        final StorageReference filePath = storageReference.child("JobImages").child(auth.getCurrentUser().getUid()).child(key).child(imageUri.getLastPathSegment());
-        filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+        if(imageUri != null)
         {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+            progressDialog.setMessage("Uploading Job Please Wait");
+            progressDialog.create();
+            progressDialog.show();
+            final StorageReference filePath = storageReference.child("JobImages").child(auth.getCurrentUser().getUid()).child(key).child(imageUri.getLastPathSegment());
+            filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
-                genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
-
-                Uri downloadUri = taskSnapshot.getDownloadUrl();
-                String jobStatus = "Pending";
-
-                databaseReference.child("Jobs").child(key).setValue(setJobInformation(jobStatus, downloadUri));
-                databaseReference.addValueEventListener(new ValueEventListener()
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                 {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot)
+                    genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
+
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    String jobStatus = "Pending";
+
+                    databaseReference.child("Jobs").child(key).setValue(setJobInformation(jobStatus, downloadUri));
+                    databaseReference.addValueEventListener(new ValueEventListener()
                     {
-                        jobReference = dataSnapshot.child("Jobs");
-
-                        Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
-
-                        for (DataSnapshot ds : jobListSnapShot)
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
                         {
-                            JobInformation j = ds.getValue(JobInformation.class);
-                            if (j.equals(jobInformation))
+                            jobReference = dataSnapshot.child("Jobs");
+
+                            Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+
+                            for (DataSnapshot ds : jobListSnapShot)
                             {
-                                databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
+                                JobInformation j = ds.getValue(JobInformation.class);
+                                if (j.equals(jobInformation))
+                                {
+                                    databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError)
-                    {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
 
-                    }
-                });
-                progressDialog.dismiss();
-                genericMethods.customToastMessage("Job Uploaded Successfully", getActivity());
+                        }
+                    });
+                    progressDialog.dismiss();
+                    newFragmentTransaction(new FindAJobFragment());
+                    genericMethods.customToastMessage("Job Uploaded Successfully", getActivity());
 
-            }
-        }).addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
+                }
+            }).addOnFailureListener(new OnFailureListener()
             {
-                genericMethods.customToastMessage("Failed To Upload!", getActivity());
-                progressDialog.dismiss();
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Exception e)
+                {
+                    genericMethods.customToastMessage("Failed To Upload!", getActivity());
+                    progressDialog.dismiss();
+                }
+            });
+        }
+        else
+        {
+            genericMethods.customToastMessage("You must upload an image", getActivity());
+        }
 
 
     }
