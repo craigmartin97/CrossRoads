@@ -99,6 +99,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         super.onCreate(savedInstanceState);
         databaseConnections();
         Bundle bundle = getArguments();
+
         if(bundle != null) {
             String tag = bundle.getString("tabView");
             if (tag != null) {
@@ -118,6 +119,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         final View view = inflater.inflate(R.layout.fragment_my_adverts, container, false);
 
         Bundle bundle = getArguments();
+
         if(bundle != null) {
             String tag = bundle.getString("tabView");
             if (tag != null) {
