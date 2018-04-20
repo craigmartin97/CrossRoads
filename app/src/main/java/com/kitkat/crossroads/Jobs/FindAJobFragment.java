@@ -329,8 +329,22 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                     //display only jobs that are still open to bidding
                     if (j.getJobStatus().equals("Pending") && !j.getPosterID().equals(user))
                     {
+                        try
+                        {
+                            Date currentTime = Calendar.getInstance().getTime();
+                            Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(j.getCollectionDate());
+                            Date dateFormat2 = new SimpleDateFormat("hh:mm").parse(j.getCollectionTime());
 
-                        jobList.add(j);
+                            if (!(new Date().after(sdf) && currentTime.after(dateFormat2)))
+                            {
+                                jobList.add(j);
+                            }
+
+                        } catch (ParseException e)
+                        {
+                            e.printStackTrace();
+                        }
+
                     }
                 }
 
@@ -590,23 +604,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             holder.textViewDesc.setText(mData.get(position).getAdvertDescription());
             holder.textViewFrom.setText(mData.get(position).getColTown());
             holder.textViewTo.setText(mData.get(position).getDelTown());
-
-            try
-            {
-                Date currentTime = Calendar.getInstance().getTime();
-                Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(mData.get(position).getCollectionDate());
-                Date dateFormat2 = new SimpleDateFormat("hh:mm").parse(mData.get(position).getCollectionTime());
-
-                if (new Date().after(sdf) && currentTime.after(dateFormat2))
-                {
-                    mData.remove(position);
-                    notifyDataSetChanged();
-                }
-
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
-            }
 
             return convertView;
         }
