@@ -17,22 +17,6 @@
 
         <requestFocus />>
 
-        <!--<ImageView-->
-        <!--android:id="@+id/imageViewCBlack"-->
-        <!--android:layout_width="80dp"-->
-        <!--android:layout_height="80dp"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:src="@drawable/cblack" />-->
-
-        <!--<ImageView-->
-        <!--android:id="@+id/imageViewCRGreen"-->
-        <!--android:layout_width="150dp"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:layout_below="@+id/imageViewCBlack"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:src="@drawable/crgreentext" />-->
-
         <TextView
             android:id="@+id/textViewCreateProfileHeader"
             android:layout_width="345dp"
@@ -144,62 +128,114 @@
             android:textColor="@color/colorPrimaryDark"
             android:textColorHint="#808080" />
 
+        <!--<TextView-->
+            <!--android:id="@+id/textViewCheckbox"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/editTextPostCode"-->
+            <!--android:layout_marginEnd="18dp"-->
+            <!--android:layout_toStartOf="@+id/checkBoxAdvertiser"-->
+            <!--android:paddingLeft="30dp"-->
+            <!--android:text="What Are You Primarily Going To Be Using The App For?"-->
+            <!--android:textColor="#808080"-->
+            <!--android:textSize="16dp" />-->
+
+        <!--<CheckBox-->
+            <!--android:id="@+id/checkBoxAdvertiser"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_below="@+id/editTextPostCode"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:layout_marginEnd="15dp"-->
+            <!--android:buttonTint="#2bbc9b"-->
+            <!--android:ems="10"-->
+            <!--android:padding="10dp"-->
+            <!--android:text="Advertiser"-->
+
+            <!--android:textColor="#2bbc9b"-->
+            <!--android:visibility="visible" />-->
+
+        <!--<CheckBox-->
+            <!--android:id="@+id/checkBoxCourier"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignStart="@+id/checkBoxAdvertiser"-->
+            <!--android:layout_below="@+id/checkBoxAdvertiser"-->
+            <!--android:layout_marginBottom="20dp"-->
+            <!--android:layout_marginEnd="15dp"-->
+            <!--android:buttonTint="#2bbc9b"-->
+            <!--android:padding="10dp"-->
+            <!--android:text="Courier"-->
+            <!--android:textColor="#2bbc9b"-->
+            <!--android:visibility="visible" />-->
+
+        <!--<Button-->
+            <!--android:id="@+id/buttonSaveProfile"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/textViewCheckbox"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:background="#2bbc9b"-->
+            <!--android:padding="18dp"-->
+            <!--android:text="Save Profile"-->
+            <!--android:textColor="#FFFFFF" />-->
+
         <TextView
             android:id="@+id/textViewCheckbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editTextPostCode"
-            android:layout_marginEnd="18dp"
-            android:layout_toStartOf="@+id/checkBoxAdvertiser"
-            android:paddingLeft="30dp"
-            android:text="What Are You Primarily Going To Be Using The App For?"
-            android:textColor="#808080"
-            android:textSize="16dp" />
-
-        <CheckBox
-            android:id="@+id/checkBoxAdvertiser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/editTextPostCode"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="15dp"
-            android:buttonTint="#2bbc9b"
-            android:ems="10"
-            android:padding="10dp"
-            android:text="Advertiser"
-
-            android:textColor="#2bbc9b"
-            android:visibility="visible" />
-
-        <CheckBox
-            android:id="@+id/checkBoxCourier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignStart="@+id/checkBoxAdvertiser"
-            android:layout_below="@+id/checkBoxAdvertiser"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="15dp"
-            android:buttonTint="#2bbc9b"
-            android:padding="10dp"
-            android:text="Courier"
-            android:textColor="#2bbc9b"
-            android:visibility="visible" />
-
-        <Button
-            android:id="@+id/buttonSaveProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/checkBoxCourier"
-            android:layout_centerHorizontal="true"
-            android:background="#2bbc9b"
-            android:padding="18dp"
-            android:text="Save Profile"
-            android:textColor="#FFFFFF" />
+            android:layout_below="@id/editTextPostCode"
+            android:gravity="center_horizontal|fill_horizontal|center"
+            android:text="What Are You Primarily Going To Be Using The App For?"
+            android:textAlignment="center" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linLayout1"
+            android:layout_below="@+id/textViewCheckbox"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkBoxAdvertiser"
+                android:fontFamily="@font/applegaramond"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:buttonTint="#2bbc9b"
+                android:clickable="false"
+                android:ems="10"
+                android:padding="10dp"
+                android:text="Advertiser"
+                android:textColor="#2bbc9b"
+                android:visibility="visible" />
+
+            <CheckBox
+                android:id="@+id/checkBoxCourier"
+                android:fontFamily="@font/applegaramond"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:buttonTint="#2bbc9b"
+                android:clickable="false"
+                android:text="Courier"
+                android:textColor="#2bbc9b"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <Button
+        android:id="@+id/buttonSaveProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linLayout1"
+        android:layout_centerHorizontal="true"
+        android:background="#2bbc9b"
+        android:padding="18dp"
+        android:text="Save Profile"
+        android:textColor="#FFFFFF" />
 
     </RelativeLayout>
-
 </ScrollView>
