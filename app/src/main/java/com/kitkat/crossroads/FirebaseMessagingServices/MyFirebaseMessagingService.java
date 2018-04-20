@@ -3,6 +3,7 @@ package com.kitkat.crossroads.FirebaseMessagingServices;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -14,6 +15,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.Account.RegisterActivity;
+import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.R;
 
 import java.util.Map;
@@ -42,19 +46,47 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
 
     //This method is only generating push notification
     private void sendNotification(String messageTitle, String messageBody, Map<String, String> row) {
-        PendingIntent contentIntent = null;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_ic_notification))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.iconcrossroadscwhite))
                 .setSmallIcon(R.drawable.iconcrossroadscwhite)
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(contentIntent);
+                .setSound(defaultSoundUri);
+
+
+        Intent notificationIntent = null;
+
+        if(row.get(0).toString().equals("acceptBidNotification"))
+        {
+           notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
+           notificationIntent.putExtra("menuFragment", "myJobsFragment");
+           notificationIntent.putExtra("tabView", "Active");
+        }
+        else if(row.get(0).toString().equals("newBidNotification"))
+        {
+            notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
+            notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
+            notificationIntent.putExtra("tabView", "Pending");
+        }
+        else if(row.get(0).toString().equals("jobCompletedNotification"))
+        {
+            notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
+            notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
+            notificationIntent.putExtra("tabView", "Completed");
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        notificationBuilder.setContentIntent(pendingIntent);
+
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+
         notificationManager.notify(count, notificationBuilder.build());
         count++;
     }

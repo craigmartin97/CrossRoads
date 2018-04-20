@@ -305,6 +305,9 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
     private void displayContent()
     {
+        String menuFragment = getIntent().getStringExtra("menuFragment");
+        String tabView = getIntent().getStringExtra("tabView");
+
         Log.d(TAG, "Permission Granted");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -315,32 +318,48 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        databaseReference.child(user).addValueEventListener(new ValueEventListener()
+        if(menuFragment != null)
         {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
+            if(menuFragment.equals("myJobsFragment"))
             {
-                boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-                boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("tabView", tabView);
+                MyJobsFragment myJobsFragment = new MyJobsFragment();
+                myJobsFragment.setArguments(bundle);
+                getFragmentTransaction().replace(R.id.content, myJobsFragment).commit();
 
-                if (advertiser == true && courier == false)
-                {
-                    getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-                } else if (advertiser == false && courier == true)
-                {
-                    getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-                } else if (advertiser == true && courier == true)
-                {
-                    getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+            }
+            else if(menuFragment.equals("myAdvertsFragment"))
+            {
+                Bundle bundle = new Bundle();
+                bundle.putString("tabView", tabView);
+                MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
+                myAdvertsFragment.setArguments(bundle);
+                getFragmentTransaction().replace(R.id.content, myAdvertsFragment).commit();
+            }
+        }
+        else {
+            databaseReference.child(user).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
+                    boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+
+                    if (advertiser == true && courier == false) {
+                        getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+                    } else if (advertiser == false && courier == true) {
+                        getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+                    } else if (advertiser == true && courier == true) {
+                        getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
