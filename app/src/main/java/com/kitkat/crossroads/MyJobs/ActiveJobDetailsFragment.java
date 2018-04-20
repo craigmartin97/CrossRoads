@@ -1,11 +1,16 @@
 package com.kitkat.crossroads.MyJobs;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,20 +23,37 @@ import android.widget.Toast;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
+import com.kitkat.crossroads.Payment.ConfigPaypal;
 import com.kitkat.crossroads.R;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ActiveJobDetailsFragment extends Fragment {
 
@@ -58,6 +80,11 @@ public class ActiveJobDetailsFragment extends Fragment {
     private TextView textViewJobName1, textViewDescription1;
 
     private ImageView jobImageAccepted;
+    private String bid, courierId;
+    private JobInformation jobInformation;
+
+//    public static final int PAYPAL_REQUEST_CODE = 7171;
+//    public static final PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId("jonsnow123@yahoo.co.uk"); // Test Mode
 
 
     @Override
@@ -86,8 +113,10 @@ public class ActiveJobDetailsFragment extends Fragment {
         jobImageAccepted = view.findViewById(R.id.jobImageAccepted);
 
         final Bundle bundle = this.getArguments();
-        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
+        jobInformation = (JobInformation) bundle.getSerializable("Job");
         jobId = (String) bundle.getSerializable("JobId");
+        courierId = (String) ((JobInformation) bundle.getSerializable("Job")).getCourierID();
+
 
         Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageAccepted);
 
@@ -185,7 +214,6 @@ public class ActiveJobDetailsFragment extends Fragment {
         mJobCompleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
 
                 final StorageReference filePath = storageReference.child("Jobs").child(jobId).child("Signature/collectionSignature.jpg");
@@ -204,9 +232,11 @@ public class ActiveJobDetailsFragment extends Fragment {
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
                         databaseReference.child("Jobs").child(jobId).child("jobStatus").setValue("Complete");
                         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack(null).commit();
+                        //processPayment();
                     }
                 });
             }
@@ -214,6 +244,104 @@ public class ActiveJobDetailsFragment extends Fragment {
 
         return view;
     }
+
+//    private void processPayment()
+//    {
+//        try
+//        {
+//            databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
+//            {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot)
+//                {
+//                    bid = dataSnapshot.child("userBid").getValue(String.class);
+//
+//                    BigDecimal decimal = new BigDecimal(Double.parseDouble(bid));
+//                    decimal = decimal.setScale(2, RoundingMode.CEILING);
+//
+//                    PayPalPayment payPalPayment = new PayPalPayment(decimal, "GBP"
+//                            , "Pay CrossRoads Commission", PayPalPayment.PAYMENT_INTENT_SALE);
+//
+//                    Intent intent = new Intent(getActivity(), PaymentActivity.class);
+//                    intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+//                    intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
+//                    startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError)
+//                {
+//
+//                }
+//            });
+//        } catch(Exception e)
+//        {
+//            Log.e("Can't Find Bid Error", e.getMessage());
+//        }
+//
+//    }
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data)
+//    {
+//        if (requestCode == PAYPAL_REQUEST_CODE)
+//        {
+//            if (resultCode == RESULT_OK)
+//            {
+//                PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+//                if (confirmation != null)
+//                {
+//                    try
+//                    {
+//                        databaseReference.child("Jobs").child(jobId).child("jobStatus").setValue("Complete");
+//                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//                        fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack(null).commit();
+//
+////                        databaseReference.child("Jobs").child(jobId).child("jobStatus").setValue("Complete");
+////                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+////                        fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).commit();
+//
+//                        String paymentDetails = confirmation.toJSONObject().toString(4);
+//                        JSONObject jsonObject = new JSONObject(paymentDetails);
+//                        JSONObject jsonObject1 = jsonObject.getJSONObject("response");
+//
+//                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme);
+//                        View mView = getLayoutInflater().inflate(R.layout.popup_payment_successful, null);
+//
+//                        alertDialog.setTitle("Payment Successful");
+//                        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener()
+//                        {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which)
+//                            {
+//                                dialog.dismiss();
+//                            }
+//                        });
+//                        alertDialog.setView(mView);
+//                        final AlertDialog dialog = alertDialog.create();
+//                        dialog.show();
+//
+//                        TextView textViewId = mView.findViewById(R.id.textId);
+//                        TextView textViewAmount = mView.findViewById(R.id.textAmount);
+//                        TextView textViewStatus = mView.findViewById(R.id.textStatus);
+//
+//                        textViewStatus.setText(jsonObject1.getString("state"));
+//                        textViewAmount.setText("£" + bid);
+//                        textViewId.setText(jsonObject1.getString("id"));
+//                    } catch (JSONException e)
+//                    {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            } else if (resultCode == Activity.RESULT_CANCELED)
+//            {
+//                Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+//            }
+//        } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+//        {
+//            Toast.makeText(getActivity(), "Invalid", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     private void databaseConnections()
     {
