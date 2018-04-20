@@ -50,6 +50,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
+                .setSmallIcon(R.drawable.iconcrossroadslogo)
                 .setSound(defaultSoundUri)
                 .setContentIntent(contentIntent);
 
