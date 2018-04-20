@@ -37,15 +37,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
         //It is optional
         Log.d(TAG, "Notification Message TITLE: " + remoteMessage.getNotification().getTitle());
         Log.d(TAG, "Notification Message BODY: " + remoteMessage.getNotification().getBody());
-        Log.d(TAG, "Notification Message DATA: " + remoteMessage.getData().toString());
+        Log.d(TAG, "Notification Message DATA: " + remoteMessage.getData().get("id").toString());
 
     //Calling method to generate notification
         sendNotification(remoteMessage.getNotification().getTitle(),
-                remoteMessage.getNotification().getBody(), remoteMessage.getData());
+                remoteMessage.getNotification().getBody(), remoteMessage.getData().get("id").toString());
     }
 
     //This method is only generating push notification
-    private void sendNotification(String messageTitle, String messageBody, Map<String, String> row) {
+    private void sendNotification(String messageTitle, String messageBody, String tag) {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.iconcrossroadscwhite))
@@ -58,19 +58,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
 
         Intent notificationIntent = null;
 
-        if(row.get(0).toString().equals("acceptBidNotification"))
+        if(tag.equals("acceptBidNotification"))
         {
            notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
            notificationIntent.putExtra("menuFragment", "myJobsFragment");
            notificationIntent.putExtra("tabView", "Active");
         }
-        else if(row.get(0).toString().equals("newBidNotification"))
+        else if(tag.equals("newBidNotification"))
         {
             notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
             notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
             notificationIntent.putExtra("tabView", "Pending");
         }
-        else if(row.get(0).toString().equals("jobCompletedNotification"))
+        else if(tag.equals("jobCompletedNotification"))
         {
             notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
             notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
