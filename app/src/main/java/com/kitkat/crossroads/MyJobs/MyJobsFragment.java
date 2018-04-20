@@ -101,10 +101,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         super.onCreate(savedInstanceState);
         setDatabaseConnections();
         Bundle bundle = getArguments();
-        String tag = bundle.getString("tabView");
-        if(tag != null)
-        {
-            tabTag = tag;
+        if(bundle != null) {
+            String tag = bundle.getString("tabView");
+            if (tag != null) {
+                tabTag = tag;
+            }
         }
         else {
             tabTag = "Active";
@@ -118,10 +119,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
         Bundle bundle = getArguments();
-        String tag = bundle.getString("tabView");
-        if(tag != null)
-        {
-            tabTag = tag;
+        if(bundle != null) {
+            String tag = bundle.getString("tabView");
+            if (tag != null) {
+                tabTag = tag;
+            }
         }
 
         getViewsByIds(view);
