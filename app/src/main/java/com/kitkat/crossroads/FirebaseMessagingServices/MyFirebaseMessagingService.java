@@ -45,12 +45,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
         PendingIntent contentIntent = null;
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_ic_notification))
-                .setSmallIcon(R.drawable.ic_stat_ic_notification)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.iconcrossroadscwhite))
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
-                .setSmallIcon(R.drawable.iconcrossroadslogo)
+                .setSmallIcon(R.drawable.iconcrossroadscwhite)
                 .setSound(defaultSoundUri)
                 .setContentIntent(contentIntent);
 
