@@ -484,68 +484,6 @@ public class ActiveBidsFragment extends Fragment
                 }
             });
 
-            holder.acceptBidButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                    View mView = getLayoutInflater().inflate(R.layout.popup_accept_bid, null);
-
-                    alertDialog.setTitle("Accept Bid?");
-                    alertDialog.setView(mView);
-                    final AlertDialog dialog = alertDialog.create();
-                    dialog.show();
-
-                    Button yesButton = (Button) mView.findViewById(R.id.yesButton);
-                    Button noButton = (Button) mView.findViewById(R.id.noButton);
-
-                    yesButton.setOnClickListener(new View.OnClickListener()
-                    {
-
-
-                        @Override
-                        public void onClick(View v)
-                        {
-                            dialog.cancel();
-
-                            View mView = getLayoutInflater().inflate(R.layout.popup_bid_accepted, null);
-
-                            databaseReference.child("Jobs").child(getBundleInformation()).child("courierID").setValue(mData.get(position).getUserID());
-                            databaseReference.child("Jobs").child(getBundleInformation()).child("jobStatus").setValue("Active");
-
-                            alertDialog.setTitle("Bid Accepted");
-                            alertDialog.setView(mView);
-                            final AlertDialog dialog = alertDialog.create();
-                            dialog.show();
-
-                            TextView text = (TextView) mView.findViewById(R.id.bidAccepted);
-                            Button okButton = (Button) mView.findViewById(R.id.okButton);
-
-                            okButton.setOnClickListener(new View.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(View v)
-                                {
-                                    dialog.cancel();
-                                }
-                            });
-
-                        }
-                    });
-
-                    noButton.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            dialog.cancel();
-                        }
-                    });
-                }
-            });
-
-
             holder.textViewName.setText(mData.get(position).getFullName());
             return convertView;
         }
