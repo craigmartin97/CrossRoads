@@ -99,14 +99,18 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         super.onCreate(savedInstanceState);
         databaseConnections();
         Bundle bundle = getArguments();
-        String tag = bundle.getString("tabView");
-        if(tag != null)
+        if (bundle != null)
         {
-            tabTag = tag;
-        }
-        else {
+            String tag = bundle.getString("tabView");
+            if (tag != null)
+            {
+                tabTag = tag;
+            }
+        } else
+        {
             tabTag = "Active";
         }
+
     }
 
     @Override
@@ -116,10 +120,13 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         final View view = inflater.inflate(R.layout.fragment_my_adverts, container, false);
 
         Bundle bundle = getArguments();
-        String tag = bundle.getString("tabView");
-        if(tag != null)
+        if(bundle != null)
         {
-            tabTag = tag;
+            String tag = bundle.getString("tabView");
+            if (tag != null)
+            {
+                tabTag = tag;
+            }
         }
 
         getViewByIds(view);
@@ -212,7 +219,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
             {
                 Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(genericMethods.getJobInformation(ds).getCollectionDate());
 
-                if(new Date().before(sdf))
+                if (new Date().before(sdf))
                 {
                     jobListKey.add(ds.getKey());
                     jobList.add(genericMethods.getJobInformation(ds));
@@ -273,7 +280,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                 jobListComplete.add(genericMethods.getJobInformation(ds));
             }
 
-            mAdapterCompleteJobs = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host,  getLayoutInflater(), getFragmentManager());
+            mAdapterCompleteJobs = new MyCustomAdapterForTabViews(getActivity(), isAdded(), host, getLayoutInflater(), getFragmentManager());
             mAdapterCompleteJobs.addKeyArray(jobListKeyComplete);
             mAdapterCompleteJobs.addArray(jobListComplete);
 
