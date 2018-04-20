@@ -62,6 +62,7 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
+import com.kitkat.crossroads.Manifest;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
@@ -427,7 +428,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             public void onClick(View v)
             {
                 // Posting a new ad
-                if(jobIdKey == null)
+                if (jobIdKey == null)
                 {
                     checkWidgetsContainText();
                     saveJobInformation();
@@ -511,12 +512,12 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
             return;
         }
-        if(TextUtils.isEmpty(getTextInCollectionDateWidget()))
+        if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
         {
             ifWidgetTextIsNull(editTextColDate, "Please Enter Collection Date!");
             return;
         }
-        if(TextUtils.isEmpty(getTextInCollectionDateWidget()))
+        if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
         {
             ifWidgetTextIsNull(editTextColTime, "Please Enter Collection Time!");
             return;
@@ -895,7 +896,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         final String key = databaseReference.child("Jobs").push().getKey();
 
-        if(imageUri != null)
+        if (imageUri != null)
         {
             progressDialog.setMessage("Uploading Job Please Wait");
             progressDialog.create();
@@ -951,8 +952,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                     progressDialog.dismiss();
                 }
             });
-        }
-        else
+        } else
         {
             genericMethods.customToastMessage("You must upload an image", getActivity());
         }
@@ -1054,7 +1054,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
         }
-
     }
 
     @Override
