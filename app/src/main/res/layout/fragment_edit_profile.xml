@@ -19,9 +19,10 @@
 
         <TextView
             android:id="@+id/textViewCreateProfileHeader"
-            android:layout_width="345dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
+            android:layout_centerHorizontal="true"
             android:fontFamily="@font/bebasneueregular"
             android:text="@string/edit_your_profile"
             android:textAlignment="center"
@@ -194,22 +195,18 @@
             android:textAlignment="center" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/linLayout1"
             android:layout_below="@+id/textViewCheckbox"
-            android:orientation="horizontal">
+            android:layout_centerHorizontal="true">
 
             <CheckBox
                 android:id="@+id/checkBoxAdvertiser"
                 android:fontFamily="@font/applegaramond"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="35dp"
                 android:buttonTint="#2bbc9b"
-                android:clickable="false"
-                android:ems="10"
-                android:padding="10dp"
                 android:text="Advertiser"
                 android:textColor="#2bbc9b"
                 android:visibility="visible" />
@@ -217,10 +214,9 @@
             <CheckBox
                 android:id="@+id/checkBoxCourier"
                 android:fontFamily="@font/applegaramond"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="#2bbc9b"
-                android:clickable="false"
                 android:text="Courier"
                 android:textColor="#2bbc9b"
                 android:visibility="visible" />
