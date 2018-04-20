@@ -98,7 +98,15 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     {
         super.onCreate(savedInstanceState);
         databaseConnections();
-        tabTag = "Active";
+        Bundle bundle = getArguments();
+        String tag = bundle.getString("tabView");
+        if(tag != null)
+        {
+            tabTag = tag;
+        }
+        else {
+            tabTag = "Active";
+        }
     }
 
     @Override
@@ -106,6 +114,13 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
                              Bundle savedInstanceState)
     {
         final View view = inflater.inflate(R.layout.fragment_my_adverts, container, false);
+
+        Bundle bundle = getArguments();
+        String tag = bundle.getString("tabView");
+        if(tag != null)
+        {
+            tabTag = tag;
+        }
 
         getViewByIds(view);
         setTabHost();
