@@ -12,7 +12,7 @@
         <LinearLayout
             android:id="@+id/gradientLayout"
             android:layout_width="match_parent"
-            android:layout_height="134dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/gradient_background"
             android:orientation="vertical">
 
@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="65dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="10dp"
                 android:adjustViewBounds="false"
                 android:contentDescription="@string/Profile_Photo_of_user" />
 
@@ -49,7 +49,14 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    android:background="#FFFFFF"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:paddingBottom="30dp">
 
                     <RatingBar
                         android:id="@+id/UserRatingsBar"
@@ -62,23 +69,22 @@
                         android:stepSize=".5" />
 
                     <TextView
+                        android:id="@+id/ratingNoFeedback"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/ratingNoFeedback"
+                        android:layout_below="@id/UserRatingsBar"
                         android:textAlignment="center"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_below="@id/UserRatingsBar"/>
+                        android:textStyle="bold" />
 
                     <ExpandableListView
                         android:id="@+id/expandable_list_view"
-                        android:layout_width="match_parent"
-                        android:layout_below="@+id/ratingNoFeedback"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/ratingNoFeedback"
                         android:layout_gravity="start"
                         android:dividerHeight="3dp"
-                        android:pointerIcon="arrow">
-                    </ExpandableListView>
+                        android:pointerIcon="arrow"></ExpandableListView>
 
                     <LinearLayout
                         android:id="@+id/adL1"
@@ -92,8 +98,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:src="@mipmap/phone"
-                            android:layout_marginTop="-26dp"/>
+                            android:layout_marginTop="-26dp"
+                            android:src="@mipmap/phone" />
 
                         <TextView
                             android:id="@+id/HeadingForPhoneNumber"
@@ -108,13 +114,13 @@
 
                         <TextView
                             android:id="@+id/textViewPhoneNumber"
-                            android:fontFamily="@font/applegaramond"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/HeadingForPhoneNumber"
+                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
-                            android:text="viewPhoneNumber"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textSize="18sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -122,6 +128,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/adL1"
+                        android:layout_marginBottom="10dp"
                         android:background="@drawable/customborder"
                         android:gravity="right"
                         android:orientation="vertical">
@@ -129,8 +136,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:src="@mipmap/home"
-                            android:layout_marginTop="-26dp"/>
+                            android:layout_marginTop="-26dp"
+                            android:src="@mipmap/home" />
 
                         <TextView
                             android:id="@+id/HeadingForAddressOne"
@@ -144,13 +151,13 @@
 
                         <TextView
                             android:id="@+id/textViewAddressOne"
-                            android:fontFamily="@font/applegaramond"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/HeadingForAddressOne"
+                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
-                            android:text="viewAddressOne"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textSize="18sp" />
 
 
                         <TextView
@@ -166,13 +173,13 @@
 
                         <TextView
                             android:id="@+id/textViewAddressTwo"
-                            android:fontFamily="@font/applegaramond"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/HeadingForAddressTwo"
+                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
-                            android:text="viewAddressTwo"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/HeadingForTown"
@@ -187,13 +194,13 @@
 
                         <TextView
                             android:id="@+id/textViewTown"
-                            android:fontFamily="@font/applegaramond"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/HeadingForTown"
+                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
-                            android:text="viewTown"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/HeadingForPostCode"
@@ -208,67 +215,84 @@
 
                         <TextView
                             android:id="@+id/textViewPostCode"
-                            android:fontFamily="@font/applegaramond"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/HeadingForPostCode"
+                            android:fontFamily="@font/applegaramond"
                             android:paddingTop="10dp"
-                            android:text="viewPostCode"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textSize="16sp" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/adL3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/adL2"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/customborder"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/textViewCheckbox"
-                            android:fontFamily="@font/bebasneueregular"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_horizontal|fill_horizontal|center"
-                            android:text="What Are You Primarily Going To Be Using The App For?"
-                            android:textAlignment="center" />
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linLayout1"
+                        android:layout_below="@+id/adL2"
+                        android:background="@drawable/customborder"
+                        android:layout_centerHorizontal="true">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/textViewCheckbox"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:gravity="center_horizontal|fill_horizontal|center"
+                                android:text="What Are You Primarily Going To Be Using The App For?"
+                                android:textAlignment="center" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textViewCheckbox"
+                                android:layout_centerHorizontal="true">
 
                             <CheckBox
                                 android:id="@+id/checkBoxAdvertiser"
                                 android:fontFamily="@font/applegaramond"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="35dp"
                                 android:buttonTint="#2bbc9b"
-                                android:clickable="false"
-                                android:ems="10"
-                                android:padding="10dp"
                                 android:text="Advertiser"
                                 android:textColor="#2bbc9b"
                                 android:visibility="visible" />
 
                             <CheckBox
                                 android:id="@+id/checkBoxCourier"
-                                android:fontFamily="@font/applegaramond"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:buttonTint="#2bbc9b"
-                                android:clickable="false"
+                                android:fontFamily="@font/applegaramond"
                                 android:text="Courier"
                                 android:textColor="#2bbc9b"
                                 android:visibility="visible" />
-                        </LinearLayout>
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
 
                     </LinearLayout>
+
                 </RelativeLayout>
             </ScrollView>
         </LinearLayout>
