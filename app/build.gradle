@@ -44,6 +44,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-places:15.0.0'
     compile 'com.felipecsl:gifimageview:2.1.0'
     compile 'commons-io:commons-io:2.4'
+    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.1'
+
 
     implementation 'com.google.android.gms:play-services-maps:15.0.0'
     implementation 'com.google.android.gms:play-services-location:15.0.0'

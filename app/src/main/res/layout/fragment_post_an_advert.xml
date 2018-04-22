@@ -442,8 +442,6 @@
                 android:text="Upload Image"
                 android:textColor="#FFFFFF" />
 
-
-
             <Button
                 android:id="@+id/buttonAddJob"
                 android:layout_width="300sp"

@@ -258,6 +258,7 @@
                                 android:buttonTint="#2bbc9b"
                                 android:text="Advertiser"
                                 android:textColor="#2bbc9b"
+                                android:enabled="false"
                                 android:visibility="visible" />
 
                             <CheckBox
@@ -267,6 +268,7 @@
                                 android:buttonTint="#2bbc9b"
                                 android:fontFamily="@font/applegaramond"
                                 android:text="Courier"
+                                android:enabled="false"
                                 android:textColor="#2bbc9b"
                                 android:visibility="visible" />
                             </LinearLayout>
