@@ -15,8 +15,6 @@ import com.google.firebase.storage.StorageReference;
 
 public class DatabaseConnections extends AppCompatActivity
 {
-    private FirebaseAuth auth;
-
     public FirebaseAuth getAuth()
     {
         return FirebaseAuth.getInstance();
@@ -40,5 +38,10 @@ public class DatabaseConnections extends AppCompatActivity
     public String getCurrentUser()
     {
         return getAuth().getCurrentUser().getUid();
+    }
+
+    public FirebaseUser getFirebaseUser()
+    {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 }

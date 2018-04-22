@@ -22,8 +22,9 @@
 
             <TextView
                 android:id="@+id/textView4"
-                android:layout_width="345dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/bebasneueregular"
                 android:text="Add Job"
@@ -33,9 +34,10 @@
 
             <TextView
                 android:id="@+id/textView5"
-                android:layout_width="345dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView4"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/bebasneueregular"
                 android:text="Delivery Details"
@@ -128,9 +130,10 @@
 
             <TextView
                 android:id="@+id/textViewCollection"
-                android:layout_width="345dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobColTime"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/bebasneueregular"
                 android:text="Collection Address"
@@ -139,19 +142,23 @@
                 android:textSize="20dp" />
 
             <Button
-                android:id="@+id/buttonMap"
+                android:id="@+id/buttonMap1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewCollection"
-                android:layout_centerInParent="true"
-                android:text="MAP" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#2bbc9b"
+                android:text="MAP"
+                android:textColor="#FFFFFF" />
 
 
             <RelativeLayout
                 android:id="@+id/relLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/buttonMap">
+                android:layout_below="@+id/buttonMap1">
 
                 <LinearLayout
                     android:id="@+id/mapLin"
@@ -214,8 +221,8 @@
                     android:layout_width="40dp"
                     android:layout_height="43dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/ic_gps"
                     android:layout_alignStart="@+id/relLayout1"
+                    android:layout_below="@+id/ic_gps"
                     android:scaleType="centerCrop"
                     android:src="@drawable/check" />
             </RelativeLayout>
@@ -276,9 +283,10 @@
 
             <TextView
                 android:id="@+id/textViewDelivery"
-                android:layout_width="345dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobColPostcode"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/bebasneueregular"
                 android:text="Delivery Address"
@@ -292,7 +300,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewDelivery"
                 android:layout_centerHorizontal="true"
-                android:text="MAP" />
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#2bbc9b"
+                android:text="MAP"
+                android:textColor="#FFFFFF" />
 
 
             <RelativeLayout
@@ -336,7 +348,7 @@
 
                     <AutoCompleteTextView
                         android:id="@+id/editTextSearch2"
-                        android:layout_width="match_parent"
+                        android:layout_width="256dp"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/magnify2"
                         android:background="@null"
@@ -418,33 +430,33 @@
                 android:hint="Postcode"
                 android:inputType="textPostalAddress" />
 
-            <Button
-                android:id="@+id/buttonUploadImages"
-                android:layout_width="300sp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/editTextJobDelPostcode"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="34dp"
-                android:background="#2bbc9b"
-                android:text="Upload Multiple Images"
-                android:textColor="#FFFFFF" />
-
             <ImageView
                 android:id="@+id/jobImage1"
-                android:layout_width="100dp"
-                android:layout_height="115dp"
-                android:layout_below="@+id/buttonUploadImages"
+                android:layout_width="188dp"
+                android:layout_height="184dp"
+                android:layout_below="@+id/editTextJobDelPostcode"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="0dp"
                 android:visibility="invisible" />
 
             <Button
+                android:id="@+id/buttonUploadImages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/jobImage1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="34dp"
+                android:background="#2bbc9b"
+                android:text="Upload Image"
+                android:textColor="#FFFFFF" />
+
+            <Button
                 android:id="@+id/buttonAddJob"
-                android:layout_width="300sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/buttonUploadImages"
-                android:layout_below="@+id/jobImage1"
-                android:layout_marginTop="11dp"
+                android:layout_below="@+id/buttonUploadImages"
+                android:layout_marginTop="20dp"
                 android:background="#2bbc9b"
                 android:text="Post Advert"
                 android:textColor="#FFFFFF" />

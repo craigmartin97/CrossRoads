@@ -19,33 +19,121 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
+/**
+ * This class is used so users can login to their accounts. The users must enter their email address and password.
+ * This is then checked in the FireBase Authentication area to ensure they are a user. If they are a sign up user
+ * they are logged into their account. Otherwise they are asked to create an account.
+ */
 public class LoginActivity extends AppCompatActivity
 {
+    /**
+     * Storing the reference to the FireBase Authentication area, so users can access their accounts
+     */
     private FirebaseAuth auth;
-    private DatabaseReference myRef;
 
+    /**
+     * Storing the reference to the FireBase Database area, so users information can be stored
+     */
+    private DatabaseReference databaseReference;
+
+    /**
+     * EditText widgets, so the user can enter their email address and password for verification
+     */
     private EditText inputEmail, inputPassword;
+
+    /**
+     * Creating a new progress dialog, to display to the user, so the knows the process of logging in
+     * is taking place.
+     */
     private ProgressDialog progressDialog;
+
+    /**
+     * Getting the current users unique Id
+     */
+    private FirebaseUser user;
+
+    /**
+     * Button widget, when the user has entered their information they can press the button
+     * to trigger the verification process and login.
+     */
     private Button btnLogin;
+
+    /**
+     * TextView widgets
+     * signUp - will redirect the user to create a profile if they don't have an account.
+     * resetPassword - will allow the user to enter their email address, if they have forgot their password.
+     */
     private TextView signUp, resetPassword;
 
-    private DatabaseConnections databaseConnections;
+    /**
+     * Accessing methods from the generic methods, were CustomToast and DialogDismiss can be accessed from.
+     */
+    private GenericMethods genericMethods = new GenericMethods();
 
+    /**
+     * This method is called when the activity login is displayed to the user. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState - if the activity needs to be recreated it can be passed back
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        databaseConnections = new DatabaseConnections();
-
         getViewByIds();
-        setDatabaseConnections();
+        databaseConnections();
+        setOnClickListeners();
+    }
 
+    /**
+     * Creates all of the connections to FireBase that are necessary.
+     * databaseReference, is user to store a new token under the usersID
+     * auth, is used to create a connection to verify the user
+     */
+    private void databaseConnections()
+    {
+        // Establishing a connection to the DatabaseConnections class to retrieve the FireBase connections.
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        databaseReference = databaseConnections.getMyRef();
+        auth = databaseConnections.getAuth();
+        user = databaseConnections.getFirebaseUser();
+
+        // If their is already a user signed in
+        if (auth.getCurrentUser() != null)
+        {
+            Intent intent = new Intent(LoginActivity.this, CrossRoads.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    /***
+     * Assigning all widgets in layout file to class variables in this activity.
+     */
+    private void getViewByIds()
+    {
+        progressDialog = new ProgressDialog(this);
+        inputEmail = findViewById(R.id.editTextEmailLogin);
+        inputPassword = findViewById(R.id.editTextPasswordLogin);
+        signUp = findViewById(R.id.textViewSignUp);
+        resetPassword = findViewById(R.id.textViewResetPassword);
+        btnLogin = findViewById(R.id.buttonSignIn);
+    }
+
+    /**
+     * Set the onClick events for the widgets in the activity.
+     * Allowing the user to login, register or reset their password
+     */
+    private void setOnClickListeners()
+    {
+        // allow user to sign up, move to register activity
         signUp.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -54,6 +142,7 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
+        // allow user to reset their password, move to ResetPassword activity
         resetPassword.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -63,20 +152,18 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
+        // allow user to login to their account
         btnLogin.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
             {
-                String email = inputEmail.getText().toString().trim();
-                final String password = inputPassword.getText().toString().trim();
-
-                if (TextUtils.isEmpty(email))
+                if (TextUtils.isEmpty(getTextFromEmailWidget()))
                 {
                     customToastMessage("Please enter an email address!");
                     return;
                 }
 
-                if (TextUtils.isEmpty(password))
+                if (TextUtils.isEmpty(getTextFromPasswordWidget()))
                 {
                     customToastMessage("Please Enter A Password");
                     return;
@@ -85,75 +172,73 @@ public class LoginActivity extends AppCompatActivity
                 progressDialog.setMessage("Logging In Please Wait...");
                 progressDialog.show();
 
-                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                auth.signInWithEmailAndPassword(getTextFromEmailWidget(), getTextFromPasswordWidget()).addOnCompleteListener(new OnCompleteListener<AuthResult>()
                 {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
                     {
 
+                        // if the user failed authentication
                         if (!task.isSuccessful())
                         {
-                            dismissDialog();
+                            genericMethods.dismissDialog(progressDialog);
                             customToastMessage("Please Check Your Details And Try Again");
+                            return;
                         } else
                         {
+                            genericMethods.dismissDialog(progressDialog);
                             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                            dismissDialog();
+                            // successfully logged in
                             if (task.isSuccessful() && user.isEmailVerified() == true)
                             {
-                                dismissDialog();
+                                genericMethods.dismissDialog(progressDialog);
                                 String token = FirebaseInstanceId.getInstance().getToken();
-                                myRef.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
+                                databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
 
                                 startActivity(new Intent(getApplicationContext(), CrossRoads.class));
                                 finish();
                             } else if (user.isEmailVerified() == false)
                             {
-                                dismissDialog();
+                                genericMethods.dismissDialog(progressDialog);
                                 customToastMessage("You Must Verify Your Email Address Before Logging In. Please Check Your Email.");
+                                return;
                             } else
                             {
-                                dismissDialog();
+                                genericMethods.dismissDialog(progressDialog);
                                 customToastMessage("Please Re-enter Your Details And Try Again");
+                                return;
                             }
                         }
                     }
                 });
-
             }
         });
     }
 
-    private void setDatabaseConnections()
+    /**
+     * Retrieves the text the user has entered from the email widget
+     * @return - users email
+     */
+    private String getTextFromEmailWidget()
     {
-        myRef = databaseConnections.getMyRef();
-        auth = databaseConnections.getAuth();
-
-        if (auth.getCurrentUser() != null)
-        {
-            Intent intent = new Intent(LoginActivity.this, CrossRoads.class);
-            startActivity(intent);
-            finish();
-        }
+        return inputEmail.getText().toString().trim();
     }
 
-    private void getViewByIds()
+    /**
+     * Retrieves the text the user has entered from the password widget
+     * @return - users password
+     */
+    private String getTextFromPasswordWidget()
     {
-        inputEmail = (EditText) findViewById(R.id.editTextEmailLogin);
-        inputPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
-        progressDialog = new ProgressDialog(this);
-        signUp = (TextView) findViewById(R.id.textViewSignUp);
-        resetPassword = (TextView) findViewById(R.id.textViewResetPassword);
-        btnLogin = (Button) findViewById(R.id.buttonSignIn);
+        return inputPassword.getText().toString().trim();
     }
 
-    private void dismissDialog()
-    {
-        progressDialog.dismiss();
-    }
-
-    private void customToastMessage(String message)
+    /**
+     * Creating a custom toast message for all Activities to access
+     * @param message - Text to be displayed to the user
+     */
+    public void customToastMessage(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

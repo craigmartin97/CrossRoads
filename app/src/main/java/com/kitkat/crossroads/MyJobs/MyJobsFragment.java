@@ -101,12 +101,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         super.onCreate(savedInstanceState);
         setDatabaseConnections();
         Bundle bundle = getArguments();
-        String tag = bundle.getString("tabView");
-        if(tag != null)
+        if (bundle != null)
         {
-            tabTag = tag;
-        }
-        else {
+            String tag = bundle.getString("tabView");
+            if (tag != null)
+            {
+                tabTag = tag;
+            }
+        } else
+        {
             tabTag = "Active";
         }
     }
@@ -118,11 +121,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         final View view = inflater.inflate(R.layout.fragment_my_jobs, container, false);
 
         Bundle bundle = getArguments();
-        String tag = bundle.getString("tabView");
-        if(tag != null)
+        if (bundle != null)
         {
-            tabTag = tag;
+            String tag = bundle.getString("tabView");
+            if (tag != null)
+            {
+                tabTag = tag;
+            }
         }
+
 
         getViewsByIds(view);
         setTabHosts();
@@ -304,7 +311,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                 if (getBidInformation(ds1).getUserID().equals(auth.getCurrentUser().getUid()))
                 {
                     boolean active = ds1.child("active").getValue(boolean.class);
-                    if(active)
+                    if (active)
                     {
                         jobsListArray.add(ds.getKey());
                     }
@@ -411,7 +418,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
                     {
                         boolean active = dataSnapshot.child("active").getValue(boolean.class);
 
-                        if(active)
+                        if (active)
                         {
                             jobListKeyComplete.add(ds5.getKey());
                             jobListComplete.add(getJobInformation(ds5));

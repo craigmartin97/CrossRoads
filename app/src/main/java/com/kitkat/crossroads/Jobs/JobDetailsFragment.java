@@ -2,6 +2,8 @@ package com.kitkat.crossroads.Jobs;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,6 +108,8 @@ public class JobDetailsFragment extends Fragment
 
         Bundle bundle = getArguments();
 
+//        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
@@ -117,9 +122,9 @@ public class JobDetailsFragment extends Fragment
         jobColTime = (TextView) view.findViewById(R.id.textViewJobColTime1);
         jobFrom = (TextView) view.findViewById(R.id.textViewJobFrom1);
         jobTo = (TextView) view.findViewById(R.id.textViewJobTo1);
+
         editTextBid = (EditText) view.findViewById(R.id.editTextBid);
         buttonBid = (Button) view.findViewById(R.id.buttonBid);
-
         jobName.setText(jobInformation.getAdvertName().toString());
         jobDescription.setText(jobInformation.getAdvertDescription().toString());
         jobSize.setText(jobInformation.getJobSize().toString());

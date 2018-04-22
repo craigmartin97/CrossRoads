@@ -119,30 +119,37 @@ public class UploadImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setMessage("Uploading Image Please Wait...");
-                progressDialog.show();
+                if (imageUri != null)
+                {
+                    progressDialog = new ProgressDialog(getActivity());
+                    progressDialog.setMessage("Uploading Image Please Wait...");
+                    progressDialog.show();
 
-                final StorageReference filePath = storageReference.child("Images").child(user).child(imageUri.getLastPathSegment());
-                filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-                {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                    final StorageReference filePath = storageReference.child("Images").child(user).child(imageUri.getLastPathSegment());
+                    filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
                     {
-                        Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
-                        Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        databaseReference.child("Users").child(user).child("profileImage").setValue(downloadUri.toString());
-                        progressDialog.dismiss();
-                    }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                        {
+                            Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                            Uri downloadUri = taskSnapshot.getDownloadUrl();
+                            databaseReference.child("Users").child(user).child("profileImage").setValue(downloadUri.toString());
+                            progressDialog.dismiss();
+                        }
+                    }).addOnFailureListener(new OnFailureListener()
                     {
-                        progressDialog.dismiss();
-                        Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(@NonNull Exception e)
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else
+                {
+                    Toast.makeText(getActivity(), "Can't Upload Same Image", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
 
@@ -184,7 +191,7 @@ public class UploadImageFragment extends Fragment
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                 compressData = byteArrayOutputStream.toByteArray();
                 progressDialog.dismiss();
-            } catch(Exception e)
+            } catch (Exception e)
             {
                 Log.e("Error Uploading Image: ", e.getMessage());
             }

@@ -40,12 +40,12 @@ public class CompletedAdverts extends Fragment
     /**
      * Text Views to display the jobs name and description
      */
-    private TextView jobName, jobDescription, textViewUsersBid, leaveFeedback;
+    private TextView jobName, jobDescription, textViewUsersBid;
 
     /**
      * ImageView, to store and display the Jobs Image
      */
-    private ImageView jobImageCompleted;
+    private ImageView jobImageCompleted, leaveFeedback;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -168,7 +168,7 @@ public class CompletedAdverts extends Fragment
         jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
         jobImageCompleted = (ImageView) view.findViewById(R.id.jobImageCompleted);
         textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
-        leaveFeedback = (TextView) view.findViewById(R.id.textViewLeaveFeedback);
+        leaveFeedback = (ImageView) view.findViewById(R.id.imageViewLeaveFeedback);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
