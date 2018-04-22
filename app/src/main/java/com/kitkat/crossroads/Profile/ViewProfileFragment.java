@@ -114,32 +114,8 @@ public class ViewProfileFragment extends Fragment
         getUsersStarRating();
         addReviews();
 
-        if (listHashMap.size() != 0)
-        {
-            try
-            {
-                adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
-                expandableListView.setAdapter(adapter);
-
-                expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
-                {
-                    @Override
-                    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
-                    {
-                        ListViewHeight listViewHeight = new ListViewHeight();
-                        listViewHeight.setExpandableListViewHeight(parent, groupPosition);
-                        return false;
-                    }
-                });
-            } catch (NullPointerException e)
-            {
-                Toast.makeText(getActivity(), "Can't Display Reviews At This Time", Toast.LENGTH_SHORT).show();
-                Log.d("ExpandListError: ", e.getMessage());
-            }
-        } else
-        {
-            expandableListView.setVisibility(View.GONE);
-        }
+        System.out.println(listHashMap.toString());
+        System.out.println(courierId);
 
         if (courierId != null)
         {
@@ -395,6 +371,36 @@ public class ViewProfileFragment extends Fragment
                     String fullName = data.child("fullName").getValue(String.class);
                     collectionInfo.add(review + " - " + fullName);
                     listHashMap.put(list.get(0), collectionInfo);
+
+                    if (listHashMap.size() != 0)
+                    {
+                        try
+                        {
+                            adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
+                            expandableListView.setAdapter(adapter);
+
+                            textViewNoRating.setVisibility(View.GONE);
+                            expandableListView.setVisibility(View.VISIBLE);
+
+                            expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+                            {
+                                @Override
+                                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+                                {
+                                    ListViewHeight listViewHeight = new ListViewHeight();
+                                    listViewHeight.setExpandableListViewHeight(parent, groupPosition);
+                                    return false;
+                                }
+                            });
+                        } catch (NullPointerException e)
+                        {
+                            Toast.makeText(getActivity(), "Can't Display Reviews At This Time", Toast.LENGTH_SHORT).show();
+                            Log.d("ExpandListError: ", e.getMessage());
+                        }
+                    } else
+                    {
+                        expandableListView.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
