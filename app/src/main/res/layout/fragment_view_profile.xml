@@ -224,22 +224,6 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-
-                        </LinearLayout>
-
-
-                    </RelativeLayout>
-
-
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -256,7 +240,6 @@
                                 android:id="@+id/textViewCheckbox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-
                                 android:gravity="center_horizontal|fill_horizontal|center"
                                 android:text="What Are You Primarily Going To Be Using The App For?"
                                 android:textAlignment="center" />
