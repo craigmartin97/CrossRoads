@@ -340,7 +340,7 @@
 
                     <AutoCompleteTextView
                         android:id="@+id/editTextSearch2"
-                        android:layout_width="match_parent"
+                        android:layout_width="256dp"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/magnify2"
                         android:background="@null"

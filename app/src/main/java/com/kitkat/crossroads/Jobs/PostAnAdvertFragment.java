@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -76,11 +77,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
-//    public static final int PAYPAL_REQUEST_CODE = 7171;
-//    private static final PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(ConfigPaypal.PAYPAL_CLIENT_ID); // Test Mode
-//    private Button buttonPayNow;
-//    private String amount = "1.00";
-
     /**
      * Get the authentication to the Firebase Authentication area
      */
@@ -122,7 +118,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private Spinner editTextJobSize, editTextJobType;
     private ScrollView scrollView;
 
-    private Button buttonPostAd, buttonUploadImages;
+    private Button buttonPostAd, buttonUploadImages, buttonMap1, buttonMap2;
+    private LinearLayout linLayout1, linLayout2;
+    private RelativeLayout relLayout2, relLayout3;
 
     private static final int Error_Dialog_Request = 9001;
 
@@ -268,6 +266,17 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             if (isServicesOK())
             {
                 mapOnClickListeners();
+                relLayout2.setVisibility(View.GONE);
+                linLayout1.setVisibility(View.GONE);
+                editTextSearch.setVisibility(View.GONE);
+                imageViewGps.setVisibility(View.GONE);
+                imageViewCheck.setVisibility(View.GONE);
+
+                relLayout3.setVisibility(View.GONE);
+                linLayout2.setVisibility(View.GONE);
+                editTextSearch2.setVisibility(View.GONE);
+                imageViewGps2.setVisibility(View.GONE);
+                imageViewCheck2.setVisibility(View.GONE);
             }
         } else
         {
@@ -321,6 +330,14 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         editTextDelAddL2 = view.findViewById(R.id.editTextJobDelL2);
         editTextDelAddTown = view.findViewById(R.id.editTextJobDelTown);
         editTextDelAddPostcode = view.findViewById(R.id.editTextJobDelPostcode);
+
+        buttonMap1 = view.findViewById(R.id.buttonMap1);
+        buttonMap2 = view.findViewById(R.id.buttonMap2);
+
+        linLayout1 = view.findViewById(R.id.mapLin);
+        linLayout2 = view.findViewById(R.id.mapLin2);
+        relLayout2 = view.findViewById(R.id.relLayout2);
+        relLayout3 = view.findViewById(R.id.relLayout3);
 
         // Create adapters for drop down lists
         ArrayAdapter<CharSequence> adapter1 = createSpinnerAdapter(R.array.job_sizes);
@@ -486,6 +503,52 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         dialog.dismiss();
                     }
                 });
+            }
+        });
+
+        buttonMap1.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if (linLayout1.getVisibility() == View.GONE)
+                {
+                    relLayout2.setVisibility(View.VISIBLE);
+                    linLayout1.setVisibility(View.VISIBLE);
+                    editTextSearch.setVisibility(View.VISIBLE);
+                    imageViewGps.setVisibility(View.VISIBLE);
+                    imageViewCheck.setVisibility(View.VISIBLE);
+                } else
+                {
+                    relLayout2.setVisibility(View.GONE);
+                    linLayout1.setVisibility(View.GONE);
+                    editTextSearch.setVisibility(View.GONE);
+                    imageViewGps.setVisibility(View.GONE);
+                    imageViewCheck.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        buttonMap2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if (linLayout2.getVisibility() == View.GONE)
+                {
+                    relLayout3.setVisibility(View.VISIBLE);
+                    linLayout2.setVisibility(View.VISIBLE);
+                    editTextSearch2.setVisibility(View.VISIBLE);
+                    imageViewGps2.setVisibility(View.VISIBLE);
+                    imageViewCheck2.setVisibility(View.VISIBLE);
+                } else
+                {
+                    relLayout3.setVisibility(View.GONE);
+                    linLayout2.setVisibility(View.GONE);
+                    editTextSearch2.setVisibility(View.GONE);
+                    imageViewGps2.setVisibility(View.GONE);
+                    imageViewCheck2.setVisibility(View.GONE);
+                }
             }
         });
     }
