@@ -37,8 +37,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView4"
-                android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/bebasneueregular"
                 android:text="Delivery Details"
                 android:textAlignment="center"
@@ -146,8 +146,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewCollection"
-                android:layout_centerInParent="true"
-                android:text="MAP" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#2bbc9b"
+                android:text="MAP"
+                android:textColor="#FFFFFF" />
 
 
             <RelativeLayout
@@ -217,8 +221,8 @@
                     android:layout_width="40dp"
                     android:layout_height="43dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/ic_gps"
                     android:layout_alignStart="@+id/relLayout1"
+                    android:layout_below="@+id/ic_gps"
                     android:scaleType="centerCrop"
                     android:src="@drawable/check" />
             </RelativeLayout>
@@ -282,8 +286,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/editTextJobColPostcode"
-                android:layout_marginTop="15dp"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
                 android:fontFamily="@font/bebasneueregular"
                 android:text="Delivery Address"
                 android:textAlignment="center"
@@ -296,7 +300,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewDelivery"
                 android:layout_centerHorizontal="true"
-                android:text="MAP" />
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#2bbc9b"
+                android:text="MAP"
+                android:textColor="#FFFFFF" />
 
 
             <RelativeLayout
@@ -433,7 +441,7 @@
 
             <Button
                 android:id="@+id/buttonUploadImages"
-                android:layout_width="300sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/jobImage1"
                 android:layout_centerHorizontal="true"
@@ -444,7 +452,7 @@
 
             <Button
                 android:id="@+id/buttonAddJob"
-                android:layout_width="300sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/buttonUploadImages"
                 android:layout_below="@+id/buttonUploadImages"
