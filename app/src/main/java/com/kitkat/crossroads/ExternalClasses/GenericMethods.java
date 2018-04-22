@@ -1,13 +1,17 @@
 package com.kitkat.crossroads.ExternalClasses;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +20,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.DataSnapshot;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
@@ -38,6 +44,15 @@ public class GenericMethods
     public void customToastMessage(String message, FragmentActivity fragmentActivity)
     {
         Toast.makeText(fragmentActivity, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Creating a method to dismiss progress dialogs
+     * @param progressDialog - The progress dialog to be dismissed
+     */
+    public void dismissDialog(ProgressDialog progressDialog)
+    {
+        progressDialog.dismiss();
     }
 
     /**
