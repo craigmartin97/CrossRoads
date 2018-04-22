@@ -61,10 +61,19 @@
                         android:paddingTop="10dp"
                         android:stepSize=".5" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ratingNoFeedback"
+                        android:textAlignment="center"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_below="@id/UserRatingsBar"/>
+
                     <ExpandableListView
                         android:id="@+id/expandable_list_view"
                         android:layout_width="match_parent"
-                        android:layout_below="@+id/UserRatingsBar"
+                        android:layout_below="@+id/ratingNoFeedback"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:dividerHeight="3dp"

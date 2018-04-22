@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,7 @@ public class ViewProfileFragment extends Fragment
      * Creating variables to store the widgets
      */
     private RatingBar userRatingBar;
-    private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode;
+    private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode, textViewNoRating;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
     private ImageView profileImageUri;
 
@@ -113,20 +114,32 @@ public class ViewProfileFragment extends Fragment
         getUsersStarRating();
         addReviews();
 
-        adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
-        expandableListView.setAdapter(adapter);
-
-        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        if (listHashMap.size() != 0)
         {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            try
             {
-                ListViewHeight listViewHeight = new ListViewHeight();
-                listViewHeight.setExpandableListViewHeight(parent, groupPosition);
-                return false;
-            }
-        });
+                adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
+                expandableListView.setAdapter(adapter);
 
+                expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+                {
+                    @Override
+                    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+                    {
+                        ListViewHeight listViewHeight = new ListViewHeight();
+                        listViewHeight.setExpandableListViewHeight(parent, groupPosition);
+                        return false;
+                    }
+                });
+            } catch (NullPointerException e)
+            {
+                Toast.makeText(getActivity(), "Can't Display Reviews At This Time", Toast.LENGTH_SHORT).show();
+                Log.d("ExpandListError: ", e.getMessage());
+            }
+        } else
+        {
+            expandableListView.setVisibility(View.GONE);
+        }
 
         if (courierId != null)
         {
@@ -221,6 +234,7 @@ public class ViewProfileFragment extends Fragment
         profileImageUri = view.findViewById(R.id.profileImage);
         expandableListView = view.findViewById(R.id.expandable_list_view);
         userRatingBar = view.findViewById(R.id.UserRatingsBar);
+        textViewNoRating = view.findViewById(R.id.ratingNoFeedback);
     }
 
     /**
@@ -241,7 +255,7 @@ public class ViewProfileFragment extends Fragment
      */
     private void getUsersStarRating()
     {
-        if(courierId != null)
+        if (courierId != null)
         {
             databaseReference.child("Ratings").child(courierId).addValueEventListener(new ValueEventListener()
             {
@@ -257,8 +271,7 @@ public class ViewProfileFragment extends Fragment
 
                 }
             });
-        }
-        else
+        } else
         {
             databaseReference.child("Ratings").child(user).addValueEventListener(new ValueEventListener()
             {
@@ -286,20 +299,28 @@ public class ViewProfileFragment extends Fragment
     {
         long totalRating = 0;
         long counter = 0;
-
-        for (DataSnapshot ds : dataSnapshot.getChildren())
+        // Iterate through entire bids table
+        if (dataSnapshot.hasChildren())
         {
-            long rating = ds.child("starReview").getValue(long.class);
+            for (DataSnapshot ds : dataSnapshot.getChildren())
+            {
+                long rating = ds.child("starReview").getValue(long.class);
 
-            totalRating += rating;
-            counter++;
+                totalRating += rating;
+                counter++;
 
-            totalRating = totalRating / counter;
+                totalRating = totalRating / counter;
 
-            int usersRating = Math.round(totalRating);
-            userRatingBar.setNumStars(usersRating);
-            Drawable drawable = userRatingBar.getProgressDrawable();
-            drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
+                int usersRating = Math.round(totalRating);
+                userRatingBar.setNumStars(usersRating);
+                Drawable drawable = userRatingBar.getProgressDrawable();
+                drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
+            }
+        } else
+        {
+            textViewNoRating.setText("No Ratings For User");
+            textViewNoRating.setVisibility(View.VISIBLE);
+            userRatingBar.setVisibility(View.GONE);
         }
     }
 
@@ -318,7 +339,7 @@ public class ViewProfileFragment extends Fragment
 
         list.add("Reviews");
 
-        if(courierId != null)
+        if (courierId != null)
         {
             databaseReference.child("Ratings").child(courierId).addValueEventListener(new ValueEventListener()
             {
@@ -334,8 +355,7 @@ public class ViewProfileFragment extends Fragment
 
                 }
             });
-        }
-        else
+        } else
         {
             databaseReference.child("Ratings").child(user).addValueEventListener(new ValueEventListener()
             {
@@ -357,7 +377,7 @@ public class ViewProfileFragment extends Fragment
     /**
      * Logic for the reviews that are to be added
      *
-     * @param dataSnapshot - Snapshot of the Ratings table, with an id
+     * @param dataSnapshot   - Snapshot of the Ratings table, with an id
      * @param collectionInfo - List that the information is to be added to
      */
     private void assignReviews(DataSnapshot dataSnapshot, final List<String> collectionInfo)
