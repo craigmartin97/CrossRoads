@@ -45,6 +45,16 @@
                 android:paddingTop="10dp"
                 android:stepSize=".5" />
 
+            <TextView
+                android:id="@+id/textViewNoReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="#FF000000"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:layout_below="@+id/ratingBarSeeFeedback" />
+
         </RelativeLayout>
 
         <RelativeLayout

@@ -193,7 +193,7 @@ public class ActiveBidsFragment extends Fragment
                     {
                         pos = position;
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                        View mView = getLayoutInflater().inflate(R.layout.popup_accept_user_bid, null);
+                        final View mView = getLayoutInflater().inflate(R.layout.popup_accept_user_bid, null);
 
                         alertDialog.setTitle("Accept Bid?");
                         alertDialog.setView(mView);
@@ -212,8 +212,6 @@ public class ActiveBidsFragment extends Fragment
                         decimal = decimal.setScale(2, RoundingMode.CEILING);
                         textViewBid.setText("£" + decimal);
 
-                        String userBidBefore = jobList.get(position).getUserBid();
-
                         totalAmount = decimal.longValue();
 
                         if (totalAmount < 20.00 || totalAmount < 20.0 || totalAmount < 20)
@@ -224,8 +222,7 @@ public class ActiveBidsFragment extends Fragment
                             textViewCommission.setText("£" + decimal);
                         } else
                         {
-                            double commission = Long.parseLong(userBidBefore);
-                            commission = (double) (commission * 0.05);
+                            double commission = (double) (decimal.doubleValue() * 0.05);
                             Math.round(commission);
                             decimal = new BigDecimal(commission);
                             decimal = decimal.setScale(2, RoundingMode.CEILING);
@@ -233,15 +230,9 @@ public class ActiveBidsFragment extends Fragment
                             textViewCommission.setText("£" + decimal);
                         }
 
-                        // Convert userBid from database into long. user bid
-                        long userBidBef = Long.parseLong(userBidBefore);
-                        Math.round(userBidBef);
-                        BigDecimal decimal1 = new BigDecimal(userBidBef);
-
-                        decimal = new BigDecimal(commisionAmount);
-                        decimal = decimal.add(decimal1);
-                        totalDecimal = decimal.setScale(2, RoundingMode.CEILING);
-                        textViewTotal.setText("£" + totalDecimal);
+                        totalAmount = totalAmount + commisionAmount;
+                        BigDecimal decimal1 = new BigDecimal(totalAmount).setScale(2, RoundingMode.CEILING);
+                        textViewTotal.setText("£" + decimal1);
 
                         databaseReference.child("Ratings").child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
                         {
@@ -275,6 +266,47 @@ public class ActiveBidsFragment extends Fragment
                             }
                         });
 
+                        databaseReference.child("Ratings").child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+                        {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot)
+                            {
+                                long totalRating = 0;
+                                long counter = 0;
+                                // Iterate through entire bids table
+                                if (dataSnapshot.hasChildren())
+                                {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren())
+                                    {
+                                        long rating = ds.child("starReview").getValue(long.class);
+
+                                        totalRating += rating;
+                                        counter++;
+
+                                        totalRating = totalRating / counter;
+
+                                        int usersRating = Math.round(totalRating);
+                                        ratingBar.setNumStars(usersRating);
+                                        ratingBar.getNumStars();
+                                        Drawable drawable = ratingBar.getProgressDrawable();
+                                        drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
+                                    }
+                                } else
+                                {
+                                    TextView textViewNoReview = mView.findViewById(R.id.textViewNoReview);
+                                    textViewNoReview.setText("No Ratings For User");
+                                    textViewNoReview.setVisibility(View.VISIBLE);
+                                    ratingBar.setVisibility(View.GONE);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError)
+                            {
+
+                            }
+                        });
+
                         payPal.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
@@ -298,7 +330,7 @@ public class ActiveBidsFragment extends Fragment
 
     private void processPayment()
     {
-        PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalAmount + commisionAmount), "GBP"
+        PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalAmount), "GBP"
                 , "Pay CrossRoads Commission", PayPalPayment.PAYMENT_INTENT_SALE);
 
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
@@ -349,7 +381,7 @@ public class ActiveBidsFragment extends Fragment
                         TextView textViewStatus = mView.findViewById(R.id.textStatus);
 
                         textViewStatus.setText(jsonObject1.getString("state"));
-                        textViewAmount.setText("£" + totalDecimal);
+                        textViewAmount.setText("£" + totalAmount);
                         textViewId.setText(jsonObject1.getString("id"));
                     } catch (JSONException e)
                     {
