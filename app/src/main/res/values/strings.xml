@@ -116,6 +116,7 @@
     <string name="viewaddresstwo">viewAddressTwo</string>
     <string name="viewtown">viewTown</string>
     <string name="viewpostcode">viewPostCode</string>
+    <string name="use_my_address">Use My Address</string>
 </resources>
 
 

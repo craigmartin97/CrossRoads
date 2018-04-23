@@ -30,6 +30,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -129,6 +131,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private JobInformation jobInformation;
     private String jobIdKey;
+
+    private CheckBox myAddressCheckBox1, myAddressCheckBox2;
 
     /**
      * Widgets that are found on the View, fragment_map
@@ -267,8 +271,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 }
             });
 
-
-
             if (isServicesOK())
             {
                 mapOnClickListeners();
@@ -342,6 +344,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
         buttonMap1 = view.findViewById(R.id.buttonMap1);
         buttonMap2 = view.findViewById(R.id.buttonMap2);
+
+        myAddressCheckBox1 = view.findViewById(R.id.checkBoxMyAddress1);
+        myAddressCheckBox2 = view.findViewById(R.id.checkBoxMyAddress2);
 
         linLayout1 = view.findViewById(R.id.mapLin);
         linLayout2 = view.findViewById(R.id.mapLin2);
@@ -474,7 +479,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View view)
             {
-                if(verifyPermissions())
+                if (verifyPermissions())
                 {
                     final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                     View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
@@ -515,8 +520,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                             dialog.dismiss();
                         }
                     });
-                }
-                else
+                } else
                 {
                     Toast.makeText(getActivity(), "Permissions have been denied", Toast.LENGTH_SHORT).show();
                     verifyPermissions();
@@ -569,11 +573,97 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 }
             }
         });
-    }
+        myAddressCheckBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                if (myAddressCheckBox1.isChecked())
+                {
+                    databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            try
+                            {
+                                editTextColAddL1.setText(dataSnapshot.child("addressOne").getValue(String.class));
+                                editTextColAddL2.setText(dataSnapshot.child("addressTwo").getValue(String.class));
+                                editTextColAddTown.setText(dataSnapshot.child("town").getValue(String.class));
+                                editTextColAddPostcode.setText(dataSnapshot.child("postCode").getValue(String.class));
+                            } catch (NullPointerException e)
+                            {
+                                Log.d(TAG, e.getMessage());
+                            }
+                        }
 
-    private void processPayment()
-    {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
 
+                        }
+                    });
+                } else
+                {
+                    try
+                    {
+                        editTextColAddL1.setText(null);
+                        editTextColAddL2.setText(null);
+                        editTextColAddTown.setText(null);
+                        editTextColAddPostcode.setText(null);
+                    } catch (NullPointerException e)
+                    {
+                        Log.d(TAG, e.getMessage());
+                    }
+                }
+            }
+        });
+
+        myAddressCheckBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                if (myAddressCheckBox2.isChecked())
+                {
+                    databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            try
+                            {
+                                editTextDelAddL1.setText(dataSnapshot.child("addressOne").getValue(String.class));
+                                editTextDelAddL2.setText(dataSnapshot.child("addressTwo").getValue(String.class));
+                                editTextDelAddTown.setText(dataSnapshot.child("town").getValue(String.class));
+                                editTextDelAddPostcode.setText(dataSnapshot.child("postCode").getValue(String.class));
+                            } catch (NullPointerException e)
+                            {
+                                Log.d(TAG, e.getMessage());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
+
+                        }
+                    });
+                } else
+                {
+                    try
+                    {
+                        editTextDelAddL1.setText(null);
+                        editTextDelAddL2.setText(null);
+                        editTextDelAddTown.setText(null);
+                        editTextDelAddPostcode.setText(null);
+                    } catch (NullPointerException e)
+                    {
+                        Log.d(TAG, e.getMessage());
+                    }
+                }
+            }
+        });
     }
 
     private void checkWidgetsContainText()
@@ -712,7 +802,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 {
                     final PlaceInformation pInfo = map1.getPlaceInfo();
 
-                    if(pInfo.getPlaceName() == null || pInfo.getPlaceAddressLineOne() == null || pInfo.getPlaceAddressLineTwo() == null
+                    if (pInfo.getPlaceName() == null || pInfo.getPlaceAddressLineOne() == null || pInfo.getPlaceAddressLineTwo() == null
                             || pInfo.getPlacePostCode() == null)
                     {
                         Toast.makeText(getActivity(), "Bad Location Choose Another", Toast.LENGTH_SHORT).show();
@@ -1229,15 +1319,14 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         String[] permissions = {
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.CAMERA };
+                android.Manifest.permission.CAMERA};
 
-        if(ContextCompat.checkSelfPermission(getContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(getContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(getContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(getContext(), permissions[2]) == PackageManager.PERMISSION_GRANTED)
         {
             return true;
-        }
-        else
+        } else
         {
             ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE);
             return false;

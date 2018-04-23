@@ -139,13 +139,32 @@
                 android:text="Collection Address"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
+
+            <CheckBox
+                android:id="@+id/checkBoxMyAddress1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewCollection"
+                android:layout_centerHorizontal="true"
+                android:buttonTint="#2bbc9b"
+                android:checked="false"
+                android:clickable="true"
+                android:ems="10"
+                android:enabled="true"
+                android:fontFamily="@font/applegaramond"
+                android:padding="10dp"
+                android:text="@string/use_my_address"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/buttonMap1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewCollection"
+                android:layout_below="@+id/checkBoxMyAddress1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
@@ -294,11 +313,30 @@
                 android:textColor="#000000"
                 android:textSize="20dp" />
 
+            <CheckBox
+                android:id="@+id/checkBoxMyAddress2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewDelivery"
+                android:layout_centerHorizontal="true"
+                android:buttonTint="#2bbc9b"
+                android:checked="false"
+                android:clickable="true"
+                android:ems="10"
+                android:enabled="true"
+                android:fontFamily="@font/applegaramond"
+                android:padding="10dp"
+                android:text="@string/use_my_address"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
             <Button
                 android:id="@+id/buttonMap2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewDelivery"
+                android:layout_below="@+id/checkBoxMyAddress2"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
