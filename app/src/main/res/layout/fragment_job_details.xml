@@ -16,6 +16,7 @@
             tools:context="com.kitkat.crossroads.Jobs.JobDetailsActivity"/>
 
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,7 +38,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -51,9 +52,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text="@string/job"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:text="@string/job"/>
 
                         <TextView
                             android:id="@+id/textViewJobName1"
@@ -81,9 +80,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text="@string/description"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:text="@string/description"/>
 
                         <TextView
                             android:id="@+id/textViewJobDescription1"
@@ -112,9 +109,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text="@string/job_size"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:text="@string/job_size"/>
 
                         <TextView
                             android:id="@+id/textViewJobSize1"
@@ -141,9 +136,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text="@string/job_type"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:text="@string/job_type"/>
 
 
                         <TextView
@@ -173,9 +166,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text="@string/collection_date"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:text="@string/collection_date"/>
 
                         <TextView
                             android:id="@+id/textViewJobColDate1"
@@ -203,9 +194,8 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text="@string/collection_time"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:text="@string/collection_time"/>
+
 
                         <TextView
                             android:id="@+id/textViewJobColTime1"
@@ -232,9 +222,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text="@string/collection_from"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:text="@string/collection_from"/>
 
                         <TextView
                             android:id="@+id/textViewJobFrom1"
@@ -261,9 +249,7 @@
                             android:background="#FFFFFFFF"
                             android:gravity="center_vertical"
                             android:paddingVertical="10dp"
-                            android:text="@string/delivery_to"
-                            android:textColor="#FF000000"
-                            android:visibility="visible" />
+                            android:text="@string/delivery_to" />
 
                         <TextView
                             android:id="@+id/textViewJobTo1"
@@ -284,6 +270,7 @@
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="91dp">
+
 
 
                         <EditText

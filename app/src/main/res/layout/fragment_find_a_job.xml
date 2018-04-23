@@ -168,7 +168,6 @@
                 android:visibility="visible" />
 
 
-
             <EditText
                 android:id="@+id/editTextFilterColTime"
                 android:layout_width="match_parent"
