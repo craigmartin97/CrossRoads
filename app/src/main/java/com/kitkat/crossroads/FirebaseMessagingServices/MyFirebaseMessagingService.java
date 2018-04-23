@@ -19,6 +19,7 @@ import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Account.RegisterActivity;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.R;
+import com.kitkat.crossroads.SplashScreen;
 
 import java.util.Map;
 
@@ -60,24 +61,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
 
         if(tag.equals("acceptBidNotification"))
         {
-           notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
+           notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
            notificationIntent.putExtra("menuFragment", "myJobsFragment");
            notificationIntent.putExtra("tabView", "Active");
         }
         else if(tag.equals("newBidNotification"))
         {
-            notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
+            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
             notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
             notificationIntent.putExtra("tabView", "Pending");
         }
         else if(tag.equals("jobCompletedNotification"))
         {
-            notificationIntent = new Intent(MyFirebaseMessagingService.this, CrossRoads.class);
+            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
             notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
             notificationIntent.putExtra("tabView", "Completed");
         }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         notificationBuilder.setContentIntent(pendingIntent);
         NotificationManager notificationManager =

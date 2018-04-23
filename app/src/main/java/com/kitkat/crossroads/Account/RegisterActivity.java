@@ -125,17 +125,17 @@ public class RegisterActivity extends AppCompatActivity
     private void getViewByIds()
     {
         progressDialog = new ProgressDialog(this);
-        buttonRegister = (Button) findViewById(R.id.buttonRegister);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
-        editTextPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
-        editTextConfirmPassword = (EditText) findViewById(R.id.editTextPasswordConfirmLogin);
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
-        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
-        textViewTermsAndConditionsAndPrivacyPolicy = (TextView) findViewById(R.id.textViewTermsAndConditionsAndPrivacyPolicy);
+        buttonRegister = findViewById(R.id.buttonRegister);
+        editTextEmail = findViewById(R.id.editTextEmailLogin);
+        editTextPassword = findViewById(R.id.editTextPasswordLogin);
+        editTextConfirmPassword = findViewById(R.id.editTextPasswordConfirmLogin);
+        checkBox = findViewById(R.id.checkBox);
+        textViewSignUp = findViewById(R.id.textViewSignIn);
+        textViewTermsAndConditionsAndPrivacyPolicy = findViewById(R.id.textViewTermsAndConditionsAndPrivacyPolicy);
     }
 
     /**
-     *
+     * Setting the on click listeners f
      */
     private void setOnClickListeners()
     {
