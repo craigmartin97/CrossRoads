@@ -37,6 +37,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -173,7 +174,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         map1 = new Map();
         map2 = new Map();
 
-
         ArrayAdapter<CharSequence> adapter1 = createSpinnerAdapter(R.array.job_sizes);
         ArrayAdapter<CharSequence> adapter2 = createSpinnerAdapter(R.array.job_types);
 
@@ -261,6 +261,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                     map2.getLocationPermission(getActivity().getApplicationContext(), mapFragment2, getActivity(), view, getChildFragmentManager());
                 }
             });
+
+
 
             if (isServicesOK())
             {
@@ -693,21 +695,62 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 {
                     final PlaceInformation pInfo = map1.getPlaceInfo();
 
+                    if(pInfo.getPlaceName() == null || pInfo.getPlaceAddressLineOne() == null || pInfo.getPlaceAddressLineTwo() == null
+                            || pInfo.getPlacePostCode() == null)
+                    {
+                        Toast.makeText(getActivity(), "Bad Location Choose Another", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+
                     if (pInfo != null)
                     {
                         // Change the text in the alert dialog to the address
                         map1.hideKeyboard(getActivity());
-                        chooseLocationText.setText(pInfo.getSubThoroughfare() + " " + pInfo.getThoroughfare() + " " + pInfo.getLocality() + " " + pInfo.getPostCode());
+                        String placeName = null;
+                        if (pInfo.getPlaceName() != null)
+                        {
+                            placeName = pInfo.getPlaceName() + " ";
+                        }
+                        String addressOne = null;
+                        if (pInfo.getPlaceAddressLineOne() != null)
+                        {
+                            addressOne = pInfo.getPlaceAddressLineOne() + " ";
+                        }
+                        String addressTwo = null;
+                        if (pInfo.getPlaceAddressLineTwo() != null || !pInfo.getPlaceAddressLineTwo().equals(""))
+                        {
+                            addressTwo = pInfo.getPlaceAddressLineTwo() + " ";
+                        }
+                        String postCode = null;
+                        if (pInfo.getPlacePostCode() != null)
+                        {
+                            postCode = pInfo.getPlacePostCode();
+                        }
+
+                        chooseLocationText.setText(placeName + addressOne + addressTwo + postCode);
+
 
                         yesButton.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View view)
                             {
-                                editTextColAddL1.setText(pInfo.getSubThoroughfare());
-                                editTextColAddL2.setText(pInfo.getThoroughfare());
-                                editTextColAddTown.setText(pInfo.getLocality());
-                                editTextColAddPostcode.setText(pInfo.getPostCode());
+                                if (pInfo.getPlaceName() != null)
+                                {
+                                    editTextColAddL1.setText(pInfo.getPlaceName());
+                                }
+                                if (pInfo.getPlaceAddressLineOne() != null)
+                                {
+                                    editTextColAddL2.setText(pInfo.getPlaceAddressLineOne());
+                                }
+                                if (pInfo.getPlaceAddressLineTwo() != null)
+                                {
+                                    editTextColAddTown.setText(pInfo.getPlaceAddressLineTwo());
+                                }
+                                if (pInfo.getPlacePostCode() != null)
+                                {
+                                    editTextColAddPostcode.setText(pInfo.getPlacePostCode());
+                                }
                                 dialog.dismiss();
                             }
                         });
@@ -789,17 +832,50 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                     {
                         // Change the text in the alert dialog to the address
                         map2.hideKeyboard(getActivity());
-                        chooseLocationText.setText(pInfo.getSubThoroughfare() + " " + pInfo.getThoroughfare() + " " + pInfo.getLocality() + " " + pInfo.getPostCode());
+                        String placeName = null;
+                        if (pInfo.getPlaceName() != null)
+                        {
+                            placeName = pInfo.getPlaceName() + " ";
+                        }
+                        String addressOne = null;
+                        if (pInfo.getPlaceAddressLineOne() != null)
+                        {
+                            addressOne = pInfo.getPlaceAddressLineOne() + " ";
+                        }
+                        String addressTwo = null;
+                        if (pInfo.getPlaceAddressLineTwo() != null || !pInfo.getPlaceAddressLineTwo().equals(""))
+                        {
+                            addressTwo = pInfo.getPlaceAddressLineTwo() + " ";
+                        }
+                        String postCode = null;
+                        if (pInfo.getPlacePostCode() != null)
+                        {
+                            postCode = pInfo.getPlacePostCode();
+                        }
+
+                        chooseLocationText.setText(placeName + addressOne + addressTwo + postCode);
 
                         yesButton.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View view)
                             {
-                                editTextDelAddL1.setText(pInfo.getSubThoroughfare());
-                                editTextDelAddL2.setText(pInfo.getThoroughfare());
-                                editTextDelAddTown.setText(pInfo.getLocality());
-                                editTextDelAddPostcode.setText(pInfo.getPostCode());
+                                if (pInfo.getPlaceName() != null)
+                                {
+                                    editTextColAddL1.setText(pInfo.getPlaceName());
+                                }
+                                if (pInfo.getPlaceAddressLineOne() != null)
+                                {
+                                    editTextColAddL2.setText(pInfo.getPlaceAddressLineOne());
+                                }
+                                if (pInfo.getPlaceAddressLineTwo() != null)
+                                {
+                                    editTextColAddTown.setText(pInfo.getPlaceAddressLineTwo());
+                                }
+                                if (pInfo.getPlacePostCode() != null)
+                                {
+                                    editTextColAddPostcode.setText(pInfo.getPlacePostCode());
+                                }
                                 dialog.dismiss();
                             }
                         });
