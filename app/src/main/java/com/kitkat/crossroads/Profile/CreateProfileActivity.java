@@ -46,6 +46,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private DatabaseReference myRef;
     private StorageReference storageReference;
     private String user;
+    private Boolean imageChosen = false;
 
     private DatabaseConnections databaseConnections = new DatabaseConnections();
 
@@ -253,7 +254,9 @@ public class CreateProfileActivity extends AppCompatActivity
             setUserInformation(userInformation);
         }
 
-        uploadUsersProfileImage();
+        if(imageUri != null) {
+            uploadUsersProfileImage();
+        }
         databaseVerification();
         startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
     }
