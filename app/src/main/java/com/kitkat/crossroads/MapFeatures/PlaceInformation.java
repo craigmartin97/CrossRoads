@@ -8,85 +8,61 @@ import java.io.Serializable;
 
 public class PlaceInformation implements Serializable
 {
-    private String subThoroughfare;
-    private String thoroughfare;
-    private String locality;
-    private String postCode;
-    private String phoneNumber;
-    private String websiteUrl;
+    private String placeName;
+    private String placeAddressLineOne;
+    private String placeAddressLineTwo;
+    private String placePostCode;
 
     public PlaceInformation()
     {
 
     }
 
-    public PlaceInformation(String subThoroughfare, String thoroughfare, String locality, String postCode, String phoneNumber, String websiteUrl)
+    public PlaceInformation(String placeName, String placeAddressLineOne, String placeAddressLineTwo, String placePostCode)
     {
-        this.subThoroughfare = subThoroughfare;
-        this.thoroughfare = thoroughfare;
-        this.locality = locality;
-        this.postCode = postCode;
-        this.phoneNumber = phoneNumber;
-        this.websiteUrl = websiteUrl;
+        this.placeName = placeName;
+        this.placeAddressLineOne = placeAddressLineOne;
+        this.placeAddressLineTwo = placeAddressLineTwo;
+        this.placePostCode = placePostCode;
     }
 
-    public String getSubThoroughfare()
+    public String getPlaceName()
     {
-        return subThoroughfare;
+        return placeName;
     }
 
-    public void setSubThoroughfare(String subThoroughfare)
+    public void setPlaceName(String placeName)
     {
-        this.subThoroughfare = subThoroughfare;
+        this.placeName = placeName;
     }
 
-    public String getThoroughfare()
+    public String getPlaceAddressLineOne()
     {
-        return thoroughfare;
+        return placeAddressLineOne;
     }
 
-    public void setThoroughfare(String thoroughfare)
+    public void setPlaceAddressLineOne(String placeAddressLineOne)
     {
-        this.thoroughfare = thoroughfare;
+        this.placeAddressLineOne = placeAddressLineOne;
     }
 
-    public String getLocality()
+    public String getPlaceAddressLineTwo()
     {
-        return locality;
+        return placeAddressLineTwo;
     }
 
-    public void setLocality(String locality)
+    public void setPlaceAddressLineTwo(String placeAddressLineTwo)
     {
-        this.locality = locality;
+        this.placeAddressLineTwo = placeAddressLineTwo;
     }
 
-    public String getPostCode()
+    public String getPlacePostCode()
     {
-        return postCode;
+        return placePostCode;
     }
 
-    public void setPostCode(String postCode)
+    public void setPlacePostCode(String placePostCode)
     {
-        this.postCode = postCode;
-    }
-
-    public String getPhoneNumber()
-    {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber)
-    {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getWebsiteUrl()
-    {
-        return websiteUrl;
-    }
-
-    public void setWebsiteUrl(String websiteUrl)
-    {
-        this.websiteUrl = websiteUrl;
+        this.placePostCode = placePostCode;
     }
 }
