@@ -14,9 +14,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -64,6 +66,7 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
+import com.kitkat.crossroads.Manifest;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
@@ -154,6 +157,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private GoogleApiClient mGoogleApiClient1;
 
     private GenericMethods genericMethods = new GenericMethods();
+
+    private static final int REQUEST_CODE = 3;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -466,44 +471,53 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View view)
             {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
-
-                alertDialog.setTitle("Upload Image With");
-                alertDialog.setView(mView);
-                final AlertDialog dialog = alertDialog.create();
-                dialog.show();
-
-                Button gallery = mView.findViewById(R.id.gallery);
-                Button camera = mView.findViewById(R.id.camera);
-
-                if (!hasCamera())
+                if(verifyPermissions())
                 {
-                    camera.setEnabled(false);
-                } else
-                {
-                    camera.setOnClickListener(new View.OnClickListener()
+                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                    View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
+
+                    alertDialog.setTitle("Upload Image With");
+                    alertDialog.setView(mView);
+                    final AlertDialog dialog = alertDialog.create();
+                    dialog.show();
+
+                    Button gallery = mView.findViewById(R.id.gallery);
+                    Button camera = mView.findViewById(R.id.camera);
+
+                    if (!hasCamera())
+                    {
+                        camera.setEnabled(false);
+                    } else
+                    {
+                        camera.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+
+                    gallery.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View v)
                         {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setType("image/*");
+                            startActivityForResult(intent, GALLERY_INTENT);
+                            dialog.dismiss();
                         }
                     });
                 }
-
-                gallery.setOnClickListener(new View.OnClickListener()
+                else
                 {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityForResult(intent, GALLERY_INTENT);
-                        dialog.dismiss();
-                    }
-                });
+                    Toast.makeText(getActivity(), "Permissions have been denied", Toast.LENGTH_SHORT).show();
+                    verifyPermissions();
+                }
             }
         });
 
@@ -1203,6 +1217,32 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
         }
+    }
 
+    private boolean verifyPermissions()
+    {
+        Log.d(TAG, "Verifying Permissions, asking user for permissions");
+        String[] permissions = {
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.CAMERA };
+
+        if(ContextCompat.checkSelfPermission(getContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getContext(), permissions[2]) == PackageManager.PERMISSION_GRANTED)
+        {
+            return true;
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE);
+            return false;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        verifyPermissions();
     }
 }
