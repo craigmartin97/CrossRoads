@@ -11,37 +11,49 @@ import com.google.firebase.storage.StorageReference;
 
 /**
  * Created by q5031372 on 22/03/18.
+ * <p>
+ * Database connections is used to create a single repository to gain access to the FireBase
+ * Database, Authentication and Storage area as well as other methods to get information about the user.
  */
-
 public class DatabaseConnections extends AppCompatActivity
 {
+    /**
+     * Get the connection to the FireBase authentication area
+     *
+     * @return - FireBaseAuth connection
+     */
     public FirebaseAuth getAuth()
     {
         return FirebaseAuth.getInstance();
     }
 
+    /**
+     * Get the connection to the FireBase Database area
+     *
+     * @return - FireBase Database connection
+     */
     public DatabaseReference getDatabaseReference()
     {
         return FirebaseDatabase.getInstance().getReference();
     }
 
-    public DatabaseReference getMyRef()
-    {
-        return FirebaseDatabase.getInstance().getReference();
-    }
-
+    /**
+     * Get the connection to the FireBase Storage area
+     *
+     * @return - FireBase Storage area
+     */
     public StorageReference getStorageReference()
     {
         return FirebaseStorage.getInstance().getReference();
     }
 
+    /**
+     * Get the current users unique Id
+     *
+     * @return - Current users Id
+     */
     public String getCurrentUser()
     {
         return getAuth().getCurrentUser().getUid();
-    }
-
-    public FirebaseUser getFirebaseUser()
-    {
-        return FirebaseAuth.getInstance().getCurrentUser();
     }
 }

@@ -21,35 +21,124 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.R;
 
-
+/**
+ * Register Activity allows the user to register for an account if they are not already
+ * an account holder. The user enters their email address and password that they wish to use.
+ */
 public class RegisterActivity extends AppCompatActivity
 {
+    /**
+     * Button widget, when the user presses this button the process of registering for an account
+     * will begin
+     */
     private Button buttonRegister;
-    private EditText editTextEmail, editTextPassword, editTextConfirmPassword;
-    private CheckBox checkBox;
-    private TextView textViewSignUp, textViewTermsAndConditionsAndPrivacyPolicy;
-    private ProgressDialog progressDialog;
-    private FirebaseAuth auth;
-    private DatabaseReference databaseReference;
-    private String email, password;
-    private DatabaseConnections databaseConnections;
 
+    /**
+     * EditText widgets, so the user can enter their register information
+     * editTextEmail - User can enter their email address
+     * editTextPassword - User can enter a password they wish
+     * editTextConfirmPassword - User can re-enter their password for confirmation
+     */
+    private EditText editTextEmail, editTextPassword, editTextConfirmPassword;
+
+    /**
+     * Checkbox widget, the user must check the checkbox and agree to our T&C's so they can
+     * create an account
+     */
+    private CheckBox checkBox;
+
+    /**
+     * TextView widgets, are used to allow the user to login to their account if they already have an account
+     * or download our T&C's
+     */
+    private TextView textViewSignUp, textViewTermsAndConditionsAndPrivacyPolicy;
+
+    /**
+     * A progress dialog so the user knows the process is happening and they need to wait for a process to finish
+     */
+    private ProgressDialog progressDialog;
+
+    /**
+     * Storing the reference to the FireBase Authentication area, so users can access their accounts
+     */
+    private FirebaseAuth auth;
+
+    /**
+     * Storing the reference to the FireBase Database area, so users information can be stored
+     */
+    private DatabaseReference databaseReference;
+
+    /**
+     * Storing the users email and password
+     */
+    private String email, password;
+
+    /**
+     * Accessing methods from the GenericMethods class, by creating an instance of the class
+     */
+    private GenericMethods genericMethods = new GenericMethods();
+
+    /**
+     * This method is called when the activity login is displayed to the user. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState - if the activity needs to be recreated it can be passed back
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        databaseConnections = new DatabaseConnections();
-
-        setDatabaseConnections();
+        databaseConnections();
         getViewByIds();
+        setOnClickListeners();
+    }
 
+    /**
+     * Creates all of the connections to FireBase that are necessary.
+     * databaseReference, is user to store a new token under the usersID
+     * auth, is used to create a connection to verify the user
+     */
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        auth = databaseConnections.getAuth();
+        databaseReference = databaseConnections.getDatabaseReference();
+
+        if (auth.getCurrentUser() != null)
+        {
+            finish();
+            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
+        }
+    }
+
+    /**
+     * Assigning all widgets in layout file to class variables in this activity.
+     */
+    private void getViewByIds()
+    {
+        progressDialog = new ProgressDialog(this);
+        buttonRegister = (Button) findViewById(R.id.buttonRegister);
+        editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
+        editTextPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
+        editTextConfirmPassword = (EditText) findViewById(R.id.editTextPasswordConfirmLogin);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
+        textViewTermsAndConditionsAndPrivacyPolicy = (TextView) findViewById(R.id.textViewTermsAndConditionsAndPrivacyPolicy);
+    }
+
+    /**
+     *
+     */
+    private void setOnClickListeners()
+    {
         buttonRegister.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -101,12 +190,12 @@ public class RegisterActivity extends AppCompatActivity
                                 boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                                 if (isNewUser == true)
                                 {
-                                    dismissDialog();
+                                    genericMethods.dismissDialog(progressDialog);
                                     databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
                                     startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
                                 } else if (task.getException() instanceof FirebaseAuthUserCollisionException)
                                 {
-                                    dismissDialog();
+                                    genericMethods.dismissDialog(progressDialog);
                                     DatabaseConnections databaseConnections = new DatabaseConnections();
                                     customToastMessage("Could Not Register. User with this email already exist. Please Login.");
                                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
@@ -114,7 +203,7 @@ public class RegisterActivity extends AppCompatActivity
 
                                 } else
                                 {
-                                    dismissDialog();
+                                    genericMethods.dismissDialog(progressDialog);
                                     customToastMessage("Couldn't Register, Please Try Again");
                                     finish();
                                 }
@@ -124,39 +213,9 @@ public class RegisterActivity extends AppCompatActivity
         }
     }
 
-    // Dialog method to dismiss it
-    private void dismissDialog()
-    {
-        progressDialog.dismiss();
-    }
-
     private void customToastMessage(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void getViewByIds()
-    {
-        progressDialog = new ProgressDialog(this);
-        buttonRegister = (Button) findViewById(R.id.buttonRegister);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmailLogin);
-        editTextPassword = (EditText) findViewById(R.id.editTextPasswordLogin);
-        editTextConfirmPassword = (EditText) findViewById(R.id.editTextPasswordConfirmLogin);
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
-        textViewSignUp = (TextView) findViewById(R.id.textViewSignIn);
-        textViewTermsAndConditionsAndPrivacyPolicy = (TextView) findViewById(R.id.textViewTermsAndConditionsAndPrivacyPolicy);
-    }
-
-    private void setDatabaseConnections()
-    {
-        auth = databaseConnections.getAuth();
-        databaseReference = databaseConnections.getDatabaseReference();
-
-        if (auth.getCurrentUser() != null)
-        {
-            finish();
-            startActivity(new Intent(getApplicationContext(), CrossRoads.class));
-        }
     }
 
     private void userInformationValidation()

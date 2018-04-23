@@ -51,11 +51,7 @@ public class LoginActivity extends AppCompatActivity
      * is taking place.
      */
     private ProgressDialog progressDialog;
-
-    /**
-     * Getting the current users unique Id
-     */
-    private FirebaseUser user;
+    ;
 
     /**
      * Button widget, when the user has entered their information they can press the button
@@ -101,9 +97,8 @@ public class LoginActivity extends AppCompatActivity
     {
         // Establishing a connection to the DatabaseConnections class to retrieve the FireBase connections.
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getMyRef();
+        databaseReference = databaseConnections.getDatabaseReference();
         auth = databaseConnections.getAuth();
-        user = databaseConnections.getFirebaseUser();
 
         // If their is already a user signed in
         if (auth.getCurrentUser() != null)
@@ -114,7 +109,7 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
-    /***
+    /**
      * Assigning all widgets in layout file to class variables in this activity.
      */
     private void getViewByIds()
@@ -157,18 +152,7 @@ public class LoginActivity extends AppCompatActivity
         {
             public void onClick(View v)
             {
-                if (TextUtils.isEmpty(getTextFromEmailWidget()))
-                {
-                    customToastMessage("Please enter an email address!");
-                    return;
-                }
-
-                if (TextUtils.isEmpty(getTextFromPasswordWidget()))
-                {
-                    customToastMessage("Please Enter A Password");
-                    return;
-                }
-
+                checkIfWidgetsAreEmpty();
                 progressDialog.setMessage("Logging In Please Wait...");
                 progressDialog.show();
 
@@ -186,9 +170,8 @@ public class LoginActivity extends AppCompatActivity
                             return;
                         } else
                         {
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             genericMethods.dismissDialog(progressDialog);
-                            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
                             // successfully logged in
                             if (task.isSuccessful() && user.isEmailVerified() == true)
                             {
@@ -218,6 +201,7 @@ public class LoginActivity extends AppCompatActivity
 
     /**
      * Retrieves the text the user has entered from the email widget
+     *
      * @return - users email
      */
     private String getTextFromEmailWidget()
@@ -227,6 +211,7 @@ public class LoginActivity extends AppCompatActivity
 
     /**
      * Retrieves the text the user has entered from the password widget
+     *
      * @return - users password
      */
     private String getTextFromPasswordWidget()
@@ -235,7 +220,26 @@ public class LoginActivity extends AppCompatActivity
     }
 
     /**
+     * Used to check that the email and password fields contain text
+     */
+    private void checkIfWidgetsAreEmpty()
+    {
+        if (TextUtils.isEmpty(getTextFromEmailWidget()))
+        {
+            customToastMessage("Please enter an email address!");
+            return;
+        }
+
+        if (TextUtils.isEmpty(getTextFromPasswordWidget()))
+        {
+            customToastMessage("Please Enter A Password");
+            return;
+        }
+    }
+
+    /**
      * Creating a custom toast message for all Activities to access
+     *
      * @param message - Text to be displayed to the user
      */
     public void customToastMessage(String message)
