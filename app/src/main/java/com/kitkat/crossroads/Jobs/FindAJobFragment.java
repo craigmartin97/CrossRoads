@@ -48,6 +48,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -177,10 +178,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 // First item is disable and it is used for hint
                 if (position > 0)
                 {
-                    // Notify the selected item text
-                    Toast.makeText
-                            (getActivity(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
+                    mAdapter.sortList(position);
                 }
             }
 
@@ -740,6 +738,43 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         }
 
 
+        public void sortList(int position) {
+
+            ArrayList<JobInformation> jobsSort = new ArrayList<JobInformation>();
+            jobsSort = mDataOrig;
+            ArrayList<JobInformation> jAS = new ArrayList<JobInformation>();
+            jAS = mDataOrig;
+
+            if(position == 1) {
+                Collections.sort(jobsSort, JobInformation.nameComparatorA);
+                mData = jobsSort;
+                notifyDataSetChanged();
+            }
+            else if(position == 2) {
+                Collections.sort(jobsSort, JobInformation.colComparatorA);
+                mData = jobsSort;
+                notifyDataSetChanged();
+            }
+            else if(position == 3) {
+                Collections.sort(jobsSort, JobInformation.delComparatorA);
+                mData = jobsSort;
+                notifyDataSetChanged();
+            }
+            else if(position == 4) {
+                Collections.sort(jobsSort, JobInformation.dateComparatorA);
+                mData = jobsSort;
+                notifyDataSetChanged();
+            }
+            else if(position == 5) {
+                Collections.sort(jobsSort, JobInformation.sizeComparatorA);
+                mData = jobsSort;
+                notifyDataSetChanged();
+            }
+
+
+        }
+
     }
+
 
 }
