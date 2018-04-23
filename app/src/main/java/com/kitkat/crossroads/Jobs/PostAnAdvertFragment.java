@@ -322,7 +322,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         // Set the widgets to variables
         profileImage = view.findViewById(R.id.jobImage1);
-        profileImage.getLayoutParams().height = 0;
+        profileImage.setVisibility(View.GONE);
 
         buttonPostAd = view.findViewById(R.id.buttonAddJob);
         buttonUploadImages = view.findViewById(R.id.buttonUploadImages);
@@ -1263,7 +1263,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private void setJobImageHeight()
     {
         profileImage.setVisibility(View.VISIBLE);
-        profileImage.getLayoutParams().height = 115;
+//        profileImage.getLayoutParams().height = 115;
     }
 
     private void compressBitMapForStorage()
