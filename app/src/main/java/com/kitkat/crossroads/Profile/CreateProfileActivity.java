@@ -45,7 +45,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private FirebaseAuth auth;
     private DatabaseReference myRef;
     private StorageReference storageReference;
-    private String user;
+    private String user, userEmail;
 
     private DatabaseConnections databaseConnections = new DatabaseConnections();
 
@@ -171,6 +171,7 @@ public class CreateProfileActivity extends AppCompatActivity
         String addressTwo = this.addressTwo.getText().toString().trim();
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
+        String userEmail = this.userEmail.toString().trim();
 
         if (TextUtils.isEmpty(fullName))
         {
@@ -232,7 +233,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null);
+                    addressTwo, town, postCode, advertiser, courier, userEmail, null);
 
             setUserInformation(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -240,7 +241,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null);
+                    addressTwo, town, postCode, advertiser, courier, userEmail, null);
 
             setUserInformation(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -248,7 +249,7 @@ public class CreateProfileActivity extends AppCompatActivity
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null);
+                    addressTwo, town, postCode, advertiser, courier, userEmail, null);
 
             setUserInformation(userInformation);
         }

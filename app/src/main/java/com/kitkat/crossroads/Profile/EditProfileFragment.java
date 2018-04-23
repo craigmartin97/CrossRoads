@@ -63,7 +63,7 @@ public class EditProfileFragment extends Fragment
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
     private boolean advertiser, courier;
     private Button saveProfile;
-    private String profileImage;
+    private String profileImage, userEmail;
 
     private FirebaseAuth auth;
     private DatabaseReference myRef;
@@ -145,6 +145,7 @@ public class EditProfileFragment extends Fragment
                 profileImage = dataSnapshot.child("profileImage").getValue(String.class);
                 boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
                 boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+                userEmail = dataSnapshot.child("userEmail").getValue(String.class);
 
                 Log.d(TAG, "Full Name: " + name);
                 Log.d(TAG, "Phone Number: " + number);
@@ -257,6 +258,7 @@ public class EditProfileFragment extends Fragment
         String addressTwo = this.addressTwo.getText().toString().trim();
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
+        String userEmail = this.userEmail.toString().trim();
 
         if (TextUtils.isEmpty(fullName))
         {
@@ -312,7 +314,7 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage);
+                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
 
             setUserInformation(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -320,7 +322,7 @@ public class EditProfileFragment extends Fragment
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage);
+                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
 
             setUserInformation(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -328,7 +330,7 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage);
+                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
 
             setUserInformation(userInformation);
         }

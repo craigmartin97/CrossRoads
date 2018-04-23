@@ -27,10 +27,10 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/bebasneueregular"
-                android:text="@string/add_job"
+                android:text="Add Job"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="35sp" />
+                android:textSize="35dp" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -40,10 +40,10 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/bebasneueregular"
-                android:text="@string/delivery_details"
+                android:text="Delivery Details"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
             <EditText
                 android:id="@+id/editTextAdName"
@@ -55,7 +55,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/advert_name"
+                android:hint="Advert Name"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -68,7 +68,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/advert_description"
+                android:hint="Advert Description"
                 android:inputType="textMultiLine" />
 
             <Spinner
@@ -81,7 +81,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/job_size"
+                android:hint="Job Size"
                 android:inputType="textMultiLine" />
 
             <Spinner
@@ -94,7 +94,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/job_type"
+                android:hint="Job Type"
                 android:inputType="textMultiLine" />
 
             <EditText
@@ -107,9 +107,9 @@
                 android:clickable="true"
                 android:ellipsize="start"
                 android:ems="10"
-                android:focusable="true"
+                android:focusable="false"
                 android:gravity="center_horizontal"
-                android:hint="@string/collection_date"
+                android:hint="Collection Date"
                 android:inputType="date"
                 android:longClickable="false" />
 
@@ -123,9 +123,9 @@
                 android:clickable="true"
                 android:ellipsize="start"
                 android:ems="10"
-                android:focusable="true"
+                android:focusable="false"
                 android:gravity="center_horizontal"
-                android:hint="@string/collection_time"
+                android:hint="Collection Time"
                 android:inputType="time" />
 
             <TextView
@@ -136,18 +136,22 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/bebasneueregular"
-                android:text=""
+                android:text="Collection Address"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
             <Button
                 android:id="@+id/buttonMap1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewCollection"
-                android:layout_centerInParent="true"
-                android:text="@string/map" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#2bbc9b"
+                android:text="MAP"
+                android:textColor="#FFFFFF" />
 
 
             <RelativeLayout
@@ -187,8 +191,7 @@
                         android:layout_height="15dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_magnify"
-                        android:contentDescription="@null"/>
+                        android:src="@drawable/ic_magnify" />
 
                     <AutoCompleteTextView
                         android:id="@+id/editTextSearch"
@@ -196,7 +199,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/magnify"
                         android:background="@null"
-                        android:hint="@string/enter_an_address"
+                        android:hint="Enter An Address"
                         android:imeOptions="actionSearch"
                         android:inputType="textAutoComplete"
                         android:textColor="#000000"
@@ -210,8 +213,7 @@
                     android:layout_alignStart="@+id/relLayout1"
                     android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_gps"
-                    android:contentDescription="@null"/>
+                    android:src="@drawable/ic_gps" />
 
 
                 <ImageView
@@ -222,8 +224,7 @@
                     android:layout_alignStart="@+id/relLayout1"
                     android:layout_below="@+id/ic_gps"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/check"
-                    android:contentDescription="@null"/>
+                    android:src="@drawable/check" />
             </RelativeLayout>
 
 
@@ -237,7 +238,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/address_line_1"
+                android:hint="Address Line 1"
                 android:inputType="textPostalAddress" />
 
             <EditText
@@ -250,7 +251,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/address_line_2"
+                android:hint="Address Line 2"
                 android:inputType="textPostalAddress" />
 
             <EditText
@@ -263,7 +264,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/town"
+                android:hint="Town"
                 android:inputType="textPostalAddress" />
 
             <EditText
@@ -276,7 +277,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/postcode"
+                android:hint="Postcode"
                 android:inputType="textPostalAddress" />
 
 
@@ -288,10 +289,10 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/bebasneueregular"
-                android:text="@string/delivery_address"
+                android:text="Delivery Address"
                 android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
             <Button
                 android:id="@+id/buttonMap2"
@@ -299,7 +300,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewDelivery"
                 android:layout_centerHorizontal="true"
-                android:text="@string/map" />
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#2bbc9b"
+                android:text="MAP"
+                android:textColor="#FFFFFF" />
+
 
             <RelativeLayout
                 android:id="@+id/relLayout3"
@@ -338,8 +344,7 @@
                         android:layout_height="15dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_magnify"
-                        android:contentDescription="@null"/>
+                        android:src="@drawable/ic_magnify" />
 
                     <AutoCompleteTextView
                         android:id="@+id/editTextSearch2"
@@ -347,10 +352,9 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/magnify2"
                         android:background="@null"
-                        android:hint="@string/enter_an_address"
+                        android:hint="Enter An Address"
                         android:imeOptions="actionSearch"
                         android:inputType="textAutoComplete"
-                        android:text="@string/enter_an_address"
                         android:textColor="#000000"
                         android:textSize="15sp" />
                 </RelativeLayout>
@@ -362,8 +366,7 @@
                     android:layout_alignStart="@+id/relLayout4"
                     android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_gps"
-                    android:contentDescription="@null"/>
+                    android:src="@drawable/ic_gps" />
 
                 <ImageView
                     android:id="@+id/check2"
@@ -372,8 +375,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignStart="@+id/relLayout4"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/check"
-                    android:contentDescription="@null"/>
+                    android:src="@drawable/check" />
             </RelativeLayout>
 
             <EditText
@@ -386,7 +388,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/address_line_1"
+                android:hint="Address Line 1"
                 android:inputType="textPostalAddress" />
 
             <EditText
@@ -399,7 +401,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/address_line_2"
+                android:hint="Address Line 2"
                 android:inputType="textPostalAddress" />
 
             <EditText
@@ -412,7 +414,7 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/town"
+                android:hint="Town"
                 android:inputType="textPostalAddress" />
 
             <EditText
@@ -425,8 +427,17 @@
                 android:ellipsize="start"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="@string/postcode"
+                android:hint="Postcode"
                 android:inputType="textPostalAddress" />
+
+            <ImageView
+                android:id="@+id/jobImage1"
+                android:layout_width="188dp"
+                android:layout_height="184dp"
+                android:layout_below="@+id/editTextJobDelPostcode"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="0dp"
+                android:visibility="invisible" />
 
             <Button
                 android:id="@+id/buttonUploadImages"
@@ -436,18 +447,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="34dp"
                 android:background="#2bbc9b"
-                android:text="@string/upload_multiple_images"
+                android:text="Upload Image"
                 android:textColor="#FFFFFF" />
-
-            <ImageView
-                android:id="@+id/jobImage1"
-                android:layout_width="100dp"
-                android:layout_height="115dp"
-                android:layout_below="@+id/buttonUploadImages"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:visibility="invisible"
-                android:contentDescription="@null"/>
 
             <Button
                 android:id="@+id/buttonAddJob"
@@ -457,7 +458,7 @@
                 android:layout_below="@+id/buttonUploadImages"
                 android:layout_marginTop="20dp"
                 android:background="#2bbc9b"
-                android:text="@string/post_advert"
+                android:text="Post Advert"
                 android:textColor="#FFFFFF" />
 
         </RelativeLayout>

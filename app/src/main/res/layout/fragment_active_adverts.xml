@@ -35,9 +35,8 @@
                         android:layout_width="180dp"
                         android:layout_height="150dp"
                         android:layout_alignParentBottom="true"
-                        android:adjustViewBounds="false"
                         android:layout_alignParentStart="true"
-                        android:contentDescription="@null"/>
+                        android:adjustViewBounds="false" />
 
                     <TextView
                         android:id="@+id/textViewJobName1"
@@ -47,7 +46,7 @@
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
                         android:layout_toEndOf="@+id/jobImageActive"
-                        android:text="@string/jobname_here"
+                        android:text="JobName Here"
                         android:textSize="18sp" />
 
                     <TextView
@@ -57,7 +56,17 @@
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
                         android:layout_marginTop="16dp"
-                        android:text="@string/jobdescription_here"
+                        android:text="JobDescription Here"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textViewAcceptedBid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignStart="@+id/textViewJobName1"
+                        android:layout_below="@+id/textViewJobDescription1"
+                        android:layout_marginTop="16dp"
+                        android:text="Users Bid"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -108,8 +117,8 @@
                     android:layout_height="4dp"
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/customborderrounded" />
-            </LinearLayout>
 
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -121,9 +130,28 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:textColor="#000000"
-                    android:text="@string/agreed_fee_users_bid"
-                    android:textSize="18sp" />
+                    android:layout_marginBottom="10dp"
+                    android:background="#2bbc9b"
+                    android:text="View Couriers Information"
+                    android:textColor="#FFFFFF" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/buttonEmailCourier"
+                    android:layout_width="300sp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
+                    android:background="#2bbc9b"
+                    android:text="Email Courier"
+                    android:textColor="#FFFFFF" />
+
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

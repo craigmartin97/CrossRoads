@@ -1,5 +1,6 @@
 package com.kitkat.crossroads.MyAdverts;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +25,9 @@ import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
+import android.content.Intent;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +43,7 @@ public class ActiveAdverts extends Fragment
     /**
      * Button, when pressed, takes user to the couriers profile to view
      */
-    private Button buttonViewCourierProfile;
+    private Button buttonViewCourierProfile, buttonEmailCourier;
 
     /**
      * ImageView for the JobsImage
@@ -114,6 +118,7 @@ public class ActiveAdverts extends Fragment
         setJobInformationDetails(jobInformation);
 
         setButtonViewCourierProfile();
+        setButtonEmailCourier(courierId);
 
         addItemsCollection();
         addItemsDelivery();
@@ -174,6 +179,7 @@ public class ActiveAdverts extends Fragment
         jobImageActive = (ImageView) view.findViewById(R.id.jobImageActive);
         textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
         buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
+        buttonEmailCourier = view.findViewById(R.id.buttonEmailCourier);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
@@ -194,6 +200,33 @@ public class ActiveAdverts extends Fragment
                 GenericMethods genericMethods = new GenericMethods();
                 viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", getBundleInformation().getCourierID()));
                 genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
+            }
+        });
+    }
+
+    private void setButtonEmailCourier(final String courierID)
+    {
+        buttonEmailCourier.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                databaseReference.child("Users").child(courierID).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        String userEmail = dataSnapshot.child("userEmail").getValue(String.class);
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail, null));
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CrossRoads Job");
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+                        startActivity(Intent.createChooser(emailIntent, "Send Email"));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
     }
