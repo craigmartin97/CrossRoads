@@ -2,11 +2,16 @@ package com.kitkat.crossroads.ExternalClasses;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -47,6 +52,7 @@ import com.kitkat.crossroads.R;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by craig on 08/04/18.
@@ -158,52 +164,29 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
             Address address = list.get(0);
             Log.d(TAG, "Found A Location");
 
-            if (address.getSubThoroughfare() != null)
+            if(address.getAddressLine(0) != null)
             {
-                placeInfo.setSubThoroughfare(address.getSubThoroughfare());
+                String addressLine = address.getAddressLine(0).substring(0, address.getAddressLine(0).indexOf(","));
+                placeInfo.setPlaceName(addressLine);
             }
 
-            if (address.getSubThoroughfare() != null)
+            if(address.getSubAdminArea() != null)
             {
-                placeInfo.setThoroughfare(address.getThoroughfare());
-            } else
-            {
-                placeInfo.setSubThoroughfare("");
+                placeInfo.setPlaceAddressLineOne(address.getSubAdminArea());
             }
 
-            if (address.getLocality() != null)
+            if(address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
             {
-                placeInfo.setLocality(address.getLocality());
-            } else if (address.getSubLocality() != null)
+                placeInfo.setPlaceAddressLineTwo(address.getLocality());
+            }
+            else
             {
-                placeInfo.setLocality(address.getSubLocality());
-            } else if (address.getSubAdminArea() != null)
-            {
-                placeInfo.setLocality(address.getSubAdminArea());
-            } else if (address.getAdminArea() != null)
-            {
-                placeInfo.setLocality(address.getAdminArea());
-            } else
-            {
-                placeInfo.setLocality("");
+                placeInfo.setPlaceAddressLineTwo("");
             }
 
-            placeInfo.setPostCode(address.getPostalCode());
-
-            if (address.getPhone() != null)
+            if(address.getPostalCode() != null)
             {
-                placeInfo.setPhoneNumber(address.getPhone().toString());
-            } else
-            {
-                placeInfo.setPhoneNumber("N/A");
-            }
-
-            if (address.getUrl() != null)
-            {
-                placeInfo.setWebsiteUrl(address.getUrl().toString());
-            } else
-            {
-                placeInfo.setWebsiteUrl("N/A");
+                placeInfo.setPlacePostCode(address.getPostalCode());
             }
 
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, placeInfo);
@@ -217,7 +200,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
     /**
      * Get the devices current location after the user has agreed to that permission
      */
-    private void getDeviceCurrentLocation()
+    public void getDeviceCurrentLocation()
     {
         Log.d(TAG, "getDeviceCurrentLocation: Getting the devices current location");
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(fragmentActivity);
@@ -238,11 +221,17 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
                             Log.d(TAG, "onComplete: Found Location");
                             Location devicesCurrentLocation = (Location) task.getResult();
                             List<Address> list = new ArrayList<>();
-                            Geocoder geocoder = new Geocoder(fragmentActivity);
+                            Geocoder geocoder = new Geocoder(fragmentActivity, Locale.ENGLISH);
 
                             try
                             {
-                                list = geocoder.getFromLocation(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude(), 1);
+                                if (devicesCurrentLocation != null)
+                                {
+                                    list = geocoder.getFromLocation(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude(), 1);
+                                } else
+                                {
+                                    Toast.makeText(fragmentActivity, "Unable To Get Location", Toast.LENGTH_SHORT).show();
+                                }
                             } catch (IOException io)
                             {
                                 Log.e(TAG, io.getMessage());
@@ -252,65 +241,40 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
                             {
                                 Address address = list.get(0);
 
-                                if (address.getSubThoroughfare() != null)
+                                if(address.getAddressLine(0) != null)
                                 {
-                                    placeInfo.setSubThoroughfare(address.getSubThoroughfare());
+                                    String addressLine = address.getAddressLine(0).substring(0, address.getAddressLine(0).indexOf(","));
+                                    placeInfo.setPlaceName(addressLine);
                                 }
 
-                                if (address.getSubThoroughfare() != null)
+                                if(address.getSubAdminArea() != null)
                                 {
-                                    placeInfo.setThoroughfare(address.getThoroughfare());
-                                } else
-                                {
-                                    placeInfo.setSubThoroughfare("");
+                                    placeInfo.setPlaceAddressLineOne(address.getSubAdminArea());
                                 }
 
-                                if (address.getLocality() != null)
+                                if(address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
                                 {
-                                    placeInfo.setLocality(address.getLocality());
-                                } else if (address.getSubLocality() != null)
+                                    placeInfo.setPlaceAddressLineTwo(address.getLocality());
+                                }
+                                else
                                 {
-                                    placeInfo.setLocality(address.getSubLocality());
-                                } else if (address.getSubAdminArea() != null)
-                                {
-                                    placeInfo.setLocality(address.getSubAdminArea());
-                                } else if (address.getAdminArea() != null)
-                                {
-                                    placeInfo.setLocality(address.getAdminArea());
-                                } else
-                                {
-                                    placeInfo.setLocality("");
+                                    placeInfo.setPlaceAddressLineTwo("");
                                 }
 
-                                placeInfo.setPostCode(address.getPostalCode());
-
-                                if (address.getPhone() != null)
+                                if(address.getPostalCode() != null)
                                 {
-                                    placeInfo.setPhoneNumber(address.getPhone().toString());
-                                } else
-                                {
-                                    placeInfo.setPhoneNumber("N/A");
-                                }
-
-                                if (address.getUrl() != null)
-                                {
-                                    placeInfo.setWebsiteUrl(address.getUrl().toString());
-                                } else
-                                {
-                                    placeInfo.setWebsiteUrl("N/A");
+                                    placeInfo.setPlacePostCode(address.getPostalCode());
                                 }
 
                                 moveCamera(new LatLng(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude()), DEFAULT_ZOOM, placeInfo);
                             } else
                             {
-                                Toast.makeText(fragmentActivity, "Could'nt Find Location, Please Try Again", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         } else
                         {
                             // Can't Find
                             Log.d(TAG, "onComplete: Can't Find Location");
-                            Toast.makeText(fragmentActivity, "Unable To Find Your Current Location, Please Try Again", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -341,12 +305,10 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
             try
             {
                 String details =
-                        "Address: " + placeInfo.getSubThoroughfare() + " " + placeInfo.getThoroughfare() + " " + placeInfo.getLocality() + " " + placeInfo.getPostCode() + "\n" +
-                                "Phone Number: " + placeInfo.getPhoneNumber() + "\n" +
-                                "Website: " + placeInfo.getWebsiteUrl() + "\n";
+                        "Address: " + placeInfo.getPlaceName() + ", " + placeInfo.getPlaceAddressLineOne() + ", " + placeInfo.getPlaceAddressLineTwo() + ", " + placeInfo.getPlacePostCode() + "\n";
 
-                MarkerOptions options = new MarkerOptions().position(latLng).title(placeInfo.getSubThoroughfare() + " " + placeInfo.getThoroughfare() + " "
-                        + placeInfo.getLocality() + " " + placeInfo.getPostCode()).snippet(details);
+                MarkerOptions options = new MarkerOptions().position(latLng).title(placeInfo.getPlaceName() + ", " + placeInfo.getPlaceAddressLineOne() + ", "
+                        + placeInfo.getPlaceAddressLineTwo() + ", " + placeInfo.getPlacePostCode()).snippet(details);
                 marker = gMap.addMarker(options);
                 hideKeyboard(fragmentActivity);
             } catch (NullPointerException e)
@@ -449,7 +411,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
             }
         } else
         {
-             //Denied
+            //Denied
             ActivityCompat.requestPermissions(fragmentActivity, permissions, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
@@ -464,10 +426,9 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
         fragmentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    /*
+    /**
        Auto Complete API AutoComplete Suggestions
      */
-
     public void setPlaceAutocompleteAdapter(PlaceAutocompleteAdapter placeAutocompleteAdapter)
     {
         this.placeAutocompleteAdapter = placeAutocompleteAdapter;
@@ -524,56 +485,30 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
                     if (list.size() > 0)
                     {
                         Address address = list.get(0);
-                        if (address.getSubThoroughfare() != null)
+
+                        if(address.getAddressLine(0) != null)
                         {
-                            placeInfo.setSubThoroughfare(address.getSubThoroughfare());
-                        } else
-                        {
-                            placeInfo.setSubThoroughfare(place.getName().toString());
+                            String addressLine = address.getAddressLine(0).substring(0, address.getAddressLine(0).indexOf(","));
+                            placeInfo.setPlaceName(addressLine);
                         }
 
-
-                        if (address.getThoroughfare() != null)
+                        if(address.getSubAdminArea() != null)
                         {
-                            placeInfo.setThoroughfare(address.getThoroughfare());
-                        } else
-                        {
-                            placeInfo.setThoroughfare("");
+                            placeInfo.setPlaceAddressLineOne(address.getSubAdminArea());
                         }
 
-                        if (address.getLocality() != null)
+                        if(address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
                         {
-                            placeInfo.setLocality(address.getLocality());
-                        } else if (address.getSubLocality() != null)
+                            placeInfo.setPlaceAddressLineTwo(address.getLocality());
+                        }
+                        else
                         {
-                            placeInfo.setLocality(address.getSubLocality());
-                        } else if (address.getSubAdminArea() != null)
-                        {
-                            placeInfo.setLocality(address.getSubAdminArea());
-                        } else if (address.getAdminArea() != null)
-                        {
-                            placeInfo.setLocality(address.getAdminArea());
-                        } else
-                        {
-                            placeInfo.setLocality("");
+                            placeInfo.setPlaceAddressLineTwo("");
                         }
 
-                        placeInfo.setPostCode(address.getPostalCode());
-
-                        if (address.getPhone() != null)
+                        if(address.getPostalCode() != null)
                         {
-                            placeInfo.setPhoneNumber(place.getPhoneNumber().toString());
-                        } else
-                        {
-                            placeInfo.setPhoneNumber("N/A");
-                        }
-
-                        if (address.getUrl() != null)
-                        {
-                            placeInfo.setWebsiteUrl(place.getWebsiteUri().toString());
-                        } else
-                        {
-                            placeInfo.setWebsiteUrl("N/A");
+                            placeInfo.setPlacePostCode(address.getPostalCode());
                         }
                     }
 
