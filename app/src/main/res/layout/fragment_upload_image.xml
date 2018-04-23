@@ -16,7 +16,8 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
-            android:src="@color/cardview_light_background" />
+            android:src="@color/cardview_light_background"
+            android:contentDescription="@null"/>
 
         <Button
             android:id="@+id/buttonUploadProfileImage"
@@ -26,7 +27,7 @@
             android:layout_alignStart="@+id/imageViewProfileImage"
             android:layout_below="@+id/imageViewProfileImage"
             android:layout_marginTop="14dp"
-            android:text="Upload Profile Image" />
+            android:text="@string/upload_profile_image" />
 
         <Button
             android:id="@+id/buttonSaveProfileImage"
@@ -36,7 +37,7 @@
             android:layout_alignStart="@+id/buttonUploadProfileImage"
             android:layout_below="@+id/buttonUploadProfileImage"
             android:padding="18dp"
-            android:text="Save Profile Image" />
+            android:text="@string/save_profile_image" />
 
     </RelativeLayout>
 </FrameLayout>

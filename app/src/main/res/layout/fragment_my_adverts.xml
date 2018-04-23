@@ -13,8 +13,7 @@
         android:id="@+id/tabHost"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        >
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -49,7 +48,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bebasneueregular"
-                        android:text="My Pending Adverts"
+                        android:text="@string/my_pending_adverts"
                         android:textAlignment="center"
                         android:textSize="30sp"
                         tools:layout_editor_absoluteX="163dp"
@@ -86,7 +85,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bebasneueregular"
-                        android:text="My Active Adverts"
+                        android:text="@string/my_active_adverts"
                         android:textAlignment="center"
                         android:textSize="30sp"
                         tools:layout_editor_absoluteX="163dp"
@@ -122,7 +121,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bebasneueregular"
-                        android:text="My Completed Adverts"
+                        android:text="@string/my_completed_adverts"
                         android:textAlignment="center"
                         android:textSize="30sp"
                         tools:layout_editor_absoluteX="163dp"

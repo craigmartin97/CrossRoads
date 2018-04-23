@@ -12,8 +12,7 @@
         android:id="@+id/tabHost"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        >
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -48,7 +47,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bebasneueregular"
-                        android:text="My Accepted Jobs"
+                        android:text="@string/my_accepted_jobs"
                         android:textAlignment="center"
                         android:textSize="30sp"
                         tools:layout_editor_absoluteX="163dp"
@@ -80,12 +79,12 @@
                     <!-- TAB TWO CONTENT -->
 
                     <TextView
-                        android:paddingTop="15dp"
                         android:id="@+id/textView5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bebasneueregular"
-                        android:text="My Bids"
+                        android:paddingTop="15dp"
+                        android:text="@string/my_bids"
                         android:textAlignment="center"
                         android:textSize="30sp"
                         tools:layout_editor_absoluteX="163dp"

@@ -17,13 +17,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -31,21 +29,20 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/textName"
                         android:layout_width="match_parent"
-                        android:padding="4dp"
                         android:layout_height="wrap_content"
                         android:background="#FFFFFFFF"
                         android:gravity="center_vertical"
+                        android:padding="4dp"
                         android:paddingLeft="10dp"
+                        android:text="@string/text"
                         android:textAlignment="center"
                         android:textColor="#FF000000"
                         android:textStyle="bold"
-
                         android:visibility="visible" />
 
 
@@ -53,11 +50,10 @@
                         android:id="@+id/textBid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="4dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@+id/textName"
                         android:background="#FFFFFFFF"
                         android:gravity="center_vertical"
+                        android:padding="4dp"
+                        android:text="@string/textview"
                         android:textAlignment="center"
                         android:textColor="#FF000000"
                         android:visibility="visible" />
@@ -89,6 +85,7 @@
 
                 </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>
 

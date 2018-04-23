@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:adjustViewBounds="false"
-        app:srcCompat="@mipmap/profileimage" />
+        app:srcCompat="@mipmap/profileimage"
+        android:contentDescription="@null"/>
 
     <TextView
         android:id="@+id/navigationName"
@@ -26,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Android Studio"
+        android:text="@string/android_studio"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
@@ -35,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="10dp"
-        android:text="android.studio@android.com"
+        android:text="@string/android_studio_android_com"
         android:visibility="visible" />
 
     <RelativeLayout
@@ -50,7 +51,8 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="right"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_edit_pen" />
+            app:srcCompat="@drawable/ic_edit_pen"
+            android:contentDescription="@null"/>
 
 
         <ImageView
@@ -61,7 +63,8 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="left"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_view_profile" />
+            app:srcCompat="@drawable/ic_view_profile"
+            android:contentDescription="@null"/>
 
         <ImageView
             android:id="@+id/imageLogout"
@@ -70,7 +73,8 @@
             android:layout_alignParentTop="true"
             android:layout_marginEnd="35dp"
             android:layout_toStartOf="@+id/imageEditPen"
-            app:srcCompat="@drawable/ic_logout" />
+            app:srcCompat="@drawable/ic_logout"
+            android:contentDescription="@null"/>
 
     </RelativeLayout>
 </LinearLayout>

@@ -32,7 +32,8 @@
                 android:id="@+id/magnify"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_magnify"/>
+                android:src="@drawable/ic_magnify"
+                android:contentDescription="@null"/>
 
             <AutoCompleteTextView
                 android:id="@+id/editTextSearch"
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/magnify"
                 android:background="@null"
-                android:hint="Enter An Address"
+                android:hint="@string/enter_an_address"
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:imeOptions="actionSearch"/>
@@ -55,7 +56,8 @@
             android:layout_marginTop="10dp"
             android:scaleType="centerCrop"
             android:id="@+id/ic_gps"
-            android:src="@drawable/ic_gps" />
+            android:src="@drawable/ic_gps"
+            android:contentDescription="@null"/>
 
         <ImageView
             android:layout_width="40dp"
@@ -65,7 +67,8 @@
             android:layout_marginTop="10dp"
             android:scaleType="centerCrop"
             android:id="@+id/placeInfo"
-            android:src="@drawable/ic_info"/>
+            android:src="@drawable/ic_info"
+            android:contentDescription="@null"/>
 
         <ImageView
             android:id="@+id/check"
@@ -75,7 +78,8 @@
             android:layout_below="@+id/placeInfo"
             android:layout_marginTop="15dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/check" />
+            android:src="@drawable/check"
+            android:contentDescription="@null"/>
 
 
     </RelativeLayout>

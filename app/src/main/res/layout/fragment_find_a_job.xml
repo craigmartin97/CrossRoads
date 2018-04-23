@@ -20,9 +20,9 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/bebasneueregular"
             android:paddingTop="10dp"
-            android:text="Find A Job"
+            android:text="@string/find_a_job"
             android:textAlignment="center"
-            android:textSize="30dp"
+            android:textSize="30sp"
             tools:layout_editor_absoluteX="163dp"
             tools:layout_editor_absoluteY="16dp" />
 
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:background="#2bbc9b"
                 android:tag="#2bbc9b"
-                android:text="Filter"
+                android:text="@string/filter"
                 android:textColor="#FFFFFF"
                 android:textSize="15sp" />
 
@@ -66,7 +66,6 @@
             android:id="@+id/filterLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_marginHorizontal="5dp"
             android:background="@drawable/customborder"
             android:orientation="vertical"
@@ -74,27 +73,24 @@
             android:visibility="gone">
 
 
-
-
-                <EditText
-                    android:id="@+id/edittextFilterName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="2dp"
-                    android:background="@drawable/customborderrounded"
-                    android:gravity="center"
-                    android:hint="Advert Name"
-                    android:padding="10dp"
-                    android:textColorHint="#000000"
-                    android:textSize="12sp"
-                    android:visibility="visible" />
+            <EditText
+                android:id="@+id/edittextFilterName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/customborderrounded"
+                android:gravity="center"
+                android:hint="@string/advert_name"
+                android:padding="10dp"
+                android:textColorHint="#000000"
+                android:textSize="12sp"
+                android:visibility="visible" />
 
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_marginVertical="2dp"
                     android:orientation="horizontal">
 
@@ -136,7 +132,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:orientation="horizontal">
 
 
@@ -145,81 +140,79 @@
                         android:layout_width="175dp"
                         android:layout_height="wrap_content"
                         android:buttonTint="#2bbc9b"
-                        android:text="Single Item" />
+                        android:text="@string/single_item" />
 
                     <CheckBox
                         android:id="@+id/multipleItemsCheck"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:buttonTint="#2bbc9b"
-                        android:text="Multiple Items" />
+                        android:text="@string/multiple_items" />
 
                 </LinearLayout>
 
 
-                <EditText
-                    android:id="@+id/editTextFilterColDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="2dp"
-                    android:background="@drawable/customborderrounded"
-                    android:gravity="center"
-                    android:hint="Collection Date"
-                    android:paddingLeft="10dp"
-                    android:paddingVertical="10dp"
-                    android:textColorHint="#000000"
-                    android:textSize="12sp"
-                    android:visibility="visible"
-
-                    />
+            <EditText
+                android:id="@+id/editTextFilterColDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/customborderrounded"
+                android:gravity="center"
+                android:hint="@string/collection_date"
+                android:paddingLeft="10dp"
+                android:paddingVertical="10dp"
+                android:textColorHint="#000000"
+                android:textSize="12sp"
+                android:visibility="visible" />
 
 
-                <EditText
-                    android:id="@+id/editTextFilterColTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="2dp"
-                    android:background="@drawable/customborderrounded"
-                    android:gravity="center"
-                    android:hint="Collection Time"
-                    android:paddingLeft="10dp"
-                    android:paddingVertical="10dp"
-                    android:textColorHint="#000000"
-                    android:textSize="12sp"
-                    android:visibility="visible" />
+            <EditText
+                android:id="@+id/editTextFilterColTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/customborderrounded"
+                android:gravity="center"
+                android:hint="@string/collection_time"
+                android:paddingLeft="10dp"
+                android:paddingVertical="10dp"
+                android:textColorHint="#000000"
+                android:textSize="12sp"
+                android:visibility="visible" />
 
 
-                <EditText
-                    android:id="@+id/editTextFilterColFrom"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="2dp"
-                    android:background="@drawable/customborderrounded"
-                    android:gravity="center"
-                    android:hint="Colletion From"
-                    android:paddingLeft="10dp"
-                    android:paddingVertical="10dp"
-                    android:textColorHint="#000000"
-                    android:textSize="12sp"
-                    android:visibility="visible" />
+            <EditText
+                android:id="@+id/editTextFilterColFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/customborderrounded"
+                android:gravity="center"
+                android:hint="@string/collection_from"
+                android:paddingLeft="10dp"
+                android:paddingVertical="10dp"
+                android:textColorHint="#000000"
+                android:textSize="12sp"
+                android:visibility="visible" />
 
-                <EditText
-                    android:id="@+id/editTextFilterDelTo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="2dp"
-                    android:background="@drawable/customborderrounded"
-                    android:gravity="center"
-                    android:hint="Delivery To"
-                    android:paddingLeft="10dp"
-                    android:paddingVertical="10dp"
-                    android:textColorHint="#000000"
-                    android:textSize="12sp"
-                    android:visibility="visible" />
+            <EditText
+                android:id="@+id/editTextFilterDelTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/customborderrounded"
+                android:gravity="center"
+                android:hint="@string/delivery_to"
+                android:paddingLeft="10dp"
+                android:paddingVertical="10dp"
+                android:textColorHint="#000000"
+                android:textSize="12sp"
+                android:visibility="visible" />
 
 
                 <LinearLayout
@@ -234,7 +227,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:background="#2bbc9b"
-                        android:text="Clear"
+                        android:text="@string/clear"
                         android:textColor="#FFFFFF" />
 
                     <Button
@@ -243,7 +236,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:background="#2bbc9b"
-                        android:text="Apply Filter"
+                        android:text="@string/apply_filter"
                         android:textColor="#FFFFFF" />
                     />
 

@@ -22,7 +22,8 @@
             android:layout_height="80dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/cblack" />
+            android:src="@drawable/cblack"
+            android:contentDescription="@null"/>
 
         <ImageView
             android:id="@+id/imageViewCRGreen"
@@ -30,7 +31,8 @@
             android:layout_height="60dp"
             android:layout_below="@+id/imageViewCBlack"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/crgreentext" />
+            android:src="@drawable/crgreentext"
+            android:contentDescription="@null"/>
 
 
         <TextView
@@ -44,7 +46,7 @@
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="#000000"
-            android:textSize="35dp" />
+            android:textSize="35sp" />
 
         <TextView
             android:id="@+id/textView"
@@ -69,14 +71,13 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
-                android:background="@drawable/email_icon" />
+                android:background="@drawable/email_icon"
+                android:contentDescription="@null"/>
 
             <EditText
                 android:id="@+id/editTextEmailLogin"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/textView"
                 android:background="#FFFFFF"
                 android:ellipsize="start"
                 android:ems="10"
@@ -103,14 +104,13 @@
                 android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
-                android:background="@drawable/lock_icon" />
+                android:background="@drawable/lock_icon"
+                android:contentDescription="@null"/>
 
             <EditText
                 android:id="@+id/editTextPasswordLogin"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/linearLayoutEmail"
                 android:background="#FFFFFF"
                 android:ellipsize="start"
                 android:ems="10"

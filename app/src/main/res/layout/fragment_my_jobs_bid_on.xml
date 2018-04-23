@@ -36,8 +36,9 @@
                         android:layout_width="180dp"
                         android:layout_height="150dp"
                         android:layout_alignParentBottom="true"
+                        android:adjustViewBounds="false"
                         android:layout_alignParentStart="true"
-                        android:adjustViewBounds="false" />
+                        android:contentDescription="@null"/>
 
                     <TextView
                         android:id="@+id/textViewJobName1"
@@ -47,7 +48,7 @@
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
                         android:layout_toEndOf="@+id/jobImgageBidOn"
-                        android:text="JobName Here"
+                        android:text="@string/jobname_here"
                         android:textSize="18sp" />
 
                     <TextView
@@ -57,7 +58,7 @@
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
                         android:layout_marginTop="16dp"
-                        android:text="JobDescription Here"
+                        android:text="@string/jobdescription_here"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
@@ -113,55 +114,36 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="91dp">
+                android:background="@drawable/customborderrounded"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20sp"
+                android:layout_marginRight="20sp"
+                android:layout_marginLeft="20sp"
+                android:layout_marginBottom="20sp">
 
-                    <EditText
-                        android:id="@+id/editBid"
-                        android:layout_width="114dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:ems="10"
-                        android:hint="£"
-                        android:inputType="numberDecimal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.176"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.379" />
+                <EditText
+                    android:id="@+id/editBid"
+                    android:inputType="numberDecimal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="34dp"
+                    android:layout_toStartOf="@+id/buttonEditBid"
+                    android:hint="@string/your_bid"
+                    android:textSize="18sp" />
 
-                    <Button
-                        android:id="@+id/buttonEditBid"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="44dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/colorPrimary"
-                        android:padding="16dp"
-                        android:text="Make New Bid"
-                        android:textColor="#FFFFFF"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.101"
-                        app:layout_constraintStart_toEndOf="@+id/editTextBid"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.375" />
-
-                </android.support.constraint.ConstraintLayout>
+                <Button
+                    android:id="@+id/buttonEditBid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="35dp"
+                    android:background="#2bbc9b"
+                    android:padding="15sp"
+                    android:text="@string/submit_new_bid"
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
