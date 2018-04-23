@@ -316,9 +316,16 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
     private void displayContent()
     {
-        String menuFragment = getIntent().getStringExtra("menuFragment");
-        String tabView = getIntent().getStringExtra("tabView");
 
+//        Bundle newBundle;
+//        String menuFragment = null;
+//        String tabView = null;
+//        Bundle bundle = getIntent().getExtras();
+//        if(bundle != null)
+//        {
+//            menuFragment = bundle.getString("menuFragment");
+//            tabView = bundle.getString("tabView");
+//        }
         Log.d(TAG, "Permission Granted");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -329,27 +336,27 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        if(menuFragment != null)
-        {
-            if(menuFragment.equals("myJobsFragment"))
-            {
-                Bundle bundle = new Bundle();
-                bundle.putString("tabView", tabView);
-                MyJobsFragment myJobsFragment = new MyJobsFragment();
-                myJobsFragment.setArguments(bundle);
-                getFragmentTransaction().replace(R.id.content, myJobsFragment).commit();
-
-            }
-            else if(menuFragment.equals("myAdvertsFragment"))
-            {
-                Bundle bundle = new Bundle();
-                bundle.putString("tabView", tabView);
-                MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
-                myAdvertsFragment.setArguments(bundle);
-                getFragmentTransaction().replace(R.id.content, myAdvertsFragment).commit();
-            }
-        }
-        else {
+//        if(menuFragment != null && tabView != null)
+//        {
+//            if(menuFragment.equals("myJobsFragment"))
+//            {
+//                newBundle = new Bundle();
+//                newBundle.putString("tabView", tabView);
+//                MyJobsFragment myJobsFragment = new MyJobsFragment();
+//                myJobsFragment.setArguments(newBundle);
+//                getFragmentTransaction().replace(R.id.content, myJobsFragment).commit();
+//
+//            }
+//            else if(menuFragment.equals("myAdvertsFragment"))
+//            {
+//                newBundle = new Bundle();
+//                newBundle.putString("tabView", tabView);
+//                MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
+//                myAdvertsFragment.setArguments(newBundle);
+//                getFragmentTransaction().replace(R.id.content, myAdvertsFragment).commit();
+//            }
+//        }
+//        else {
             databaseReference.child(user).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -370,7 +377,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
 
                 }
             });
-        }
+        //}
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

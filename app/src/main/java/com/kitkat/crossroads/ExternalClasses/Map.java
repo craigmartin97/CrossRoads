@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -238,6 +239,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
                             Location devicesCurrentLocation = (Location) task.getResult();
                             List<Address> list = new ArrayList<>();
                             Geocoder geocoder = new Geocoder(fragmentActivity);
+
                             try
                             {
                                 list = geocoder.getFromLocation(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude(), 1);
