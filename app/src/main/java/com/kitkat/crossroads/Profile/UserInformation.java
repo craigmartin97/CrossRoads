@@ -26,6 +26,7 @@ public class UserInformation {
     }
 
     public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, String profileImage, String userEmail) {
+
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.addressOne = addressOne;
@@ -114,7 +115,8 @@ public class UserInformation {
         return userEmail;
     }
 
-    public void setUserEmail(String userEmail) {
+    public void setUserEmail(String userEmail)
+    {
         this.userEmail = userEmail;
     }
 }
