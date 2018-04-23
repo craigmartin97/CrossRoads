@@ -11,12 +11,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.github.barteksc.pdfviewer.util.Constants;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.kitkat.crossroads.Account.LoginActivity;
-import com.kitkat.crossroads.Account.RegisterActivity;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.SplashScreen;
