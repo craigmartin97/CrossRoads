@@ -168,7 +168,6 @@ public class RegisterActivity extends AppCompatActivity
         });
     }
 
-
     private void registerUser()
     {
         userInformationValidation();

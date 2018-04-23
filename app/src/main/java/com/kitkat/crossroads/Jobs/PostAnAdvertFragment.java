@@ -14,9 +14,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +30,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,6 +68,7 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
+import com.kitkat.crossroads.Manifest;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
@@ -127,6 +132,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private JobInformation jobInformation;
     private String jobIdKey;
 
+    private CheckBox myAddressCheckBox1, myAddressCheckBox2;
+
     /**
      * Widgets that are found on the View, fragment_map
      */
@@ -154,6 +161,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private GoogleApiClient mGoogleApiClient1;
 
     private GenericMethods genericMethods = new GenericMethods();
+
+    private static final int REQUEST_CODE = 3;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -262,8 +271,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 }
             });
 
-
-
             if (isServicesOK())
             {
                 mapOnClickListeners();
@@ -288,6 +295,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             RelativeLayout relativeLayout1 = view.findViewById(R.id.relLayout2);
             relativeLayout1.setVisibility(View.GONE);
             relativeLayout1.getLayoutParams().height = 0;
+
+            buttonMap1.setVisibility(View.GONE);
+            buttonMap2.setVisibility(View.GONE);
         }
 
         createOnClickListeners();
@@ -334,6 +344,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
         buttonMap1 = view.findViewById(R.id.buttonMap1);
         buttonMap2 = view.findViewById(R.id.buttonMap2);
+
+        myAddressCheckBox1 = view.findViewById(R.id.checkBoxMyAddress1);
+        myAddressCheckBox2 = view.findViewById(R.id.checkBoxMyAddress2);
 
         linLayout1 = view.findViewById(R.id.mapLin);
         linLayout2 = view.findViewById(R.id.mapLin2);
@@ -466,44 +479,52 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View view)
             {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
-
-                alertDialog.setTitle("Upload Image With");
-                alertDialog.setView(mView);
-                final AlertDialog dialog = alertDialog.create();
-                dialog.show();
-
-                Button gallery = mView.findViewById(R.id.gallery);
-                Button camera = mView.findViewById(R.id.camera);
-
-                if (!hasCamera())
+                if (verifyPermissions())
                 {
-                    camera.setEnabled(false);
-                } else
-                {
-                    camera.setOnClickListener(new View.OnClickListener()
+                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                    View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
+
+                    alertDialog.setTitle("Upload Image With");
+                    alertDialog.setView(mView);
+                    final AlertDialog dialog = alertDialog.create();
+                    dialog.show();
+
+                    Button gallery = mView.findViewById(R.id.gallery);
+                    Button camera = mView.findViewById(R.id.camera);
+
+                    if (!hasCamera())
+                    {
+                        camera.setEnabled(false);
+                    } else
+                    {
+                        camera.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+
+                    gallery.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View v)
                         {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setType("image/*");
+                            startActivityForResult(intent, GALLERY_INTENT);
+                            dialog.dismiss();
                         }
                     });
-                }
-
-                gallery.setOnClickListener(new View.OnClickListener()
+                } else
                 {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityForResult(intent, GALLERY_INTENT);
-                        dialog.dismiss();
-                    }
-                });
+                    Toast.makeText(getActivity(), "Permissions have been denied", Toast.LENGTH_SHORT).show();
+                    verifyPermissions();
+                }
             }
         });
 
@@ -552,11 +573,97 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 }
             }
         });
-    }
+        myAddressCheckBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                if (myAddressCheckBox1.isChecked())
+                {
+                    databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            try
+                            {
+                                editTextColAddL1.setText(dataSnapshot.child("addressOne").getValue(String.class));
+                                editTextColAddL2.setText(dataSnapshot.child("addressTwo").getValue(String.class));
+                                editTextColAddTown.setText(dataSnapshot.child("town").getValue(String.class));
+                                editTextColAddPostcode.setText(dataSnapshot.child("postCode").getValue(String.class));
+                            } catch (NullPointerException e)
+                            {
+                                Log.d(TAG, e.getMessage());
+                            }
+                        }
 
-    private void processPayment()
-    {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
 
+                        }
+                    });
+                } else
+                {
+                    try
+                    {
+                        editTextColAddL1.setText(null);
+                        editTextColAddL2.setText(null);
+                        editTextColAddTown.setText(null);
+                        editTextColAddPostcode.setText(null);
+                    } catch (NullPointerException e)
+                    {
+                        Log.d(TAG, e.getMessage());
+                    }
+                }
+            }
+        });
+
+        myAddressCheckBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                if (myAddressCheckBox2.isChecked())
+                {
+                    databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            try
+                            {
+                                editTextDelAddL1.setText(dataSnapshot.child("addressOne").getValue(String.class));
+                                editTextDelAddL2.setText(dataSnapshot.child("addressTwo").getValue(String.class));
+                                editTextDelAddTown.setText(dataSnapshot.child("town").getValue(String.class));
+                                editTextDelAddPostcode.setText(dataSnapshot.child("postCode").getValue(String.class));
+                            } catch (NullPointerException e)
+                            {
+                                Log.d(TAG, e.getMessage());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
+
+                        }
+                    });
+                } else
+                {
+                    try
+                    {
+                        editTextDelAddL1.setText(null);
+                        editTextDelAddL2.setText(null);
+                        editTextDelAddTown.setText(null);
+                        editTextDelAddPostcode.setText(null);
+                    } catch (NullPointerException e)
+                    {
+                        Log.d(TAG, e.getMessage());
+                    }
+                }
+            }
+        });
     }
 
     private void checkWidgetsContainText()
@@ -695,7 +802,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 {
                     final PlaceInformation pInfo = map1.getPlaceInfo();
 
-                    if(pInfo.getPlaceName() == null || pInfo.getPlaceAddressLineOne() == null || pInfo.getPlaceAddressLineTwo() == null
+                    if (pInfo.getPlaceName() == null || pInfo.getPlaceAddressLineOne() == null || pInfo.getPlaceAddressLineTwo() == null
                             || pInfo.getPlacePostCode() == null)
                     {
                         Toast.makeText(getActivity(), "Bad Location Choose Another", Toast.LENGTH_SHORT).show();
@@ -1204,5 +1311,31 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             mGoogleApiClient1.disconnect();
         }
 
+    }
+
+    private boolean verifyPermissions()
+    {
+        Log.d(TAG, "Verifying Permissions, asking user for permissions");
+        String[] permissions = {
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.CAMERA};
+
+        if (ContextCompat.checkSelfPermission(getContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getContext(), permissions[2]) == PackageManager.PERMISSION_GRANTED)
+        {
+            return true;
+        } else
+        {
+            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE);
+            return false;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        verifyPermissions();
     }
 }

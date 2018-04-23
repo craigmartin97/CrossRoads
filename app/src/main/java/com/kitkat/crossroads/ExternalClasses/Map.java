@@ -95,7 +95,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
     /**
      * The main entry point for Google Play services integration
      */
-    private GoogleApiClient mGoogleApiClient1, mGoogleApiClient2;
+    private GoogleApiClient mGoogleApiClient1;
 
     /**
      * Lat and Long Bounds that are used. This covers across the entire world
