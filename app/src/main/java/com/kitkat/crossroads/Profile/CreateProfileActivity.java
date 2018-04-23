@@ -289,7 +289,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private void setDatabaseConnections()
     {
         auth = databaseConnections.getAuth();
-        myRef = databaseConnections.getMyRef();
+        myRef = databaseConnections.getDatabaseReference();
         user = databaseConnections.getCurrentUser();
         storageReference = databaseConnections.getStorageReference();
 

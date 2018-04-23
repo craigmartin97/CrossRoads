@@ -194,7 +194,6 @@
             android:textColor="#1a8cff"
             android:textColorLink="#1a8cff"
             android:visibility="visible" />
-
     </RelativeLayout>
 
 </ScrollView>
