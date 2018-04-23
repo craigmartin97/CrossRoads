@@ -293,6 +293,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             RelativeLayout relativeLayout1 = view.findViewById(R.id.relLayout2);
             relativeLayout1.setVisibility(View.GONE);
             relativeLayout1.getLayoutParams().height = 0;
+
+            buttonMap1.setVisibility(View.GONE);
+            buttonMap2.setVisibility(View.GONE);
         }
 
         createOnClickListeners();
@@ -1217,6 +1220,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
         }
+
     }
 
     private boolean verifyPermissions()
