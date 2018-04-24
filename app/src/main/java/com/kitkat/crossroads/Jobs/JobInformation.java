@@ -1,28 +1,52 @@
 package com.kitkat.crossroads.Jobs;
 
-import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.io.Serializable;
 
 /**
- * Created by s6042911 on 15/02/18.
+ * Creates a new jobInformation object that stores and creates a new job.
+ * Jobs must have name, description, size, type and address information.
  */
-
 public class JobInformation implements Serializable
 {
 
+    /**
+     * All strings to store the jobs information
+     */
     private String advertName, advertDescription, jobSize, jobType, posterID, jobID, courierID, collectionDate, collectionTime;
     private String colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode;
     private String jobStatus;
     private String jobImage;
 
+    /**
+     * Blank constructor, needed for Serialization
+     */
     public JobInformation()
     {
 
     }
 
+    /**
+     * Creates a new jobInformation object. Stores all information about a job and defines what each job is.
+     *
+     * @param advertName String: Name of the job
+     * @param advertDescription String: Description of the job
+     * @param jobSize String: Size of the job
+     * @param jobType String: Type of the job
+     * @param posterID String: Users Id who posted job
+     * @param courierID String: The accepted courier of the job
+     * @param collectionDate String: Day the job is meant to take place
+     * @param collectionTime String: Time the job is meant to take place
+     * @param colL1 String: Address line where the job is collected from
+     * @param colL2 String: Address line two where the job is collected from
+     * @param colTown String: Town, where the job is collected from
+     * @param colPostcode String: Postcode, where the job is collected from
+     * @param delL1 String: Address line where the job is delivered to
+     * @param delL2 String: Address line two where the job is delivered to
+     * @param delTown String: Town, where the job is being delivered to
+     * @param delPostcode String: Postcode, where the job is being delivered to
+     * @param jobStatus String: If the job is Pending, Active, Complete or Inactive
+     * @param jobImage String: URL address of the Image for the job
+     */
     public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobStatus, String jobImage)
     {
         this.advertName = advertName;
@@ -45,19 +69,14 @@ public class JobInformation implements Serializable
         this.jobImage = jobImage;
     }
 
+    /**
+     * Set the jobId
+     *
+     * @param jobID
+     */
     public void setJobID(String jobID)
     {
         this.jobID = jobID;
-    }
-
-    public void setJobStatus(String jobStatus)
-    {
-        this.jobStatus = jobStatus;
-    }
-
-    public void setCourierID(String courierID)
-    {
-        this.courierID = courierID;
     }
 
     public String getCourierID()
@@ -153,15 +172,5 @@ public class JobInformation implements Serializable
     public String getJobImage()
     {
         return jobImage;
-    }
-
-    public void setJobImage(String jobImage)
-    {
-        this.jobImage = jobImage;
-    }
-
-    public String getWholeString()
-    {
-        return advertName + advertDescription + jobSize + jobType + collectionDate + collectionTime + colL1 + colL2 + colTown + colPostcode + delL1 + delL2 + delTown + delPostcode;
     }
 }

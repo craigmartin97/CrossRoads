@@ -525,7 +525,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
         }
 
-
         void addArray(final ArrayList<JobInformation> j)
         {
             mData.clear();
