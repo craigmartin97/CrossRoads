@@ -5,6 +5,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kitkat.crossroads.EnumClasses.TableNames;
 
 import java.util.Objects;
 
@@ -43,7 +44,7 @@ public class DatabaseConnections
      */
     public DatabaseReference getDatabaseReferenceJobs()
     {
-        return FirebaseDatabase.getInstance().getReference().child("Jobs");
+        return FirebaseDatabase.getInstance().getReference().child(TableNames.Jobs.name());
     }
 
     /**
@@ -53,7 +54,7 @@ public class DatabaseConnections
      */
     public DatabaseReference getDatabaseReferenceBids()
     {
-        return FirebaseDatabase.getInstance().getReference().child("Bids");
+        return FirebaseDatabase.getInstance().getReference().child(TableNames.Bids.name());
     }
 
     /**
@@ -63,7 +64,7 @@ public class DatabaseConnections
      */
     public DatabaseReference getDatabaseReferenceRatings()
     {
-        return FirebaseDatabase.getInstance().getReference().child("Ratings");
+        return FirebaseDatabase.getInstance().getReference().child(TableNames.Ratings.name());
     }
 
     /**
@@ -73,7 +74,7 @@ public class DatabaseConnections
      */
     public DatabaseReference getDatabaseReferenceUsers()
     {
-        return FirebaseDatabase.getInstance().getReference().child("Users");
+        return FirebaseDatabase.getInstance().getReference().child(TableNames.Users.name());
     }
 
     /**

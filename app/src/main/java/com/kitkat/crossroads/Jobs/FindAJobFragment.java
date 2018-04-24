@@ -3,7 +3,6 @@ package com.kitkat.crossroads.Jobs;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +24,6 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,7 +53,6 @@ import java.util.Locale;
  */
 public class FindAJobFragment extends Fragment implements SearchView.OnQueryTextListener
 {
-    private OnFragmentInteractionListener mListener;
 
     /**
      * Database reference to the FireBase database, under the Jobs table
@@ -65,7 +62,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     /**
      * Accessing class to gain access to methods
      */
-    private GenericMethods genericMethods = new GenericMethods();
+    private final GenericMethods genericMethods = new GenericMethods();
 
     /**
      * Storing the current users unique Id
@@ -271,7 +268,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     }
 
     /**
-     * Retrieving all of the Jobs from the FireBase database that are pending, before todays date and time
+     * Retrieving all of the Jobs from the FireBase database that are pending, before today's date and time
      * and not posted by the current user. They are added to the adapter and displayed in the list view.
      */
     private void getJobsFromDatabase()
@@ -346,7 +343,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
      */
     private String[] createTextForSortBy()
     {
-        String[] sortBy = new String[]{
+
+        return new String[]{
                 "Sort By",
                 "Name",
                 "Collection From",
@@ -354,8 +352,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 "Collection Date",
                 "Size"
         };
-
-        return sortBy;
 
 
     }
@@ -368,15 +364,14 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
      */
     private String[] createTextForJobSizes()
     {
-        String[] jobSizes = new String[]{
+
+        return new String[]{
                 "Job Sizes",
                 "Small",
                 "Medium",
                 "Large",
                 "Extra Large"
         };
-
-        return jobSizes;
     }
 
     private void createSortByDropDown()
@@ -512,22 +507,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         return false;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    private interface OnFragmentInteractionListener
-    {
-        void onFragmentInteraction(Uri uri);
-    }
-
 
     class MyCustomAdapter extends BaseAdapter
     {
@@ -761,46 +740,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        }
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     @Override
     public void onDetach()
     {
         super.onDetach();
-        mListener = null;
     }
 }
