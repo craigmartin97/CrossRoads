@@ -7,14 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-<<<<<<< f31388486b09007df59f52ab6baf6e77847d3315
-
-            <option value="/home/scm-studs/s6042911/AndroidStudioProjects/CrossRoads" />
-            <option value="/home/scm-studs/s6042911/AndroidStudioProjects/CrossRoads/app" />
-=======
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
->>>>>>> Started data persistance - Craig
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
