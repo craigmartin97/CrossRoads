@@ -1,45 +1,32 @@
 package com.kitkat.crossroads.ExternalClasses;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.DataSnapshot;
-import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
+/**
+ * Class stores lots of methods that other classes, activities and fragments
+ * can access and call instead of reusing code multiple times.
+ */
 public class GenericMethods
 {
-    private String tempTag;
-
     /**
      * Creating a custom toast message for all Fragments to Access
      *
-     * @param message
-     * @param fragmentActivity
+     * @param message String: message to be displayed to the user
+     * @param fragmentActivity FragmentActivity: The fragment that method has been called from and to display the message in
      */
     public void customToastMessage(String message, FragmentActivity fragmentActivity)
     {
@@ -48,6 +35,7 @@ public class GenericMethods
 
     /**
      * Creating a method to dismiss progress dialogs
+     *
      * @param progressDialog - The progress dialog to be dismissed
      */
     public void dismissDialog(ProgressDialog progressDialog)
@@ -56,7 +44,10 @@ public class GenericMethods
     }
 
     /**
-     * Create tab hosts
+     *
+     * @param host
+     * @param item
+     * @param tabName
      */
     public void setupTabHost(TabHost host, int item, String tabName)
     {
@@ -70,12 +61,14 @@ public class GenericMethods
     }
 
     /**
-     * Create tab hosts, features
+     *
+     *
+     * @param host TabHost: Creates a new tab host
+     * @param tabTag String: Text to be displayed on the tab
      */
     public void createTabHost(final TabHost host, String tabTag)
     {
         host.setCurrentTabByTag(tabTag);
-        tempTag = tabTag;
 
         // Assigning the color for each tab
         for (int i = 0; i < host.getTabWidget().getChildCount(); i++)
@@ -105,8 +98,6 @@ public class GenericMethods
                 host.getTabWidget().getChildAt(host.getCurrentTab());
                 TextView tv = host.getCurrentTabView().findViewById(android.R.id.title); //for Selected Tab
                 tv.setTextColor(Color.parseColor("#2bbc9b"));
-
-                tempTag = host.getCurrentTabTag();
             }
         });
     }
@@ -165,12 +156,5 @@ public class GenericMethods
         Bundle bundle = new Bundle();
         bundle.putSerializable(tag, data);
         return bundle;
-    }
-
-    public ExpandableListAdapter createExpandableListAdapter(FragmentActivity fragmentActivity, List<String> list, HashMap<String, List<String>> listHashMap, ExpandableListView expandableListView)
-    {
-        ExpandableListAdapter adapter = new ExpandableListAdapter(fragmentActivity, list, listHashMap);
-        expandableListView.setAdapter(adapter);
-        return adapter;
     }
 }
