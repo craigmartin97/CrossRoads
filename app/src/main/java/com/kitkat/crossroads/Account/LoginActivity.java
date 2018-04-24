@@ -25,6 +25,8 @@ import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
+import java.util.Objects;
+
 /**
  * This class is used so users can login to their accounts. The users must enter their email address and password.
  * This is then checked in the FireBase Authentication area to ensure they are a user. If they are a sign up user
@@ -52,7 +54,6 @@ public class LoginActivity extends AppCompatActivity
      * is taking place.
      */
     private ProgressDialog progressDialog;
-    ;
 
     /**
      * Button widget, when the user has entered their information they can press the button
@@ -70,7 +71,7 @@ public class LoginActivity extends AppCompatActivity
     /**
      * Accessing methods from the generic methods, were CustomToast and DialogDismiss can be accessed from.
      */
-    private GenericMethods genericMethods = new GenericMethods();
+    private final GenericMethods genericMethods = new GenericMethods();
 
     /**
      * This method is called when the activity login is displayed to the user. It creates all of the
@@ -169,30 +170,25 @@ public class LoginActivity extends AppCompatActivity
                         {
                             genericMethods.dismissDialog(progressDialog);
                             customToastMessage("Please Check Your Details And Try Again");
-                            return;
                         } else
                         {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             genericMethods.dismissDialog(progressDialog);
                             // successfully logged in
-                            if (task.isSuccessful() && user.isEmailVerified() == true)
+                            if (task.isSuccessful() && (user != null && user.isEmailVerified()))
                             {
                                 genericMethods.dismissDialog(progressDialog);
-                                String token = FirebaseInstanceId.getInstance().getToken();
-                                databaseReferenceUsers.child(auth.getCurrentUser().getUid()).child(DatabaseEntryNames.notifToken.name()).setValue(FirebaseInstanceId.getInstance().getToken());
-
+                                databaseReferenceUsers.child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(DatabaseEntryNames.notifToken.name()).setValue(FirebaseInstanceId.getInstance().getToken());
                                 startActivity(new Intent(getApplicationContext(), CrossRoadsMainActivity.class));
                                 finish();
-                            } else if (user.isEmailVerified() == false)
+                            } else if (!(user != null && user.isEmailVerified()))
                             {
                                 genericMethods.dismissDialog(progressDialog);
                                 customToastMessage("You Must Verify Your Email Address Before Logging In. Please Check Your Email.");
-                                return;
                             } else
                             {
                                 genericMethods.dismissDialog(progressDialog);
                                 customToastMessage("Please Re-enter Your Details And Try Again");
-                                return;
                             }
                         }
                     }
@@ -235,7 +231,6 @@ public class LoginActivity extends AppCompatActivity
         if (TextUtils.isEmpty(getTextFromPasswordWidget()))
         {
             customToastMessage("Please Enter A Password");
-            return;
         }
     }
 
@@ -244,7 +239,7 @@ public class LoginActivity extends AppCompatActivity
      *
      * @param message - Text to be displayed to the user
      */
-    public void customToastMessage(String message)
+    private void customToastMessage(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

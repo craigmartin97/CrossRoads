@@ -27,6 +27,8 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.R;
 
+import java.util.Objects;
+
 /**
  * Register Activity allows the user to register for an account if they are not already
  * an account holder. The user enters their email address and password that they wish to use.
@@ -82,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity
     /**
      * Accessing methods from the GenericMethods class, by creating an instance of the class
      */
-    private GenericMethods genericMethods = new GenericMethods();
+    private final GenericMethods genericMethods = new GenericMethods();
 
     /**
      * This method is called when the activity login is displayed to the user. It creates all of the
@@ -135,10 +137,11 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     /**
-     * Setting the on click listeners f
+     * Setting the on click listeners for the widgets in the activity.
      */
     private void setOnClickListeners()
     {
+        // Register the new user with details
         buttonRegister.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -148,6 +151,7 @@ public class RegisterActivity extends AppCompatActivity
             }
         });
 
+        // Takes user to logging activity
         textViewSignUp.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -157,6 +161,7 @@ public class RegisterActivity extends AppCompatActivity
             }
         });
 
+        // Downloads the T&C's
         textViewTermsAndConditionsAndPrivacyPolicy.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -168,13 +173,18 @@ public class RegisterActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * This method registers the user into the FireBase database
+     * Creates a new progress dialog and display to the user. Then registers the user via
+     * their email and password.
+     */
     private void registerUser()
     {
         userInformationValidation();
 
+        // If user has agreed to T&C's
         if (checkBox.isChecked())
         {
-            //if validation is ok, show progress bar
             progressDialog.setMessage("Registering User Please Wait...");
             progressDialog.show();
 
@@ -184,23 +194,26 @@ public class RegisterActivity extends AppCompatActivity
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task)
                         {
+                            // Can successfully register user
                             if (task.isSuccessful())
                             {
                                 boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
-                                if (isNewUser == true)
+                                if (isNewUser)
                                 {
                                     genericMethods.dismissDialog(progressDialog);
-                                    databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
+                                    databaseReference.child("Users").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
                                     startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
-                                } else if (task.getException() instanceof FirebaseAuthUserCollisionException)
+                                }
+                                // Already a user
+                                else if (task.getException() instanceof FirebaseAuthUserCollisionException)
                                 {
                                     genericMethods.dismissDialog(progressDialog);
-                                    DatabaseConnections databaseConnections = new DatabaseConnections();
                                     customToastMessage("Could Not Register. User with this email already exist. Please Login.");
                                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                                     finish();
-
-                                } else
+                                }
+                                // Unknown error
+                                else
                                 {
                                     genericMethods.dismissDialog(progressDialog);
                                     customToastMessage("Couldn't Register, Please Try Again");
@@ -209,50 +222,75 @@ public class RegisterActivity extends AppCompatActivity
                             }
                         }
                     });
+        } else
+        {
+            customToastMessage("You Must Agree To Our Terms & Conditions");
         }
     }
 
+    /**
+     * Displays a Toast message to the user
+     *
+     * @param message - The message to be displayed to the user
+     */
     private void customToastMessage(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Check that all of the user information, email and password, match our requirements
+     * They must provide an email, password and then confirm password.
+     * Passwords must contain letters, numbers, and an uppercase
+     */
     private void userInformationValidation()
     {
         email = editTextEmail.getText().toString().trim();
         password = editTextPassword.getText().toString().trim();
         final String confirmPassword = editTextConfirmPassword.getText().toString().trim();
 
-        // email is too short
+        // email is too short or empty
         if (TextUtils.isEmpty(email))
         {
             customToastMessage("Please Enter An Email Address");
             return;
         }
 
-        // password to short
+        // password to short or empty
         if (TextUtils.isEmpty(password) || password.length() < 8)
         {
             customToastMessage("Please Enter A Password With 6 Or More Characters");
             return;
         }
 
+        // confirm password to short or empty
         if (TextUtils.isEmpty(confirmPassword) || confirmPassword.length() < 8)
         {
             customToastMessage("Please Confirm Your Password With 8 Or More Characters");
             return;
         }
 
-        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,}$") && !confirmPassword.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,}$"))
+        // Passwords don't contain number, letter and capital
+        if (!password.matches(checkPasswordCombo()) && !confirmPassword.matches(checkPasswordCombo()))
         {
             customToastMessage("Passwords Must Have Numbers, Upper and Lowercase's");
             return;
         }
 
+        // Passwords don't match each other
         if (!password.matches(confirmPassword) && !confirmPassword.matches(password))
         {
             customToastMessage("Passwords Do Not Match");
-            return;
         }
+    }
+
+    /**
+     * Regex used to check the users email contains, uppercase, number and letters
+     *
+     * @return - Regex string that password must equal for user to register account
+     */
+    private String checkPasswordCombo()
+    {
+        return "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,}$";
     }
 }
