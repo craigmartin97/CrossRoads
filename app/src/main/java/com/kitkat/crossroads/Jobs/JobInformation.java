@@ -28,24 +28,24 @@ public class JobInformation implements Serializable
     /**
      * Creates a new jobInformation object. Stores all information about a job and defines what each job is.
      *
-     * @param advertName String: Name of the job
+     * @param advertName        String: Name of the job
      * @param advertDescription String: Description of the job
-     * @param jobSize String: Size of the job
-     * @param jobType String: Type of the job
-     * @param posterID String: Users Id who posted job
-     * @param courierID String: The accepted courier of the job
-     * @param collectionDate String: Day the job is meant to take place
-     * @param collectionTime String: Time the job is meant to take place
-     * @param colL1 String: Address line where the job is collected from
-     * @param colL2 String: Address line two where the job is collected from
-     * @param colTown String: Town, where the job is collected from
-     * @param colPostcode String: Postcode, where the job is collected from
-     * @param delL1 String: Address line where the job is delivered to
-     * @param delL2 String: Address line two where the job is delivered to
-     * @param delTown String: Town, where the job is being delivered to
-     * @param delPostcode String: Postcode, where the job is being delivered to
-     * @param jobStatus String: If the job is Pending, Active, Complete or Inactive
-     * @param jobImage String: URL address of the Image for the job
+     * @param jobSize           String: Size of the job
+     * @param jobType           String: Type of the job
+     * @param posterID          String: Users Id who posted job
+     * @param courierID         String: The accepted courier of the job
+     * @param collectionDate    String: Day the job is meant to take place
+     * @param collectionTime    String: Time the job is meant to take place
+     * @param colL1             String: Address line where the job is collected from
+     * @param colL2             String: Address line two where the job is collected from
+     * @param colTown           String: Town, where the job is collected from
+     * @param colPostcode       String: Postcode, where the job is collected from
+     * @param delL1             String: Address line where the job is delivered to
+     * @param delL2             String: Address line two where the job is delivered to
+     * @param delTown           String: Town, where the job is being delivered to
+     * @param delPostcode       String: Postcode, where the job is being delivered to
+     * @param jobStatus         String: If the job is Pending, Active, Complete or Inactive
+     * @param jobImage          String: URL address of the Image for the job
      */
     public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobStatus, String jobImage)
     {
