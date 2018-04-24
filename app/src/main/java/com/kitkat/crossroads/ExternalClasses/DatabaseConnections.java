@@ -37,6 +37,26 @@ public class DatabaseConnections extends AppCompatActivity
         return FirebaseDatabase.getInstance().getReference();
     }
 
+    public DatabaseReference getDatabaseReferenceJobs()
+    {
+        return FirebaseDatabase.getInstance().getReference().child("Jobs");
+    }
+
+    public DatabaseReference getDatabaseReferenceBids()
+    {
+        return FirebaseDatabase.getInstance().getReference().child("Bids");
+    }
+
+    public DatabaseReference getDatabaseReferenceRatings()
+    {
+        return FirebaseDatabase.getInstance().getReference().child("Ratings");
+    }
+
+    public DatabaseReference getDatabaseReferenceUsers()
+    {
+        return FirebaseDatabase.getInstance().getReference().child("Users");
+    }
+
     /**
      * Get the connection to the FireBase Storage area
      *

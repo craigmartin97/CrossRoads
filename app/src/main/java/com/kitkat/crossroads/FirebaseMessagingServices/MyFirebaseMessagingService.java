@@ -13,11 +13,8 @@ import android.util.Log;
 import com.github.barteksc.pdfviewer.util.Constants;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.kitkat.crossroads.MainActivity.CrossRoads;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.SplashScreen;
-
-import java.util.Map;
 
 /**
  * Created by q5063319 on 19/03/18.

@@ -67,8 +67,7 @@ import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
-import com.kitkat.crossroads.MainActivity.CrossRoads;
-import com.kitkat.crossroads.Manifest;
+import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
@@ -222,7 +221,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             setJobImageHeight();
         }
 
-        boolean result = ((CrossRoads) getActivity()).getLocationPermissionGranted();
+        boolean result = ((CrossRoadsMainActivity) getActivity()).getLocationPermissionGranted();
         if (result)
         {
             // Create google api client, so user has pre-set options to select.
@@ -1294,7 +1293,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     public void onStop()
     {
         super.onStop();
-        if (((CrossRoads) getActivity()).getLocationPermissionGranted())
+        if (((CrossRoadsMainActivity) getActivity()).getLocationPermissionGranted())
         {
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
@@ -1305,7 +1304,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     public void onDetach()
     {
         super.onDetach();
-        if (((CrossRoads) getActivity()).getLocationPermissionGranted())
+        if (((CrossRoadsMainActivity) getActivity()).getLocationPermissionGranted())
         {
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
