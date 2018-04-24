@@ -6,10 +6,10 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,24 +27,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
+import com.kitkat.crossroads.EnumClasses.JobStatus;
+import com.kitkat.crossroads.EnumClasses.StatusTags;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -52,59 +46,215 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This class allows the user to search for a new job to bid on.
+ * The bids are displayed in a List, and each job contains its name, description, collection and delivery addresses.
+ * The jobs must be Pending, so no courier has been selected yet, not be posted by the current user and not equal to
+ * today's date. The class also has search features such as a filter and text search, so the user can search
+ * for specific jobs that they may be interested in.
+ */
 public class FindAJobFragment extends Fragment implements SearchView.OnQueryTextListener
 {
-
     private OnFragmentInteractionListener mListener;
 
+    /**
+     * Database reference to the FireBase database, under the Jobs table
+     */
+    private DatabaseReference databaseReferenceJobTable;
+
+    /**
+     * Accessing class to gain access to methods
+     */
+    private GenericMethods genericMethods = new GenericMethods();
+
+    /**
+     * Storing the current users unique Id
+     */
+    private String user;
+
+    /**
+     * Creating a new instance of the CustomAdapter to display all of the jobs
+     * users can bid on.
+     */
     private FindAJobFragment.MyCustomAdapter mAdapter;
 
-    private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
+    /**
+     * ArrayList is used to store all of the jobs information in to be displayed
+     */
+    private final ArrayList<JobInformation> jobList = new ArrayList<>();
 
+    /**
+     * Creating a new ListView, that the jobs will be displayed in
+     */
     private ListView jobListView;
 
-    private Spinner sortBySpinner, filterSize;
-    private Button filterButton, filterApplyButton, filterClearButton;
-    private SearchView jobSearch;
+
+    private Spinner filterSize, sortBySpinner;
     private EditText filterName, filterColDate, filterColTime, filterColFrom, filterDelTo;
     private CheckBox filterSingle, filterMultiple;
+    private Button filterApplyButton, filterClearButton, filterButton;
+    private SearchView jobSearch;
+    private LinearLayout filterLayout;
 
-    public FindAJobFragment()
-    {
-        // Required empty public constructor
-    }
-
-    public static FindAJobFragment newInstance()
-    {
-        FindAJobFragment fragment = new FindAJobFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    /**
+     * Called to do initial creation of a fragment.
+     * This is called after onAttach(Activity) and before onCreateView(LayoutInflater, ViewGroup, Bundle),
+     * but is not called if the fragment instance is retained across Activity re-creation (see setRetainInstance(boolean)).
+     *
+     * @param savedInstanceState Bundle: If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        databaseConnections();
     }
 
+    /**
+     * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once they know their view hierarchy has been completely created.
+     * The fragment's view hierarchy is not however attached to its parent at this point.
+     *
+     * @param inflater           LayoutInflater: The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param container          ViewGroup: If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to. The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState Bundle: If non-null, this fragment is being re-constructed from a previous saved state as given here
+     * @return - Return the View for the fragment's UI, or null.
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        DatabaseConnections databaseConnections = new DatabaseConnections();
-        final String user = databaseConnections.getCurrentUser();
-        DatabaseReference jobTable = databaseConnections.getDatabaseReferenceJobs();
-        jobTable.keepSynced(true);
-
         final View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
 
-        final LinearLayout filterLayout = view.findViewById(R.id.filterLayout);
+        getViewsByIds(view);
+        createSortByDropDown();
 
+        filterButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                if (filterLayout.getTag().toString().equals(StatusTags.Closed.name()))
+                {
+                    filterLayout.setVisibility(View.VISIBLE);
+                    filterLayout.setTag(StatusTags.Open.name());
+                } else
+                {
+                    filterLayout.setVisibility(View.GONE);
+                    filterLayout.setTag(StatusTags.Closed.name());
+
+                }
+
+            }
+        });
+
+        final List<String> sizeList = new ArrayList<>(Arrays.asList(createTextForJobSizes()));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_custom, sizeList)
+        {
+            @Override
+            public boolean isEnabled(int position)
+            {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        @NonNull ViewGroup parent)
+            {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0)
+                {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else
+                {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String selectedItemText = (String) parent.getItemAtPosition(position);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+                if (position > 0)
+                {
+                    // Notify the selected item text
+                    genericMethods.customToastMessage("Selected : " + selectedItemText, getActivity());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        filterSize.setAdapter(adapter);
+        filterSingle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (filterSingle.isChecked())
+                {
+                    filterMultiple.setChecked(false);
+                }
+            }
+        });
+
+        filterMultiple.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (filterMultiple.isChecked())
+                {
+                    filterSingle.setChecked(false);
+                }
+            }
+        });
+
+
+        getJobsFromDatabase();
+        setJobSearchQueries();
+
+
+        applyFilter();
+        clearFilter();
+
+        return view;
+    }
+
+    /**
+     * Setting all of the database connections to the FireBase database
+     */
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        user = databaseConnections.getCurrentUser();
+        databaseReferenceJobTable = databaseConnections.getDatabaseReferenceJobs();
+        databaseReferenceJobTable.keepSynced(true);
+    }
+
+    /**
+     * Setting all of the widgets in the layout file to variables in the fragment
+     */
+    private void getViewsByIds(View view)
+    {
         jobListView = view.findViewById(R.id.jobListView1);
-
         sortBySpinner = view.findViewById(R.id.sortBySpinner);
-
         filterApplyButton = view.findViewById(R.id.filterApplyButton);
         filterClearButton = view.findViewById(R.id.filterClearButton);
         filterName = view.findViewById(R.id.edittextFilterName);
@@ -112,7 +262,90 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         filterColTime = view.findViewById(R.id.editTextFilterColTime);
         filterColFrom = view.findViewById(R.id.editTextFilterColFrom);
         filterDelTo = view.findViewById(R.id.editTextFilterDelTo);
+        filterButton = view.findViewById(R.id.filterButton);
+        filterSize = view.findViewById(R.id.filterSpinnerSize);
+        jobSearch = view.findViewById(R.id.searchViewJob);
+        filterLayout = view.findViewById(R.id.filterLayout);
+        filterSingle = view.findViewById(R.id.singleItemCheck);
+        filterMultiple = view.findViewById(R.id.multipleItemsCheck);
+    }
 
+    /**
+     * Retrieving all of the Jobs from the FireBase database that are pending, before todays date and time
+     * and not posted by the current user. They are added to the adapter and displayed in the list view.
+     */
+    private void getJobsFromDatabase()
+    {
+        databaseReferenceJobTable.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                jobList.clear();
+
+                mAdapter = new MyCustomAdapter();
+
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    JobInformation j = ds.getValue(JobInformation.class);
+                    assert j != null;
+                    j.setJobID(ds.getKey());
+
+                    //display only jobs that are still open to bidding
+                    if (j.getJobStatus().equals(JobStatus.Pending.name()) && !j.getPosterID().equals(user))
+                    {
+                        try
+                        {
+                            Date currentTime = Calendar.getInstance().getTime();
+                            Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(j.getCollectionDate());
+                            Date dateFormat2 = new SimpleDateFormat("hh:mm").parse(j.getCollectionTime());
+
+                            if (!(new Date().after(sdf) && currentTime.after(dateFormat2)))
+                            {
+                                jobList.add(j);
+                            }
+
+                        } catch (ParseException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                mAdapter.addArray(jobList);
+                jobListView.setAdapter(mAdapter);
+
+                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("Job", mAdapter.mData.get(position));
+                        jobDetailsFragment.setArguments(bundle);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).addToBackStack("tag").commit();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+    }
+
+    /**
+     * Puts text into the Sort By drop down list so the user has the option to
+     * sort by different values
+     *
+     * @return - String: Elements the user can sort by
+     */
+    private String[] createTextForSortBy()
+    {
         String[] sortBy = new String[]{
                 "Sort By",
                 "Name",
@@ -122,6 +355,19 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 "Size"
         };
 
+        return sortBy;
+
+
+    }
+
+    /**
+     * Puts text into the Job Sizes list so the user has the option to
+     * sort by different values
+     *
+     * @return - String: Elements the user can sort by
+     */
+    private String[] createTextForJobSizes()
+    {
         String[] jobSizes = new String[]{
                 "Job Sizes",
                 "Small",
@@ -130,26 +376,23 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 "Extra Large"
         };
 
-        final List<String> sortByList = new ArrayList<>(Arrays.asList(sortBy));
+        return jobSizes;
+    }
+
+    private void createSortByDropDown()
+    {
+        final List<String> sortByList = new ArrayList<>(Arrays.asList(createTextForSortBy()));
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sortByList)
         {
             @Override
             public boolean isEnabled(int position)
             {
-                if (position == 0)
-                {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    return false;
-                } else
-                {
-                    return true;
-                }
+                return position != 0;
             }
 
             @Override
             public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent)
+                                        @NonNull ViewGroup parent)
             {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
@@ -179,9 +422,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 if (position > 0)
                 {
                     // Notify the selected item text
-                    Toast.makeText
-                            (getActivity(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
+                    genericMethods.customToastMessage("Selected : " + selectedItemText, getActivity());
                 }
             }
 
@@ -191,195 +432,22 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
             }
         });
+    }
 
-        filterButton = view.findViewById(R.id.filterButton);
-
-        filterButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-                if (filterLayout.getTag().toString().equals("Closed"))
-                {
-                    filterLayout.setVisibility(View.VISIBLE);
-                    filterLayout.setTag("Open");
-                } else
-                {
-                    filterLayout.setVisibility(View.GONE);
-                    filterLayout.setTag("Closed");
-
-                }
-
-            }
-        });
-
-        filterSize = view.findViewById(R.id.filterSpinnerSize);
-        final List<String> sizeList = new ArrayList<>(Arrays.asList(jobSizes));
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_custom, sizeList)
-        {
-            @Override
-            public boolean isEnabled(int position)
-            {
-                if (position == 0)
-                {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    return false;
-                } else
-                {
-                    return true;
-                }
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent)
-            {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0)
-                {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY);
-                } else
-                {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-        };
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filterSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                String selectedItemText = (String) parent.getItemAtPosition(position);
-                // If user change the default selection
-                // First item is disable and it is used for hint
-                if (position > 0)
-                {
-                    // Notify the selected item text
-                    Toast.makeText
-                            (getActivity(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-
-            }
-        });
-        filterSize.setAdapter(adapter);
-
-        filterSingle = view.findViewById(R.id.singleItemCheck);
-        filterSingle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (filterSingle.isChecked())
-                {
-                    filterMultiple.setChecked(false);
-                }
-            }
-        });
-        filterMultiple = view.findViewById(R.id.multipleItemsCheck);
-        filterMultiple.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (filterMultiple.isChecked())
-                {
-                    filterSingle.setChecked(false);
-                }
-            }
-        });
-
-
-
-        jobTable.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                jobList.clear();
-
-               /* jobReference = dataSnapshot.child("Jobs");
-
-                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();*/
-
-                mAdapter = new MyCustomAdapter();
-
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    JobInformation j = ds.getValue(JobInformation.class);
-                    j.setJobID(ds.getKey());
-
-                    //display only jobs that are still open to bidding
-                    if (j.getJobStatus().equals("Pending") && !j.getPosterID().equals(user))
-                    {
-                        try
-                        {
-                            Date currentTime = Calendar.getInstance().getTime();
-                            Date sdf = new SimpleDateFormat("dd/MM/yyyy").parse(j.getCollectionDate());
-                            Date dateFormat2 = new SimpleDateFormat("hh:mm").parse(j.getCollectionTime());
-
-                            if (!(new Date().after(sdf) && currentTime.after(dateFormat2)))
-                            {
-                                jobList.add(j);
-                            }
-
-                        } catch (ParseException e)
-                        {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-
-                mAdapter.addArray(jobList);
-                jobListView.setAdapter(mAdapter);
-
-
-                jobListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        JobDetailsFragment jobDetailsFragment = new JobDetailsFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("Job", mAdapter.mData.get(position));
-                        jobDetailsFragment.setArguments(bundle);
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content, jobDetailsFragment).addToBackStack("tag").commit();
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
-
-        jobSearch = view.findViewById(R.id.searchViewJob);
+    private void setJobSearchQueries()
+    {
         jobSearch.setIconified(false);
         jobSearch.clearFocus();
-
         jobSearch.setOnQueryTextListener(this);
+    }
 
+    private void applyFilter()
+    {
         filterApplyButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-
                 String filterType = null;
                 if (filterSingle.isChecked())
                 {
@@ -390,78 +458,45 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                     filterType = "Multiple Items";
                 }
 
-
                 JobInformation jobInformation = new JobInformation(filterName.getText().toString(), null, filterSize.getSelectedItem().toString(),
 
                         filterType, null, null, filterColDate.getText().toString(), filterColTime.getText().toString(),
                         null, null, filterColFrom.getText().toString(), null, null, null, filterDelTo.getText().toString(), null, null, null);
 
-
                 mAdapter.filterArray(jobInformation);
                 filterLayout.setVisibility(View.GONE);
-                filterLayout.setTag("Closed");
-
+                filterLayout.setTag(StatusTags.Closed.name());
             }
         });
+    }
 
+    private void clearFilter()
+    {
         filterClearButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-
                 filterName.setText("");
                 filterSize.setSelection(0);
                 filterSingle.setChecked(false);
                 filterMultiple.setChecked(false);
-                String filterType = null;
                 filterColDate.setText("");
                 filterColTime.setText("");
                 filterColFrom.setText("");
                 filterDelTo.setText("");
 
                 JobInformation jobInformation = new JobInformation(filterName.getText().toString(), null, filterSize.getSelectedItem().toString(),
-                        filterType, null, null, filterColDate.getText().toString(), filterColTime.getText().toString(),
+                        null, null, null, filterColDate.getText().toString(), filterColTime.getText().toString(),
                         null, null, filterColFrom.getText().toString(), null, null, null, filterDelTo.getText().toString(), null, null, null);
 
                 mAdapter.filterArray(jobInformation);
                 filterLayout.setVisibility(View.GONE);
-                filterLayout.setTag("Closed");
-
+                filterLayout.setTag(StatusTags.Closed.name());
             }
         });
-
-        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-
-        }
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
-    }
 
     @Override
     public boolean onQueryTextSubmit(String query)
@@ -473,12 +508,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     public boolean onQueryTextChange(String newText)
     {
 
-        String text = newText;
-        mAdapter.filter(text);
+        mAdapter.filter(newText);
 
         return false;
     }
-
 
     /**
      * This interface must be implemented by activities that contain this
@@ -490,14 +523,13 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener
+    private interface OnFragmentInteractionListener
     {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
 
-    public class MyCustomAdapter extends BaseAdapter
+    class MyCustomAdapter extends BaseAdapter
     {
 
         private ArrayList<JobInformation> mData = new ArrayList();
@@ -505,7 +537,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         private LayoutInflater mInflater;
 
-        public MyCustomAdapter()
+        MyCustomAdapter()
         {
 
             if (isAdded())
@@ -514,17 +546,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
         }
 
-        public void addItem(final JobInformation item)
-        {
-            mData.clear();
-            mDataOrig.clear();
 
-            mData.add(item);
-            mDataOrig.add(item);
-        }
-
-
-        public void addArray(final ArrayList<JobInformation> j)
+        void addArray(final ArrayList<JobInformation> j)
         {
             mData.clear();
             mDataOrig.clear();
@@ -615,20 +638,20 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             return false;
         }
 
-        public class GroupViewHolder
+        class GroupViewHolder
         {
-            public TextView textViewName;
-            public TextView textViewDesc;
-            public TextView textViewFrom;
-            public TextView textViewTo;
-            public TextView textViewBid;
+            TextView textViewName;
+            TextView textViewDesc;
+            TextView textViewFrom;
+            TextView textViewTo;
+            TextView textViewBid;
         }
 
-        public void filter(String charText)
+        void filter(String charText)
         {
 
-            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
-            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
+            ArrayList<JobInformation> jobs = new ArrayList<>();
+            ArrayList<JobInformation> jA = new ArrayList<>();
             charText = charText.toLowerCase(Locale.getDefault());
 
             if (charText.length() == 0)
@@ -656,11 +679,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             notifyDataSetChanged();
         }
 
-        public void filterArray(JobInformation filterInfo)
+        void filterArray(JobInformation filterInfo)
         {
 
-            ArrayList<JobInformation> jobs = new ArrayList<JobInformation>();
-            ArrayList<JobInformation> jA = new ArrayList<JobInformation>();
+            ArrayList<JobInformation> jobs = new ArrayList<>();
+            ArrayList<JobInformation> jA = new ArrayList<>();
 
 
             for (JobInformation j : mDataOrig)
@@ -732,8 +755,52 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
             notifyDataSetChanged();
         }
-
-
     }
 
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener)
+        {
+            mListener = (OnFragmentInteractionListener) context;
+        }
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mListener = null;
+    }
 }

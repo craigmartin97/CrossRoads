@@ -373,21 +373,6 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                                         }
                                     });
 
-//                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
-//                                    {
-//                                        @Override
-//                                        public void onDataChange(DataSnapshot dataSnapshot)
-//                                        {
-//                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position)
-//                                                    .getCourierID()).child("active").setValue(false);
-//                                        }
-//
-//                                        @Override
-//                                        public void onCancelled(DatabaseError databaseError)
-//                                        {
-//
-//                                        }
-//                                    });
                                 }
                                 // My Jobs
                                 else
