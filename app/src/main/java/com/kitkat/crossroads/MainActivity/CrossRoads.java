@@ -211,41 +211,29 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
             public void onClick(View v)
             {
                 onBackPressed();
-                LayoutInflater inflater = getLayoutInflater();
-                View titleView = inflater.inflate(R.layout.custom_alert_title, null);
-                TextView title = titleView.findViewById(R.id.titleHeading);
-                title.setText("Logout");
-
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoads.this);
-                View mView = getLayoutInflater().inflate(R.layout.popup_logout, null);
 
-                alertDialog.setCustomTitle(titleView);
-                alertDialog.setView(mView);
+                alertDialog.setTitle("Logout");
 
-                final AlertDialog dialog = alertDialog.create();
-                dialog.show();
-
-                Button logoutButton = (Button) mView.findViewById(R.id.logoutButton);
-                Button cancelButton = (Button) mView.findViewById(R.id.cancelButton);
-
-                logoutButton.setOnClickListener(new View.OnClickListener()
-                {
+                alertDialog.setMessage("Are you sure you want to Logout?");
+                alertDialog.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View v)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         auth.signOut();
                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     }
                 });
-
-                cancelButton.setOnClickListener(new View.OnClickListener()
-                {
+                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View v)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
                 });
+
+
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
+
             }
         });
 
