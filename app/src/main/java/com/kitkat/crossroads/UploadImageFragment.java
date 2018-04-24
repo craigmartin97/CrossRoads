@@ -23,14 +23,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
+import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -182,8 +180,8 @@ public class UploadImageFragment extends Fragment
 
             try
             {
-                ExifInterfaceImageRotater exifInterfaceImageRotater = new ExifInterfaceImageRotater();
-                profileImage.setImageBitmap(exifInterfaceImageRotater.setUpImageTransfer(uri, getActivity().getContentResolver()));
+                ExifInterfaceImageRotate exifInterfaceImageRotate = new ExifInterfaceImageRotate();
+                profileImage.setImageBitmap(exifInterfaceImageRotate.setUpImageTransfer(uri, getActivity().getContentResolver()));
                 profileImage.buildDrawingCache();
                 profileImage.getDrawingCache();
                 Bitmap bitmap = profileImage.getDrawingCache();

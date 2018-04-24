@@ -63,7 +63,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
+import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
@@ -1103,7 +1103,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Displaying Image...");
         progressDialog.show();
-        final ExifInterfaceImageRotater exifInterfaceImageRotater = new ExifInterfaceImageRotater();
+        final ExifInterfaceImageRotate exifInterfaceImageRotate = new ExifInterfaceImageRotate();
 
         // Redirect user to there gallery and get them to select an image
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
@@ -1113,7 +1113,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
             try
             {
-                profileImage.setImageBitmap(exifInterfaceImageRotater.setUpImageTransfer(uri, getActivity().getContentResolver()));
+                profileImage.setImageBitmap(exifInterfaceImageRotate.setUpImageTransfer(uri, getActivity().getContentResolver()));
                 compressBitMapForStorage();
                 setJobImageHeight();
 
