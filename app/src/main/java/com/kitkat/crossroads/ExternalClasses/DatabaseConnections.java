@@ -1,13 +1,12 @@
 package com.kitkat.crossroads.ExternalClasses;
 
-import android.support.v7.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.Objects;
 
 /**
  * Created by q5031372 on 22/03/18.
@@ -15,7 +14,7 @@ import com.google.firebase.storage.StorageReference;
  * Database connections is used to create a single repository to gain access to the FireBase
  * Database, Authentication and Storage area as well as other methods to get information about the user.
  */
-public class DatabaseConnections extends AppCompatActivity
+public class DatabaseConnections
 {
     /**
      * Get the connection to the FireBase authentication area
@@ -94,6 +93,6 @@ public class DatabaseConnections extends AppCompatActivity
      */
     public String getCurrentUser()
     {
-        return getAuth().getCurrentUser().getUid();
+        return Objects.requireNonNull(getAuth().getCurrentUser()).getUid();
     }
 }
