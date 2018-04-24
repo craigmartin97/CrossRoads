@@ -15,7 +15,7 @@ import android.util.Log;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
-    private final String TAG = "CrossRoads Messenger";
+    private final String TAG = "CrossRoadsMainActivity Messenger";
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
 

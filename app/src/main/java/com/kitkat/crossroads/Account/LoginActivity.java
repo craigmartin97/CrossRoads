@@ -19,10 +19,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
-import com.kitkat.crossroads.MainActivity.CrossRoads;
+import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
+
+import java.util.Objects;
 
 /**
  * This class is used so users can login to their accounts. The users must enter their email address and password.
@@ -39,7 +42,7 @@ public class LoginActivity extends AppCompatActivity
     /**
      * Storing the reference to the FireBase Database area, so users information can be stored
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceUsers;
 
     /**
      * EditText widgets, so the user can enter their email address and password for verification
@@ -51,7 +54,6 @@ public class LoginActivity extends AppCompatActivity
      * is taking place.
      */
     private ProgressDialog progressDialog;
-    ;
 
     /**
      * Button widget, when the user has entered their information they can press the button
@@ -69,7 +71,7 @@ public class LoginActivity extends AppCompatActivity
     /**
      * Accessing methods from the generic methods, were CustomToast and DialogDismiss can be accessed from.
      */
-    private GenericMethods genericMethods = new GenericMethods();
+    private final GenericMethods genericMethods = new GenericMethods();
 
     /**
      * This method is called when the activity login is displayed to the user. It creates all of the
@@ -90,20 +92,21 @@ public class LoginActivity extends AppCompatActivity
 
     /**
      * Creates all of the connections to FireBase that are necessary.
-     * databaseReference, is user to store a new token under the usersID
+     * databaseReferenceUsers, is user to store a new token under the usersID
      * auth, is used to create a connection to verify the user
      */
     private void databaseConnections()
     {
         // Establishing a connection to the DatabaseConnections class to retrieve the FireBase connections.
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceUsers = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceUsers.keepSynced(true);
         auth = databaseConnections.getAuth();
 
         // If their is already a user signed in
         if (auth.getCurrentUser() != null)
         {
-            Intent intent = new Intent(LoginActivity.this, CrossRoads.class);
+            Intent intent = new Intent(LoginActivity.this, CrossRoadsMainActivity.class);
             startActivity(intent);
             finish();
         }
@@ -167,30 +170,25 @@ public class LoginActivity extends AppCompatActivity
                         {
                             genericMethods.dismissDialog(progressDialog);
                             customToastMessage("Please Check Your Details And Try Again");
-                            return;
                         } else
                         {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             genericMethods.dismissDialog(progressDialog);
                             // successfully logged in
-                            if (task.isSuccessful() && user.isEmailVerified() == true)
+                            if (task.isSuccessful() && (user != null && user.isEmailVerified()))
                             {
                                 genericMethods.dismissDialog(progressDialog);
-                                String token = FirebaseInstanceId.getInstance().getToken();
-                                databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
-
-                                startActivity(new Intent(getApplicationContext(), CrossRoads.class));
+                                databaseReferenceUsers.child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(DatabaseEntryNames.notifToken.name()).setValue(FirebaseInstanceId.getInstance().getToken());
+                                startActivity(new Intent(getApplicationContext(), CrossRoadsMainActivity.class));
                                 finish();
-                            } else if (user.isEmailVerified() == false)
+                            } else if (!(user != null && user.isEmailVerified()))
                             {
                                 genericMethods.dismissDialog(progressDialog);
                                 customToastMessage("You Must Verify Your Email Address Before Logging In. Please Check Your Email.");
-                                return;
                             } else
                             {
                                 genericMethods.dismissDialog(progressDialog);
                                 customToastMessage("Please Re-enter Your Details And Try Again");
-                                return;
                             }
                         }
                     }
@@ -233,7 +231,6 @@ public class LoginActivity extends AppCompatActivity
         if (TextUtils.isEmpty(getTextFromPasswordWidget()))
         {
             customToastMessage("Please Enter A Password");
-            return;
         }
     }
 
@@ -242,7 +239,7 @@ public class LoginActivity extends AppCompatActivity
      *
      * @param message - Text to be displayed to the user
      */
-    public void customToastMessage(String message)
+    private void customToastMessage(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

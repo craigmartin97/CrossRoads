@@ -1,13 +1,13 @@
 package com.kitkat.crossroads.ExternalClasses;
 
-import android.support.v7.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kitkat.crossroads.EnumClasses.TableNames;
+
+import java.util.Objects;
 
 /**
  * Created by q5031372 on 22/03/18.
@@ -15,7 +15,7 @@ import com.google.firebase.storage.StorageReference;
  * Database connections is used to create a single repository to gain access to the FireBase
  * Database, Authentication and Storage area as well as other methods to get information about the user.
  */
-public class DatabaseConnections extends AppCompatActivity
+public class DatabaseConnections
 {
     /**
      * Get the connection to the FireBase authentication area
@@ -38,6 +38,46 @@ public class DatabaseConnections extends AppCompatActivity
     }
 
     /**
+     * Get the connection to the FireBase database, under the Jobs table
+     *
+     * @return - FireBase Database Connection, Jobs table
+     */
+    public DatabaseReference getDatabaseReferenceJobs()
+    {
+        return FirebaseDatabase.getInstance().getReference().child(TableNames.Jobs.name());
+    }
+
+    /**
+     * Get the connection to the FireBase database, under the Bids table
+     *
+     * @return - FireBase Database Connection, Bids table
+     */
+    public DatabaseReference getDatabaseReferenceBids()
+    {
+        return FirebaseDatabase.getInstance().getReference().child(TableNames.Bids.name());
+    }
+
+    /**
+     * Get the connection to the FireBase database, under the Ratings table
+     *
+     * @return - FireBase Database Connection, Ratings table
+     */
+    public DatabaseReference getDatabaseReferenceRatings()
+    {
+        return FirebaseDatabase.getInstance().getReference().child(TableNames.Ratings.name());
+    }
+
+    /**
+     * Get the connection to the FireBase database, under the Users table
+     *
+     * @return - FireBase Database Connection, Users table
+     */
+    public DatabaseReference getDatabaseReferenceUsers()
+    {
+        return FirebaseDatabase.getInstance().getReference().child(TableNames.Users.name());
+    }
+
+    /**
      * Get the connection to the FireBase Storage area
      *
      * @return - FireBase Storage area
@@ -54,6 +94,6 @@ public class DatabaseConnections extends AppCompatActivity
      */
     public String getCurrentUser()
     {
-        return getAuth().getCurrentUser().getUid();
+        return Objects.requireNonNull(getAuth().getCurrentUser()).getUid();
     }
 }

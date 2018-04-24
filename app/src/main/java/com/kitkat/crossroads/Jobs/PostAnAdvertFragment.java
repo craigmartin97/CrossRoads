@@ -63,12 +63,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
+import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
-import com.kitkat.crossroads.MainActivity.CrossRoads;
-import com.kitkat.crossroads.Manifest;
+import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
@@ -222,7 +221,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             setJobImageHeight();
         }
 
-        boolean result = ((CrossRoads) getActivity()).getLocationPermissionGranted();
+        boolean result = ((CrossRoadsMainActivity) getActivity()).getLocationPermissionGranted();
         if (result)
         {
             // Create google api client, so user has pre-set options to select.
@@ -322,7 +321,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         // Set the widgets to variables
         profileImage = view.findViewById(R.id.jobImage1);
-        profileImage.getLayoutParams().height = 0;
+        profileImage.setVisibility(View.GONE);
 
         buttonPostAd = view.findViewById(R.id.buttonAddJob);
         buttonUploadImages = view.findViewById(R.id.buttonUploadImages);
@@ -1104,7 +1103,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Displaying Image...");
         progressDialog.show();
-        final ExifInterfaceImageRotater exifInterfaceImageRotater = new ExifInterfaceImageRotater();
+        final ExifInterfaceImageRotate exifInterfaceImageRotate = new ExifInterfaceImageRotate();
 
         // Redirect user to there gallery and get them to select an image
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
@@ -1114,7 +1113,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
             try
             {
-                profileImage.setImageBitmap(exifInterfaceImageRotater.setUpImageTransfer(uri, getActivity().getContentResolver()));
+                profileImage.setImageBitmap(exifInterfaceImageRotate.setUpImageTransfer(uri, getActivity().getContentResolver()));
                 compressBitMapForStorage();
                 setJobImageHeight();
 
@@ -1263,7 +1262,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private void setJobImageHeight()
     {
         profileImage.setVisibility(View.VISIBLE);
-        profileImage.getLayoutParams().height = 115;
+//        profileImage.getLayoutParams().height = 115;
     }
 
     private void compressBitMapForStorage()
@@ -1294,7 +1293,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     public void onStop()
     {
         super.onStop();
-        if (((CrossRoads) getActivity()).getLocationPermissionGranted())
+        if (((CrossRoadsMainActivity) getActivity()).getLocationPermissionGranted())
         {
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
@@ -1305,7 +1304,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     public void onDetach()
     {
         super.onDetach();
-        if (((CrossRoads) getActivity()).getLocationPermissionGranted())
+        if (((CrossRoadsMainActivity) getActivity()).getLocationPermissionGranted())
         {
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();

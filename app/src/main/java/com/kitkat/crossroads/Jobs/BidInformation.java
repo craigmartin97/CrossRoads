@@ -21,29 +21,8 @@ public class BidInformation implements Serializable
         this.userBid = userBid;
     }
 
-
     public String getUserID()
     {
         return userID;
-    }
-
-    public String getUserBid()
-    {
-        return userBid;
-    }
-
-    public void setUserID(String userID)
-    {
-        this.userID = userID;
-    }
-
-    public void setUserBid(String userBid)
-    {
-        this.userBid = userBid;
-    }
-
-    public String getWholeString()
-    {
-        return userID + userBid;
     }
 }

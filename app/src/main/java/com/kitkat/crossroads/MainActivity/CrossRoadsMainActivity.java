@@ -1,7 +1,6 @@
 package com.kitkat.crossroads.MainActivity;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,15 +16,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +42,7 @@ import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.UploadImageFragment;
 import com.squareup.picasso.Picasso;
 
-public class CrossRoads extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class CrossRoadsMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private static final String TAG = "ViewProfileActivity";
 
@@ -216,7 +212,7 @@ public class CrossRoads extends AppCompatActivity implements NavigationView.OnNa
                 TextView title = titleView.findViewById(R.id.titleHeading);
                 title.setText("Logout");
 
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoads.this);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoadsMainActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.popup_logout, null);
 
                 alertDialog.setCustomTitle(titleView);

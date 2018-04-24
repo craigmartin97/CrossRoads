@@ -260,7 +260,7 @@ public class ActiveJobDetailsFragment extends Fragment {
 //                    decimal = decimal.setScale(2, RoundingMode.CEILING);
 //
 //                    PayPalPayment payPalPayment = new PayPalPayment(decimal, "GBP"
-//                            , "Pay CrossRoads Commission", PayPalPayment.PAYMENT_INTENT_SALE);
+//                            , "Pay CrossRoadsMainActivity Commission", PayPalPayment.PAYMENT_INTENT_SALE);
 //
 //                    Intent intent = new Intent(getActivity(), PaymentActivity.class);
 //                    intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);

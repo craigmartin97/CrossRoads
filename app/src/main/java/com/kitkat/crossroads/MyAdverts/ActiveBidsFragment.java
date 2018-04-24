@@ -331,7 +331,7 @@ public class ActiveBidsFragment extends Fragment
     private void processPayment()
     {
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalAmount), "GBP"
-                , "Pay CrossRoads Commission", PayPalPayment.PAYMENT_INTENT_SALE);
+                , "Pay CrossRoadsMainActivity Commission", PayPalPayment.PAYMENT_INTENT_SALE);
 
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);

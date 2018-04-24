@@ -8,9 +8,12 @@ import android.graphics.Paint;
 import com.squareup.picasso.Transformation;
 
 /**
- * Created by q5031372 on 13/03/18.
+ * CircleTransformation, changed the image from a square into a circle image
+ * This class is used for the users profile image to make it feel more professional.
+ * It get's the bitmaps height and width, and divides them in half.
+ * A new bitmap is created, from those dimensions.
+ * Background edges are changed colour to hide them. The bitmap is then returned
  */
-
 public class CircleTransformation implements Transformation
 {
     @Override

@@ -217,7 +217,7 @@ public class ActiveAdverts extends Fragment
                     {
                         String userEmail = dataSnapshot.child("userEmail").getValue(String.class);
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail, null));
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CrossRoads Job");
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CrossRoadsMainActivity Job");
                         emailIntent.putExtra(Intent.EXTRA_TEXT, "");
                         startActivity(Intent.createChooser(emailIntent, "Send Email"));
                     }
