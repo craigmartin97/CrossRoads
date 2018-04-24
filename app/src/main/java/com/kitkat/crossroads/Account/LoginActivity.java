@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity
     /**
      * Storing the reference to the FireBase Database area, so users information can be stored
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceUsers;
 
     /**
      * EditText widgets, so the user can enter their email address and password for verification
@@ -90,14 +90,15 @@ public class LoginActivity extends AppCompatActivity
 
     /**
      * Creates all of the connections to FireBase that are necessary.
-     * databaseReference, is user to store a new token under the usersID
+     * databaseReferenceUsers, is user to store a new token under the usersID
      * auth, is used to create a connection to verify the user
      */
     private void databaseConnections()
     {
         // Establishing a connection to the DatabaseConnections class to retrieve the FireBase connections.
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceUsers = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceUsers.keepSynced(true);
         auth = databaseConnections.getAuth();
 
         // If their is already a user signed in
@@ -177,7 +178,7 @@ public class LoginActivity extends AppCompatActivity
                             {
                                 genericMethods.dismissDialog(progressDialog);
                                 String token = FirebaseInstanceId.getInstance().getToken();
-                                databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
+                                databaseReferenceUsers.child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
 
                                 startActivity(new Intent(getApplicationContext(), CrossRoadsMainActivity.class));
                                 finish();
