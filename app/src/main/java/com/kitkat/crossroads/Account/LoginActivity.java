@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
@@ -178,7 +179,7 @@ public class LoginActivity extends AppCompatActivity
                             {
                                 genericMethods.dismissDialog(progressDialog);
                                 String token = FirebaseInstanceId.getInstance().getToken();
-                                databaseReferenceUsers.child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
+                                databaseReferenceUsers.child(auth.getCurrentUser().getUid()).child(DatabaseEntryNames.notifToken.name()).setValue(FirebaseInstanceId.getInstance().getToken());
 
                                 startActivity(new Intent(getApplicationContext(), CrossRoadsMainActivity.class));
                                 finish();
