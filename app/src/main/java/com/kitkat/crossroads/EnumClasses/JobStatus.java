@@ -1,4 +1,4 @@
-package com.kitkat.crossroads.ExternalClasses;
+package com.kitkat.crossroads.EnumClasses;
 
 public enum JobStatus
 {
