@@ -201,6 +201,7 @@ public class ActiveAdverts extends Fragment
         buttonCallCourier = view.findViewById(R.id.buttonCallCourier);
         progressBar = view.findViewById(R.id.progressBar);
 
+
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
