@@ -43,7 +43,7 @@ public class ActiveAdverts extends Fragment
     /**
      * Button, when pressed, takes user to the couriers profile to view
      */
-    private Button buttonViewCourierProfile, buttonEmailCourier;
+    private Button buttonViewCourierProfile, buttonEmailCourier, buttonCallCourier;
 
     /**
      * ImageView for the JobsImage
@@ -119,6 +119,7 @@ public class ActiveAdverts extends Fragment
 
         setButtonViewCourierProfile();
         setButtonEmailCourier(courierId);
+        setButtonCallCourier(courierId);
 
         addItemsCollection();
         addItemsDelivery();
@@ -180,6 +181,7 @@ public class ActiveAdverts extends Fragment
         textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
         buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
         buttonEmailCourier = view.findViewById(R.id.buttonEmailCourier);
+        buttonCallCourier = view.findViewById(R.id.buttonCallCourier);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
@@ -220,6 +222,33 @@ public class ActiveAdverts extends Fragment
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CrossRoads Job");
                         emailIntent.putExtra(Intent.EXTRA_TEXT, "");
                         startActivity(Intent.createChooser(emailIntent, "Send Email"));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    private void setButtonCallCourier(final String courierID)
+    {
+        buttonCallCourier.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                databaseReference.child("Users").child(courierID).addValueEventListener(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse(phoneNumber));
+                        startActivity(intent);
                     }
 
                     @Override

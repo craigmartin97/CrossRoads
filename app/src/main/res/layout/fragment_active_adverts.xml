@@ -153,6 +153,22 @@
                     android:textColor="#FFFFFF" />
 
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/buttonCallCourier"
+                    android:layout_width="300sp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
+                    android:background="#2bbc9b"
+                    android:text="Call Courier"
+                    android:textColor="#FFFFFF" />
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
