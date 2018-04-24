@@ -107,7 +107,7 @@
     <string name="confirm_location_popup">Is this the location you wish to use?</string>
     <string name="take_picture_with_camera">Take Picture With Camera</string>
     <string name="use_image_from_gallery">Use image from gallery</string>
-    <string name="confirm_logout">Are You Sure You Want To LogOut?</string>
+    <string name="confirm_logout">Are You Sure You Want To Logout?</string>
     <string name="logout">Log Out</string>
     <string name="cancel">Cancel</string>
     <string name="phone_number">Phone Number</string>
