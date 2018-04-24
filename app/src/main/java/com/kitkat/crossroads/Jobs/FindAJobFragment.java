@@ -57,10 +57,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
     private OnFragmentInteractionListener mListener;
 
-    private DatabaseReference databaseReference;
-    private FirebaseDatabase database;
-    private DataSnapshot jobReference;
-
     private FindAJobFragment.MyCustomAdapter mAdapter;
 
     private ArrayList<JobInformation> jobList = new ArrayList<JobInformation>();
@@ -96,6 +92,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        final String user = databaseConnections.getCurrentUser();
+        DatabaseReference jobTable = databaseConnections.getDatabaseReferenceJobs();
+        jobTable.keepSynced(true);
+
         final View view = inflater.inflate(R.layout.fragment_find_a_job, container, false);
 
         final LinearLayout filterLayout = view.findViewById(R.id.filterLayout);
@@ -300,28 +301,21 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         });
 
 
-        DatabaseConnections databaseConnections = new DatabaseConnections();
-        final String user = databaseConnections.getCurrentUser();
 
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
-
-        databaseReference.addValueEventListener(new ValueEventListener()
+        jobTable.addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
                 jobList.clear();
 
-                jobReference = dataSnapshot.child("Jobs");
+               /* jobReference = dataSnapshot.child("Jobs");
 
-                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
+                Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();*/
 
                 mAdapter = new MyCustomAdapter();
 
-                for (DataSnapshot ds : jobListSnapShot)
+                for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     JobInformation j = ds.getValue(JobInformation.class);
                     j.setJobID(ds.getKey());

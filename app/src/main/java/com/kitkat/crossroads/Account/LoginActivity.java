@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
-import com.kitkat.crossroads.MainActivity.CrossRoads;
+import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity
         // If their is already a user signed in
         if (auth.getCurrentUser() != null)
         {
-            Intent intent = new Intent(LoginActivity.this, CrossRoads.class);
+            Intent intent = new Intent(LoginActivity.this, CrossRoadsMainActivity.class);
             startActivity(intent);
             finish();
         }
@@ -179,7 +179,7 @@ public class LoginActivity extends AppCompatActivity
                                 String token = FirebaseInstanceId.getInstance().getToken();
                                 databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
 
-                                startActivity(new Intent(getApplicationContext(), CrossRoads.class));
+                                startActivity(new Intent(getApplicationContext(), CrossRoadsMainActivity.class));
                                 finish();
                             } else if (user.isEmailVerified() == false)
                             {
