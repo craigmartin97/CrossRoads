@@ -3,7 +3,6 @@ package com.kitkat.crossroads.Jobs;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -14,98 +13,159 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.R;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link JobDetailsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link JobDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * JobsDetailsFragment displays all of the information about the job that the user may want to bid on
+ * The user can see all of the information except the address line one, address line two and postcode of the job
+ * for privacy reasons. The user can also bid on job here once.
  */
 public class JobDetailsFragment extends Fragment
 {
-
+    /**
+     * TextView widgets to store the widgets from the View in
+     */
     private TextView jobName, jobDescription, jobSize, jobType, jobColDate, jobColTime, jobFrom, jobTo;
+
+    /**
+     * Button to submit the bid
+     */
     private Button buttonBid;
+
+    /**
+     * EditText to enter a bid
+     */
     private EditText editTextBid;
 
-    private FirebaseAuth auth;
-    private FirebaseDatabase database;
-    private DataSnapshot bidReference;
+    /**
+     * Connection to the FireBase Bids table
+     */
+    private DatabaseReference databaseReferenceBidsTable;
 
-    private String jobID, fullName;
+    /**
+     * Connection to the FireBase Users table
+     */
+    private DatabaseReference databaseReferenceUsersTable;
 
-
-    private DatabaseReference databaseReference;
-    private FirebaseAuth mAuth;
-
-    private OnFragmentInteractionListener mListener;
+    /**
+     * Storing the users Id and the jobId
+     */
+    private String user, jobId;
 
     public JobDetailsFragment()
     {
         // Required empty public constructor
     }
 
-    public static JobDetailsFragment newInstance()
-    {
-        JobDetailsFragment fragment = new JobDetailsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    /**
+     * Called to do initial creation of a fragment.
+     * This is called after onAttach(Activity) and before onCreateView(LayoutInflater, ViewGroup, Bundle),
+     * but is not called if the fragment instance is retained across Activity re-creation (see setRetainInstance(boolean)).
+     *
+     * @param savedInstanceState Bundle: If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        databaseConnections();
     }
 
+    /**
+     * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once they know their view hierarchy has been completely created.
+     * The fragment's view hierarchy is not however attached to its parent at this point.
+     *
+     * @param inflater           LayoutInflater: The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param container          ViewGroup: If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to. The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState Bundle: If non-null, this fragment is being re-constructed from a previous saved state as given here
+     * @return - Return the View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_job_details, container, false);
 
+        getViewsByIds(view);
+        final JobInformation jobInformation = getBundleInformation();
+        setJobInformationText(Objects.requireNonNull(jobInformation));
+        setOnClickListeners();
+        checkIfUserBidOn();
+
+        return view;
+    }
+
+    /**
+     * Creates connections to FireBase database and gets the current users Id
+     */
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnectionsClass = new DatabaseConnections();
+        databaseReferenceBidsTable = databaseConnectionsClass.getDatabaseReferenceBids();
+        databaseReferenceUsersTable = databaseConnectionsClass.getDatabaseReferenceUsers();
+        databaseReferenceBidsTable.keepSynced(true);
+        databaseReferenceUsersTable.keepSynced(true);
+        user = databaseConnectionsClass.getCurrentUser();
+    }
+
+    /**
+     * Assigning the widgets in the layout file to variables in the fragment
+     *
+     * @param view View: the layout that has been inflated
+     */
+    private void getViewsByIds(View view)
+    {
+        jobName = view.findViewById(R.id.textViewJobName1);
+        jobDescription = view.findViewById(R.id.textViewJobDescription1);
+        jobSize = view.findViewById(R.id.textViewJobSize1);
+        jobType = view.findViewById(R.id.textViewJobType1);
+        jobColDate = view.findViewById(R.id.textViewJobColDate1);
+        jobColTime = view.findViewById(R.id.textViewJobColTime1);
+        jobFrom = view.findViewById(R.id.textViewJobFrom1);
+        jobTo = view.findViewById(R.id.textViewJobTo1);
+        editTextBid = view.findViewById(R.id.editTextBid);
+        buttonBid = view.findViewById(R.id.buttonBid);
+    }
+
+    /**
+     * Gets the bundle that has been passed from a previous fragment and returns it
+     * otherwise it returns null
+     *
+     * @return - JobInformation: returns a jobInformation object
+     */
+    private JobInformation getBundleInformation()
+    {
         Bundle bundle = getArguments();
+        if (bundle != null)
+        {
+            return (JobInformation) bundle.getSerializable("Job");
+        } else
+        {
+            return null;
+        }
+    }
 
-//        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
-        final JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
-
-        jobName = (TextView) view.findViewById(R.id.textViewJobName1);
-        jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        jobSize = (TextView) view.findViewById(R.id.textViewJobSize1);
-        jobType = (TextView) view.findViewById(R.id.textViewJobType1);
-        jobColDate = (TextView) view.findViewById(R.id.textViewJobColDate1);
-        jobColTime = (TextView) view.findViewById(R.id.textViewJobColTime1);
-        jobFrom = (TextView) view.findViewById(R.id.textViewJobFrom1);
-        jobTo = (TextView) view.findViewById(R.id.textViewJobTo1);
-
-        editTextBid = (EditText) view.findViewById(R.id.editTextBid);
-        buttonBid = (Button) view.findViewById(R.id.buttonBid);
-        jobName.setText(jobInformation.getAdvertName().toString());
-        jobDescription.setText(jobInformation.getAdvertDescription().toString());
-        jobSize.setText(jobInformation.getJobSize().toString());
-        jobType.setText(jobInformation.getJobType().toString());
-        jobColDate.setText(jobInformation.getCollectionDate());
-        jobColTime.setText(jobInformation.getCollectionTime());
-        jobFrom.setText(jobInformation.getColTown().toString());
-        jobTo.setText(jobInformation.getDelTown().toString());
-        jobID = jobInformation.getJobID();
-
+    /**
+     * Set the onClick listeners for the widgets in the layout
+     */
+    private void setOnClickListeners()
+    {
+        // User presses bid on job
         buttonBid.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -117,140 +177,61 @@ public class JobDetailsFragment extends Fragment
                     editTextBid.setHintTextColor(Color.RED);
                 } else
                 {
-
                     saveBidInformation();
                 }
             }
         });
-
-        auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference();
-
-        databaseReference.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                bidReference = dataSnapshot.child("Bids");
-
-                Iterable<DataSnapshot> jobListSnapShot = bidReference.getChildren();
-
-
-                for (DataSnapshot ds : jobListSnapShot)
-                {
-                    if (ds.getKey().toString().equals(jobInformation.getJobID()))
-                    {
-
-                        Iterable<DataSnapshot> bidListSnapShot = ds.getChildren();
-
-                        for (DataSnapshot ds1 : bidListSnapShot)
-                        {
-                            BidInformation b = ds1.getValue(BidInformation.class);
-
-                            String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                            if (b.getUserID().equals(currentUser))
-                            {
-                                buttonBid.setClickable(false);
-                                buttonBid.setHighlightColor(Color.GRAY);
-                                editTextBid.setText("Bid already placed!");
-                                editTextBid.setClickable(false);
-                                editTextBid.setKeyListener(null);
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
-
-        return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-        }
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Set the widgets in the view with text from the jobInformation object passed across
+     *
+     * @param jobInformation jobInformation: Object that has been passed from the bundle
      */
-    public interface OnFragmentInteractionListener
+    private void setJobInformationText(JobInformation jobInformation)
     {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        jobName.setText(jobInformation.getAdvertName());
+        jobDescription.setText(jobInformation.getAdvertDescription());
+        jobSize.setText(jobInformation.getJobSize());
+        jobType.setText(jobInformation.getJobType());
+        jobColDate.setText(jobInformation.getCollectionDate());
+        jobColTime.setText(jobInformation.getCollectionTime());
+        jobFrom.setText(jobInformation.getColTown());
+        jobTo.setText(jobInformation.getDelTown());
+        jobId = jobInformation.getJobID().trim();
     }
 
+    /**
+     * Get the users bids from the editText widget and converts it to a money, numeric value
+     * to be stored in the FireBase Database
+     */
     private void saveBidInformation()
     {
-        Bundle bundle = getArguments();
-
-        JobInformation jobInformation = (JobInformation) bundle.getSerializable("Job");
-
         String userBid = editTextBid.getText().toString().trim();
-
-        if(!userBid.contains("."))
-        {
-            userBid = userBid + ".00";
-        }
-
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        user.getUid();
-
-        final String userID = user.getUid();
-        final String jobID = jobInformation.getJobID().toString().trim();
-
-        saveBidInDatabase(userID, jobID, userBid);
+        BigDecimal decimal = new BigDecimal(userBid);
+        decimal = decimal.setScale(2, RoundingMode.CEILING);
+        final String jobID = Objects.requireNonNull(getBundleInformation()).getJobID().trim();
+        saveBidInDatabase(user, jobID, decimal.toString());
     }
 
+    /**
+     * Posts the users bid into the FireBase database under the Bids table, jobId and then the users id
+     * Then moves back to the MainActivity
+     *
+     * @param userID  String: the current users id who is bidding on the job
+     * @param jobID   String: the job id the user is bidding on
+     * @param userBid String: the bid that they have entered
+     */
     private void saveBidInDatabase(final String userID, final String jobID, final String userBid)
     {
-        databaseReference.child("Users").child(userID).addValueEventListener(new ValueEventListener()
+        databaseReferenceUsersTable.child(userID).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String fullName = dataSnapshot.child("fullName").getValue(String.class);
+                String fullName = dataSnapshot.child(DatabaseEntryNames.fullName.name()).getValue(String.class);
                 UserBidInformation userBidInformation = new UserBidInformation(fullName, userBid, userID, true);
-                databaseReference.child("Bids").child(jobID).child(userID).setValue(userBidInformation);
+                databaseReferenceBidsTable.child(jobID).child(userID).setValue(userBidInformation);
                 startActivity(new Intent(getActivity(), CrossRoadsMainActivity.class));
             }
 
@@ -260,5 +241,40 @@ public class JobDetailsFragment extends Fragment
 
             }
         });
+    }
+
+    /**
+     * Checks if the user has already bid on the job, if they have they are unable to
+     * enter another bid for that job and must edit their bid on MyJobs, Pending tab
+     */
+    private void checkIfUserBidOn()
+    {
+        databaseReferenceBidsTable.child(jobId).child(user).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                buttonBid.setVisibility(View.GONE);
+                editTextBid.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+    }
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
     }
 }

@@ -117,6 +117,7 @@
     <string name="viewtown">viewTown</string>
     <string name="viewpostcode">viewPostCode</string>
     <string name="use_my_address">Use My Address</string>
+    <string name="bid_already_placed">Bid already placed!</string>
 </resources>
 
 
