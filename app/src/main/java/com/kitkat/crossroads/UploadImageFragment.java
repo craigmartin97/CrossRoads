@@ -5,14 +5,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 
 public class UploadImageFragment extends Fragment
@@ -51,6 +56,8 @@ public class UploadImageFragment extends Fragment
     private static byte[] compressData;
 
     private static final int GALLERY_INTENT = 2;
+    private final static int REQUEST_CODE = 400;
+
 
     private ProgressDialog progressDialog;
 
@@ -122,9 +129,17 @@ public class UploadImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, GALLERY_INTENT);
+                if(verifyPermissions()) {
+
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY_INTENT);
+                }
+                else
+                {
+                    Toast.makeText(getContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
+                    verifyPermissions();
+                }
             }
         });
 
@@ -243,5 +258,32 @@ public class UploadImageFragment extends Fragment
     public interface OnFragmentInteractionListener
     {
         void onFragmentInteraction(Uri uri);
+    }
+
+    private boolean verifyPermissions()
+    {
+        Log.d(TAG, "Verifying user Phone permissions");
+        String[] phonePermissions = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        };
+
+        if(ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
+        {
+            return true;
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
+            return false;
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    {
+        verifyPermissions();
     }
 }
