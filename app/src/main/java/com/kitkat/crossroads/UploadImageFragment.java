@@ -211,6 +211,11 @@ public class UploadImageFragment extends Fragment
                 Log.e("Error Uploading Image: ", e.getMessage());
             }
         }
+        else
+        {
+            Toast.makeText(getContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
+            verifyPermissions();
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
