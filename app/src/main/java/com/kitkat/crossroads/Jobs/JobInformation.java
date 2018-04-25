@@ -79,11 +79,21 @@ public class JobInformation implements Serializable
         this.jobID = jobID;
     }
 
+    /**
+     * Get the courierId
+     *
+     * @return String: Couriers Id
+     */
     public String getCourierID()
     {
         return courierID;
     }
 
+    /**
+     * Get the JobId
+     *
+     * @return String: Job Id
+     */
     public String getJobID()
     {
         return jobID;

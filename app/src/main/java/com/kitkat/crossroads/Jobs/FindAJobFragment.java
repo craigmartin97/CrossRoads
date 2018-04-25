@@ -127,106 +127,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
 
         getViewsByIds(view);
         createSortByDropDown();
-
-        filterButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-                if (filterLayout.getTag().toString().equals(StatusTags.Closed.name()))
-                {
-                    filterLayout.setVisibility(View.VISIBLE);
-                    filterLayout.setTag(StatusTags.Open.name());
-                } else
-                {
-                    filterLayout.setVisibility(View.GONE);
-                    filterLayout.setTag(StatusTags.Closed.name());
-
-                }
-
-            }
-        });
-
-        final List<String> sizeList = new ArrayList<>(Arrays.asList(createTextForJobSizes()));
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_custom, sizeList)
-        {
-            @Override
-            public boolean isEnabled(int position)
-            {
-                return position != 0;
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView,
-                                        @NonNull ViewGroup parent)
-            {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0)
-                {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY);
-                } else
-                {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-        };
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filterSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                String selectedItemText = (String) parent.getItemAtPosition(position);
-                // If user change the default selection
-                // First item is disable and it is used for hint
-                if (position > 0)
-                {
-                    // Notify the selected item text
-                    genericMethods.customToastMessage("Selected : " + selectedItemText, getActivity());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-
-            }
-        });
-
-        filterSize.setAdapter(adapter);
-        filterSingle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (filterSingle.isChecked())
-                {
-                    filterMultiple.setChecked(false);
-                }
-            }
-        });
-
-        filterMultiple.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (filterMultiple.isChecked())
-                {
-                    filterSingle.setChecked(false);
-                }
-            }
-        });
-
-
+        createFilterOptions();
         getJobsFromDatabase();
         setJobSearchQueries();
-
 
         applyFilter();
         clearFilter();
@@ -352,8 +255,6 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 "Collection Date",
                 "Size"
         };
-
-
     }
 
     /**
@@ -425,6 +326,102 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             public void onNothingSelected(AdapterView<?> parent)
             {
 
+            }
+        });
+    }
+
+    private void createFilterOptions()
+    {
+        filterButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                if (filterLayout.getTag().toString().equals(StatusTags.Closed.name()))
+                {
+                    filterLayout.setVisibility(View.VISIBLE);
+                    filterLayout.setTag(StatusTags.Open.name());
+                } else
+                {
+                    filterLayout.setVisibility(View.GONE);
+                    filterLayout.setTag(StatusTags.Closed.name());
+                }
+            }
+        });
+
+        final List<String> sizeList = new ArrayList<>(Arrays.asList(createTextForJobSizes()));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_custom, sizeList)
+        {
+            @Override
+            public boolean isEnabled(int position)
+            {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        @NonNull ViewGroup parent)
+            {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0)
+                {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else
+                {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String selectedItemText = (String) parent.getItemAtPosition(position);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+                if (position > 0)
+                {
+                    // Notify the selected item text
+                    genericMethods.customToastMessage("Selected : " + selectedItemText, getActivity());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        filterSize.setAdapter(adapter);
+        filterSingle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (filterSingle.isChecked())
+                {
+                    filterMultiple.setChecked(false);
+                }
+            }
+        });
+
+        filterMultiple.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (filterMultiple.isChecked())
+                {
+                    filterSingle.setChecked(false);
+                }
             }
         });
     }

@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,8 +20,8 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.DatabaseReferences;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
-import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.kitkat.crossroads.R;
 
 import java.text.ParseException;
@@ -232,11 +231,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      * Get the Bid Information
      *
      * @param dataSnapshot
-     * @return BidInformation
+     * @return UserBidInformation
      */
-    private BidInformation getBidInformation(DataSnapshot dataSnapshot)
+    private UserBidInformation getBidInformation(DataSnapshot dataSnapshot)
     {
-        return dataSnapshot.getValue(BidInformation.class);
+        return dataSnapshot.getValue(UserBidInformation.class);
     }
 
     /**
