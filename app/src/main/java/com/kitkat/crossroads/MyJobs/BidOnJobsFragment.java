@@ -21,10 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
-import com.kitkat.crossroads.Jobs.BidInformation;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
-import com.kitkat.crossroads.MyJobs.ActiveJobDetailsFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 

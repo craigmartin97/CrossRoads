@@ -76,13 +76,14 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
 public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
     /**
-     * Get the authentication to the Firebase Authentication area
+     * Get the authentication to the FireBase Authentication area
      */
     private FirebaseAuth auth;
 
@@ -92,7 +93,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private String user;
 
     /**
-     * Get the reference to the Firebase Database
+     * Get the reference to the FireBase Database
      */
     private DatabaseReference databaseReference;
 
@@ -102,7 +103,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private DataSnapshot jobReference;
 
     /**
-     * Get the reference to the Firebase Storage area to store the Jobs Image In
+     * Get the reference to the FireBase Storage area to store the Jobs Image In
      */
     private StorageReference storageReference;
 
@@ -159,7 +160,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private GoogleApiClient mGoogleApiClient1;
 
-    private GenericMethods genericMethods = new GenericMethods();
+    private final GenericMethods genericMethods = new GenericMethods();
 
     private static final int REQUEST_CODE = 3;
 
@@ -193,7 +194,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
             for (int i = 0; i < adapter1.getCount(); i++)
             {
-                if (jobInformation.getJobSize().equals(adapter1.getItem(i)))
+                if (jobInformation.getJobSize().contentEquals(Objects.requireNonNull(adapter1.getItem(i))))
                 {
                     editTextJobSize.setSelection(i);
                 }
@@ -201,7 +202,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
             for (int i = 0; i < adapter2.getCount(); i++)
             {
-                if (jobInformation.getJobType().equals(adapter2.getItem(i)))
+                if (jobInformation.getJobType().contentEquals(Objects.requireNonNull(adapter2.getItem(i))))
                 {
                     editTextJobType.setSelection(i);
                 }
@@ -392,7 +393,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         dateSetListener,
                         year, month, day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
@@ -434,9 +435,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View v)
             {
-                Calendar mcurrentTime = Calendar.getInstance();
-                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
+                Calendar currentTime = Calendar.getInstance();
+                int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = currentTime.get(Calendar.MINUTE);
 
                 TimePickerDialog mTimePicker;
                 mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener()
@@ -692,7 +693,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             ifWidgetTextIsNull(editTextColTime, "Please Enter Collection Time!");
             return;
         }
-        if (TextUtils.isEmpty(getTextInColAd1Wiget()))
+        if (TextUtils.isEmpty(getTextInColAd1Widget()))
         {
             ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
             return;
@@ -730,7 +731,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
         {
             ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
-            return;
         }
     }
 
@@ -808,69 +808,66 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         dialog.dismiss();
                     }
 
-                    if (pInfo != null)
+                    // Change the text in the alert dialog to the address
+                    map1.hideKeyboard(getActivity());
+                    String placeName = null;
+                    if (pInfo.getPlaceName() != null)
                     {
-                        // Change the text in the alert dialog to the address
-                        map1.hideKeyboard(getActivity());
-                        String placeName = null;
-                        if (pInfo.getPlaceName() != null)
-                        {
-                            placeName = pInfo.getPlaceName() + " ";
-                        }
-                        String addressOne = null;
-                        if (pInfo.getPlaceAddressLineOne() != null)
-                        {
-                            addressOne = pInfo.getPlaceAddressLineOne() + " ";
-                        }
-                        String addressTwo = null;
-                        if (pInfo.getPlaceAddressLineTwo() != null || !pInfo.getPlaceAddressLineTwo().equals(""))
-                        {
-                            addressTwo = pInfo.getPlaceAddressLineTwo() + " ";
-                        }
-                        String postCode = null;
-                        if (pInfo.getPlacePostCode() != null)
-                        {
-                            postCode = pInfo.getPlacePostCode();
-                        }
-
-                        chooseLocationText.setText(placeName + addressOne + addressTwo + postCode);
-
-
-                        yesButton.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                if (pInfo.getPlaceName() != null)
-                                {
-                                    editTextColAddL1.setText(pInfo.getPlaceName());
-                                }
-                                if (pInfo.getPlaceAddressLineOne() != null)
-                                {
-                                    editTextColAddL2.setText(pInfo.getPlaceAddressLineOne());
-                                }
-                                if (pInfo.getPlaceAddressLineTwo() != null)
-                                {
-                                    editTextColAddTown.setText(pInfo.getPlaceAddressLineTwo());
-                                }
-                                if (pInfo.getPlacePostCode() != null)
-                                {
-                                    editTextColAddPostcode.setText(pInfo.getPlacePostCode());
-                                }
-                                dialog.dismiss();
-                            }
-                        });
-
-                        noButton.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                dialog.dismiss();
-                            }
-                        });
-
+                        placeName = pInfo.getPlaceName() + " ";
                     }
+                    String addressOne = null;
+                    if (pInfo.getPlaceAddressLineOne() != null)
+                    {
+                        addressOne = pInfo.getPlaceAddressLineOne() + " ";
+                    }
+                    String addressTwo = null;
+                    if (pInfo.getPlaceAddressLineTwo() != null || !pInfo.getPlaceAddressLineTwo().equals(""))
+                    {
+                        addressTwo = pInfo.getPlaceAddressLineTwo() + " ";
+                    }
+                    String postCode = null;
+                    if (pInfo.getPlacePostCode() != null)
+                    {
+                        postCode = pInfo.getPlacePostCode();
+                    }
+
+                    chooseLocationText.setText(placeName + addressOne + addressTwo + postCode);
+
+
+                    yesButton.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            if (pInfo.getPlaceName() != null)
+                            {
+                                editTextColAddL1.setText(pInfo.getPlaceName());
+                            }
+                            if (pInfo.getPlaceAddressLineOne() != null)
+                            {
+                                editTextColAddL2.setText(pInfo.getPlaceAddressLineOne());
+                            }
+                            if (pInfo.getPlaceAddressLineTwo() != null)
+                            {
+                                editTextColAddTown.setText(pInfo.getPlaceAddressLineTwo());
+                            }
+                            if (pInfo.getPlacePostCode() != null)
+                            {
+                                editTextColAddPostcode.setText(pInfo.getPlacePostCode());
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+
+                    noButton.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            dialog.dismiss();
+                        }
+                    });
+
                 } catch (NullPointerException e)
                 {
                     genericMethods.customToastMessage("Please Search For A Location First", getActivity());
@@ -1055,7 +1052,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         return editTextColTime.getText().toString().trim();
     }
 
-    private String getTextInColAd1Wiget()
+    private String getTextInColAd1Widget()
     {
         return editTextColAddL1.getText().toString().trim();
     }
@@ -1127,7 +1124,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         {
             Bundle extras = data.getExtras();
             imageUri = data.getData();
-            Bitmap photo = (Bitmap) extras.get("data");
+            Bitmap photo = (Bitmap) (extras != null ? extras.get("data") : null);
             profileImage.setImageBitmap(photo);
             compressBitMapForStorage();
             setJobImageHeight();
@@ -1145,7 +1142,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             progressDialog.setMessage("Uploading Job Please Wait");
             progressDialog.create();
             progressDialog.show();
-            final StorageReference filePath = storageReference.child("JobImages").child(auth.getCurrentUser().getUid()).child(key).child(imageUri.getLastPathSegment());
+            final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(key).child(imageUri.getLastPathSegment());
             filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
                 @Override
@@ -1156,6 +1153,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
                     String jobStatus = "Pending";
 
+                    assert (downloadUri) != null;
                     databaseReference.child("Jobs").child(key).setValue(setJobInformation(jobStatus, downloadUri));
                     databaseReference.addValueEventListener(new ValueEventListener()
                     {
@@ -1169,7 +1167,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                             for (DataSnapshot ds : jobListSnapShot)
                             {
                                 JobInformation j = ds.getValue(JobInformation.class);
-                                if (j.equals(jobInformation))
+                                if (j != null && j.equals(jobInformation))
                                 {
                                     databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
                                 }
@@ -1207,7 +1205,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private void saveEditJob()
     {
 
-        final StorageReference filePath = storageReference.child("JobImages").child(auth.getCurrentUser().getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
+        final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
         filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
         {
             @Override
@@ -1216,6 +1214,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 Uri downloadUri = taskSnapshot.getDownloadUrl();
                 String jobStatus = "Pending";
 
+                assert (downloadUri) != null;
                 databaseReference.child("Jobs").child(jobIdKey).setValue(setJobInformation(jobStatus, downloadUri));
                 genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
             }
@@ -1224,36 +1223,36 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private JobInformation setJobInformation(String jobStatus, Uri downloadUri)
     {
-        final JobInformation jobInformation = new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
-                " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Wiget()
+
+        return new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
+                " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Widget()
                 , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
                 , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, downloadUri.toString());
-
-        return jobInformation;
     }
 
     private boolean isServicesOK()
     {
         Log.d(TAG, "IsServicesOK: checking google services version: ");
-        int avaliable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getActivity());
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getActivity());
 
-        if (avaliable == ConnectionResult.SUCCESS)
+        if (available == ConnectionResult.SUCCESS)
         {
             // Can make map requests
             Log.d(TAG, "isServicesOK: Google Play Services Is Working");
             return true;
-        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(avaliable))
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available))
         {
-            Log.d(TAG, "isServicesOK: An error has occured but it can be fixed");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), avaliable, Error_Dialog_Request);
+            Log.d(TAG, "isServicesOK: An error has occurred but it can be fixed");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), available, Error_Dialog_Request);
             dialog.show();
         } else
         {
-            Log.d(TAG, "isServicesError: Google Play Services Isnt Working, Unable To Resolve");
+            Log.d(TAG, "isServicesError: Google Play Services Isn't Working, Unable To Resolve");
         }
         return false;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean hasCamera()
     {
         return getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
@@ -1279,13 +1278,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
     {
-
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
 
     }
 
