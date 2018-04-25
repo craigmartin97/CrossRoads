@@ -233,28 +233,6 @@ public class ActiveAdverts extends Fragment
         });
     }
 
-//    private void setButtonCallCourier(final String courierID)
-//    {
-//        buttonCallCourier.setOnClickListener(
-//                (View.OnClickListener) databaseReference.child("Users").child(courierID).addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot)
-//                    {
-//                        String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
-//                        Intent intent = new Intent(Intent.ACTION_DIAL);
-//                        intent.setData(Uri.parse(phoneNumber));
-//                        startActivity(intent);
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError)
-//                    {
-//
-//                    }
-//                })
-//        );
-//    }
-
     private void setButtonCallCourier(final String courierId)
     {
         buttonCallCourier.setOnClickListener(new View.OnClickListener()
@@ -268,12 +246,8 @@ public class ActiveAdverts extends Fragment
                     public void onDataChange(DataSnapshot dataSnapshot)
                     {
                         String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
-//                        Intent intent1 = new Intent(Intent.ACTION_DIAL);
-//                        intent1.setData(Uri.parse(phoneNumber));
-//                        startActivity(intent1.createChooser(intent1, "Call Courier"))
-                        Uri number = Uri.parse(phoneNumber);
-                        Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
-                        startActivity(callIntent);
+                        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                        startActivity(Intent.createChooser(callIntent, "tel:" + Uri.parse(phoneNumber)));
                     }
 
                     @Override
