@@ -261,7 +261,8 @@ public class ActiveAdverts extends Fragment
                         {
                             String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
                             Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                            startActivity(Intent.createChooser(callIntent, "tel:" + Uri.parse(phoneNumber)));
+                            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                            startActivity(callIntent);
                         }
 
                         @Override
