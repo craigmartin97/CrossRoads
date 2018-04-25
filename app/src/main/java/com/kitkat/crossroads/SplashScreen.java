@@ -77,7 +77,7 @@ public class SplashScreen extends AppCompatActivity {
                     SplashScreen.this.finish();
                 }
             }
-        }, 7000);
+        }, 1760);
     }
     private FragmentTransaction getFragmentTransaction()
     {
