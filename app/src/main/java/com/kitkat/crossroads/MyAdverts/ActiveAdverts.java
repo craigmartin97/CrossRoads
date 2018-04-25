@@ -1,8 +1,14 @@
 package com.kitkat.crossroads.MyAdverts;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +17,8 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +39,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
 
 public class ActiveAdverts extends Fragment
@@ -87,6 +97,8 @@ public class ActiveAdverts extends Fragment
     private String jobId;
 
     private String courierId;
+
+    private final static int REQUEST_CODE = 100;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -235,28 +247,37 @@ public class ActiveAdverts extends Fragment
 
     private void setButtonCallCourier(final String courierId)
     {
-        buttonCallCourier.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
+            buttonCallCourier.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view)
                 {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot)
+                    if(verifyPermissions()) {
+
+                    databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
                     {
-                        String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
-                        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                        startActivity(Intent.createChooser(callIntent, "tel:" + Uri.parse(phoneNumber)));
-                    }
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                            startActivity(Intent.createChooser(callIntent, "tel:" + Uri.parse(phoneNumber)));
+                        }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
                     }
-                });
-            }
-        });
+                    else
+                    {
+                        Toast.makeText(getActivity(), "Permissions Denied", Toast.LENGTH_SHORT).show();
+                        verifyPermissions();
+                    }
+                }
+            });
     }
 
     /**
@@ -371,4 +392,30 @@ public class ActiveAdverts extends Fragment
 
         listHashMap3.put(list3.get(0), jobInformation);
     }
+
+    private boolean verifyPermissions()
+    {
+        Log.d(TAG, "Verifying user Phone permissions");
+        String[] phonePermissions = {
+                Manifest.permission.CALL_PHONE
+        };
+
+        if(ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED)
+        {
+            return true;
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
+            return false;
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    {
+        verifyPermissions();
+    }
+
 }
