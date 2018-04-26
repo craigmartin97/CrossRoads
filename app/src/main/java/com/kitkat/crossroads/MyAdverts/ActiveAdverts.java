@@ -10,9 +10,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,9 +23,9 @@ import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
+
 import android.content.Intent;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,9 +75,14 @@ public class ActiveAdverts extends Fragment
     private String user;
 
     /**
-     * Creating variable to store the connection to the Firebase Database
+     * Creating variable to store the connection to the Firebase Database Users table
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceUsersTable;
+
+    /**
+     * Creating variable to store the connection to the Firebase Database Bids table
+     */
+    private DatabaseReference databaseReferenceBidsTable;
 
     /**
      * Access the jobId the user pressed on
@@ -93,7 +96,10 @@ public class ActiveAdverts extends Fragment
     {
         super.onCreate(savedInstanceState);
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
+        databaseReferenceUsersTable.keepSynced(true);
+        databaseReferenceBidsTable.keepSynced(true);
         user = databaseConnections.getCurrentUser();
     }
 
@@ -174,10 +180,10 @@ public class ActiveAdverts extends Fragment
      */
     private void getViewsByIds(View view)
     {
-        jobName = (TextView) view.findViewById(R.id.textViewJobName1);
-        jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        jobImageActive = (ImageView) view.findViewById(R.id.jobImageActive);
-        textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
+        jobName = view.findViewById(R.id.textViewJobName1);
+        jobDescription = view.findViewById(R.id.textViewJobDescription1);
+        jobImageActive = view.findViewById(R.id.jobImageActive);
+        textViewUsersBid = view.findViewById(R.id.textViewAcceptedBid);
         buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
         buttonEmailCourier = view.findViewById(R.id.buttonEmailCourier);
 
@@ -198,7 +204,7 @@ public class ActiveAdverts extends Fragment
             {
                 ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
                 GenericMethods genericMethods = new GenericMethods();
-                viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", getBundleInformation().getCourierID()));
+                viewProfileFragment.setArguments(genericMethods.createNewBundleStrings(getString(R.string.courier_id_table), getBundleInformation().getCourierID()));
                 genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
             }
         });
@@ -211,11 +217,12 @@ public class ActiveAdverts extends Fragment
             @Override
             public void onClick(View view)
             {
-                databaseReference.child("Users").child(courierID).addValueEventListener(new ValueEventListener() {
+                databaseReferenceUsersTable.child(courierID).addValueEventListener(new ValueEventListener()
+                {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot)
                     {
-                        String userEmail = dataSnapshot.child("userEmail").getValue(String.class);
+                        String userEmail = dataSnapshot.child(getString(R.string.user_email_table)).getValue(String.class);
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail, null));
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CrossRoadsMainActivity Job");
                         emailIntent.putExtra(Intent.EXTRA_TEXT, "");
@@ -223,7 +230,8 @@ public class ActiveAdverts extends Fragment
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(DatabaseError databaseError)
+                    {
 
                     }
                 });
@@ -245,12 +253,12 @@ public class ActiveAdverts extends Fragment
         Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive);
 
         // Set the users accepted bid
-        databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
+        databaseReferenceBidsTable.child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String userBid = dataSnapshot.child("userBid").getValue(String.class);
+                String userBid = dataSnapshot.child(getString(R.string.user_bid_table)).getValue(String.class);
                 textViewUsersBid.setText("Agreed Fee:       £" + userBid);
             }
 
