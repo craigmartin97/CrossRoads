@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +19,7 @@ import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class CompletedJobsFragment extends Fragment
      * ImageView, to store and display the Jobs Image
      */
     private ImageView jobImageCompleted;
+    private ProgressBar progressBar;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -132,6 +135,7 @@ public class CompletedJobsFragment extends Fragment
         jobDescription = view.findViewById(R.id.textViewJobDescription1);
         jobImageCompleted = view.findViewById(R.id.jobImageCompleted);
         textViewUsersBid = view.findViewById(R.id.textViewAcceptedBid);
+        progressBar = view.findViewById(R.id.progressBar);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
@@ -149,7 +153,20 @@ public class CompletedJobsFragment extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageCompleted);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageCompleted, new Callback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+
+            }
+        });
 
         databaseReferenceBidsTable.child(jobId).child(user).addValueEventListener(new ValueEventListener()
         {

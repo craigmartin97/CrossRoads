@@ -145,6 +145,7 @@
     <string name="success">Success</string>
     <string name="complete">Complete</string>
     <string name="job_key">Job</string>
+    <string name="send_email">Send Email</string>
 </resources>
 
 

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class BidOnJobsFragment extends Fragment
      * ImageView for the JobsImage
      */
     private ImageView jobImageBidOn;
+    private ProgressBar progressBar;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -174,6 +177,7 @@ public class BidOnJobsFragment extends Fragment
         jobImageBidOn = view.findViewById(R.id.jobImgageBidOn);
         editTextEditBid = view.findViewById(R.id.editBid);
         buttonEditBid = view.findViewById(R.id.buttonEditBid);
+        progressBar = view.findViewById(R.id.progressBar);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
@@ -286,7 +290,20 @@ public class BidOnJobsFragment extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageBidOn);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageBidOn, new Callback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+
+            }
+        });
 
         databaseReferenceBidsTable.child(jobId).child(user).addValueEventListener(new ValueEventListener()
         {

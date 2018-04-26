@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +23,7 @@ import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import android.content.Intent;
@@ -47,6 +49,7 @@ public class ActiveAdverts extends Fragment
      * ImageView for the JobsImage
      */
     private ImageView jobImageActive;
+    private ProgressBar progressBar;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -186,6 +189,7 @@ public class ActiveAdverts extends Fragment
         textViewUsersBid = view.findViewById(R.id.textViewAcceptedBid);
         buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
         buttonEmailCourier = view.findViewById(R.id.buttonEmailCourier);
+        progressBar = view.findViewById(R.id.progressBar);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
@@ -226,7 +230,7 @@ public class ActiveAdverts extends Fragment
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail, null));
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CrossRoadsMainActivity Job");
                         emailIntent.putExtra(Intent.EXTRA_TEXT, "");
-                        startActivity(Intent.createChooser(emailIntent, "Send Email"));
+                        startActivity(Intent.createChooser(emailIntent, getString(R.string.send_email)));
                     }
 
                     @Override
@@ -250,7 +254,20 @@ public class ActiveAdverts extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive, new Callback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+
+            }
+        });
 
         // Set the users accepted bid
         databaseReferenceBidsTable.child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
@@ -293,8 +310,8 @@ public class ActiveAdverts extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable("JobKeyId");
-        return (JobInformation) bundle.getSerializable("JobId");
+        jobId = (String) bundle.getSerializable(getString(R.string.job_key_id));
+        return (JobInformation) bundle.getSerializable(getString(R.string.job_id));
     }
 
     /**
@@ -305,7 +322,7 @@ public class ActiveAdverts extends Fragment
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
 
-        list.add("Collection Information");
+        list.add(getString(R.string.collection_information));
 
         List<String> collectionInfo = new ArrayList<>();
         collectionInfo.add(colDate);
@@ -325,7 +342,7 @@ public class ActiveAdverts extends Fragment
         list2 = new ArrayList<>();
         listHashMap2 = new HashMap<>();
 
-        list2.add("Delivery Information");
+        list2.add(getString(R.string.delivery_information));
 
         List<String> deliveryInfo = new ArrayList<>();
         deliveryInfo.add(delAddress);
@@ -343,7 +360,7 @@ public class ActiveAdverts extends Fragment
         list3 = new ArrayList<>();
         listHashMap3 = new HashMap<>();
 
-        list3.add("Job Information");
+        list3.add(getString(R.string.job_information));
 
         List<String> jobInformation = new ArrayList<>();
         jobInformation.add(jobSize);

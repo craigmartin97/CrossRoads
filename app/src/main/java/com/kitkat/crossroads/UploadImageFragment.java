@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,6 +30,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -51,6 +53,8 @@ public class UploadImageFragment extends Fragment
     private static final int GALLERY_INTENT = 2;
 
     private ProgressDialog progressDialog;
+
+    private ProgressBar progressBar;
 
     public UploadImageFragment()
     {
@@ -82,14 +86,28 @@ public class UploadImageFragment extends Fragment
         profileImage = (ImageView) view.findViewById(R.id.imageViewProfileImage);
         Button uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadProfileImage);
         Button saveProfileImage = (Button) view.findViewById(R.id.buttonSaveProfileImage);
+        progressBar = view.findViewById(R.id.progressBar);
 
         databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String profileImageURL = dataSnapshot.child("profileImage").getValue(String.class);
-                Picasso.get().load(profileImageURL).into(profileImage);
+                final String profileImageURL = dataSnapshot.child("profileImage").getValue(String.class);
+                Picasso.get().load(profileImageURL).into(profileImage, new Callback()
+                {
+                    @Override
+                    public void onSuccess()
+                    {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Exception e)
+                    {
+
+                    }
+                });
             }
 
             @Override

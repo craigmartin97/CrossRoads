@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -51,6 +53,8 @@ public class PendingAdverts extends Fragment
      * Display the jobs name and description in the header for the job
      */
     private TextView textViewJobName1, textViewDescription1;
+
+    private ProgressBar progressBar;
 
     /**
      * Expandable list views to store the information and display upon users request
@@ -183,6 +187,7 @@ public class PendingAdverts extends Fragment
         textViewJobName1 = view.findViewById(R.id.textViewJobName1);
         textViewDescription1 = view.findViewById(R.id.textViewJobDescription1);
         jobImagePending = view.findViewById(R.id.jobImagePending);
+        progressBar = view.findViewById(R.id.progressBar);
         viewActiveBids = view.findViewById(R.id.buttonViewActiveBids);
     }
 
@@ -227,7 +232,20 @@ public class PendingAdverts extends Fragment
     {
         textViewJobName1.setText(jobInformation.getAdvertName());
         textViewDescription1.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImagePending);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImagePending, new Callback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+
+            }
+        });
     }
 
     /**

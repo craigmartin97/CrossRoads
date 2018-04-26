@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 
@@ -57,6 +59,7 @@ public class ActiveJobDetailsFragment extends Fragment
     private TextView textViewJobName1, textViewDescription1;
 
     private ImageView jobImageAccepted;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -101,6 +104,7 @@ public class ActiveJobDetailsFragment extends Fragment
         mClearButton = view.findViewById(R.id.clear_button);
         mJobCompleteButton = view.findViewById(R.id.job_complete_button);
         jobImageAccepted = view.findViewById(R.id.jobImageAccepted);
+        progressBar = view.findViewById(R.id.progressBar);
     }
 
     private JobInformation getBundleInformation()
@@ -119,7 +123,20 @@ public class ActiveJobDetailsFragment extends Fragment
 
     private void getJobInformationFromBundle(JobInformation jobInformation)
     {
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageAccepted);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageAccepted, new Callback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+
+            }
+        });
         textViewJobName1.setText(jobInformation.getAdvertName());
         textViewDescription1.setText(jobInformation.getAdvertDescription());
         colDate = jobInformation.getCollectionDate().toString();
