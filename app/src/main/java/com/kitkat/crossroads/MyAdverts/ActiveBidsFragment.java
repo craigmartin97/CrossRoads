@@ -57,9 +57,19 @@ public class ActiveBidsFragment extends Fragment
     private OnFragmentInteractionListener mListener;
 
     /**
-     * Getting a reference to the firebase datbase area
+     * Establishing connection to FireBase database, bids table
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceBidsTable;
+
+    /**
+     * Establishing connection to FireBase database, ratings table
+     */
+    private DatabaseReference databaseReferenceRatingsTable;
+
+    /**
+     * Establishing connection to FireBase database, jobs table
+     */
+    private DatabaseReference databaseReferenceJobsTable;
 
     /**
      * Getting the current user who is sign in id
@@ -77,7 +87,6 @@ public class ActiveBidsFragment extends Fragment
     private ArrayList<UserBidInformation> jobList = new ArrayList<>();
     private double commisionAmount;
     private double totalAmount;
-    private BigDecimal totalDecimal;
 
     private int pos;
 
@@ -139,7 +148,12 @@ public class ActiveBidsFragment extends Fragment
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
+        databaseReferenceRatingsTable = databaseConnections.getDatabaseReferenceRatings();
+        databaseReferenceJobsTable = databaseConnections.getDatabaseReferenceJobs();
+        databaseReferenceBidsTable.keepSynced(true);
+        databaseReferenceRatingsTable.keepSynced(true);
+        databaseReferenceJobsTable.keepSynced(true);
         user = databaseConnections.getCurrentUser();
     }
 
@@ -166,7 +180,7 @@ public class ActiveBidsFragment extends Fragment
     {
         final String jobId = getBundleInformation();
 
-        databaseReference.child("Bids").child(jobId).addValueEventListener(new ValueEventListener()
+        databaseReferenceBidsTable.child(jobId).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot)
@@ -234,7 +248,7 @@ public class ActiveBidsFragment extends Fragment
                         BigDecimal decimal1 = new BigDecimal(totalAmount).setScale(2, RoundingMode.CEILING);
                         textViewTotal.setText("£" + decimal1);
 
-                        databaseReference.child("Ratings").child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+                        databaseReferenceRatingsTable.child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
                         {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot)
@@ -266,7 +280,7 @@ public class ActiveBidsFragment extends Fragment
                             }
                         });
 
-                        databaseReference.child("Ratings").child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+                        databaseReferenceRatingsTable.child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
                         {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot)
@@ -351,8 +365,8 @@ public class ActiveBidsFragment extends Fragment
                 {
                     try
                     {
-                        databaseReference.child("Jobs").child(getBundleInformation()).child("courierID").setValue(jobList.get(pos).getUserID());
-                        databaseReference.child("Jobs").child(getBundleInformation()).child("jobStatus").setValue("Active");
+                        databaseReferenceJobsTable.child(getBundleInformation()).child("courierID").setValue(jobList.get(pos).getUserID());
+                        databaseReferenceJobsTable.child(getBundleInformation()).child("jobStatus").setValue("Active");
                         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).commit();
 
@@ -491,7 +505,7 @@ public class ActiveBidsFragment extends Fragment
 
             holder.textViewBid.setText("£" + decimal);
 
-            databaseReference.child("Ratings").child(mData.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+            databaseReferenceRatingsTable.child(mData.get(position).getUserID()).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
