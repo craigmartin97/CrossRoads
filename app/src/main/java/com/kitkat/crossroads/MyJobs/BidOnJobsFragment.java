@@ -104,11 +104,7 @@ public class BidOnJobsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
-        databaseReferenceBidsTable.keepSynced(true);
-        auth = databaseConnections.getAuth();
-        user = databaseConnections.getCurrentUser();
+        databaseConnections();
     }
 
     /**
@@ -155,6 +151,15 @@ public class BidOnJobsFragment extends Fragment
         });
 
         return view;
+    }
+
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
+        databaseReferenceBidsTable.keepSynced(true);
+        auth = databaseConnections.getAuth();
+        user = databaseConnections.getCurrentUser();
     }
 
     /**

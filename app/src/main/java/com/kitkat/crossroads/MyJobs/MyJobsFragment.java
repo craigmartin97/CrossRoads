@@ -187,6 +187,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         DatabaseConnections databaseConnections = new DatabaseConnections();
         auth = databaseConnections.getAuth();
         databaseReference = databaseConnections.getDatabaseReference();
+        databaseReference.keepSynced(true);
     }
 
     /**
