@@ -399,10 +399,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
                 DatePickerDialog dialog = new DatePickerDialog(
                         getActivity(),
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        R.style.datepicker,
                         dateSetListener,
                         year, month, day);
-                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
@@ -449,7 +448,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 int minute = currentTime.get(Calendar.MINUTE);
 
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener()
+                mTimePicker = new TimePickerDialog(getActivity(), R.style.datepicker, new TimePickerDialog.OnTimeSetListener()
                 {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
@@ -457,7 +456,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         editTextColTime.setText(selectedHour + ":" + selectedMinute);
                     }
                 }, hour, minute, true);
-                mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
             }
         });
