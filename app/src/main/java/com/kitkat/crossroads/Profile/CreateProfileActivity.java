@@ -1,13 +1,9 @@
 package com.kitkat.crossroads.Profile;
 
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,11 +24,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
 import com.kitkat.crossroads.R;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class CreateProfileActivity extends AppCompatActivity
 {
@@ -43,7 +38,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private static ImageView profileImage;
 
     private FirebaseAuth auth;
-    private DatabaseReference myRef;
+    private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private String user, userEmail;
 
@@ -54,7 +49,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
     private Uri imageUri;
-    private static byte[] data;
+    private static byte[] compressData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -63,7 +58,7 @@ public class CreateProfileActivity extends AppCompatActivity
         setContentView(R.layout.activity_create_profile);
 
         getViewByIds();
-        setDatabaseConnections();
+        databaseConnections();
 
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
@@ -99,70 +94,17 @@ public class CreateProfileActivity extends AppCompatActivity
 
             imageUri = data.getData();
             final Uri uri = data.getData();
-            setUpImageTransfer(uri);
+
+            ExifInterfaceImageRotate exifInterfaceImageRotate = new ExifInterfaceImageRotate();
+            profileImage.setImageBitmap(exifInterfaceImageRotate.setUpImageTransfer(uri, getContentResolver()));
+            profileImage.buildDrawingCache();
+            profileImage.getDrawingCache();
+            Bitmap bitmap = profileImage.getDrawingCache();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            compressData = byteArrayOutputStream.toByteArray();
+            progressDialog.dismiss();
         }
-    }
-
-    public void setUpImageTransfer(Uri uri)
-    {
-        dismissDialog();
-        try
-        {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-            ContentResolver contentResolver = getContentResolver();
-            InputStream inputStream = contentResolver.openInputStream(uri);
-            modifyOrientation(bitmap, inputStream);
-        } catch (IOException e)
-        {
-            e.getStackTrace();
-        }
-    }
-
-    public static Bitmap modifyOrientation(Bitmap bitmap, InputStream image_absolute_path) throws IOException
-    {
-        android.support.media.ExifInterface exifInterface = new android.support.media.ExifInterface(image_absolute_path);
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        switch (orientation)
-        {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotate(bitmap, 90);
-
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotate(bitmap, 180);
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotate(bitmap, 270);
-
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                return flip(bitmap, true, false);
-
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                return flip(bitmap, false, true);
-            default:
-                return bitmap;
-        }
-    }
-
-    public static Bitmap rotate(Bitmap bitmap, float degrees)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        profileImage.setImageBitmap(bitmap1);
-
-        profileImage.buildDrawingCache();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        data = byteArrayOutputStream.toByteArray();
-        return bitmap1;
-    }
-
-    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical)
-    {
-        Matrix matrix = new Matrix();
-        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     private void saveUserInformation()
@@ -173,7 +115,7 @@ public class CreateProfileActivity extends AppCompatActivity
         String addressTwo = this.addressTwo.getText().toString().trim();
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
-        String userEmail = this.userEmail.toString().trim();
+        String userEmail = auth.getCurrentUser().getEmail();
 
         if (TextUtils.isEmpty(fullName))
         {
@@ -230,43 +172,41 @@ public class CreateProfileActivity extends AppCompatActivity
             return;
         }
 
-        if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
+        if(imageUri != null)
         {
-            advertiser = true;
-            courier = false;
-            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, userEmail, null);
+            if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
+            {
+                advertiser = true;
+                courier = false;
+                UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
 
-            setUserInformation(userInformation);
-        } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+                uploadUsersProfile(userInformation);
+            } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+            {
+                advertiser = false;
+                courier = true;
+                UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
+
+                uploadUsersProfile(userInformation);
+            } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+            {
+                advertiser = true;
+                courier = true;
+                UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
+
+                uploadUsersProfile(userInformation);
+            }
+        }
+        else
         {
-            advertiser = false;
-            courier = true;
-            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, userEmail, null);
-
-            setUserInformation(userInformation);
-        } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
-        {
-            advertiser = true;
-            courier = true;
-            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, userEmail, null);
-
-            setUserInformation(userInformation);
+            Toast.makeText(this, "Must Upload A Profile Image", Toast.LENGTH_SHORT).show();
         }
 
-        if(imageUri != null) {
-            uploadUsersProfileImage();
-        }
         databaseVerification();
         startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
-    }
-
-    private void setUserInformation(UserInformation userInformation)
-    {
-        FirebaseUser user = auth.getCurrentUser();
-        myRef.child("Users").child(user.getUid()).setValue(userInformation);
     }
 
     private void databaseVerification()
@@ -278,44 +218,40 @@ public class CreateProfileActivity extends AppCompatActivity
 
     private void getViewByIds()
     {
-        profileImage = (ImageView) findViewById(R.id.profileImage);
-        uploadProfileImage = (Button) findViewById(R.id.buttonUploadProfileImage);
-        saveProfile = (Button) findViewById(R.id.buttonSaveProfile);
-        fullName = (EditText) findViewById(R.id.editTextFullName);
-        phoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
-        addressOne = (EditText) findViewById(R.id.editTextAddress1);
-        addressTwo = (EditText) findViewById(R.id.editTextAddress2);
-        town = (EditText) findViewById(R.id.editTextTown);
-        postCode = (EditText) findViewById(R.id.editTextPostCode);
-        checkBoxAdvertiser = (CheckBox) findViewById(R.id.checkBoxAdvertiser);
-        checkBoxCourier = (CheckBox) findViewById(R.id.checkBoxCourier);
+        profileImage = findViewById(R.id.profileImage);
+        uploadProfileImage = findViewById(R.id.buttonUploadProfileImage);
+        saveProfile = findViewById(R.id.buttonSaveProfile);
+        fullName = findViewById(R.id.editTextFullName);
+        phoneNumber = findViewById(R.id.editTextPhoneNumber);
+        addressOne = findViewById(R.id.editTextAddress1);
+        addressTwo = findViewById(R.id.editTextAddress2);
+        town = findViewById(R.id.editTextTown);
+        postCode = findViewById(R.id.editTextPostCode);
+        checkBoxAdvertiser = findViewById(R.id.checkBoxAdvertiser);
+        checkBoxCourier = findViewById(R.id.checkBoxCourier);
     }
 
-    private void setDatabaseConnections()
+    private void databaseConnections()
     {
         auth = databaseConnections.getAuth();
-        myRef = databaseConnections.getDatabaseReference();
+        databaseReference = databaseConnections.getDatabaseReference();
         user = databaseConnections.getCurrentUser();
         storageReference = databaseConnections.getStorageReference();
-
-        if (auth.getCurrentUser() == null)
-        {
-            finish();
-            startActivity(new Intent(this, LoginActivity.class));
-        }
     }
 
-    private void uploadUsersProfileImage()
+    private void uploadUsersProfile(final UserInformation userInformation)
     {
+        System.out.println(imageUri.getLastPathSegment());
         final StorageReference filePath = storageReference.child("Images").child(user).child(imageUri.getLastPathSegment());
-        filePath.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+        filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
         {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
             {
                 customToastMessage("Profile Image Uploaded Successfully");
                 Uri downloadUri = taskSnapshot.getDownloadUrl();
-                myRef.child("Users").child(user).child("profileImage").setValue(downloadUri.toString());
+                userInformation.setProfileImage(downloadUri.toString());
+                databaseReference.child("Users").child(user).setValue(userInformation);
                 dismissDialog();
             }
         }).addOnFailureListener(new OnFailureListener()
@@ -323,6 +259,7 @@ public class CreateProfileActivity extends AppCompatActivity
             @Override
             public void onFailure(@NonNull Exception e)
             {
+                System.out.println(e.getMessage());
                 dismissDialog();
                 customToastMessage("Failed To Upload Image, Try Again");
             }

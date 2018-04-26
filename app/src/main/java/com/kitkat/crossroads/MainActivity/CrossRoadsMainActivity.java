@@ -22,7 +22,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,7 +37,9 @@ import com.kitkat.crossroads.Jobs.FindAJobFragment;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
 import com.kitkat.crossroads.MyJobs.MyJobsFragment;
 import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
+import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.Profile.EditProfileFragment;
+import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.UploadImageFragment;
@@ -227,16 +231,20 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
                 alertDialog.setTitle(getString(R.string.logout));
 
                 alertDialog.setMessage(R.string.sure_logout);
-                alertDialog.setPositiveButton(getString(R.string.logout), new DialogInterface.OnClickListener() {
+                alertDialog.setPositiveButton(getString(R.string.logout), new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         auth.signOut();
                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     }
                 });
-                alertDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                alertDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         dialog.cancel();
                     }
                 });
@@ -316,15 +324,6 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
     private void displayContent()
     {
 
-//        Bundle newBundle;
-//        String menuFragment = null;
-//        String tabView = null;
-//        Bundle bundle = getIntent().getExtras();
-//        if(bundle != null)
-//        {
-//            menuFragment = bundle.getString("menuFragment");
-//            tabView = bundle.getString("tabView");
-//        }
         Log.d(TAG, getString(R.string.permission_granted));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -335,48 +334,46 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-//        if(menuFragment != null && tabView != null)
+//        if(user != null)
 //        {
-//            if(menuFragment.equals("myJobsFragment"))
+//            databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
 //            {
-//                newBundle = new Bundle();
-//                newBundle.putString("tabView", tabView);
-//                MyJobsFragment myJobsFragment = new MyJobsFragment();
-//                myJobsFragment.setArguments(newBundle);
-//                getFragmentTransaction().replace(R.id.content, myJobsFragment).commit();
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot)
+//                {
+//                    if(dataSnapshot.exists())
+//                    {
+//                        boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
+//                        boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
 //
-//            }
-//            else if(menuFragment.equals("myAdvertsFragment"))
-//            {
-//                newBundle = new Bundle();
-//                newBundle.putString("tabView", tabView);
-//                MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
-//                myAdvertsFragment.setArguments(newBundle);
-//                getFragmentTransaction().replace(R.id.content, myAdvertsFragment).commit();
-//            }
+//                        if (advertiser == true && courier == false)
+//                        {
+//                            getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+//                        } else if (advertiser == false && courier == true)
+//                        {
+//                            getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+//                        } else if (advertiser == true && courier == true)
+//                        {
+//                            getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+//                        }
+//                    }
+//                    else
+//                    {
+//                        startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError)
+//                {
+//
+//                }
+//            });
 //        }
-//        else {
-            databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
-                    boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
-
-                    if (advertiser == true && courier == false) {
-                        getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-                    } else if (advertiser == false && courier == true) {
-                        getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-                    } else if (advertiser == true && courier == true) {
-                        getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        //}
+//        else
+//        {
+//            startActivity(new Intent(this, LoginActivity.class));
+//        }
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

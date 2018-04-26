@@ -40,9 +40,7 @@ public class UploadImageFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
 
-    private FirebaseAuth auth;
     private DatabaseReference databaseReference;
-    private FirebaseDatabase database;
     private StorageReference storageReference;
     private String user;
 
@@ -157,7 +155,6 @@ public class UploadImageFragment extends Fragment
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        auth = databaseConnections.getAuth();
         storageReference = databaseConnections.getStorageReference();
         databaseReference = databaseConnections.getDatabaseReference();
         user = databaseConnections.getCurrentUser();
