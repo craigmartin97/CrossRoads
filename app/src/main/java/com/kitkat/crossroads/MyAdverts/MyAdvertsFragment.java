@@ -167,6 +167,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         DatabaseConnections databaseConnections = new DatabaseConnections();
         auth = databaseConnections.getAuth();
         databaseReference = databaseConnections.getDatabaseReference();
+        databaseReference.keepSynced(true);
         user = databaseConnections.getCurrentUser();
     }
 

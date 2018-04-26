@@ -1,32 +1,19 @@
 package com.kitkat.crossroads.MyAdverts;
 
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
@@ -38,7 +25,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 public class PendingAdverts extends Fragment
 {
@@ -137,7 +123,7 @@ public class PendingAdverts extends Fragment
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
 
-        list.add("Collection Information");
+        list.add(getString(R.string.collection_information));
 
         List<String> collectionInfo = new ArrayList<>();
         collectionInfo.add(colDate);
@@ -157,7 +143,7 @@ public class PendingAdverts extends Fragment
         list2 = new ArrayList<>();
         listHashMap2 = new HashMap<>();
 
-        list2.add("Delivery Information");
+        list2.add(getString(R.string.delivery_information));
 
         List<String> deliveryInfo = new ArrayList<>();
         deliveryInfo.add(delAddress);
@@ -175,7 +161,7 @@ public class PendingAdverts extends Fragment
         list3 = new ArrayList<>();
         listHashMap3 = new HashMap<>();
 
-        list3.add("Job Information");
+        list3.add(getString(R.string.job_information));
 
         List<String> jobInformation = new ArrayList<>();
         jobInformation.add(jobSize);
@@ -208,8 +194,8 @@ public class PendingAdverts extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable("JobKeyId");
-        return (JobInformation) bundle.getSerializable("JobId");
+        jobId = (String) bundle.getSerializable(getString(R.string.job_key_id));
+        return (JobInformation) bundle.getSerializable(getString(R.string.job_id));
     }
 
     /**

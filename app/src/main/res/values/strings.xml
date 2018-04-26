@@ -26,7 +26,6 @@
     <string name="my_complete_jobs">My Complete Jobs</string>
     <string name="submit_button">Submit</string>
     <string name="cancel_button">Cancel</string>
-    <string name="leave_feedback">Leave Feedback</string>
     <string-array name="job_sizes">
         <item>Job Size</item>
         <item>Small</item>
@@ -136,6 +135,12 @@
     <string name="leave_feedback">Leave Feedback</string>
     <string name="feedback_success">Feedback successfully left</string>
     <string name="job_information">Job Information</string>
+    <string name="star_review_table">starReview</string>
+    <string name="job_status_table">jobStatus</string>
+    <string name="response">response</string>
+    <string name="payment_success">Payment Successful</string>
+    <string name="close">Close</string>
+    <string name="active">active</string>
 </resources>
 
 
