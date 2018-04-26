@@ -1,9 +1,11 @@
 package com.kitkat.crossroads.MainActivity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -334,6 +337,8 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        wifiCheck();
+
         if(user != null)
         {
             databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
@@ -383,5 +388,14 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
     public boolean getLocationPermissionGranted()
     {
         return locationPermissionGranted;
+    }
+
+    public void wifiCheck()
+    {
+        WifiManager wifi = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if(!wifi.isWifiEnabled())
+        {
+            Toast.makeText(this, "Please Turn On Your Wifi.", Toast.LENGTH_LONG).show();
+        }
     }
 }

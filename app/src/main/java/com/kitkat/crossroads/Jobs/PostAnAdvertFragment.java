@@ -174,6 +174,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         super.onCreate(savedInstanceState);
         databaseConnections();
+        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
     }
 
     @Override

@@ -40,7 +40,7 @@ public class UploadImageFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
 
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceUsersTable;
     private StorageReference storageReference;
     private String user;
 
@@ -83,7 +83,7 @@ public class UploadImageFragment extends Fragment
         Button uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadProfileImage);
         Button saveProfileImage = (Button) view.findViewById(R.id.buttonSaveProfileImage);
 
-        databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
+        databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
@@ -129,7 +129,7 @@ public class UploadImageFragment extends Fragment
                         {
                             Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
                             Uri downloadUri = taskSnapshot.getDownloadUrl();
-                            databaseReference.child("Users").child(user).child("profileImage").setValue(downloadUri.toString());
+                            databaseReferenceUsersTable.child(user).child("profileImage").setValue(downloadUri.toString());
                             progressDialog.dismiss();
                         }
                     }).addOnFailureListener(new OnFailureListener()
@@ -156,7 +156,8 @@ public class UploadImageFragment extends Fragment
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
         storageReference = databaseConnections.getStorageReference();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceUsersTable.keepSynced(true);
         user = databaseConnections.getCurrentUser();
     }
 
