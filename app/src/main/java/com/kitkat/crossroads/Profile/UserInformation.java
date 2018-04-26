@@ -1,11 +1,5 @@
 package com.kitkat.crossroads.Profile;
 
-import android.net.Uri;
-
-/**
- * Created by q5031372 on 14/02/18.
- */
-
 public class UserInformation
 {
     // Must be public to be able to serialize on
@@ -19,11 +13,6 @@ public class UserInformation
     public boolean courier;
     public String profileImage;
     public String userEmail;
-
-    public UserInformation()
-    {
-
-    }
 
     public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, String profileImage, String userEmail)
     {
@@ -40,103 +29,9 @@ public class UserInformation
         this.userEmail = userEmail;
     }
 
-    public String getFullName()
-    {
-        return fullName;
-    }
-
-    public void setFullName(String fullName)
-    {
-        this.fullName = fullName;
-    }
-
-    public String getPhoneNumber()
-    {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber)
-    {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddressOne()
-    {
-        return addressOne;
-    }
-
-    public void setAddressOne(String addressOne)
-    {
-        this.addressOne = addressOne;
-    }
-
-    public String getAddressTwo()
-    {
-        return addressTwo;
-    }
-
-    public void setAddressTwo(String addressTwo)
-    {
-        this.addressTwo = addressTwo;
-    }
-
-    public String getTown()
-    {
-        return town;
-    }
-
-    public void setTown(String town)
-    {
-        this.town = town;
-    }
-
-    public String getPostCode()
-    {
-        return postCode;
-    }
-
-    public void setPostCode(String postCode)
-    {
-        this.postCode = postCode;
-    }
-
-    public boolean isAdvertiser()
-    {
-        return advertiser;
-    }
-
-    public void setAdvertiser(boolean advertiser)
-    {
-        this.advertiser = advertiser;
-    }
-
-    public boolean isCourier()
-    {
-        return courier;
-    }
-
-    public void setCourier(boolean courier)
-    {
-        this.courier = courier;
-    }
-
-    public String getProfileImage()
-    {
-        return profileImage;
-    }
-
     public void setProfileImage(String profileImage)
     {
         this.profileImage = profileImage;
     }
 
-    public String getUserEmail()
-    {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail)
-    {
-        this.userEmail = userEmail;
-    }
 }

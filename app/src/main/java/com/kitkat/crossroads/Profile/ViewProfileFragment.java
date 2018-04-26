@@ -39,12 +39,11 @@ public class ViewProfileFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
 
-    private static final String TAG = "ViewProfileActivity";
-
     /**
      * Assigning database connection to firebase database
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceUsersTable;
+    private DatabaseReference databaseReferenceRatingsTable;
 
     /**
      * Storing the current users Id
@@ -114,12 +113,9 @@ public class ViewProfileFragment extends Fragment
         getUsersStarRating();
         addReviews();
 
-        System.out.println(listHashMap.toString());
-        System.out.println(courierId);
-
         if (courierId != null)
         {
-            databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
+            databaseReferenceUsersTable.child(courierId).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -135,7 +131,7 @@ public class ViewProfileFragment extends Fragment
             });
         } else
         {
-            databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
+            databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -188,7 +184,10 @@ public class ViewProfileFragment extends Fragment
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceRatingsTable = databaseConnections.getDatabaseReferenceRatings();
+        databaseReferenceUsersTable.keepSynced(true);
+        databaseReferenceRatingsTable.keepSynced(true);
         user = databaseConnections.getCurrentUser();
     }
 
@@ -233,7 +232,7 @@ public class ViewProfileFragment extends Fragment
     {
         if (courierId != null)
         {
-            databaseReference.child("Ratings").child(courierId).addValueEventListener(new ValueEventListener()
+            databaseReferenceRatingsTable.child(courierId).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -249,7 +248,7 @@ public class ViewProfileFragment extends Fragment
             });
         } else
         {
-            databaseReference.child("Ratings").child(user).addValueEventListener(new ValueEventListener()
+            databaseReferenceRatingsTable.child(user).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -363,7 +362,7 @@ public class ViewProfileFragment extends Fragment
             final String review = ds.child("review").getValue(String.class);
             String key = dataSnapshot.getKey();
 
-            databaseReference.child("Users").child(key).addValueEventListener(new ValueEventListener()
+            databaseReferenceUsersTable.child(key).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot data)
