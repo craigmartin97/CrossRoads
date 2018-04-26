@@ -141,6 +141,10 @@
     <string name="payment_success">Payment Successful</string>
     <string name="close">Close</string>
     <string name="active">active</string>
+    <string name="unsuccessful">Unsuccessful!</string>
+    <string name="success">Success</string>
+    <string name="complete">Complete</string>
+    <string name="job_key">Job</string>
 </resources>
 
 
