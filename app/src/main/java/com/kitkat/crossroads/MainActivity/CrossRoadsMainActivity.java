@@ -334,46 +334,46 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-//        if(user != null)
-//        {
-//            databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
-//            {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot)
-//                {
-//                    if(dataSnapshot.exists())
-//                    {
-//                        boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
-//                        boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
-//
-//                        if (advertiser == true && courier == false)
-//                        {
-//                            getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-//                        } else if (advertiser == false && courier == true)
-//                        {
-//                            getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-//                        } else if (advertiser == true && courier == true)
-//                        {
-//                            getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
-//                        }
-//                    }
-//                    else
-//                    {
-//                        startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError)
-//                {
-//
-//                }
-//            });
-//        }
-//        else
-//        {
-//            startActivity(new Intent(this, LoginActivity.class));
-//        }
+        if(user != null)
+        {
+            databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
+            {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
+                {
+                    if(dataSnapshot.exists())
+                    {
+                        boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
+                        boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
+
+                        if (advertiser == true && courier == false)
+                        {
+                            getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+                        } else if (advertiser == false && courier == true)
+                        {
+                            getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+                        } else if (advertiser == true && courier == true)
+                        {
+                            getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                        }
+                    }
+                    else
+                    {
+                        startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError)
+                {
+
+                }
+            });
+        }
+        else
+        {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
