@@ -2,5 +2,5 @@ package com.kitkat.crossroads.EnumClasses;
 
 public enum DatabaseEntryNames
 {
-    notifToken, fullName
+    notifToken, fullName, profileImage
 }

@@ -46,7 +46,9 @@
     <string name="postcode">Postcode</string>
     <string name="app_priority_use">What Are You Primarily Going To Be Using The App For?</string>
     <string name="advertiser">Advertiser</string>
+    <string name="advertiser_lower">advertiser</string>
     <string name="courier">Courier</string>
+    <string name="courier_lower">courier</string>
     <string name="upload_profile_image">Upload Profile Image</string>
     <string name="save_profile">Save Profile</string>
     <string name="view_courier_profile">View Courier Profile</string>
@@ -118,6 +120,12 @@
     <string name="viewpostcode">viewPostCode</string>
     <string name="use_my_address">Use My Address</string>
     <string name="bid_already_placed">Bid already placed!</string>
+    <string name="tag">tag</string>
+    <string name="permission_failed">Permission Failed</string>
+    <string name="permission_granted">Permission Granted</string>
+    <string name="sure_logout">Are you sure you want to Logout?</string>
+    <string name="full_name_table">fullName</string>
+    <string name="profile_image_table">profileImage</string>
 </resources>
 
 

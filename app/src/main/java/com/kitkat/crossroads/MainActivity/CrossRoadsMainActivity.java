@@ -17,11 +17,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,8 +27,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.Account.LoginActivity;
+import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
 import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Jobs.FindAJobFragment;
@@ -48,12 +46,24 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
     private static final String TAG = "ViewProfileActivity";
 
     /**
-     * Firebase auth is a connection to Firebase Database
+     * FireBase auth establishes a connection to the FireBase authentication
+     * for users login validation
      */
     private FirebaseAuth auth;
-    private StorageReference storageReference;
-    private DatabaseReference databaseReference;
+
+    /**
+     * Database reference to establish a connection to the FireBase database users table
+     */
+    private DatabaseReference databaseReferenceUsersTable;
+
+    /**
+     * Gets the current users unique id
+     */
     private String user;
+
+    /**
+     * Widget to display the users profile image
+     */
     private ImageView profileImage;
     private boolean locationPermissionGranted = false;
     private final static int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -72,13 +82,17 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        databaseConnections();
+        getLocationPermission();
+    }
+
+    private void databaseConnections()
+    {
         DatabaseConnections databaseConnections = new DatabaseConnections();
         auth = databaseConnections.getAuth();
-        databaseReference = databaseConnections.getDatabaseReference().child("Users");
+        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceUsersTable.keepSynced(true);
         user = databaseConnections.getCurrentUser();
-        storageReference = databaseConnections.getStorageReference();
-
-        getLocationPermission();
     }
 
     @Override
@@ -125,16 +139,16 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
         if (id == R.id.nav_findAJob)
         {
-            fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack("tag").commit();
+            fragmentTransaction.replace(R.id.content, new FindAJobFragment()).addToBackStack(getString(R.string.tag)).commit();
         } else if (id == R.id.nav_postAnAdvert)
         {
-            fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).addToBackStack("tag").commit();
+            fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).addToBackStack(getString(R.string.tag)).commit();
         } else if (id == R.id.nav_myAdverts)
         {
-            fragmentTransaction.replace(R.id.content, new MyAdvertsFragment()).addToBackStack("tag").commit();
+            fragmentTransaction.replace(R.id.content, new MyAdvertsFragment()).addToBackStack(getString(R.string.tag)).commit();
         } else if (id == R.id.nav_myJobs)
         {
-            fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack("tag").commit();
+            fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack(getString(R.string.tag)).commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -153,20 +167,20 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
     private void navigationButtonActions(NavigationView navigationView)
     {
         View headerview = navigationView.getHeaderView(0);
-        final TextView navigationName = (TextView) headerview.findViewById(R.id.navigationName);
-        TextView navigationEmail = (TextView) headerview.findViewById(R.id.navigationEmail);
-        ImageView viewProfile = (ImageView) headerview.findViewById(R.id.imageViewProfile);
-        ImageView editProfile = (ImageView) headerview.findViewById(R.id.imageEditPen);
-        ImageView logout = (ImageView) headerview.findViewById(R.id.imageLogout);
-        profileImage = (ImageView) headerview.findViewById(R.id.navigationImage);
+        final TextView navigationName = headerview.findViewById(R.id.navigationName);
+        TextView navigationEmail = headerview.findViewById(R.id.navigationEmail);
+        ImageView viewProfile = headerview.findViewById(R.id.imageViewProfile);
+        ImageView editProfile = headerview.findViewById(R.id.imageEditPen);
+        ImageView logout = headerview.findViewById(R.id.imageLogout);
+        profileImage = headerview.findViewById(R.id.navigationImage);
 
-        databaseReference.child(user).addValueEventListener(new ValueEventListener()
+        databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String name = dataSnapshot.child("fullName").getValue(String.class);
-                profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
+                String name = dataSnapshot.child(getString(R.string.full_name_table)).getValue(String.class);
+                profileImageUrl = dataSnapshot.child(getString(R.string.profile_image_table)).getValue(String.class);
 
                 navigationName.setText(name);
                 Picasso.get().load(profileImageUrl).fit().transform(new CircleTransformation()).into(profileImage);
@@ -187,7 +201,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
+                getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).addToBackStack(getString(R.string.tag)).commit();
                 onBackPressed();
             }
         });
@@ -197,7 +211,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new EditProfileFragment()).addToBackStack("tag").commit();
+                getFragmentTransaction().replace(R.id.content, new EditProfileFragment()).addToBackStack(getString(R.string.tag)).commit();
                 onBackPressed();
             }
         });
@@ -210,17 +224,17 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
                 onBackPressed();
 
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoadsMainActivity.this);
-                alertDialog.setTitle("Logout");
+                alertDialog.setTitle(getString(R.string.logout));
 
-                alertDialog.setMessage("Are you sure you want to Logout?");
-                alertDialog.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                alertDialog.setMessage(R.string.sure_logout);
+                alertDialog.setPositiveButton(getString(R.string.logout), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         auth.signOut();
                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     }
                 });
-                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                alertDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -239,7 +253,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             @Override
             public void onClick(View v)
             {
-                getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).addToBackStack("tag").commit();
+                getFragmentTransaction().replace(R.id.content, new UploadImageFragment()).addToBackStack(getString(R.string.tag)).commit();
                 onBackPressed();
             }
         });
@@ -288,7 +302,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
                     {
                         if (grantResults[i] != PackageManager.PERMISSION_GRANTED)
                         {
-                            Log.d(TAG, "Permission Failed");
+                            Log.d(TAG, getString(R.string.permission_failed));
                             displayContent();
                             return;
                         }
@@ -311,7 +325,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 //            menuFragment = bundle.getString("menuFragment");
 //            tabView = bundle.getString("tabView");
 //        }
-        Log.d(TAG, "Permission Granted");
+        Log.d(TAG, getString(R.string.permission_granted));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -342,11 +356,11 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 //            }
 //        }
 //        else {
-            databaseReference.child(user).addValueEventListener(new ValueEventListener() {
+            databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
-                    boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
+                    boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
+                    boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
 
                     if (advertiser == true && courier == false) {
                         getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
