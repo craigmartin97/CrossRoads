@@ -20,26 +20,29 @@ import com.kitkat.crossroads.SplashScreen;
  * Created by q5063319 on 19/03/18.
  */
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService implements Constants {
+public class MyFirebaseMessagingService extends FirebaseMessagingService implements Constants
+{
 
     private static final String TAG = "MyFirebaseMsgService";
     private static int count = 0;
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(RemoteMessage remoteMessage)
+    {
         //Displaying data in log
         //It is optional
         Log.d(TAG, "Notification Message TITLE: " + remoteMessage.getNotification().getTitle());
         Log.d(TAG, "Notification Message BODY: " + remoteMessage.getNotification().getBody());
         Log.d(TAG, "Notification Message DATA: " + remoteMessage.getData().get("id").toString());
 
-    //Calling method to generate notification
+        //Calling method to generate notification
         sendNotification(remoteMessage.getNotification().getTitle(),
                 remoteMessage.getNotification().getBody(), remoteMessage.getData().get("id").toString());
     }
 
     //This method is only generating push notification
-    private void sendNotification(String messageTitle, String messageBody, String tag) {
+    private void sendNotification(String messageTitle, String messageBody, String tag)
+    {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.iconcrossroadscwhite))
@@ -52,19 +55,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
 
         Intent notificationIntent = null;
 
-        if(tag.equals("acceptBidNotification"))
+        if (tag.equals("acceptBidNotification"))
         {
-           notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
-           notificationIntent.putExtra("menuFragment", "myJobsFragment");
-           notificationIntent.putExtra("tabView", "Active");
-        }
-        else if(tag.equals("newBidNotification"))
+            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
+            notificationIntent.putExtra("menuFragment", "myJobsFragment");
+            notificationIntent.putExtra("tabView", "Active");
+        } else if (tag.equals("newBidNotification"))
         {
             notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
             notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
             notificationIntent.putExtra("tabView", "Pending");
-        }
-        else if(tag.equals("jobCompletedNotification"))
+        } else if (tag.equals("jobCompletedNotification"))
         {
             notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
             notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
@@ -76,7 +77,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
         notificationBuilder.setContentIntent(pendingIntent);
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
 
 
         notificationManager.notify(count, notificationBuilder.build());
