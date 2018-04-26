@@ -83,7 +83,7 @@ public class BidOnJobsFragment extends Fragment
     /**
      * Creating variable to store the connection to the Firebase Database
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceBidsTable;
 
     /**
      * Creating reference to storage the Firebase authentication connection
@@ -105,7 +105,8 @@ public class BidOnJobsFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
+        databaseReferenceBidsTable.keepSynced(true);
         auth = databaseConnections.getAuth();
         user = databaseConnections.getCurrentUser();
     }
@@ -128,11 +129,81 @@ public class BidOnJobsFragment extends Fragment
         final JobInformation jobInformation = getBundleInformation();
 
         setJobInformationDetails(jobInformation);
+        getJobInformationFromBundle(jobInformation);
 
         addItemsCollection();
         addItemsDelivery();
         addItemsJobInformation();
 
+        createExpandableListViews();
+
+        buttonEditBid.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if(TextUtils.isEmpty(editTextEditBid.getText()))
+                {
+                    Toast.makeText(getActivity(), "Enter a bid!!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else
+                {
+                    submitBid(jobId, user);
+                }
+            }
+        });
+
+        return view;
+    }
+
+    /**
+     * Get all of the layout pages content, such as TextViews and the Expandable Lists
+     *
+     * @param view - page to be inflated
+     */
+    private void getViewsByIds(View view)
+    {
+        jobName = view.findViewById(R.id.textViewJobName1);
+        jobDescription = view.findViewById(R.id.textViewJobDescription1);
+        jobImageBidOn = view.findViewById(R.id.jobImgageBidOn);
+        editTextEditBid = view.findViewById(R.id.editBid);
+        buttonEditBid = view.findViewById(R.id.buttonEditBid);
+
+        expandableListView = view.findViewById(R.id.expandable_list_view);
+        expandableListView2 = view.findViewById(R.id.expandable_list_view2);
+        expandableListView3 = view.findViewById(R.id.expandable_list_view3);
+    }
+
+    private void submitBid(final String jobId, final String user)
+    {
+        String userBid = editTextEditBid.getText().toString().trim();
+
+        if(userBid.contains("£"))
+        {
+            userBid = userBid.substring(userBid.lastIndexOf("£") + 1);
+
+            userBid = checkUserBidDecimal(userBid);
+            submitBid(jobId, user, userBid);
+        }
+        else
+        {
+            userBid = checkUserBidDecimal(userBid);
+            submitBid(jobId, user, userBid);
+        }
+    }
+
+    private String checkUserBidDecimal(String userBid)
+    {
+        if(!userBid.contains("."))
+        {
+            userBid = userBid + ".00";
+        }
+        return userBid;
+    }
+
+    private void createExpandableListViews()
+    {
         adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
         adapter2 = new ExpandableListAdapter(getActivity(), list2, listHashMap2);
         adapter3 = new ExpandableListAdapter(getActivity(), list3, listHashMap3);
@@ -172,80 +243,16 @@ public class BidOnJobsFragment extends Fragment
                 return false;
             }
         });
-
-        buttonEditBid.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if(TextUtils.isEmpty(editTextEditBid.getText()))
-                {
-                    Toast.makeText(getActivity(), "Enter a bid!!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                else
-                {
-                    submitBid(jobId, user);
-                }
-            }
-        });
-
-        return view;
-    }
-
-    /**
-     * Get all of the layout pages content, such as TextViews and the Expandable Lists
-     *
-     * @param view - page to be inflated
-     */
-    private void getViewsByIds(View view)
-    {
-        jobName = (TextView) view.findViewById(R.id.textViewJobName1);
-        jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        jobImageBidOn = (ImageView) view.findViewById(R.id.jobImgageBidOn);
-        editTextEditBid = (EditText) view.findViewById(R.id.editBid);
-        buttonEditBid = (Button) view.findViewById(R.id.buttonEditBid);
-
-        expandableListView = view.findViewById(R.id.expandable_list_view);
-        expandableListView2 = view.findViewById(R.id.expandable_list_view2);
-        expandableListView3 = view.findViewById(R.id.expandable_list_view3);
-    }
-
-    private void submitBid(final String jobId, final String user)
-    {
-        String userBid = editTextEditBid.getText().toString().trim();
-
-        if(userBid.contains("£"))
-        {
-            userBid = userBid.substring(userBid.lastIndexOf("£") + 1);
-
-            userBid = checkUserBidDecimal(userBid);
-            submitBid(jobId, user, userBid);
-        }
-        else
-        {
-            userBid = checkUserBidDecimal(userBid);
-            submitBid(jobId, user, userBid);
-        }
-    }
-
-    private String checkUserBidDecimal(String userBid)
-    {
-        if(!userBid.contains("."))
-        {
-            userBid = userBid + ".00";
-        }
-        return userBid;
     }
 
     private void submitBid(final String jobId, final String user, final String userBid)
     {
-        databaseReference.child("Bids").child(jobId).child(user).addListenerForSingleValueEvent(new ValueEventListener()
+        databaseReferenceBidsTable.child(jobId).child(user).addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String fullName = dataSnapshot.child("fullName").getValue(String.class);
+                String fullName = dataSnapshot.child(getString(R.string.full_name_table)).getValue(String.class);
                 enterBidIntoFirebase(fullName, userBid);
             }
 
@@ -260,7 +267,7 @@ public class BidOnJobsFragment extends Fragment
     private void enterBidIntoFirebase(String fullName, String userBid)
     {
         UserBidInformation bidInformation = new UserBidInformation(fullName, userBid, user, true);
-        databaseReference.child("Bids").child(jobId).child(user).setValue(bidInformation);
+        databaseReferenceBidsTable.child(jobId).child(user).setValue(bidInformation);
     }
 
     /**
@@ -276,12 +283,12 @@ public class BidOnJobsFragment extends Fragment
         jobDescription.setText(jobInformation.getAdvertDescription());
         Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageBidOn);
 
-        databaseReference.child("Bids").child(jobId).child(user).addValueEventListener(new ValueEventListener()
+        databaseReferenceBidsTable.child(jobId).child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String userBid = dataSnapshot.child("userBid").getValue(String.class);
+                String userBid = dataSnapshot.child(getString(R.string.user_bid_table)).getValue(String.class);
                 editTextEditBid.setText("£" + userBid);
             }
 
@@ -291,18 +298,18 @@ public class BidOnJobsFragment extends Fragment
 
             }
         });
+    }
 
+    private void getJobInformationFromBundle(JobInformation jobInformation)
+    {
         // Storing information in variables for later use
         jobType = jobInformation.getJobType().toString();
         jobSize = jobInformation.getJobSize().toString();
-
         colDate = jobInformation.getCollectionDate().toString();
         colTime = jobInformation.getCollectionTime().toString();
-
         colAddress = jobInformation.getColL1().toString() + ", " + jobInformation.getColL2().toString();
         colTown = jobInformation.getColTown().toString();
         colPostcode = jobInformation.getColPostcode().toString();
-
         delAddress = jobInformation.getDelL1().toString() + ", " + jobInformation.getDelL2().toString();
         delTown = jobInformation.getDelTown().toString();
         delPostcode = jobInformation.getDelPostcode().toString();
@@ -316,8 +323,8 @@ public class BidOnJobsFragment extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable("JobId");
-        return (JobInformation) bundle.getSerializable("Job");
+        jobId = (String) bundle.getSerializable(getString(R.string.job_key_id));
+        return (JobInformation) bundle.getSerializable(getString(R.string.job));
     }
 
     /**
@@ -328,7 +335,7 @@ public class BidOnJobsFragment extends Fragment
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
 
-        list.add("Collection Information");
+        list.add(getString(R.string.collection_information));
 
         List<String> collectionInfo = new ArrayList<>();
         collectionInfo.add(colDate);
@@ -348,7 +355,7 @@ public class BidOnJobsFragment extends Fragment
         list2 = new ArrayList<>();
         listHashMap2 = new HashMap<>();
 
-        list2.add("Delivery Information");
+        list2.add(getString(R.string.delivery_information));
 
         List<String> deliveryInfo = new ArrayList<>();
         deliveryInfo.add(delAddress);
@@ -366,7 +373,7 @@ public class BidOnJobsFragment extends Fragment
         list3 = new ArrayList<>();
         listHashMap3 = new HashMap<>();
 
-        list3.add("Job Information");
+        list3.add(getString(R.string.job_information));
 
         List<String> jobInformation = new ArrayList<>();
         jobInformation.add(jobSize);
