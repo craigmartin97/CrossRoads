@@ -33,6 +33,7 @@ import com.kitkat.crossroads.EnumClasses.JobStatus;
 import com.kitkat.crossroads.EnumClasses.StatusTags;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
+import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.R;
 
 import java.text.ParseException;
@@ -106,6 +107,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     {
         super.onCreate(savedInstanceState);
         databaseConnections();
+        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
     }
 
     /**

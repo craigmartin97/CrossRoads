@@ -22,6 +22,7 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
+import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.R;
 
 import java.text.ParseException;
@@ -110,6 +111,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         else {
             tabTag = "Active";
         }
+
+        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
     }
 
     @Override
@@ -187,6 +190,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         DatabaseConnections databaseConnections = new DatabaseConnections();
         auth = databaseConnections.getAuth();
         databaseReference = databaseConnections.getDatabaseReference();
+        databaseReference.keepSynced(true);
     }
 
     /**

@@ -113,12 +113,6 @@ public class RegisterActivity extends AppCompatActivity
         DatabaseConnections databaseConnections = new DatabaseConnections();
         auth = databaseConnections.getAuth();
         databaseReference = databaseConnections.getDatabaseReference();
-
-        if (auth.getCurrentUser() != null)
-        {
-            finish();
-            startActivity(new Intent(getApplicationContext(), CrossRoadsMainActivity.class));
-        }
     }
 
     /**
@@ -201,7 +195,7 @@ public class RegisterActivity extends AppCompatActivity
                                 if (isNewUser)
                                 {
                                     genericMethods.dismissDialog(progressDialog);
-                                    databaseReference.child("Users").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
+//                                    databaseReference.child("Users").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
                                     startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
                                 }
                                 // Already a user

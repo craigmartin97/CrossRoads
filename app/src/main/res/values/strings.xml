@@ -26,7 +26,6 @@
     <string name="my_complete_jobs">My Complete Jobs</string>
     <string name="submit_button">Submit</string>
     <string name="cancel_button">Cancel</string>
-    <string name="leave_feedback">Leave Feedback</string>
     <string-array name="job_sizes">
         <item>Job Size</item>
         <item>Small</item>
@@ -46,7 +45,9 @@
     <string name="postcode">Postcode</string>
     <string name="app_priority_use">What Are You Primarily Going To Be Using The App For?</string>
     <string name="advertiser">Advertiser</string>
+    <string name="advertiser_lower">advertiser</string>
     <string name="courier">Courier</string>
+    <string name="courier_lower">courier</string>
     <string name="upload_profile_image">Upload Profile Image</string>
     <string name="save_profile">Save Profile</string>
     <string name="view_courier_profile">View Courier Profile</string>
@@ -118,6 +119,33 @@
     <string name="viewpostcode">viewPostCode</string>
     <string name="use_my_address">Use My Address</string>
     <string name="bid_already_placed">Bid already placed!</string>
+    <string name="tag">tag</string>
+    <string name="permission_failed">Permission Failed</string>
+    <string name="permission_granted">Permission Granted</string>
+    <string name="sure_logout">Are you sure you want to Logout?</string>
+    <string name="full_name_table">fullName</string>
+    <string name="profile_image_table">profileImage</string>
+    <string name="courier_id_table">courierId</string>
+    <string name="user_email_table">userEmail</string>
+    <string name="user_bid_table">userBid</string>
+    <string name="job_id">JobId</string>
+    <string name="job_key_id">JobKeyId</string>
+    <string name="delivery_information">Delivery Information</string>
+    <string name="collection_information">Collection Information</string>
+    <string name="leave_feedback">Leave Feedback</string>
+    <string name="feedback_success">Feedback successfully left</string>
+    <string name="job_information">Job Information</string>
+    <string name="star_review_table">starReview</string>
+    <string name="job_status_table">jobStatus</string>
+    <string name="response">response</string>
+    <string name="payment_success">Payment Successful</string>
+    <string name="close">Close</string>
+    <string name="active">active</string>
+    <string name="unsuccessful">Unsuccessful!</string>
+    <string name="success">Success</string>
+    <string name="complete">Complete</string>
+    <string name="job_key">Job</string>
+    <string name="send_email">Send Email</string>
 </resources>
 
 

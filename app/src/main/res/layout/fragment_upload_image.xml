@@ -19,6 +19,17 @@
             android:src="@color/cardview_light_background"
             android:contentDescription="@null"/>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/buttonUploadProfileImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="147dp"
+            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateTintMode="src_in" />
+
         <Button
             android:id="@+id/buttonUploadProfileImage"
             android:layout_width="match_parent"

@@ -1,14 +1,9 @@
 package com.kitkat.crossroads.Profile;
 
-import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -19,11 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,31 +25,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
-import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link EditProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link EditProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class EditProfileFragment extends Fragment
 {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
     private static final String TAG = "EditProfileActivity";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
 
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
@@ -65,34 +42,20 @@ public class EditProfileFragment extends Fragment
     private Button saveProfile;
     private String profileImage, userEmail;
 
-    private FirebaseAuth auth;
-    private DatabaseReference myRef;
-    private FirebaseDatabase database;
-    private StorageReference storageReference;
-//    private StorageReference filePath;
+    private String user;
+    private DatabaseReference databaseReferenceUsersTable;
 
     private ProgressDialog progressDialog;
 
     public EditProfileFragment()
     {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditProfileFragment newInstance(String param1, String param2)
+    public static EditProfileFragment newInstance()
     {
         EditProfileFragment fragment = new EditProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,11 +64,6 @@ public class EditProfileFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -113,25 +71,20 @@ public class EditProfileFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-        database = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
 
-        FirebaseUser user = auth.getCurrentUser();
 
-        saveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
+        saveProfile = view.findViewById(R.id.buttonSaveProfile);
 
-        fullName = (EditText) view.findViewById(R.id.editTextFullName);
-        phoneNumber = (EditText) view.findViewById(R.id.editTextPhoneNumber);
-        addressOne = (EditText) view.findViewById(R.id.editTextAddress1);
-        addressTwo = (EditText) view.findViewById(R.id.editTextAddress2);
-        town = (EditText) view.findViewById(R.id.editTextTown);
-        postCode = (EditText) view.findViewById(R.id.editTextPostCode);
-        checkBoxAdvertiser = (CheckBox) view.findViewById(R.id.checkBoxAdvertiser);
-        checkBoxCourier = (CheckBox) view.findViewById(R.id.checkBoxCourier);
+        fullName = view.findViewById(R.id.editTextFullName);
+        phoneNumber = view.findViewById(R.id.editTextPhoneNumber);
+        addressOne = view.findViewById(R.id.editTextAddress1);
+        addressTwo = view.findViewById(R.id.editTextAddress2);
+        town = view.findViewById(R.id.editTextTown);
+        postCode = view.findViewById(R.id.editTextPostCode);
+        checkBoxAdvertiser = view.findViewById(R.id.checkBoxAdvertiser);
+        checkBoxCourier = view.findViewById(R.id.checkBoxCourier);
 
-        myRef.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener()
+        databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
@@ -164,15 +117,15 @@ public class EditProfileFragment extends Fragment
                 town.setText(usersTown);
                 postCode.setText(postalCode);
 
-                if (advertiser == true && courier == false)
+                if (advertiser && !courier)
                 {
                     checkBoxAdvertiser.setChecked(true);
                     checkBoxCourier.setChecked(false);
-                } else if (advertiser == false && courier == true)
+                } else if (!advertiser && courier)
                 {
                     checkBoxAdvertiser.setChecked(false);
                     checkBoxCourier.setChecked(true);
-                } else if (advertiser == true && courier == true)
+                } else if (advertiser && courier)
                 {
                     checkBoxAdvertiser.setChecked(true);
                     checkBoxCourier.setChecked(true);
@@ -186,7 +139,7 @@ public class EditProfileFragment extends Fragment
             }
         });
 
-        saveProfile = (Button) view.findViewById(R.id.buttonSaveProfile);
+        saveProfile = view.findViewById(R.id.buttonSaveProfile);
         this.profileImage = profileImage;
 
         saveProfile.setOnClickListener(new View.OnClickListener()
@@ -202,7 +155,14 @@ public class EditProfileFragment extends Fragment
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceUsersTable.keepSynced(true);
+        user = databaseConnections.getCurrentUser();
+    }
+
     public void onButtonPressed(Uri uri)
     {
         if (mListener != null)
@@ -230,16 +190,6 @@ public class EditProfileFragment extends Fragment
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
@@ -258,7 +208,7 @@ public class EditProfileFragment extends Fragment
         String addressTwo = this.addressTwo.getText().toString().trim();
         String town = this.town.getText().toString().trim();
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
-        String userEmail = this.userEmail.toString().trim();
+        String userEmail = this.userEmail.trim();
 
         if (TextUtils.isEmpty(fullName))
         {
@@ -345,8 +295,7 @@ public class EditProfileFragment extends Fragment
 
     private void setUserInformation(UserInformation userInformation)
     {
-        FirebaseUser user = auth.getCurrentUser();
-        myRef.child("Users").child(user.getUid()).setValue(userInformation);
+        databaseReferenceUsersTable.child(user).setValue(userInformation);
     }
 
     private void customToastMessage(String message)

@@ -93,9 +93,14 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private String user;
 
     /**
-     * Get the reference to the FireBase Database
+     * Get the reference to the FireBase Database Users table
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceUsersTable;
+
+    /**
+     * Get the reference to the FireBase Database Jobs table
+     */
+    private DatabaseReference databaseReferenceJobsTable;
 
     /**
      * Store the jobReference
@@ -169,6 +174,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         super.onCreate(savedInstanceState);
         databaseConnections();
+        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
     }
 
     @Override
@@ -309,7 +315,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         DatabaseConnections databaseConnections = new DatabaseConnections();
         auth = databaseConnections.getAuth();
         user = databaseConnections.getCurrentUser();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceJobsTable = databaseConnections.getDatabaseReferenceJobs();
+        databaseReferenceUsersTable.keepSynced(true);
+        databaseReferenceJobsTable.keepSynced(true);
         storageReference = databaseConnections.getStorageReference();
 
         if (auth.getCurrentUser() == null)
@@ -390,10 +399,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
                 DatePickerDialog dialog = new DatePickerDialog(
                         getActivity(),
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        R.style.datepicker,
                         dateSetListener,
                         year, month, day);
-                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
@@ -440,7 +448,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 int minute = currentTime.get(Calendar.MINUTE);
 
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener()
+                mTimePicker = new TimePickerDialog(getActivity(), R.style.datepicker, new TimePickerDialog.OnTimeSetListener()
                 {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
@@ -448,7 +456,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         editTextColTime.setText(selectedHour + ":" + selectedMinute);
                     }
                 }, hour, minute, true);
-                mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
             }
         });
@@ -580,7 +587,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             {
                 if (myAddressCheckBox1.isChecked())
                 {
-                    databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
+                    databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
                     {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
@@ -626,7 +633,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             {
                 if (myAddressCheckBox2.isChecked())
                 {
-                    databaseReference.child("Users").child(user).addValueEventListener(new ValueEventListener()
+                    databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
                     {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
@@ -1135,7 +1142,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private void saveJobInformation()
     {
-        final String key = databaseReference.child("Jobs").push().getKey();
+        final String key = databaseReferenceJobsTable.push().getKey();
 
         if (imageUri != null)
         {
@@ -1154,32 +1161,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                     String jobStatus = "Pending";
 
                     assert (downloadUri) != null;
-                    databaseReference.child("Jobs").child(key).setValue(setJobInformation(jobStatus, downloadUri));
-                    databaseReference.addValueEventListener(new ValueEventListener()
-                    {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot)
-                        {
-                            jobReference = dataSnapshot.child("Jobs");
+                    databaseReferenceJobsTable.child(key).setValue(setJobInformation(jobStatus, downloadUri));
 
-                            Iterable<DataSnapshot> jobListSnapShot = jobReference.getChildren();
-
-                            for (DataSnapshot ds : jobListSnapShot)
-                            {
-                                JobInformation j = ds.getValue(JobInformation.class);
-                                if (j != null && j.equals(jobInformation))
-                                {
-                                    databaseReference.child("Jobs").child(ds.getKey()).child("jobID").setValue(ds.getKey());
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError)
-                        {
-
-                        }
-                    });
                     progressDialog.dismiss();
                     newFragmentTransaction(new FindAJobFragment());
                     genericMethods.customToastMessage("Job Uploaded Successfully", getActivity());
@@ -1198,8 +1181,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         {
             genericMethods.customToastMessage("You must upload an image", getActivity());
         }
-
-
     }
 
     private void saveEditJob()
@@ -1215,7 +1196,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 String jobStatus = "Pending";
 
                 assert (downloadUri) != null;
-                databaseReference.child("Jobs").child(jobIdKey).setValue(setJobInformation(jobStatus, downloadUri));
+                databaseReferenceJobsTable.child(jobIdKey).setValue(setJobInformation(jobStatus, downloadUri));
                 genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
             }
         });

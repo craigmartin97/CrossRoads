@@ -28,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.kitkat.crossroads.EnumClasses.JobStatus;
 import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
 import com.kitkat.crossroads.Payment.ConfigPaypal;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
@@ -57,9 +58,19 @@ public class ActiveBidsFragment extends Fragment
     private OnFragmentInteractionListener mListener;
 
     /**
-     * Getting a reference to the firebase datbase area
+     * Establishing connection to FireBase database, bids table
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceBidsTable;
+
+    /**
+     * Establishing connection to FireBase database, ratings table
+     */
+    private DatabaseReference databaseReferenceRatingsTable;
+
+    /**
+     * Establishing connection to FireBase database, jobs table
+     */
+    private DatabaseReference databaseReferenceJobsTable;
 
     /**
      * Getting the current user who is sign in id
@@ -77,7 +88,6 @@ public class ActiveBidsFragment extends Fragment
     private ArrayList<UserBidInformation> jobList = new ArrayList<>();
     private double commisionAmount;
     private double totalAmount;
-    private BigDecimal totalDecimal;
 
     private int pos;
 
@@ -139,7 +149,12 @@ public class ActiveBidsFragment extends Fragment
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getDatabaseReference();
+        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
+        databaseReferenceRatingsTable = databaseConnections.getDatabaseReferenceRatings();
+        databaseReferenceJobsTable = databaseConnections.getDatabaseReferenceJobs();
+        databaseReferenceBidsTable.keepSynced(true);
+        databaseReferenceRatingsTable.keepSynced(true);
+        databaseReferenceJobsTable.keepSynced(true);
         user = databaseConnections.getCurrentUser();
     }
 
@@ -166,14 +181,14 @@ public class ActiveBidsFragment extends Fragment
     {
         final String jobId = getBundleInformation();
 
-        databaseReference.child("Bids").child(jobId).addValueEventListener(new ValueEventListener()
+        databaseReferenceBidsTable.child(jobId).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot)
             {
                 for (final DataSnapshot ds : dataSnapshot.getChildren())
                 {
-                    boolean active = ds.child("active").getValue(boolean.class);
+                    boolean active = ds.child(getString(R.string.active)).getValue(boolean.class);
                     if (active)
                     {
                         final UserBidInformation bid = ds.getValue(UserBidInformation.class);
@@ -195,7 +210,7 @@ public class ActiveBidsFragment extends Fragment
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                         final View mView = getLayoutInflater().inflate(R.layout.popup_accept_user_bid, null);
 
-                        alertDialog.setTitle("Accept Bid?");
+                        alertDialog.setTitle(getString(R.string.accept_bid) + "?");
                         alertDialog.setView(mView);
                         final AlertDialog dialog = alertDialog.create();
                         dialog.show();
@@ -234,7 +249,7 @@ public class ActiveBidsFragment extends Fragment
                         BigDecimal decimal1 = new BigDecimal(totalAmount).setScale(2, RoundingMode.CEILING);
                         textViewTotal.setText("£" + decimal1);
 
-                        databaseReference.child("Ratings").child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+                        databaseReferenceRatingsTable.child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
                         {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot)
@@ -244,7 +259,7 @@ public class ActiveBidsFragment extends Fragment
                                 // Iterate through entire bids table
                                 for (DataSnapshot ds : dataSnapshot.getChildren())
                                 {
-                                    long rating = ds.child("starReview").getValue(long.class);
+                                    long rating = ds.child(getString(R.string.star_review_table)).getValue(long.class);
 
                                     totalRating += rating;
                                     counter++;
@@ -266,7 +281,7 @@ public class ActiveBidsFragment extends Fragment
                             }
                         });
 
-                        databaseReference.child("Ratings").child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+                        databaseReferenceRatingsTable.child(jobList.get(position).getUserID()).addValueEventListener(new ValueEventListener()
                         {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot)
@@ -278,7 +293,7 @@ public class ActiveBidsFragment extends Fragment
                                 {
                                     for (DataSnapshot ds : dataSnapshot.getChildren())
                                     {
-                                        long rating = ds.child("starReview").getValue(long.class);
+                                        long rating = ds.child(getString(R.string.star_review_table)).getValue(long.class);
 
                                         totalRating += rating;
                                         counter++;
@@ -351,20 +366,20 @@ public class ActiveBidsFragment extends Fragment
                 {
                     try
                     {
-                        databaseReference.child("Jobs").child(getBundleInformation()).child("courierID").setValue(jobList.get(pos).getUserID());
-                        databaseReference.child("Jobs").child(getBundleInformation()).child("jobStatus").setValue("Active");
+                        databaseReferenceJobsTable.child(getBundleInformation()).child(getString(R.string.courier_id_table)).setValue(jobList.get(pos).getUserID());
+                        databaseReferenceJobsTable.child(getBundleInformation()).child(getString(R.string.job_status_table)).setValue(JobStatus.Active.name());
                         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.content, new PostAnAdvertFragment()).commit();
 
                         String paymentDetails = confirmation.toJSONObject().toString(4);
                         JSONObject jsonObject = new JSONObject(paymentDetails);
-                        JSONObject jsonObject1 = jsonObject.getJSONObject("response");
+                        JSONObject jsonObject1 = jsonObject.getJSONObject(getString(R.string.response));
 
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme);
                         View mView = getLayoutInflater().inflate(R.layout.popup_payment_successful, null);
 
-                        alertDialog.setTitle("Payment Successful");
-                        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener()
+                        alertDialog.setTitle(R.string.payment_success);
+                        alertDialog.setNegativeButton(R.string.close, new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which)
@@ -390,7 +405,7 @@ public class ActiveBidsFragment extends Fragment
                 }
             } else if (resultCode == Activity.RESULT_CANCELED)
             {
-                Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.cancel), Toast.LENGTH_SHORT).show();
             }
         } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID)
         {
@@ -491,7 +506,7 @@ public class ActiveBidsFragment extends Fragment
 
             holder.textViewBid.setText("£" + decimal);
 
-            databaseReference.child("Ratings").child(mData.get(position).getUserID()).addValueEventListener(new ValueEventListener()
+            databaseReferenceRatingsTable.child(mData.get(position).getUserID()).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -503,7 +518,7 @@ public class ActiveBidsFragment extends Fragment
                     {
                         for (DataSnapshot ds : dataSnapshot.getChildren())
                         {
-                            long rating = ds.child("starReview").getValue(long.class);
+                            long rating = ds.child(getString(R.string.star_review_table)).getValue(long.class);
 
                             totalRating += rating;
                             counter++;

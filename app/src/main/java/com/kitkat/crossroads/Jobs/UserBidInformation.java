@@ -32,19 +32,9 @@ public class UserBidInformation implements Serializable
         return fullName;
     }
 
-    public void setFullName(String fullName)
-    {
-        this.fullName = fullName;
-    }
-
     public String getUserBid()
     {
         return userBid;
-    }
-
-    public void setUserBid(String userBid)
-    {
-        this.userBid = userBid;
     }
 
     public String getUserID()
@@ -52,18 +42,9 @@ public class UserBidInformation implements Serializable
         return userID;
     }
 
-    public void setUserID(String userID)
-    {
-        this.userID = userID;
-    }
-
     public String getWholeString()
     {
         return fullName + userBid;
-    }
-
-    public String getJobID() {
-        return jobID;
     }
 
     public void setJobID(String jobID) {

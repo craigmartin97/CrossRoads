@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,10 +20,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.Ratings.RatingsAndReviews;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -46,6 +49,7 @@ public class CompletedAdverts extends Fragment
      * ImageView, to store and display the Jobs Image
      */
     private ImageView jobImageCompleted, leaveFeedback;
+    private ProgressBar progressBar;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -69,14 +73,14 @@ public class CompletedAdverts extends Fragment
     private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
 
     /**
-     * Creating variable to store the connection to the Firebase Database
+     * Establishing connection to FireBase database, ratings table
      */
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReferenceRatingsTable;
 
     /**
-     * Getting the current users Id
+     * Establishing connection to FireBase database, ratings table
      */
-    private String user;
+    private DatabaseReference databaseReferenceBidsTable;
 
     private String jobId;
 
@@ -85,8 +89,10 @@ public class CompletedAdverts extends Fragment
     {
         super.onCreate(savedInstanceState);
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReference = databaseConnections.getDatabaseReference();
-        user = databaseConnections.getCurrentUser();
+        databaseReferenceRatingsTable = databaseConnections.getDatabaseReferenceRatings();
+        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
+        databaseReferenceRatingsTable.keepSynced(true);
+        databaseReferenceBidsTable.keepSynced(true);
     }
 
     /**
@@ -164,11 +170,12 @@ public class CompletedAdverts extends Fragment
      */
     private void getViewsByIds(View view)
     {
-        jobName = (TextView) view.findViewById(R.id.textViewJobName1);
-        jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
-        jobImageCompleted = (ImageView) view.findViewById(R.id.jobImageCompleted);
-        textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
-        leaveFeedback = (ImageView) view.findViewById(R.id.imageViewLeaveFeedback);
+        jobName = view.findViewById(R.id.textViewJobName1);
+        jobDescription = view.findViewById(R.id.textViewJobDescription1);
+        jobImageCompleted = view.findViewById(R.id.jobImageCompleted);
+        textViewUsersBid = view.findViewById(R.id.textViewAcceptedBid);
+        leaveFeedback = view.findViewById(R.id.imageViewLeaveFeedback);
+        progressBar = view.findViewById(R.id.progressBar);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
@@ -187,14 +194,27 @@ public class CompletedAdverts extends Fragment
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
         String courierId = jobInformation.getCourierID();
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageCompleted);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageCompleted, new Callback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
-        databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
+            @Override
+            public void onError(Exception e)
+            {
+
+            }
+        });
+
+        databaseReferenceBidsTable.child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String userBid = dataSnapshot.child("userBid").getValue(String.class);
+                String userBid = dataSnapshot.child(getString(R.string.user_bid_table)).getValue(String.class);
                 textViewUsersBid.setText("Agreed Fee:       £" + userBid);
             }
 
@@ -229,8 +249,8 @@ public class CompletedAdverts extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable("JobKeyId");
-        return (JobInformation) bundle.getSerializable("JobId");
+        jobId = (String) bundle.getSerializable(getString(R.string.job_key_id));
+        return (JobInformation) bundle.getSerializable(getString(R.string.job_id));
     }
 
     /**
@@ -241,7 +261,7 @@ public class CompletedAdverts extends Fragment
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
 
-        list.add("Collection Information");
+        list.add(getString(R.string.collection_information));
 
         List<String> collectionInfo = new ArrayList<>();
         collectionInfo.add(colDate);
@@ -261,7 +281,7 @@ public class CompletedAdverts extends Fragment
         list2 = new ArrayList<>();
         listHashMap2 = new HashMap<>();
 
-        list2.add("Delivery Information");
+        list2.add(getString(R.string.delivery_information));
 
         List<String> deliveryInfo = new ArrayList<>();
         deliveryInfo.add(delAddress);
@@ -279,7 +299,7 @@ public class CompletedAdverts extends Fragment
         list3 = new ArrayList<>();
         listHashMap3 = new HashMap<>();
 
-        list3.add("Job Information");
+        list3.add(getString(R.string.job_information));
 
         List<String> jobInformation = new ArrayList<>();
         jobInformation.add(jobSize);
@@ -302,15 +322,15 @@ public class CompletedAdverts extends Fragment
 
                 View mView = getLayoutInflater().inflate(R.layout.popup_leave_feedback, null);
 
-                alertDialog.setTitle("Leave Feedback");
+                alertDialog.setTitle(R.string.leave_feedback);
                 alertDialog.setView(mView);
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();
 
-                final TextView leaveFeedback = (TextView) mView.findViewById(R.id.editTextLeaveFeedback);
-                final RatingBar ratingBar = (RatingBar) mView.findViewById(R.id.ratingBarFeedback);
-                Button submitButton = (Button) mView.findViewById(R.id.submitButton);
-                Button cancelButton = (Button) mView.findViewById(R.id.cancelButton);
+                final TextView leaveFeedback = mView.findViewById(R.id.editTextLeaveFeedback);
+                final RatingBar ratingBar = mView.findViewById(R.id.ratingBarFeedback);
+                Button submitButton = mView.findViewById(R.id.submitButton);
+                Button cancelButton = mView.findViewById(R.id.cancelButton);
 
 
                 submitButton.setOnClickListener(new View.OnClickListener()
@@ -324,8 +344,9 @@ public class CompletedAdverts extends Fragment
                         float rating = ratingBar.getRating();
                         RatingsAndReviews ratingsAndReviews = new RatingsAndReviews(rating, feedback);
 
-                        databaseReference.child("Ratings").child(jobInformation.getCourierID()).child(jobId).setValue(ratingsAndReviews);
-                        Toast.makeText(getActivity(), "Pressed Submit!", Toast.LENGTH_SHORT).show();
+                        databaseReferenceRatingsTable.child(jobInformation.getCourierID()).child(jobId).setValue(ratingsAndReviews);
+                        GenericMethods genericMethods = new GenericMethods();
+                        genericMethods.customToastMessage(getString(R.string.feedback_success), getActivity());
                     }
                 });
 

@@ -6,20 +6,22 @@ import java.io.Serializable;
  * Creates a new jobInformation object that stores and creates a new job.
  * Jobs must have name, description, size, type and address information.
  */
-public class JobInformation implements Serializable {
+public class JobInformation implements Serializable
+{
 
     /**
      * All strings to store the jobs information
      */
-    private String advertName, advertDescription, jobSize, jobType, posterID, jobID, courierID, collectionDate, collectionTime;
-    private String colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode;
-    private String jobStatus;
-    private String jobImage;
+    public String advertName, advertDescription, jobSize, jobType, posterID, jobID, courierID, collectionDate, collectionTime;
+    public String colL1, colL2, colTown, colPostcode, delL1, delL2, delTown, delPostcode;
+    public String jobStatus;
+    public String jobImage;
 
     /**
      * Blank constructor, needed for Serialization
      */
-    public JobInformation() {
+    public JobInformation()
+    {
 
     }
 
@@ -45,7 +47,8 @@ public class JobInformation implements Serializable {
      * @param jobStatus         String: If the job is Pending, Active, Complete or Inactive
      * @param jobImage          String: URL address of the Image for the job
      */
-    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobStatus, String jobImage) {
+    public JobInformation(String advertName, String advertDescription, String jobSize, String jobType, String posterID, String courierID, String collectionDate, String collectionTime, String colL1, String colL2, String colTown, String colPostcode, String delL1, String delL2, String delTown, String delPostcode, String jobStatus, String jobImage)
+    {
         this.advertName = advertName;
         this.advertDescription = advertDescription;
         this.jobSize = jobSize;
@@ -72,7 +75,8 @@ public class JobInformation implements Serializable {
      *
      * @param jobID String: Id of job
      */
-    public void setJobID(String jobID) {
+    public void setJobID(String jobID)
+    {
         this.jobID = jobID;
     }
 
@@ -83,7 +87,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Couriers Id
      */
-    public String getCourierID() {
+    public String getCourierID()
+    {
         return courierID;
     }
 
@@ -93,7 +98,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Job Id
      */
-    public String getJobID() {
+    public String getJobID()
+    {
         return jobID;
     }
 
@@ -103,7 +109,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Advert name, the adverts name
      */
-    public String getAdvertName() {
+    public String getAdvertName()
+    {
         return advertName;
     }
 
@@ -113,7 +120,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Advert Description, the description of the advert
      */
-    public String getAdvertDescription() {
+    public String getAdvertDescription()
+    {
         return advertDescription;
     }
 
@@ -124,7 +132,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Job Size, the size of the job
      */
-    public String getJobSize() {
+    public String getJobSize()
+    {
         return jobSize;
     }
 
@@ -135,7 +144,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Job Type, type of job
      */
-    public String getJobType() {
+    public String getJobType()
+    {
         return jobType;
     }
 
@@ -145,7 +155,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Poster Id, user who posted job
      */
-    public String getPosterID() {
+    public String getPosterID()
+    {
         return posterID;
     }
 
@@ -155,7 +166,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Collection Date, date of collection
      */
-    public String getCollectionDate() {
+    public String getCollectionDate()
+    {
         return collectionDate;
     }
 
@@ -165,7 +177,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Collection Time, time of collection
      */
-    public String getCollectionTime() {
+    public String getCollectionTime()
+    {
         return collectionTime;
     }
 
@@ -175,7 +188,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Collection Address Line One, first part of address
      */
-    public String getColL1() {
+    public String getColL1()
+    {
         return colL1;
     }
 
@@ -185,7 +199,8 @@ public class JobInformation implements Serializable {
      *
      * @return
      */
-    public String getColL2() {
+    public String getColL2()
+    {
         return colL2;
     }
 
@@ -195,7 +210,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Collection town, town to be collected from
      */
-    public String getColTown() {
+    public String getColTown()
+    {
         return colTown;
     }
 
@@ -205,7 +221,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Collection postcode, postal address code
      */
-    public String getColPostcode() {
+    public String getColPostcode()
+    {
         return colPostcode;
     }
 
@@ -216,7 +233,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Delivery address line one, address line to be delivered too
      */
-    public String getDelL1() {
+    public String getDelL1()
+    {
         return delL1;
     }
 
@@ -227,7 +245,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Delivery address line two, address line two where the job is delivered too
      */
-    public String getDelL2() {
+    public String getDelL2()
+    {
         return delL2;
     }
 
@@ -237,7 +256,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Delivery town, the town where the job is being taken too.
      */
-    public String getDelTown() {
+    public String getDelTown()
+    {
         return delTown;
     }
 
@@ -247,7 +267,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: DeliveryPostcode, postcode of delivery address
      */
-    public String getDelPostcode() {
+    public String getDelPostcode()
+    {
         return delPostcode;
     }
 
@@ -257,7 +278,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: Job Status, state that the job is in
      */
-    public String getJobStatus() {
+    public String getJobStatus()
+    {
         return jobStatus;
     }
 
@@ -267,7 +289,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: URL address of the image
      */
-    public String getJobImage() {
+    public String getJobImage()
+    {
         return jobImage;
     }
 
@@ -277,7 +300,8 @@ public class JobInformation implements Serializable {
      *
      * @return String: WholeString, all objects
      */
-    public String getWholeString() {
+    public String getWholeString()
+    {
         return advertName + advertDescription + jobSize + jobType + collectionDate + collectionTime + colL1 + colL2 + colTown + colPostcode + delL1 + delL2 + delTown + delPostcode;
     }
 }

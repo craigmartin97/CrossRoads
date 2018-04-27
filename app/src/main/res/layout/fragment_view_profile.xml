@@ -120,11 +120,52 @@
                             android:textAlignment="center" />
                     </LinearLayout>
 
+
+                    <LinearLayout
+                        android:id="@+id/adLEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/adL1"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/customborder"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:layout_width="162px"
+                                android:layout_height="162px"
+                                android:layout_centerHorizontal="true"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_action_name" />
+
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/HeadingForEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/bebasneueregular"
+                            android:text="@string/email_address"
+                            android:textAlignment="center"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/textViewEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:text="@string/viewphonenumber"
+                            android:textAlignment="center" />
+                    </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/adL2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/adL1"
+                        android:layout_below="@+id/adLEmail"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/customborder"
                         android:gravity="right"

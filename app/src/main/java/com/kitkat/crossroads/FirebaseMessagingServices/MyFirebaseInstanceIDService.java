@@ -5,6 +5,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 
 import android.util.Log;
 
@@ -13,14 +15,16 @@ import android.util.Log;
  * Created by q5063319 on 19/03/18.
  */
 
-public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
+public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
+{
 
-    private final String TAG = "CrossRoadsMainActivity Messenger";
-    private DatabaseReference databaseReference;
+    private final String TAG = "CrossRoadsMainMessenger";
+    private DatabaseReference databaseReferenceUsersTable;
     private FirebaseAuth auth;
 
     @Override
-    public void onTokenRefresh() {
+    public void onTokenRefresh()
+    {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
@@ -31,13 +35,16 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         sendRegistrationToServer(refreshedToken);
     }
 
-    private void sendRegistrationToServer(String refreshedToken) {
-
+    private void sendRegistrationToServer(String refreshedToken)
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
         auth = FirebaseAuth.getInstance();
 
-        if (auth.getCurrentUser() != null) {
-            databaseReference = FirebaseDatabase.getInstance().getReference();
-            databaseReference.child("Users").child(auth.getCurrentUser().getUid()).child("notifToken").setValue(refreshedToken);
+        if (auth.getCurrentUser() != null)
+        {
+            databaseReferenceUsersTable = FirebaseDatabase.getInstance().getReference();
+            databaseReferenceUsersTable.child(auth.getCurrentUser().getUid()).child(DatabaseEntryNames.notifToken.name()).setValue(refreshedToken);
         }
     }
 
