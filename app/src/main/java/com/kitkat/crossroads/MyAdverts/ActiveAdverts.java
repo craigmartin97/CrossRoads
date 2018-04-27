@@ -26,7 +26,6 @@ import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
-import com.kitkat.crossroads.Manifest;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Callback;
@@ -50,7 +49,6 @@ public class ActiveAdverts extends Fragment
      * Button, when pressed, takes user to the couriers profile to view
      */
     private Button buttonViewCourierProfile, buttonEmailCourier, buttonCallCourier;
-    ;
 
     /**
      * ImageView for the JobsImage

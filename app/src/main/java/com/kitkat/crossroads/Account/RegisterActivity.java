@@ -19,15 +19,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
-import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.R;
-
-import java.util.Objects;
 
 /**
  * Register Activity allows the user to register for an account if they are not already
@@ -72,11 +67,6 @@ public class RegisterActivity extends AppCompatActivity
     private FirebaseAuth auth;
 
     /**
-     * Storing the reference to the FireBase Database area, so users information can be stored
-     */
-    private DatabaseReference databaseReference;
-
-    /**
      * Storing the users email and password
      */
     private String email, password;
@@ -112,7 +102,6 @@ public class RegisterActivity extends AppCompatActivity
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
         auth = databaseConnections.getAuth();
-        databaseReference = databaseConnections.getDatabaseReference();
     }
 
     /**
@@ -195,7 +184,6 @@ public class RegisterActivity extends AppCompatActivity
                                 if (isNewUser)
                                 {
                                     genericMethods.dismissDialog(progressDialog);
-//                                    databaseReference.child("Users").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child("notifToken").setValue(FirebaseInstanceId.getInstance().getToken());
                                     startActivity(new Intent(RegisterActivity.this, CreateProfileActivity.class));
                                 }
                                 // Already a user
