@@ -54,7 +54,7 @@ public class ViewProfileFragment extends Fragment
      * Creating variables to store the widgets
      */
     private RatingBar userRatingBar;
-    private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode, textViewNoRating;
+    private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode, textViewNoRating, textViewEmail;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
     private ImageView profileImageUri;
 
@@ -210,6 +210,7 @@ public class ViewProfileFragment extends Fragment
         expandableListView = view.findViewById(R.id.expandable_list_view);
         userRatingBar = view.findViewById(R.id.UserRatingsBar);
         textViewNoRating = view.findViewById(R.id.ratingNoFeedback);
+        textViewEmail = view.findViewById(R.id.textViewEmail);
     }
 
     /**
@@ -322,6 +323,15 @@ public class ViewProfileFragment extends Fragment
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
                     assignReviews(dataSnapshot, collectionInfo);
+                    addressOne.setVisibility(View.GONE);
+                    addressTwo.setVisibility(View.GONE);
+                    postCode.setVisibility(View.GONE);
+                    TextView headerAddressOne = getView().findViewById(R.id.HeadingForAddressOne);
+                    TextView headerAddressTwo = getView().findViewById(R.id.HeadingForAddressTwo);
+                    TextView headerPostCode = getView().findViewById(R.id.HeadingForPostCode);
+                    headerAddressOne.setVisibility(View.GONE);
+                    headerAddressTwo.setVisibility(View.GONE);
+                    headerPostCode.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -420,6 +430,7 @@ public class ViewProfileFragment extends Fragment
         String usersTown = dataSnapshot.child("town").getValue(String.class);
         String postalCode = dataSnapshot.child("postCode").getValue(String.class);
         String profileImage = dataSnapshot.child("profileImage").getValue(String.class);
+        String email = dataSnapshot.child("userEmail").getValue(String.class);
         boolean advertiser = dataSnapshot.child("advertiser").getValue(boolean.class);
         boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
 
@@ -429,6 +440,7 @@ public class ViewProfileFragment extends Fragment
         addressTwo.setText(address2);
         town.setText(usersTown);
         postCode.setText(postalCode);
+        textViewEmail.setText(email);
 
         if (advertiser == true && courier == false)
         {
