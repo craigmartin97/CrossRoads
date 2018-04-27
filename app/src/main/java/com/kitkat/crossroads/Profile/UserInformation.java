@@ -14,6 +14,11 @@ public class UserInformation
     public String profileImage;
     public String userEmail;
 
+    public UserInformation()
+    {
+
+    }
+
     public UserInformation(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, boolean advertiser, boolean courier, String profileImage, String userEmail)
     {
 

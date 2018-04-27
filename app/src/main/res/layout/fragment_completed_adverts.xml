@@ -57,7 +57,7 @@
                         android:layout_marginStart="29dp"
                         android:layout_marginTop="21dp"
                         android:layout_toEndOf="@+id/jobImageCompleted"
-                        android:text="@string/jobname_here"
+                        android:text=""
                         android:textSize="18sp" />
 
                     <TextView
@@ -67,7 +67,17 @@
                         android:layout_alignStart="@+id/textViewJobName1"
                         android:layout_below="@+id/textViewJobName1"
                         android:layout_marginTop="16dp"
-                        android:text="@string/jobdescription_here"
+                        android:text=""
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textViewAcceptedBid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignStart="@+id/textViewJobName1"
+                        android:layout_below="@+id/textViewJobDescription1"
+                        android:layout_marginTop="16dp"
+                        android:text=""
                         android:textSize="14sp" />
 
 
@@ -135,19 +145,9 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:paddingBottom="10dp"
+                    android:src="@drawable/leavefeedback"
                     android:textColor="#000000"
                     android:text="@string/agreed_fee_users_bid"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/textViewLeaveFeedback"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/textViewAcceptedBid"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/leave_feedback"
-                    android:textColor="#1a8cff"
-                    android:textColorLink="#1a8cff"
                     android:textSize="18sp" />
             </RelativeLayout>
         </LinearLayout>

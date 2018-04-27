@@ -4,13 +4,20 @@ import java.io.Serializable;
 
 public class RatingsAndReviews implements Serializable
 {
-    private float starReview;
-    private String review;
+    public float starReview;
+    public String review;
+
+    /**
+     * Required for serialization
+     */
+    public RatingsAndReviews()
+    {
+
+    }
 
     public RatingsAndReviews(float starReview, String review)
     {
         this.starReview = starReview;
         this.review = review;
     }
-
 }

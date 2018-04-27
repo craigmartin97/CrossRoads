@@ -213,7 +213,7 @@ public class CompletedJobsFragment extends Fragment
     {
         Bundle bundle = getArguments();
         jobId = (String) bundle.getSerializable(getString(R.string.job_id));
-        return (JobInformation) bundle.getSerializable(getString(R.string.job));
+        return (JobInformation) bundle.getSerializable(getString(R.string.job_key));
     }
 
     /**
