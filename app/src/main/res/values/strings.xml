@@ -148,6 +148,7 @@
     <string name="send_email">Send Email</string>
     <string name="phone_number_table">phoneNumber</string>
     <string name="permission_denied">Permissions Denied</string>
+    <string name="no_ratings">No Ratings For User</string>
 </resources>
 
 
