@@ -33,18 +33,15 @@ public class CreateProfileActivity extends AppCompatActivity
 {
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
-    private boolean advertiser, courier;
     private Button saveProfile, uploadProfileImage;
-    private static ImageView profileImage;
+    private ImageView profileImage;
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
-    private String user, userEmail;
+    private String user;
 
-    private Boolean imageChosen = false;
-
-    private DatabaseConnections databaseConnections = new DatabaseConnections();
+    private final DatabaseConnections databaseConnections = new DatabaseConnections();
 
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
@@ -174,12 +171,14 @@ public class CreateProfileActivity extends AppCompatActivity
 
         if(imageUri != null)
         {
+            boolean advertiser;
+            boolean courier;
             if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
             {
                 advertiser = true;
                 courier = false;
                 UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
+                        addressTwo, town, postCode, true, false, null, userEmail);
 
                 uploadUsersProfile(userInformation);
             } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -187,7 +186,7 @@ public class CreateProfileActivity extends AppCompatActivity
                 advertiser = false;
                 courier = true;
                 UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
+                        addressTwo, town, postCode, false, true, null, userEmail);
 
                 uploadUsersProfile(userInformation);
             } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -195,7 +194,7 @@ public class CreateProfileActivity extends AppCompatActivity
                 advertiser = true;
                 courier = true;
                 UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
+                        addressTwo, town, postCode, true, true, null, userEmail);
 
                 uploadUsersProfile(userInformation);
             }
@@ -212,6 +211,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private void databaseVerification()
     {
         FirebaseUser userEmail = FirebaseAuth.getInstance().getCurrentUser();
+        assert userEmail != null;
         userEmail.sendEmailVerification();
         FirebaseAuth.getInstance().signOut();
     }
@@ -250,6 +250,7 @@ public class CreateProfileActivity extends AppCompatActivity
             {
                 customToastMessage("Profile Image Uploaded Successfully");
                 Uri downloadUri = taskSnapshot.getDownloadUrl();
+                assert downloadUri != null;
                 userInformation.setProfileImage(downloadUri.toString());
                 databaseReference.child("Users").child(user).setValue(userInformation);
                 dismissDialog();

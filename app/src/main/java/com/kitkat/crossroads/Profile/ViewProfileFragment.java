@@ -40,7 +40,7 @@ public class ViewProfileFragment extends Fragment
     private OnFragmentInteractionListener mListener;
 
     /**
-     * Assigning database connection to firebase database
+     * Assigning database connection to Firebase database
      */
     private DatabaseReference databaseReferenceUsersTable;
     private DatabaseReference databaseReferenceRatingsTable;
@@ -62,7 +62,7 @@ public class ViewProfileFragment extends Fragment
      * CourierId is a variable passed in if the bundle is not null
      * profileImage is the users profileImage to be displayed from FirebaseStorage
      */
-    private String courierId, profileImage;
+    private String courierId;
 
     /**
      * Creating an expandable list view to display the data in
@@ -146,34 +146,7 @@ public class ViewProfileFragment extends Fragment
                 }
             });
 
-            profileImageUri.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    final AlertDialog.Builder profileImageDialog = new AlertDialog.Builder(getActivity());
-                    View viewPopUpImage = getLayoutInflater().inflate(R.layout.popup_profile_image, null);
 
-                    profileImageDialog.setTitle("Profile Image");
-                    profileImageDialog.setView(viewPopUpImage);
-                    final AlertDialog alertDialog = profileImageDialog.create();
-                    alertDialog.show();
-
-                    ImageView image = viewPopUpImage.findViewById(R.id.profileImage);
-                    Picasso.get().load(profileImage).resize(350, 500).into(image);
-
-                    Button cancelButton = viewPopUpImage.findViewById(R.id.cancelButton);
-
-                    cancelButton.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            alertDialog.cancel();
-                        }
-                    });
-                }
-            });
         }
         return view;
     }
@@ -294,7 +267,7 @@ public class ViewProfileFragment extends Fragment
             }
         } else
         {
-            textViewNoRating.setText("No Ratings For User");
+            textViewNoRating.setText(R.string.no_ratings);
             textViewNoRating.setVisibility(View.VISIBLE);
             userRatingBar.setVisibility(View.GONE);
         }
@@ -442,15 +415,15 @@ public class ViewProfileFragment extends Fragment
         postCode.setText(postalCode);
         textViewEmail.setText(email);
 
-        if (advertiser == true && courier == false)
+        if (advertiser && !courier)
         {
             checkBoxAdvertiser.setChecked(true);
             checkBoxCourier.setChecked(false);
-        } else if (advertiser == false && courier == true)
+        } else if (!advertiser && courier)
         {
             checkBoxAdvertiser.setChecked(false);
             checkBoxCourier.setChecked(true);
-        } else if (advertiser == true && courier == true)
+        } else
         {
             checkBoxAdvertiser.setChecked(true);
             checkBoxCourier.setChecked(true);
@@ -475,7 +448,6 @@ public class ViewProfileFragment extends Fragment
             mListener = (OnFragmentInteractionListener) context;
         } else
         {
-            Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT);
         }
     }
 
