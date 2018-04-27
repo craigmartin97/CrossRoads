@@ -43,11 +43,11 @@
                         style="?android:attr/progressBarStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:indeterminateTint="@color/colorPrimary"
-                        android:indeterminateTintMode="src_in"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="65dp" />
+                        android:layout_marginStart="65dp"
+                        android:indeterminateTint="@color/colorPrimary"
+                        android:indeterminateTintMode="src_in" />
 
                     <TextView
                         android:id="@+id/textViewJobName1"
@@ -163,6 +163,22 @@
                     android:text="Email Courier"
                     android:textColor="#FFFFFF" />
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/buttonCallCourier"
+                    android:layout_width="300sp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
+                    android:background="#2bbc9b"
+                    android:text="Call Courier"
+                    android:textColor="#FFFFFF" />
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

@@ -1,8 +1,13 @@
 package com.kitkat.crossroads.MyAdverts;
 
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +26,7 @@ import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
+import com.kitkat.crossroads.Manifest;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Callback;
@@ -43,7 +49,8 @@ public class ActiveAdverts extends Fragment
     /**
      * Button, when pressed, takes user to the couriers profile to view
      */
-    private Button buttonViewCourierProfile, buttonEmailCourier;
+    private Button buttonViewCourierProfile, buttonEmailCourier, buttonCallCourier;
+    ;
 
     /**
      * ImageView for the JobsImage
@@ -94,6 +101,9 @@ public class ActiveAdverts extends Fragment
 
     private String courierId;
 
+    private final static int REQUEST_CODE = 100;
+    private final static String TAG = "ActiveAdverts";
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -127,7 +137,8 @@ public class ActiveAdverts extends Fragment
         setJobInformationDetails(jobInformation);
 
         setButtonViewCourierProfile();
-        setButtonEmailCourier(courierId);
+        setButtonEmailCourier();
+        setButtonCallCourier();
 
         addItemsCollection();
         addItemsDelivery();
@@ -189,6 +200,7 @@ public class ActiveAdverts extends Fragment
         textViewUsersBid = view.findViewById(R.id.textViewAcceptedBid);
         buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
         buttonEmailCourier = view.findViewById(R.id.buttonEmailCourier);
+        buttonCallCourier = view.findViewById(R.id.buttonCallCourier);
         progressBar = view.findViewById(R.id.progressBar);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
@@ -214,14 +226,14 @@ public class ActiveAdverts extends Fragment
         });
     }
 
-    private void setButtonEmailCourier(final String courierID)
+    private void setButtonEmailCourier()
     {
         buttonEmailCourier.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                databaseReferenceUsersTable.child(courierID).addValueEventListener(new ValueEventListener()
+                databaseReferenceUsersTable.child(courierId).addValueEventListener(new ValueEventListener()
                 {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot)
@@ -239,6 +251,44 @@ public class ActiveAdverts extends Fragment
 
                     }
                 });
+            }
+        });
+    }
+
+    private void setButtonCallCourier()
+    {
+        buttonCallCourier.setOnClickListener(new View.OnClickListener()
+        {
+
+            @Override
+            public void onClick(View view)
+            {
+                if (verifyPermissions())
+                {
+                    databaseReferenceUsersTable.child(courierId).addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            String phoneNumber = dataSnapshot.child(getString(R.string.phone_number_table)).getValue(String.class);
+                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                            startActivity(callIntent);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError)
+                        {
+
+                        }
+                    });
+
+                } else
+                {
+                    GenericMethods genericMethods = new GenericMethods();
+                    genericMethods.customToastMessage("You Must Accept The Permission To Call The Courier", getActivity());
+                    verifyPermissions();
+                }
             }
         });
     }
@@ -367,5 +417,27 @@ public class ActiveAdverts extends Fragment
         jobInformation.add(jobType);
 
         listHashMap3.put(list3.get(0), jobInformation);
+    }
+
+    private boolean verifyPermissions()
+    {
+        Log.d(TAG, "Verifying user Phone permissions");
+        String[] phonePermissions = {android.Manifest.permission.CALL_PHONE};
+
+        if (ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED)
+        {
+            return true;
+        } else
+        {
+            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
+            return false;
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    {
+        verifyPermissions();
     }
 }
