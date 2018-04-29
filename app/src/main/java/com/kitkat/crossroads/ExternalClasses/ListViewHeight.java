@@ -5,13 +5,16 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 /**
- * Created by craig on 06/04/18.
+ *
  */
-
 public class ListViewHeight
 {
-    public void setListViewHeight(ExpandableListView listView,
-                                  int group) {
+    /**
+     * 
+     * @param listView - the ExpandableListView that is height is being changed
+     * @param group - the position of each element in the group ExpandableListView
+     */
+    public void setListViewHeight(ExpandableListView listView, int group) {
         ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
         int totalHeight = 0;
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
@@ -30,7 +33,6 @@ public class ListViewHeight
                     listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
                     totalHeight += listItem.getMeasuredHeight() + 5;
-
                 }
             }
         }
@@ -46,6 +48,13 @@ public class ListViewHeight
 
     }
 
+    /**
+     * Allows the Expandable list views to be used in other classes.
+     * Calls method setListViewHeight so the height of each adapter wraps the content
+     *
+     * @param parent - the ExpandableListView that is height is being changed
+     * @param groupPosition - the position of each element in the group ExpandableListView
+     */
     public void setExpandableListViewHeight(ExpandableListView parent, int groupPosition)
     {
         setListViewHeight(parent, groupPosition);

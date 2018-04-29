@@ -45,9 +45,9 @@ public class GenericMethods
 
     /**
      *
-     * @param host
-     * @param item
-     * @param tabName
+     * @param host String: The host that is to be used
+     * @param item : The item to be added to the tab
+     * @param tabName : The name of the tab to be displayed
      */
     public void setupTabHost(TabHost host, int item, String tabName)
     {
@@ -104,8 +104,9 @@ public class GenericMethods
 
     /**
      * Clear lists for MyAdverts and MyJobs, i.e. Pending, Active and Completed Jobs
+     * This method is used so repeat data isn't used when the page is refreshed
      *
-     * @param list
+     * @param list list: The list that is to be cleared
      */
     public void clearLists(ArrayList<JobInformation> list)
     {
@@ -113,10 +114,11 @@ public class GenericMethods
     }
 
     /**
-     * Get the Job Information
+     * Get the Job Information from a snapshot of the FireBase database.
+     * Gets all of the information regarding a specific job that is stored in the FireBase database
      *
-     * @param dataSnapshot
-     * @return JobInformation
+     * @param dataSnapshot : The FireBase database that is being read from
+     * @return JobInformation : All the information regarding a specific job
      */
     public JobInformation getJobInformation(DataSnapshot dataSnapshot)
     {
@@ -133,23 +135,11 @@ public class GenericMethods
     }
 
     /**
-     * New bundle for job information
-     * @param tag
-     * @param jobInformation
-     * @return
-     */
-    public Bundle createNewBundleJobInformation(String tag, JobInformation jobInformation)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(tag, jobInformation);
-        return bundle;
-    }
-
-    /**
-     * Create new bundle for strings
-     * @param tag
-     * @param data
-     * @return
+     * Create new bundle for strings.
+     * This is used for transferring data between two fragments and we need to transfer a string
+     * @param tag : The reference key of the String being transferred
+     * @param data : The data element that is being transferred to another fragment
+     * @return bundle : The information that has been added to the bundle
      */
     public Bundle createNewBundleStrings(String tag, String data)
     {

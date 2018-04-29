@@ -21,6 +21,11 @@
             android:id="@+id/nav_myJobs"
             android:icon="@drawable/ic_van"
             android:title="My Jobs" />
+
+        <item
+            android:id="@+id/nav_askQuestion"
+            android:icon="@drawable/ic_help"
+            android:title="Ask Us A Question" />
     </group>
 
 </menu>

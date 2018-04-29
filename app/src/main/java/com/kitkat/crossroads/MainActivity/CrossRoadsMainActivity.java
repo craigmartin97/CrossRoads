@@ -33,7 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.Account.LoginActivity;
-import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
+import com.kitkat.crossroads.EmailCrossRoads;
 import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.Jobs.FindAJobFragment;
@@ -42,7 +42,6 @@ import com.kitkat.crossroads.MyJobs.MyJobsFragment;
 import com.kitkat.crossroads.Jobs.PostAnAdvertFragment;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.kitkat.crossroads.Profile.EditProfileFragment;
-import com.kitkat.crossroads.Profile.UserInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.UploadImageFragment;
@@ -156,6 +155,9 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         } else if (id == R.id.nav_myJobs)
         {
             fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack(getString(R.string.tag)).commit();
+        } else if(id == R.id.nav_askQuestion)
+        {
+            fragmentTransaction.replace(R.id.content, new EmailCrossRoads()).addToBackStack(getString(R.string.tag)).commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
