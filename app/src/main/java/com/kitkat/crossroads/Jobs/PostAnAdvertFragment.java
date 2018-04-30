@@ -177,7 +177,16 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private final GenericMethods genericMethods = new GenericMethods();
 
+    /**
+     * Code used to confirm phone permissions
+     */
     private static final int REQUEST_CODE = 3;
+
+    /**
+     *
+     * @param savedInstanceState Bundle: If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -187,6 +196,18 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         ((CrossRoadsMainActivity)getActivity()).wifiCheck();
     }
 
+    /**
+     * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once they know their view hierarchy has been completely created.
+     * The fragment's view hierarchy is not however attached to its parent at this point.
+     *
+     * @param inflater           LayoutInflater: The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param container          ViewGroup: If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to. The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState Bundle: If non-null, this fragment is being re-constructed from a previous saved state as given here
+     * @return - Return the View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState)
@@ -320,6 +341,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         return view;
     }
 
+    /**
+     *  Establishes the connections to the FireBase database
+     */
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -337,6 +361,12 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
+    /**
+     * Assign elements in the layout file to variables in the fragment
+     *
+     * @param view  View: the layout that has been inflated
+     *
+     */
     private void getViewsByIds(View view)
     {
         // Set the widgets to variables
@@ -388,6 +418,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         imageViewCheck2 = view.findViewById(R.id.check2);
     }
 
+    /**
+     * Creates an array filled with dropdown options
+     *
+     * @param arrayField
+     * @return          returns adapter
+     */
+
     private ArrayAdapter<CharSequence> createSpinnerAdapter(int arrayField)
     {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), arrayField, android.R.layout.simple_spinner_item);
@@ -395,6 +432,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         return adapter;
     }
 
+    /**
+     *Sets on click listeners for widgets in the inflated layout
+     */
     private void createOnClickListeners()
     {
         editTextColDate.setOnClickListener(new View.OnClickListener()
@@ -682,6 +722,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             }
         });
     }
+
+    /**
+     * Ensures that no empty fields are accepted and passed into the database
+     */
 
     private void checkWidgetsContainText()
     {
@@ -1019,6 +1063,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         });
     }
 
+    /**
+     *
+     * @param message   Notify user of a required text field
+     */
     private void ifWidgetTextIsNull(EditText text, String message)
     {
         text.setText("");
@@ -1033,7 +1081,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
     }
-
 
     private String getPostCodeRegex()
     {
@@ -1109,6 +1156,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         return editTextDelAddPostcode.getText().toString().trim();
     }
+
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data          Image Uri
+     */
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -1196,7 +1250,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private void saveEditJob()
     {
-
         final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
         filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
         {
@@ -1215,7 +1268,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private JobInformation setJobInformation(String jobStatus, Uri downloadUri)
     {
-
         return new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
                 " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Widget()
                 , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
@@ -1293,9 +1345,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
         }
-
     }
-
 
     private boolean verifyPermissions()
     {
@@ -1315,7 +1365,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
             return false;
         }
-
     }
 
     @Override

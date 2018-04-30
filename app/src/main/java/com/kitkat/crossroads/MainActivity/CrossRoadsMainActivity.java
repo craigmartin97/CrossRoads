@@ -92,6 +92,10 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         getLocationPermission();
     }
 
+    /**
+     * Establish connections to the fireBase database
+     */
+
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -326,6 +330,9 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         }
     }
 
+    /**
+     *
+     */
     private void displayContent()
     {
 
@@ -392,6 +399,9 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         return locationPermissionGranted;
     }
 
+    /**
+     * Checks user is connected to Wifi
+     */
     public void wifiCheck()
     {
         WifiManager wifi = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);

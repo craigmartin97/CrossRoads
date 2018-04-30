@@ -29,8 +29,10 @@ import com.kitkat.crossroads.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
+
 public class MyCustomAdapterForTabViews extends BaseAdapter
 {
+
     public ArrayList<JobInformation> mData = new ArrayList<>();
     public ArrayList<JobInformation> mDataOrig = new ArrayList<>();
     public ArrayList<String> mDataKeys = new ArrayList<>();
@@ -40,6 +42,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     private FragmentActivity fragmentActivity;
     private LayoutInflater layoutInflater;
     private FragmentManager fragmentManager;
+
 
     public MyCustomAdapterForTabViews(FragmentActivity fragmentActivity, boolean isAdded, TabHost host, LayoutInflater layoutInflater, FragmentManager fragmentManager)
     {
