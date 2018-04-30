@@ -1,13 +1,18 @@
 package com.kitkat.crossroads.Profile;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,6 +34,10 @@ import com.kitkat.crossroads.R;
 
 import java.io.ByteArrayOutputStream;
 
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
+
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
+
 public class CreateProfileActivity extends AppCompatActivity
 {
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
@@ -46,6 +55,7 @@ public class CreateProfileActivity extends AppCompatActivity
 
     private DatabaseConnections databaseConnections = new DatabaseConnections();
 
+    private static final int REQUEST_CODE = 200;
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
     private Uri imageUri;
@@ -74,9 +84,18 @@ public class CreateProfileActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, GALLERY_INTENT);
+                if(verifyPermissions()) {
+
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY_INTENT);
+
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
+                    verifyPermissions();
+                }
             }
         });
     }
@@ -275,4 +294,32 @@ public class CreateProfileActivity extends AppCompatActivity
     {
         progressDialog.dismiss();
     }
+
+    private boolean verifyPermissions()
+    {
+        Log.d(TAG, "Verifying user Phone permissions");
+        String[] phonePermissions = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        };
+
+        if(ContextCompat.checkSelfPermission(this, phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
+        {
+            return true;
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(this, phonePermissions, REQUEST_CODE);
+            return false;
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    {
+        verifyPermissions();
+    }
+
 }

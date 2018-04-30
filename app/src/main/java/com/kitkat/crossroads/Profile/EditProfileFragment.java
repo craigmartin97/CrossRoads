@@ -4,8 +4,22 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
+import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +42,8 @@ import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
+import static android.app.Activity.RESULT_OK;
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
 public class EditProfileFragment extends Fragment
 {
@@ -44,6 +60,12 @@ public class EditProfileFragment extends Fragment
 
     private String user;
     private DatabaseReference databaseReferenceUsersTable;
+
+    private FirebaseAuth auth;
+    private DatabaseReference myRef;
+    private FirebaseDatabase database;
+    private StorageReference storageReference;
+//    private StorageReference filePath;
 
     private ProgressDialog progressDialog;
 
@@ -302,4 +324,5 @@ public class EditProfileFragment extends Fragment
     {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
 }

@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -61,6 +62,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
@@ -68,6 +70,13 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
+import com.kitkat.crossroads.MainActivity.CrossRoads;
+import android.content.pm.PackageManager;
+import android.util.Log;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
+
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
@@ -79,6 +88,7 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
 public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
@@ -512,24 +522,24 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
                                 dialog.dismiss();
+
                             }
                         });
                     }
 
-                    gallery.setOnClickListener(new View.OnClickListener()
-                    {
+                    gallery.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(View v)
-                        {
+                        public void onClick(View v) {
                             Intent intent = new Intent(Intent.ACTION_PICK);
                             intent.setType("image/*");
                             startActivityForResult(intent, GALLERY_INTENT);
                             dialog.dismiss();
                         }
                     });
-                } else
+                }
+                else
                 {
-                    Toast.makeText(getActivity(), "Permissions have been denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
                     verifyPermissions();
                 }
             }
@@ -1024,6 +1034,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
     }
 
+
     private String getPostCodeRegex()
     {
         return "^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$";
@@ -1285,28 +1296,30 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     }
 
+
     private boolean verifyPermissions()
     {
-        Log.d(TAG, "Verifying Permissions, asking user for permissions");
-        String[] permissions = {
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.CAMERA};
+        Log.d(TAG, "Verifying user Phone permissions");
+        String[] phonePermissions = {
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+        };
 
-        if (ContextCompat.checkSelfPermission(getContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getContext(), permissions[2]) == PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(getActivity(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
         {
             return true;
-        } else
+        }
+        else
         {
-            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
             return false;
         }
+
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
     {
         verifyPermissions();
     }

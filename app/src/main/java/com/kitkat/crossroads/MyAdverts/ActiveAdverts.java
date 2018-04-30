@@ -1,5 +1,6 @@
 package com.kitkat.crossroads.MyAdverts;
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,9 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.util.Log;
 
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,14 +32,15 @@ import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import android.content.Intent;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
 
 public class ActiveAdverts extends Fragment
@@ -54,7 +59,6 @@ public class ActiveAdverts extends Fragment
      * ImageView for the JobsImage
      */
     private ImageView jobImageActive;
-    private ProgressBar progressBar;
 
     /**
      * Strings to store the jobs information passed in by a bundle
@@ -83,14 +87,9 @@ public class ActiveAdverts extends Fragment
     private String user;
 
     /**
-     * Creating variable to store the connection to the Firebase Database Users table
+     * Creating variable to store the connection to the Firebase Database
      */
-    private DatabaseReference databaseReferenceUsersTable;
-
-    /**
-     * Creating variable to store the connection to the Firebase Database Bids table
-     */
-    private DatabaseReference databaseReferenceBidsTable;
+    private DatabaseReference databaseReference;
 
     /**
      * Access the jobId the user pressed on
@@ -100,17 +99,13 @@ public class ActiveAdverts extends Fragment
     private String courierId;
 
     private final static int REQUEST_CODE = 100;
-    private final static String TAG = "ActiveAdverts";
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
-        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
-        databaseReferenceUsersTable.keepSynced(true);
-        databaseReferenceBidsTable.keepSynced(true);
+        databaseReference = databaseConnections.getDatabaseReference();
         user = databaseConnections.getCurrentUser();
     }
 
@@ -135,8 +130,8 @@ public class ActiveAdverts extends Fragment
         setJobInformationDetails(jobInformation);
 
         setButtonViewCourierProfile();
-        setButtonEmailCourier();
-        setButtonCallCourier();
+        setButtonEmailCourier(courierId);
+        setButtonCallCourier(courierId);
 
         addItemsCollection();
         addItemsDelivery();
@@ -192,14 +187,13 @@ public class ActiveAdverts extends Fragment
      */
     private void getViewsByIds(View view)
     {
-        jobName = view.findViewById(R.id.textViewJobName1);
-        jobDescription = view.findViewById(R.id.textViewJobDescription1);
-        jobImageActive = view.findViewById(R.id.jobImageActive);
-        textViewUsersBid = view.findViewById(R.id.textViewAcceptedBid);
+        jobName = (TextView) view.findViewById(R.id.textViewJobName1);
+        jobDescription = (TextView) view.findViewById(R.id.textViewJobDescription1);
+        jobImageActive = (ImageView) view.findViewById(R.id.jobImageActive);
+        textViewUsersBid = (TextView) view.findViewById(R.id.textViewAcceptedBid);
         buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
         buttonEmailCourier = view.findViewById(R.id.buttonEmailCourier);
         buttonCallCourier = view.findViewById(R.id.buttonCallCourier);
-        progressBar = view.findViewById(R.id.progressBar);
 
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
@@ -218,34 +212,32 @@ public class ActiveAdverts extends Fragment
             {
                 ViewProfileFragment viewProfileFragment = new ViewProfileFragment();
                 GenericMethods genericMethods = new GenericMethods();
-                viewProfileFragment.setArguments(genericMethods.createNewBundleStrings(getString(R.string.courier_id_table), getBundleInformation().getCourierID()));
+                viewProfileFragment.setArguments(genericMethods.createNewBundleStrings("courierId", getBundleInformation().getCourierID()));
                 genericMethods.beginTransactionToFragment(getFragmentManager(), viewProfileFragment);
             }
         });
     }
 
-    private void setButtonEmailCourier()
+    private void setButtonEmailCourier(final String courierID)
     {
         buttonEmailCourier.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                databaseReferenceUsersTable.child(courierId).addValueEventListener(new ValueEventListener()
-                {
+                databaseReference.child("Users").child(courierID).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot)
                     {
-                        String userEmail = dataSnapshot.child(getString(R.string.user_email_table)).getValue(String.class);
+                        String userEmail = dataSnapshot.child("userEmail").getValue(String.class);
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail, null));
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CrossRoadsMainActivity Job");
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CrossRoads Job");
                         emailIntent.putExtra(Intent.EXTRA_TEXT, "");
-                        startActivity(Intent.createChooser(emailIntent, getString(R.string.send_email)));
+                        startActivity(Intent.createChooser(emailIntent, "Send Email"));
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError)
-                    {
+                    public void onCancelled(DatabaseError databaseError) {
 
                     }
                 });
@@ -253,42 +245,42 @@ public class ActiveAdverts extends Fragment
         });
     }
 
-    private void setButtonCallCourier()
+    private void setButtonCallCourier(final String courierId)
     {
-        buttonCallCourier.setOnClickListener(new View.OnClickListener()
-        {
+
+        buttonCallCourier.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view)
             {
-                if (verifyPermissions())
-                {
-                    databaseReferenceUsersTable.child(courierId).addValueEventListener(new ValueEventListener()
+                if(verifyPermissions()) {
+
+                    databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
                     {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
                         {
-                            String phoneNumber = dataSnapshot.child(getString(R.string.phone_number_table)).getValue(String.class);
+                            String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
                             Intent callIntent = new Intent(Intent.ACTION_DIAL);
                             callIntent.setData(Uri.parse("tel:" + phoneNumber));
                             startActivity(callIntent);
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError)
-                        {
+                        public void onCancelled(DatabaseError databaseError) {
 
                         }
                     });
 
-                } else
+                }
+                else
                 {
-                    GenericMethods genericMethods = new GenericMethods();
-                    genericMethods.customToastMessage("You Must Accept The Permission To Call The Courier", getActivity());
+                    Toast.makeText(getActivity(), "Permissions Denied", Toast.LENGTH_SHORT).show();
                     verifyPermissions();
                 }
             }
         });
+
     }
 
     /**
@@ -302,28 +294,15 @@ public class ActiveAdverts extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive, new Callback()
-        {
-            @Override
-            public void onSuccess()
-            {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError(Exception e)
-            {
-
-            }
-        });
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive);
 
         // Set the users accepted bid
-        databaseReferenceBidsTable.child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
+        databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String userBid = dataSnapshot.child(getString(R.string.user_bid_table)).getValue(String.class);
+                String userBid = dataSnapshot.child("userBid").getValue(String.class);
                 textViewUsersBid.setText("Agreed Fee:       £" + userBid);
             }
 
@@ -358,8 +337,8 @@ public class ActiveAdverts extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable(getString(R.string.job_key_id));
-        return (JobInformation) bundle.getSerializable(getString(R.string.job_id));
+        jobId = (String) bundle.getSerializable("JobKeyId");
+        return (JobInformation) bundle.getSerializable("JobId");
     }
 
     /**
@@ -370,7 +349,7 @@ public class ActiveAdverts extends Fragment
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
 
-        list.add(getString(R.string.collection_information));
+        list.add("Collection Information");
 
         List<String> collectionInfo = new ArrayList<>();
         collectionInfo.add(colDate);
@@ -390,7 +369,7 @@ public class ActiveAdverts extends Fragment
         list2 = new ArrayList<>();
         listHashMap2 = new HashMap<>();
 
-        list2.add(getString(R.string.delivery_information));
+        list2.add("Delivery Information");
 
         List<String> deliveryInfo = new ArrayList<>();
         deliveryInfo.add(delAddress);
@@ -408,7 +387,7 @@ public class ActiveAdverts extends Fragment
         list3 = new ArrayList<>();
         listHashMap3 = new HashMap<>();
 
-        list3.add(getString(R.string.job_information));
+        list3.add("Job Information");
 
         List<String> jobInformation = new ArrayList<>();
         jobInformation.add(jobSize);
@@ -420,12 +399,15 @@ public class ActiveAdverts extends Fragment
     private boolean verifyPermissions()
     {
         Log.d(TAG, "Verifying user Phone permissions");
-        String[] phonePermissions = {android.Manifest.permission.CALL_PHONE};
+        String[] phonePermissions = {
+                Manifest.permission.CALL_PHONE
+        };
 
-        if (ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED)
         {
             return true;
-        } else
+        }
+        else
         {
             ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
             return false;
@@ -438,4 +420,5 @@ public class ActiveAdverts extends Fragment
     {
         verifyPermissions();
     }
+
 }
