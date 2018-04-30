@@ -36,6 +36,8 @@ import java.io.ByteArrayOutputStream;
 
 import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
+
 public class CreateProfileActivity extends AppCompatActivity
 {
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;

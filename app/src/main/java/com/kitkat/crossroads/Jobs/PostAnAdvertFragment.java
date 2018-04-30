@@ -527,7 +527,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         });
                     }
 
-
                     gallery.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -1296,6 +1295,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
 
     }
+
 
     private boolean verifyPermissions()
     {

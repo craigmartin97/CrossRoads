@@ -247,6 +247,7 @@ public class ActiveAdverts extends Fragment
 
     private void setButtonCallCourier(final String courierId)
     {
+
         buttonCallCourier.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -279,6 +280,7 @@ public class ActiveAdverts extends Fragment
                 }
             }
         });
+
     }
 
     /**
