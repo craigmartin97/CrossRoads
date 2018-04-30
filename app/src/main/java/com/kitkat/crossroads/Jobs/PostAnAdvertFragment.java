@@ -10,13 +10,16 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -56,6 +59,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotater;
@@ -63,6 +67,12 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
+import android.content.pm.PackageManager;
+import android.util.Log;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
+
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
@@ -73,6 +83,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 
 import static android.app.Activity.RESULT_OK;
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
 public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
@@ -106,6 +117,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private static byte[] compressData;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int GALLERY_INTENT = 2;
+    private static final int REQUEST_CODE = 500;
     private ProgressDialog progressDialog;
 
     private DatePickerDialog.OnDateSetListener dateSetListener;
@@ -464,44 +476,47 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View view)
             {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
 
-                alertDialog.setTitle("Upload Image With");
-                alertDialog.setView(mView);
-                final AlertDialog dialog = alertDialog.create();
-                dialog.show();
+                if(verifyPermissions()) {
 
-                Button gallery = mView.findViewById(R.id.gallery);
-                Button camera = mView.findViewById(R.id.camera);
+                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                    View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
 
-                if (!hasCamera())
-                {
-                    camera.setEnabled(false);
-                } else
-                {
-                    camera.setOnClickListener(new View.OnClickListener()
-                    {
+                    alertDialog.setTitle("Upload Image With");
+                    alertDialog.setView(mView);
+                    final AlertDialog dialog = alertDialog.create();
+                    dialog.show();
+
+                    Button gallery = mView.findViewById(R.id.gallery);
+                    Button camera = mView.findViewById(R.id.camera);
+
+                    if (!hasCamera()) {
+                        camera.setEnabled(false);
+                    } else {
+                        camera.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                            }
+                        });
+                    }
+
+                    gallery.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(View v)
-                        {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                        public void onClick(View v) {
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setType("image/*");
+                            startActivityForResult(intent, GALLERY_INTENT);
+                            dialog.dismiss();
                         }
                     });
                 }
-
-                gallery.setOnClickListener(new View.OnClickListener()
+                else
                 {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityForResult(intent, GALLERY_INTENT);
-                        dialog.dismiss();
-                    }
-                });
+                    Toast.makeText(getContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
+                    verifyPermissions();
+                }
             }
         });
 
@@ -838,6 +853,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
     }
 
+
     private String getPostCodeRegex()
     {
         return "^([A-PR-UWYZ](([0-9](([0-9]|[A-HJKSTUW])?)?)|([A-HK-Y][0-9]([0-9]|[ABEHMNPRVWXY])?)) ?[0-9][ABD-HJLNP-UW-Z]{2})$";
@@ -1128,5 +1144,33 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             mGoogleApiClient1.disconnect();
         }
 
+    }
+
+
+    private boolean verifyPermissions()
+    {
+        Log.d(TAG, "Verifying user Phone permissions");
+        String[] phonePermissions = {
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+        };
+
+        if(ContextCompat.checkSelfPermission(getActivity(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
+        {
+            return true;
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
+            return false;
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    {
+        verifyPermissions();
     }
 }
