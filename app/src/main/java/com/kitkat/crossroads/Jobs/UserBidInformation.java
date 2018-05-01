@@ -5,9 +5,8 @@ import com.kitkat.crossroads.Profile.UserInformation;
 import java.io.Serializable;
 
 /**
- * Created by q5031372 on 16/03/18.
+ * Contains template for all classes that require User Bid Information
  */
-
 public class UserBidInformation implements Serializable
 {
 

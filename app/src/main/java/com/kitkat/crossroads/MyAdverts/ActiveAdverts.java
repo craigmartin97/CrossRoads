@@ -218,6 +218,12 @@ public class ActiveAdverts extends Fragment
         });
     }
 
+    /**
+     * Sets on click listener for Email Courier Button
+     *
+     * @param courierID     Used to retrieve the courier's email from the database
+     */
+
     private void setButtonEmailCourier(final String courierID)
     {
         buttonEmailCourier.setOnClickListener(new View.OnClickListener()
@@ -244,6 +250,12 @@ public class ActiveAdverts extends Fragment
             }
         });
     }
+
+    /**
+     * Sets on click listener for Call Courier button
+     *
+     * @param courierId     Used to retrieve the courier's phone number from the database
+     */
 
     private void setButtonCallCourier(final String courierId)
     {
@@ -396,6 +408,11 @@ public class ActiveAdverts extends Fragment
         listHashMap3.put(list3.get(0), jobInformation);
     }
 
+    /**
+     * Verifies the user has gave permissions to use out-of-app functions
+     *
+     * @return      Returns true or false based on the user's permission settings
+     */
     private boolean verifyPermissions()
     {
         Log.d(TAG, "Verifying user Phone permissions");
@@ -412,13 +429,16 @@ public class ActiveAdverts extends Fragment
             ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
             return false;
         }
-
     }
 
+    /**
+     * @param requestCode           The request code passed in requestPermissions(...)
+     * @param phonePermissions      An array which stores the requested permissions (can never be null)
+     * @param grantResults          The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
     {
         verifyPermissions();
     }
-
 }

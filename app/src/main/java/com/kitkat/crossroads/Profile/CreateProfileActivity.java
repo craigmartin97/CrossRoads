@@ -295,6 +295,11 @@ public class CreateProfileActivity extends AppCompatActivity
         progressDialog.dismiss();
     }
 
+    /**
+     *Verify the user has given the app permissions to use out of app functions
+     *
+     * @return - returns true if permissions have been allowed
+     */
     private boolean verifyPermissions()
     {
         Log.d(TAG, "Verifying user Phone permissions");
@@ -313,13 +318,16 @@ public class CreateProfileActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, phonePermissions, REQUEST_CODE);
             return false;
         }
-
     }
 
+    /**
+     * @param requestCode           The request code passed in requestPermissions(...)
+     * @param phonePermissions      An array which stores the requested permissions (can never be null)
+     * @param grantResults          The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
     {
         verifyPermissions();
     }
-
 }
