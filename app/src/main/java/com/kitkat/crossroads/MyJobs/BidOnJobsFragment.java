@@ -1,5 +1,6 @@
 package com.kitkat.crossroads.MyJobs;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -143,7 +144,7 @@ public class BidOnJobsFragment extends Fragment
             {
                 if(TextUtils.isEmpty(editTextEditBid.getText()))
                 {
-                    Toast.makeText(getActivity(), "Enter a bid!!", Toast.LENGTH_SHORT).show();
+                    customToastMessage("Enter A Bid!");
                     return;
                 }
                 else
@@ -310,8 +311,9 @@ public class BidOnJobsFragment extends Fragment
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String userBid = dataSnapshot.child(getString(R.string.user_bid_table)).getValue(String.class);
+                String userBid = dataSnapshot.child("userBid").getValue(String.class);
                 editTextEditBid.setText("£" + userBid);
+                customToastMessage("Bid Successfully Changed");
             }
 
             @Override
@@ -345,8 +347,8 @@ public class BidOnJobsFragment extends Fragment
     private JobInformation getBundleInformation()
     {
         Bundle bundle = getArguments();
-        jobId = (String) bundle.getSerializable(getString(R.string.job_key_id));
-        return (JobInformation) bundle.getSerializable(getString(R.string.job));
+        jobId = (String) bundle.getSerializable("JobId");
+        return (JobInformation) bundle.getSerializable("Job");
     }
 
     /**
@@ -402,5 +404,22 @@ public class BidOnJobsFragment extends Fragment
         jobInformation.add(jobType);
 
         listHashMap3.put(list3.get(0), jobInformation);
+    }
+
+    private void customToastMessage(String message)
+    {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
     }
 }
