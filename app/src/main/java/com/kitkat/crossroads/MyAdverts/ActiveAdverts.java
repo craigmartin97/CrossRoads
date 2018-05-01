@@ -413,7 +413,6 @@ public class ActiveAdverts extends Fragment
      *
      * @return      Returns true or false based on the user's permission settings
      */
-
     private boolean verifyPermissions()
     {
         Log.d(TAG, "Verifying user Phone permissions");
@@ -430,13 +429,16 @@ public class ActiveAdverts extends Fragment
             ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
             return false;
         }
-
     }
 
+    /**
+     * @param requestCode           The request code passed in requestPermissions(...)
+     * @param phonePermissions      An array which stores the requested permissions (can never be null)
+     * @param grantResults          The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
     {
         verifyPermissions();
     }
-
 }
