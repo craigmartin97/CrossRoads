@@ -6,11 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
@@ -97,12 +99,19 @@ public class EmailCrossRoads extends Fragment
                     genericMethods.customToastMessage("Please Add A Message To Your Email", getActivity());
                 } else
                 {
-                    //launch a new email intent
-                    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto", "crossofroadsapp@gmail.com", null));
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Question From User, " + getAuth().getCurrentUser().getEmail());
-                    intent.putExtra(Intent.EXTRA_TEXT, editTextUserQuestion.getText());
-                    startActivity(Intent.createChooser(intent, "Choose an Email client :"));
+                    try
+                    {
+                        //launch a new email intent
+                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                                "mailto", "crossofroadsapp@gmail.com", null));
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "Question From User, " + getAuth().getCurrentUser().getEmail());
+                        intent.putExtra(Intent.EXTRA_TEXT, editTextUserQuestion.getText());
+                        startActivity(Intent.createChooser(intent, "Choose an Email client :"));
+                    } catch (NullPointerException e)
+                    {
+                        Log.d("EmailCrossRoads: ", e.getMessage());
+                        Toast.makeText(getActivity(), "Could Not Do Email At This Time, Please Try Again Later", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
