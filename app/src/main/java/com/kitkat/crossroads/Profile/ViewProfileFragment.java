@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class handles all the operations needed to display the user's profile.
+ */
 public class ViewProfileFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
@@ -85,6 +88,7 @@ public class ViewProfileFragment extends Fragment
         // Required empty public constructor
     }
 
+    //todo - 'unused' method?
     public static ViewProfileFragment newInstance()
     {
         ViewProfileFragment fragment = new ViewProfileFragment();
@@ -93,6 +97,13 @@ public class ViewProfileFragment extends Fragment
         return fragment;
     }
 
+    /**
+     * This method is called when the ViewProfileFragment is displayed. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState -If the fragment is being recreated from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -100,6 +111,13 @@ public class ViewProfileFragment extends Fragment
         databaseConnections();
     }
 
+    /**
+     * @param inflater              Instantiates a layout XML file into its corresponding view Objects
+     * @param container             A view used to contain other views, in this case, the view fragment_view_profile
+     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
+     *                              This value may be null.
+     * @return                      Returns inflated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -113,6 +131,7 @@ public class ViewProfileFragment extends Fragment
         getUsersStarRating();
         addReviews();
 
+        //ensure the courier's id is valid
         if (courierId != null)
         {
             databaseReferenceUsersTable.child(courierId).addValueEventListener(new ValueEventListener()
@@ -231,6 +250,7 @@ public class ViewProfileFragment extends Fragment
      */
     private void getUsersStarRating()
     {
+        //ensure courier's id is valid
         if (courierId != null)
         {
             databaseReferenceRatingsTable.child(courierId).addValueEventListener(new ValueEventListener()
@@ -421,6 +441,10 @@ public class ViewProfileFragment extends Fragment
         }
     }
 
+    /**
+     *
+     * @param dataSnapshot
+     */
     private void addUserInformation(DataSnapshot dataSnapshot)
     {
         String name = dataSnapshot.child("fullName").getValue(String.class);
@@ -458,6 +482,7 @@ public class ViewProfileFragment extends Fragment
         Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
     }
 
+    //todo - 'unused' method?
     public void onButtonPressed(Uri uri)
     {
         if (mListener != null)
@@ -466,6 +491,12 @@ public class ViewProfileFragment extends Fragment
         }
     }
 
+    /**onAttach             onAttach is called when a fragment is first attached to its context
+     *                      onCreate can be called only after the fragment is attached
+     *
+     * @param context       Allows access to application specific resources and classes, also
+     *                      supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
@@ -479,6 +510,9 @@ public class ViewProfileFragment extends Fragment
         }
     }
 
+    /**
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
     @Override
     public void onDetach()
     {
@@ -486,6 +520,9 @@ public class ViewProfileFragment extends Fragment
         mListener = null;
     }
 
+    /**
+     *TODO
+     */
     public interface OnFragmentInteractionListener
     {
         void onFragmentInteraction(Uri uri);

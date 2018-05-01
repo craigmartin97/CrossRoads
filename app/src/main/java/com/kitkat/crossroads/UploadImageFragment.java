@@ -40,6 +40,9 @@ import java.io.ByteArrayOutputStream;
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
+/**
+ * This class handles uploading a new profile image
+ */
 
 public class UploadImageFragment extends Fragment
 {
@@ -55,7 +58,10 @@ public class UploadImageFragment extends Fragment
     private String user;
 
     private static ImageView profileImage;
+
     //address of an image
+
+
     private Uri imageUri;
 
     //used in conjunction with putBytes which returns an UploadTask where we can monitor whether or not the upload was successful
@@ -245,10 +251,15 @@ public class UploadImageFragment extends Fragment
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Redirect user to their gallery and get them to select an image
+        /*
+         * Redirect user to their gallery and get them to select an image
+         */
+
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
-            //notify user of upload status
+            /*
+             *notify user of upload status
+             */
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Displaying Image...");
             progressDialog.show();
@@ -293,7 +304,6 @@ public class UploadImageFragment extends Fragment
             mListener.onFragmentInteraction(uri);
         }
     }
-
 
     /**onAttach             onAttach is called when a fragment is first attached to its context
      *                      onCreate can be called only after the fragment is attached

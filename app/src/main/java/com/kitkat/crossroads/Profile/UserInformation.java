@@ -2,7 +2,9 @@ package com.kitkat.crossroads.Profile;
 
 public class UserInformation
 {
-    // Must be public to be able to serialize on
+    /*
+     * Must be public to be able to serialize on
+     */
     public String fullName;
     public String phoneNumber;
     public String addressOne;
@@ -14,6 +16,9 @@ public class UserInformation
     public String profileImage;
     public String userEmail;
 
+    /**
+     * required empty public constructor
+     */
     public UserInformation()
     {
 
