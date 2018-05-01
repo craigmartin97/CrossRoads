@@ -156,14 +156,15 @@ public class EditProfileFragment extends Fragment
         });
 
         saveProfile = view.findViewById(R.id.buttonSaveProfile);
-        this.profileImage = profileImage;
 
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setMessage("Saving Profile Please Wait...");
+                progressDialog.create();
                 saveUserInformation();
             }
         });

@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,12 +30,9 @@ import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-
-import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
-
-import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
 public class CreateProfileActivity extends AppCompatActivity
 {
@@ -49,9 +45,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
-    private String user, userEmail;
-
-    private Boolean imageChosen = false;
+    private String user;
 
     private DatabaseConnections databaseConnections = new DatabaseConnections();
 
@@ -59,6 +53,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
     private Uri imageUri;
+    private String imageUrl;
     private static byte[] compressData;
 
     @Override
@@ -84,17 +79,13 @@ public class CreateProfileActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                if(verifyPermissions()) {
-
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, GALLERY_INTENT);
-
-                }
-                else
+                if (ContextCompat.checkSelfPermission(CreateProfileActivity.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
                 {
-                    Toast.makeText(getApplicationContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
-                    verifyPermissions();
+                    createGalleryIntent();
+                } else
+                {
+                    requestStoragePermission();
                 }
             }
         });
@@ -191,41 +182,17 @@ public class CreateProfileActivity extends AppCompatActivity
             return;
         }
 
-        if(imageUri != null)
+        if (imageUri != null)
         {
-            if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
-            {
-                advertiser = true;
-                courier = false;
-                UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
-
-                uploadUsersProfile(userInformation);
-            } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
-            {
-                advertiser = false;
-                courier = true;
-                UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
-
-                uploadUsersProfile(userInformation);
-            } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
-            {
-                advertiser = true;
-                courier = true;
-                UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                        addressTwo, town, postCode, advertiser, courier, null, userEmail);
-
-                uploadUsersProfile(userInformation);
-            }
-        }
-        else
+            preferenceCheck(fullName, phoneNumber, addressOne, addressTwo, town, postCode, userEmail);
+            databaseVerification();
+            startActivityToLogin();
+        } else
         {
-            Toast.makeText(this, "Must Upload A Profile Image", Toast.LENGTH_SHORT).show();
+            preferenceCheck(fullName, phoneNumber, addressOne, addressTwo, town, postCode, userEmail);
+            databaseVerification();
+            startActivityToLogin();
         }
-
-        databaseVerification();
-        startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
     }
 
     private void databaseVerification()
@@ -260,29 +227,36 @@ public class CreateProfileActivity extends AppCompatActivity
 
     private void uploadUsersProfile(final UserInformation userInformation)
     {
-        System.out.println(imageUri.getLastPathSegment());
-        final StorageReference filePath = storageReference.child("Images").child(user).child(imageUri.getLastPathSegment());
-        filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+        if (imageUri != null)
         {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+            final StorageReference filePath = storageReference.child("Images").child(user).child(imageUri.getLastPathSegment());
+            filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
-                customToastMessage("Profile Image Uploaded Successfully");
-                Uri downloadUri = taskSnapshot.getDownloadUrl();
-                userInformation.setProfileImage(downloadUri.toString());
-                databaseReference.child("Users").child(user).setValue(userInformation);
-                dismissDialog();
-            }
-        }).addOnFailureListener(new OnFailureListener()
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                {
+                    customToastMessage("Profile Image Uploaded Successfully");
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    userInformation.setProfileImage(downloadUri.toString());
+                    databaseReference.child("Users").child(user).setValue(userInformation);
+                    dismissDialog();
+                }
+            }).addOnFailureListener(new OnFailureListener()
+            {
+                @Override
+                public void onFailure(@NonNull Exception e)
+                {
+                    System.out.println(e.getMessage());
+                    dismissDialog();
+                    customToastMessage("Failed To Upload Image, Try Again");
+                }
+            });
+        } else
         {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                System.out.println(e.getMessage());
-                dismissDialog();
-                customToastMessage("Failed To Upload Image, Try Again");
-            }
-        });
+            imageUrl = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/default_image.jpg?alt=media&token=4f5aff1d-ed72-4c18-80a7-4da71982730b";
+            userInformation.setProfileImage(imageUrl);
+            databaseReference.child("Users").child(user).setValue(userInformation);
+        }
     }
 
     private void customToastMessage(String message)
@@ -295,39 +269,70 @@ public class CreateProfileActivity extends AppCompatActivity
         progressDialog.dismiss();
     }
 
-    /**
-     *Verify the user has given the app permissions to use out of app functions
-     *
-     * @return - returns true if permissions have been allowed
-     */
-    private boolean verifyPermissions()
+    private void createGalleryIntent()
     {
-        Log.d(TAG, "Verifying user Phone permissions");
-        String[] phonePermissions = {
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-        };
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, GALLERY_INTENT);
+    }
 
-        if(ContextCompat.checkSelfPermission(this, phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(this, phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
-        {
-            return true;
-        }
-        else
-        {
-            ActivityCompat.requestPermissions(this, phonePermissions, REQUEST_CODE);
-            return false;
-        }
+    private void requestStoragePermission()
+    {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
     }
 
     /**
-     * @param requestCode           The request code passed in requestPermissions(...)
-     * @param phonePermissions      An array which stores the requested permissions (can never be null)
-     * @param grantResults          The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+     * @param requestCode  The request code passed in requestPermissions(...)
+     * @param permissions  An array which stores the requested permissions (can never be null)
+     * @param grantResults The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        verifyPermissions();
+        if (requestCode == REQUEST_CODE)
+        {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                createGalleryIntent();
+            } else
+            {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
+
+    private void preferenceCheck(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, String userEmail)
+    {
+        if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
+        {
+            advertiser = true;
+            courier = false;
+            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                    addressTwo, town, postCode, advertiser, courier, null, userEmail);
+
+            uploadUsersProfile(userInformation);
+        } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        {
+            advertiser = false;
+            courier = true;
+            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                    addressTwo, town, postCode, advertiser, courier, null, userEmail);
+
+            uploadUsersProfile(userInformation);
+        } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
+        {
+            advertiser = true;
+            courier = true;
+            UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
+                    addressTwo, town, postCode, advertiser, courier, null, userEmail);
+
+            uploadUsersProfile(userInformation);
+        }
+    }
+
+    private void startActivityToLogin()
+    {
+        startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
+    }
+
 }
