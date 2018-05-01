@@ -4,15 +4,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -37,8 +34,6 @@ import java.util.List;
 
 public class ViewProfileFragment extends Fragment
 {
-    private OnFragmentInteractionListener mListener;
-
     /**
      * Assigning database connection to firebase database
      */
@@ -62,7 +57,7 @@ public class ViewProfileFragment extends Fragment
      * CourierId is a variable passed in if the bundle is not null
      * profileImage is the users profileImage to be displayed from FirebaseStorage
      */
-    private String courierId, profileImage;
+    private String courierId;
 
     /**
      * Creating an expandable list view to display the data in
@@ -82,15 +77,7 @@ public class ViewProfileFragment extends Fragment
 
     public ViewProfileFragment()
     {
-        // Required empty public constructor
-    }
 
-    public static ViewProfileFragment newInstance()
-    {
-        ViewProfileFragment fragment = new ViewProfileFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -100,6 +87,18 @@ public class ViewProfileFragment extends Fragment
         databaseConnections();
     }
 
+    /**
+     * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once they know their view hierarchy has been completely created.
+     * The fragment's view hierarchy is not however attached to its parent at this point.
+     *
+     * @param inflater           LayoutInflater: The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param container          ViewGroup: If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to. The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState Bundle: If non-null, this fragment is being re-constructed from a previous saved state as given here
+     * @return - Return the View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -113,6 +112,7 @@ public class ViewProfileFragment extends Fragment
         getUsersStarRating();
         addReviews();
 
+        // If its a couriers profile to be viewed
         if (courierId != null)
         {
             databaseReferenceUsersTable.child(courierId).addValueEventListener(new ValueEventListener()
@@ -129,7 +129,9 @@ public class ViewProfileFragment extends Fragment
 
                 }
             });
-        } else
+        }
+        // Users own profile
+        else
         {
             databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
             {
@@ -145,41 +147,12 @@ public class ViewProfileFragment extends Fragment
 
                 }
             });
-
-            profileImageUri.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    final AlertDialog.Builder profileImageDialog = new AlertDialog.Builder(getActivity());
-                    View viewPopUpImage = getLayoutInflater().inflate(R.layout.popup_profile_image, null);
-
-                    profileImageDialog.setTitle("Profile Image");
-                    profileImageDialog.setView(viewPopUpImage);
-                    final AlertDialog alertDialog = profileImageDialog.create();
-                    alertDialog.show();
-
-                    ImageView image = viewPopUpImage.findViewById(R.id.profileImage);
-                    Picasso.get().load(profileImage).resize(350, 500).into(image);
-
-                    Button cancelButton = viewPopUpImage.findViewById(R.id.cancelButton);
-
-                    cancelButton.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            alertDialog.cancel();
-                        }
-                    });
-                }
-            });
         }
         return view;
     }
 
     /**
-     * Establishing connections to Firebase Database, getting current user Id
+     * Establishing connections to FireBase Database, and getting current user Id
      */
     private void databaseConnections()
     {
@@ -215,6 +188,8 @@ public class ViewProfileFragment extends Fragment
 
     /**
      * Getting the bundle information that could have been passed into the Fragment
+     * If a bundle has been passed in, the courierId won't be null as it's a
+     * couriers profile being viewed
      */
     private void getBundleInformation()
     {
@@ -227,7 +202,8 @@ public class ViewProfileFragment extends Fragment
     }
 
     /**
-     * Get the user star rating
+     * Get the user star rating, if the bundle wasn't null it'll get
+     * the couriers star rating. Otherwise it'll get the current users rating
      */
     private void getUsersStarRating()
     {
@@ -267,7 +243,10 @@ public class ViewProfileFragment extends Fragment
     }
 
     /**
-     * Logic to assign the amount of stars required for the courier or the user
+     * Logic to assign the amount of stars required for the user/courier or the user
+     * Goes through the ratings table under the couriers Id and get all of the ratings
+     * then divides by the amount of reviews that have been left.
+     * If their is no reviews the ratings bar is removed
      *
      * @param dataSnapshot - Snapshot of the database table Ratings, with an id
      */
@@ -275,29 +254,34 @@ public class ViewProfileFragment extends Fragment
     {
         long totalRating = 0;
         long counter = 0;
+
         // Iterate through entire bids table
         if (dataSnapshot.hasChildren())
         {
             for (DataSnapshot ds : dataSnapshot.getChildren())
             {
-                long rating = ds.child("starReview").getValue(long.class);
+                if (ds.child("starReview").exists())
+                {
+                    long rating = ds.child("starReview").getValue(long.class);
+                    totalRating += rating;
+                    counter++;
 
-                totalRating += rating;
-                counter++;
-
-                totalRating = totalRating / counter;
-
-                int usersRating = Math.round(totalRating);
-                userRatingBar.setNumStars(usersRating);
-                Drawable drawable = userRatingBar.getProgressDrawable();
-                drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
+                    totalRating = totalRating / counter;
+                }
             }
+
+            int usersRating = Math.round(totalRating);
+            userRatingBar.setNumStars(usersRating);
+            Drawable drawable = userRatingBar.getProgressDrawable();
+            drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
         } else
+
         {
             textViewNoRating.setText("No Ratings For User");
             textViewNoRating.setVisibility(View.VISIBLE);
             userRatingBar.setVisibility(View.GONE);
         }
+
     }
 
     /**
@@ -360,7 +344,8 @@ public class ViewProfileFragment extends Fragment
     }
 
     /**
-     * Logic for the reviews that are to be added
+     * Logic for the reviews that are to be added, displays all of the
+     * reviews in a list view
      *
      * @param dataSnapshot   - Snapshot of the Ratings table, with an id
      * @param collectionInfo - List that the information is to be added to
@@ -377,6 +362,7 @@ public class ViewProfileFragment extends Fragment
                 @Override
                 public void onDataChange(DataSnapshot data)
                 {
+                    // put all of the info in the list view
                     String fullName = data.child("fullName").getValue(String.class);
                     collectionInfo.add(review + " - " + fullName);
                     listHashMap.put(list.get(0), collectionInfo);
@@ -421,6 +407,12 @@ public class ViewProfileFragment extends Fragment
         }
     }
 
+    /**
+     * Getting all of the data from the FireBase database and displaying in
+     * the fragment. Gets all data such as the fullName, address etc to be displayed.
+     *
+     * @param dataSnapshot - snapshot of the database
+     */
     private void addUserInformation(DataSnapshot dataSnapshot)
     {
         String name = dataSnapshot.child("fullName").getValue(String.class);
@@ -442,15 +434,15 @@ public class ViewProfileFragment extends Fragment
         postCode.setText(postalCode);
         textViewEmail.setText(email);
 
-        if (advertiser == true && courier == false)
+        if (advertiser && !courier)
         {
             checkBoxAdvertiser.setChecked(true);
             checkBoxCourier.setChecked(false);
-        } else if (advertiser == false && courier == true)
+        } else if (!advertiser && courier)
         {
             checkBoxAdvertiser.setChecked(false);
             checkBoxCourier.setChecked(true);
-        } else if (advertiser == true && courier == true)
+        } else if (advertiser && courier)
         {
             checkBoxAdvertiser.setChecked(true);
             checkBoxCourier.setChecked(true);
@@ -458,36 +450,25 @@ public class ViewProfileFragment extends Fragment
         Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
     }
 
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
+    /**
+     * onAttach             onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
+     *
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-            Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT);
-        }
     }
 
+    /**
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
     @Override
     public void onDetach()
     {
         super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener
-    {
-        void onFragmentInteraction(Uri uri);
     }
 }
