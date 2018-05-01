@@ -4,12 +4,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
 
-import com.kitkat.crossroads.R;
-
+/**
+ * Terms and Conditions class is used to download a PDF for the terms of service
+ * for the CrossRoads application. The PDF is downloaded locally to the user device
+ */
 public class TermsAndConditions extends AppCompatActivity
 {
+    /**
+     * a view that displays web pages
+     */
     private WebView webView;
 
+    /**
+     * onCreate                   This method is called to display the Terms and Conditions.
+     *
+     * @param savedInstanceState -If the fragment is being recreated from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);

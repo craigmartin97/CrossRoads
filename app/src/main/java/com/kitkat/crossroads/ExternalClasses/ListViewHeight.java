@@ -10,7 +10,7 @@ import android.widget.ExpandableListView;
 public class ListViewHeight
 {
     /**
-     * 
+     *
      * @param listView - the ExpandableListView that is height is being changed
      * @param group - the position of each element in the group ExpandableListView
      */

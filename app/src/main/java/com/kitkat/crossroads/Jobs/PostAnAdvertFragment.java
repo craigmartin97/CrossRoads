@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -61,6 +62,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
@@ -68,6 +70,13 @@ import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
+import com.kitkat.crossroads.MainActivity.CrossRoads;
+import android.content.pm.PackageManager;
+import android.util.Log;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
+
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
@@ -79,6 +88,7 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
 public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
@@ -167,7 +177,16 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private final GenericMethods genericMethods = new GenericMethods();
 
+    /**
+     * Code used to confirm phone permissions
+     */
     private static final int REQUEST_CODE = 3;
+
+    /**
+     *
+     * @param savedInstanceState Bundle: If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -177,6 +196,18 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         ((CrossRoadsMainActivity)getActivity()).wifiCheck();
     }
 
+    /**
+     * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once they know their view hierarchy has been completely created.
+     * The fragment's view hierarchy is not however attached to its parent at this point.
+     *
+     * @param inflater           LayoutInflater: The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param container          ViewGroup: If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to. The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState Bundle: If non-null, this fragment is being re-constructed from a previous saved state as given here
+     * @return - Return the View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState)
@@ -310,6 +341,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         return view;
     }
 
+    /**
+     *  Establishes the connections to the FireBase database
+     */
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -327,6 +361,12 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
+    /**
+     * Assign elements in the layout file to variables in the fragment
+     *
+     * @param view  View: the layout that has been inflated
+     *
+     */
     private void getViewsByIds(View view)
     {
         // Set the widgets to variables
@@ -378,6 +418,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         imageViewCheck2 = view.findViewById(R.id.check2);
     }
 
+    /**
+     * Creates an array filled with dropdown options
+     *
+     * @param arrayField
+     * @return          returns adapter
+     */
+
     private ArrayAdapter<CharSequence> createSpinnerAdapter(int arrayField)
     {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), arrayField, android.R.layout.simple_spinner_item);
@@ -385,6 +432,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         return adapter;
     }
 
+    /**
+     *Sets on click listeners for widgets in the inflated layout
+     */
     private void createOnClickListeners()
     {
         editTextColDate.setOnClickListener(new View.OnClickListener()
@@ -512,24 +562,24 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
                                 dialog.dismiss();
+
                             }
                         });
                     }
 
-                    gallery.setOnClickListener(new View.OnClickListener()
-                    {
+                    gallery.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(View v)
-                        {
+                        public void onClick(View v) {
                             Intent intent = new Intent(Intent.ACTION_PICK);
                             intent.setType("image/*");
                             startActivityForResult(intent, GALLERY_INTENT);
                             dialog.dismiss();
                         }
                     });
-                } else
+                }
+                else
                 {
-                    Toast.makeText(getActivity(), "Permissions have been denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
                     verifyPermissions();
                 }
             }
@@ -672,6 +722,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             }
         });
     }
+
+    /**
+     * Ensures that no empty fields are accepted and passed into the database
+     */
 
     private void checkWidgetsContainText()
     {
@@ -1009,6 +1063,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         });
     }
 
+    /**
+     *
+     * @param message   Notify user of a required text field
+     */
     private void ifWidgetTextIsNull(EditText text, String message)
     {
         text.setText("");
@@ -1099,6 +1157,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         return editTextDelAddPostcode.getText().toString().trim();
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data          Image Uri
+     */
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -1185,7 +1250,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private void saveEditJob()
     {
-
         final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
         filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
         {
@@ -1204,7 +1268,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private JobInformation setJobInformation(String jobStatus, Uri downloadUri)
     {
-
         return new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
                 " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Widget()
                 , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
@@ -1282,31 +1345,40 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             mGoogleApiClient1.stopAutoManage(getActivity());
             mGoogleApiClient1.disconnect();
         }
-
     }
 
+    /**
+     *Verify the user has given the app permissions to use out of app functions
+     *
+     * @return - returns true if permissions have been allowed
+     */
     private boolean verifyPermissions()
     {
-        Log.d(TAG, "Verifying Permissions, asking user for permissions");
-        String[] permissions = {
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.CAMERA};
+        Log.d(TAG, "Verifying user Phone permissions");
+        String[] phonePermissions = {
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+        };
 
-        if (ContextCompat.checkSelfPermission(getContext(), permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getContext(), permissions[1]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getContext(), permissions[2]) == PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(getActivity(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
         {
             return true;
-        } else
+        }
+        else
         {
-            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
             return false;
         }
     }
 
+    /**
+     * @param requestCode           The request code passed in requestPermissions(...)
+     * @param phonePermissions      An array which stores the requested permissions (can never be null)
+     * @param grantResults          The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+     */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
     {
         verifyPermissions();
     }

@@ -105,7 +105,7 @@ public class JobDetailsFragment extends Fragment
         final JobInformation jobInformation = getBundleInformation();
         setJobInformationText(Objects.requireNonNull(jobInformation));
         setOnClickListeners();
-        checkIfUserBidOn();
+       // checkIfUserBidOn();
 
         return view;
     }
@@ -243,28 +243,28 @@ public class JobDetailsFragment extends Fragment
         });
     }
 
-    /**
-     * Checks if the user has already bid on the job, if they have they are unable to
-     * enter another bid for that job and must edit their bid on MyJobs, Pending tab
-     */
-    private void checkIfUserBidOn()
-    {
-        databaseReferenceBidsTable.child(jobId).child(user).addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                buttonBid.setVisibility(View.GONE);
-                editTextBid.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
-    }
+//    /**
+//     * Checks if the user has already bid on the job, if they have they are unable to
+//     * enter another bid for that job and must edit their bid on MyJobs, Pending tab
+//     */
+//    private void checkIfUserBidOn()
+//    {
+//        databaseReferenceBidsTable.child(jobId).child(user).addValueEventListener(new ValueEventListener()
+//        {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot)
+//            {
+//                buttonBid.setVisibility(View.GONE);
+//                editTextBid.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError)
+//            {
+//
+//            }
+//        });
+//    }
 
     @Override
     public void onAttach(Context context)

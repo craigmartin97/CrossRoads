@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity
         databaseReferenceUsers.keepSynced(true);
         auth = databaseConnections.getAuth();
 
-        // If their is already a user signed in
+        // If there is already a user signed in
         if (auth.getCurrentUser() != null)
         {
             Intent intent = new Intent(LoginActivity.this, CrossRoadsMainActivity.class);
