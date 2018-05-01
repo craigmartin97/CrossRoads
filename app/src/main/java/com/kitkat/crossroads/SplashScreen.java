@@ -16,6 +16,9 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * This class contains all the functionality for the SplashScreen that is displayed upon startup.
+ */
 public class SplashScreen extends AppCompatActivity {
 
 
@@ -23,7 +26,13 @@ public class SplashScreen extends AppCompatActivity {
     private String menuFragment, tabView;
     private Bundle newBundle;
 
-
+    /**
+     *onCreate                      This method is called upon launch of the app, as the SplashScreen is set as the app Launcher within the AndroidManifest XML.
+     *                              It creates all of the functionality required to display the startup screen.
+     *
+     * @param savedInstanceState    If the fragment is being recreated from a previous saved state, this is the state.
+     *                              This value may be null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +45,8 @@ public class SplashScreen extends AppCompatActivity {
             tabView = bundle.getString("tabView");
         }
 
+        //Set widgets in the inflated view to variables within this class
         gifImageView = (GifImageView)findViewById(R.id.gifImageView);
-
 
         try{
             InputStream inputStream = getAssets().open("crossroadssplash.gif");
@@ -61,7 +70,6 @@ public class SplashScreen extends AppCompatActivity {
                         MyJobsFragment myJobsFragment = new MyJobsFragment();
                         myJobsFragment.setArguments(newBundle);
                         getFragmentTransaction().replace(R.id.content, myJobsFragment).commit();
-
                     }
                     else if(menuFragment.equals("myAdvertsFragment"))
                     {
@@ -79,6 +87,11 @@ public class SplashScreen extends AppCompatActivity {
             }
         }, 1760);
     }
+
+    /**FragmentTransaction replaces content of the current activity with the content of another fragment
+     *
+     * @return          - returns fragment with new content
+     */
     private FragmentTransaction getFragmentTransaction()
     {
         final android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
