@@ -4,9 +4,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
 
+/**
+ * Terms and Conditions class is used to download a PDF for the terms of service
+ * for the CrossRoads application. The PDF is downloaded locally to the user device
+ */
 public class TermsAndConditions extends AppCompatActivity
 {
-    //a view that displays web pages
+    /**
+     * a view that displays web pages
+     */
     private WebView webView;
 
     /**

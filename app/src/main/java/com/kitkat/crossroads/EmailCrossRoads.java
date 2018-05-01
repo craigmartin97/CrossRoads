@@ -13,33 +13,27 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 
 public class EmailCrossRoads extends Fragment
 {
-    //todo fragment Listeners
-    private OnFragmentInteractionListener mListener;
-
-    //widgets that allow user to enter text and send email
+    /**
+     * Widgets that allow user to enter text and send email
+     */
     private EditText editTextUserQuestion;
+
+    /**
+     * Press to send the email to crossofroadsapp@gmail.com
+     */
     private Button buttonSendEmail;
 
     public EmailCrossRoads()
     {
-        //required empty public constructor
-    }
 
-    //todo - 'unused' method?
-    public static EmailCrossRoads newInstance()
-    {
-        EmailCrossRoads fragment = new EmailCrossRoads();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     /**
-     *
      * @param savedInstanceState -If the fragment is being recreated from a previous saved state, this is the state.
      *                           This value may be null.
      */
@@ -50,11 +44,11 @@ public class EmailCrossRoads extends Fragment
     }
 
     /**
-     * @param inflater              Instantiates a layout XML file into its corresponding view Objects
-     * @param container             A view used to contain other views, in this case, the view fragment_upload_image
-     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
-     *                              This value may be null.
-     * @return                      Returns inflated view
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_upload_image
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,20 +57,23 @@ public class EmailCrossRoads extends Fragment
         View view = inflater.inflate(R.layout.fragment_email_cross_roads, container, false);
         getViewsByIds(view);
         sendEmail();
-
         return view;
     }
 
     /**
-     *
-     * @return         returns an instance of the Authentication section of the Firebase database
+     * @return returns an instance of the Authentication section of the Firebase database
      */
     private FirebaseAuth getAuth()
     {
-        return FirebaseAuth.getInstance();
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        return databaseConnections.getAuth();
     }
 
-    //Set widgets in the inflated view to variables within this class
+    /**
+     * Set widgets in the inflated view to variables within this class
+     *
+     * @param view - the view layout of the fragment
+     */
     private void getViewsByIds(View view)
     {
         editTextUserQuestion = view.findViewById(R.id.editTextUserQuestion);
@@ -94,16 +91,15 @@ public class EmailCrossRoads extends Fragment
             public void onClick(View v)
             {
                 //make sure that text field is populated
-                if(TextUtils.isEmpty(editTextUserQuestion.getText()))
+                if (TextUtils.isEmpty(editTextUserQuestion.getText()))
                 {
                     GenericMethods genericMethods = new GenericMethods();
                     genericMethods.customToastMessage("Please Add A Message To Your Email", getActivity());
-                }
-                else
+                } else
                 {
                     //launch a new email intent
                     Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto","crossofroadsapp@gmail.com", null));
+                            "mailto", "crossofroadsapp@gmail.com", null));
                     intent.putExtra(Intent.EXTRA_SUBJECT, "Question From User, " + getAuth().getCurrentUser().getEmail());
                     intent.putExtra(Intent.EXTRA_TEXT, editTextUserQuestion.getText());
                     startActivity(Intent.createChooser(intent, "Choose an Email client :"));
@@ -113,33 +109,16 @@ public class EmailCrossRoads extends Fragment
     }
 
     /**
+     * onAttach             onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
      *
-     * TODO - 'unused' method?
-     */
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    /**onAttach             onAttach is called when a fragment is first attached to its context
-     *                      onCreate can be called only after the fragment is attached
-     *
-     * @param context       Allows access to application specific resources and classes, also
-     *                      supports application-level operations such as receiving intents, launching activities
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
      */
     @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-        }
     }
 
     /**
@@ -149,12 +128,5 @@ public class EmailCrossRoads extends Fragment
     public void onDetach()
     {
         super.onDetach();
-        mListener = null;
-    }
-
-    //todo fragment listeners
-    public interface OnFragmentInteractionListener
-    {
-        void onFragmentInteraction(Uri uri);
     }
 }

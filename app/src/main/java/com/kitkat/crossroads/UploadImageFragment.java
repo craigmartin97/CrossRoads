@@ -40,54 +40,76 @@ import java.io.ByteArrayOutputStream;
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
-
+/**
+ * UploadImageFragment allows the user to upload a new profile image.
+ * The user must select their current profile image in the navigation header to
+ * make the change. The users image will then be stored in the FireBase storage area
+ * and the URL stored under the users account information in FireBase database
+ */
 public class UploadImageFragment extends Fragment
 {
 
-    //TODO - fragment listeners
-    private OnFragmentInteractionListener mListener;
-
     /**
-     * used in Firebase database connections
+     * Used to connection to the FireBase database, users table
      */
     private DatabaseReference databaseReferenceUsersTable;
+
+    /**
+     * Connecting to FireBase Storage area
+     */
     private StorageReference storageReference;
+
+    /**
+     * Storing the current user unique id
+     */
     private String user;
 
-    private static ImageView profileImage;
-    //address of an image
+    /**
+     * Widget element to store and hold the users profile image
+     */
+    private ImageView profileImage;
+
+    /**
+     * Uri address of an image that has been uploaded
+     * from the users phone
+     */
     private Uri imageUri;
 
-    //used in conjunction with putBytes which returns an UploadTask where we can monitor whether or not the upload was successful
+    /**
+     * used in conjunction with putBytes which returns an UploadTask where we can monitor whether or not the upload was successful
+     * CompressData is used to store the data from the image that has been compressed smaller
+     */
     private static byte[] compressData;
 
-    //code for Gallery Intent, compared with requestCode
+    /**
+     * code for Gallery Intent, compared with requestCode
+     */
     private static final int GALLERY_INTENT = 2;
 
-    //request code for phone permissions
+    /**
+     * request code for phone permissions
+     */
     private final static int REQUEST_CODE = 400;
 
-    //progress dialog used to notify users of image upload status
+    /**
+     * progress dialog used to notify users that image is uploading
+     */
     private ProgressDialog progressDialog;
 
-    //progress bar for image uploads
+    /**
+     * progress bar for image uploads, used to let user know image is loading
+     */
     private ProgressBar progressBar;
+
+    /**
+     * Buttons used to upload a new image and save that image upon
+     * users request
+     */
+    private Button saveProfileImage, uploadProfileImage;
 
     public UploadImageFragment()
     {
         // Required empty public constructor
-    }
-
-    /**
-     * TODO - 'unused' method?
-     * @return      returns fragment
-     */
-    public static UploadImageFragment newInstance()
-    {
-        UploadImageFragment fragment = new UploadImageFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     /**
@@ -105,30 +127,25 @@ public class UploadImageFragment extends Fragment
     }
 
     /**
-     * @param inflater              Instantiates a layout XML file into its corresponding view Objects
-     * @param container             A view used to contain other views, in this case, the view fragment_upload_image
-     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
-     *                              This value may be null.
-     * @return                      Returns inflated view
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_upload_image
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
      */
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_upload_image, container, false);
-
-        //Set widgets in the inflated view to variables within this class
-        profileImage = (ImageView) view.findViewById(R.id.imageViewProfileImage);
-        Button uploadProfileImage = (Button) view.findViewById(R.id.buttonUploadProfileImage);
-        Button saveProfileImage = (Button) view.findViewById(R.id.buttonSaveProfileImage);
-        progressBar = view.findViewById(R.id.progressBar);
+        getViewsByIds(view);
 
         databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                final String profileImageURL = dataSnapshot.child("profileImage").getValue(String.class);
+                final String profileImageURL = dataSnapshot.child(getString(R.string.profile_image_table)).getValue(String.class);
                 Picasso.get().load(profileImageURL).into(profileImage, new Callback()
                 {
                     @Override
@@ -159,16 +176,16 @@ public class UploadImageFragment extends Fragment
             public void onClick(View v)
             {
                 //ensure the permissions for out of app functions have been granted
-                if(verifyPermissions()) {
+                if (verifyPermissions())
+                {
 
                     Intent intent = new Intent(Intent.ACTION_PICK);
                     intent.setType("image/*");
                     startActivityForResult(intent, GALLERY_INTENT);
-                }
-                else
+                } else
                 {
                     //prompt the user for permissions
-                    Toast.makeText(getContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.permission_denied, Toast.LENGTH_SHORT).show();
                     verifyPermissions();
                 }
             }
@@ -198,6 +215,7 @@ public class UploadImageFragment extends Fragment
                             //notify user upload was successful
                             Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
                             Uri downloadUri = taskSnapshot.getDownloadUrl();
+                            assert downloadUri != null;
                             databaseReferenceUsersTable.child(user).child("profileImage").setValue(downloadUri.toString());
                             progressDialog.dismiss();
                         }
@@ -214,7 +232,6 @@ public class UploadImageFragment extends Fragment
                 } else
                 {
                     Toast.makeText(getActivity(), "Can't Upload Same Image", Toast.LENGTH_SHORT).show();
-                    return;
                 }
             }
         });
@@ -223,7 +240,7 @@ public class UploadImageFragment extends Fragment
     }
 
     /**
-     * Establishes connections to the firebase database
+     * Establishes connections to the FireBase database
      */
     private void databaseConnections()
     {
@@ -235,10 +252,22 @@ public class UploadImageFragment extends Fragment
     }
 
     /**
-     *
-     * @param requestCode       The request code passed to startActivityForResult(...)
-     * @param resultCode        The result code, either RESULT_OK or RESULT_CANCELED
-     * @param data              An intent that carries data, in this case its used to get the image Uri
+     * Setting all of the widgets in the layout
+     * file to variables in the fragment
+     */
+    private void getViewsByIds(View view)
+    {
+        profileImage = view.findViewById(R.id.imageViewProfileImage);
+        uploadProfileImage = view.findViewById(R.id.buttonUploadProfileImage);
+        saveProfileImage = view.findViewById(R.id.buttonSaveProfileImage);
+        progressBar = view.findViewById(R.id.progressBar);
+
+    }
+
+    /**
+     * @param requestCode The request code passed to startActivityForResult(...)
+     * @param resultCode  The result code, either RESULT_OK or RESULT_CANCELED
+     * @param data        An intent that carries data, in this case its used to get the image Uri
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -273,44 +302,26 @@ public class UploadImageFragment extends Fragment
             {
                 Log.e("Error Uploading Image: ", e.getMessage());
             }
-        }
-        else
+        } else
         {
             //permissions were denied, so prompt the user again
-            Toast.makeText(getContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
             verifyPermissions();
         }
     }
 
+
     /**
+     * onAttach             onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
      *
-     * TODO - 'unused' method?
-     */
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
-    /**onAttach             onAttach is called when a fragment is first attached to its context
-     *                      onCreate can be called only after the fragment is attached
-     *
-     * @param context       Allows access to application specific resources and classes, also
-     *                      supports application-level operations such as receiving intents, launching activities
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
      */
     @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-        }
     }
 
     /**
@@ -320,19 +331,11 @@ public class UploadImageFragment extends Fragment
     public void onDetach()
     {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     *TODO
-     */
-    public interface OnFragmentInteractionListener
-    {
-        void onFragmentInteraction(Uri uri);
-    }
 
     /**
-     *Verify the user has given the app permissions to use out of app functions
+     * Verify the user has given the app permissions to use out of app functions
      *
      * @return - returns true if permissions have been allowed
      */
@@ -344,12 +347,11 @@ public class UploadImageFragment extends Fragment
                 Manifest.permission.READ_EXTERNAL_STORAGE
         };
 
-        if(ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
+        if (ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getContext(), phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
         {
             return true;
-        }
-        else
+        } else
         {
             ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
             return false;
@@ -358,9 +360,9 @@ public class UploadImageFragment extends Fragment
     }
 
     /**
-     * @param requestCode           The request code passed in requestPermissions(...)
-     * @param phonePermissions      An array which stores the requested permissions (can never be null)
-     * @param grantResults          The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+     * @param requestCode      The request code passed in requestPermissions(...)
+     * @param phonePermissions An array which stores the requested permissions (can never be null)
+     * @param grantResults     The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
