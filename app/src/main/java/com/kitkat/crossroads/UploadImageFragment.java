@@ -185,7 +185,7 @@ public class UploadImageFragment extends Fragment
                 } else
                 {
                     //prompt the user for permissions
-                    Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
                     verifyPermissions();
                 }
             }
