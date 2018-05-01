@@ -61,12 +61,6 @@ public class EditProfileFragment extends Fragment
     private String user;
     private DatabaseReference databaseReferenceUsersTable;
 
-    private FirebaseAuth auth;
-    private DatabaseReference myRef;
-    private FirebaseDatabase database;
-    private StorageReference storageReference;
-//    private StorageReference filePath;
-
     private ProgressDialog progressDialog;
 
     public EditProfileFragment()
@@ -86,6 +80,7 @@ public class EditProfileFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        databaseConnections();
     }
 
     @Override
@@ -93,7 +88,6 @@ public class EditProfileFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-
 
         saveProfile = view.findViewById(R.id.buttonSaveProfile);
 

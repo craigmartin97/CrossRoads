@@ -147,6 +147,7 @@
     <string name="job_key">Job</string>
     <string name="send_email">Send Email</string>
     <string name="phone_number_table">phoneNumber</string>
+    <string name="permission_denied">Permissions Denied</string>
 </resources>
 
 
