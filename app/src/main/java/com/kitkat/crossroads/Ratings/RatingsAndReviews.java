@@ -21,6 +21,7 @@ public class RatingsAndReviews implements Serializable
     public String review;
 
     /**
+     * Blank constructor method
      * Required for serialization
      */
     public RatingsAndReviews()

@@ -35,7 +35,7 @@ import java.util.List;
 public class ViewProfileFragment extends Fragment
 {
     /**
-     * Assigning database connection to firebase database
+     * Assigning database connection to Firebase database
      */
     private DatabaseReference databaseReferenceUsersTable;
     private DatabaseReference databaseReferenceRatingsTable;
@@ -147,6 +147,7 @@ public class ViewProfileFragment extends Fragment
 
                 }
             });
+
         }
         return view;
     }
@@ -277,7 +278,7 @@ public class ViewProfileFragment extends Fragment
         } else
 
         {
-            textViewNoRating.setText("No Ratings For User");
+            textViewNoRating.setText(R.string.no_ratings);
             textViewNoRating.setVisibility(View.VISIBLE);
             userRatingBar.setVisibility(View.GONE);
         }
@@ -442,7 +443,8 @@ public class ViewProfileFragment extends Fragment
         {
             checkBoxAdvertiser.setChecked(false);
             checkBoxCourier.setChecked(true);
-        } else if (advertiser && courier)
+
+        } else
         {
             checkBoxAdvertiser.setChecked(true);
             checkBoxCourier.setChecked(true);
@@ -461,6 +463,7 @@ public class ViewProfileFragment extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
+
     }
 
     /**

@@ -33,13 +33,13 @@
             android:id="@+id/profileImage"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
-            android:layout_alignEnd="@+id/buttonSaveProfile"
-            android:layout_below="@+id/textViewCreateProfileHeader"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="87dp"
             android:adjustViewBounds="false"
             android:contentDescription="@string/Profile_Photo_of_user"
-            android:src="@drawable/selfie" />
+            android:src="@drawable/default_image" />
 
         <EditText
             android:id="@+id/editTextFullName"

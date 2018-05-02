@@ -409,38 +409,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         // Go through the Jobs table
         for (final DataSnapshot ds5 : getJobListChildren())
         {
-            databaseReference.child("Bids").child(ds5.getKey()).child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener()
-            {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot)
-                {
-                    // If the status if complete and the current users job
-                    if (getJobInformation(ds5).getJobStatus().equals("Complete") && dataSnapshot.getValue() != null)
-                    {
-                        boolean active = dataSnapshot.child("active").getValue(boolean.class);
-
-                        if (active)
-                        {
-                            jobListKeyComplete.add(ds5.getKey());
-                            jobListComplete.add(getJobInformation(ds5));
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError)
-                {
-
-                }
-            });
 
 
             // If the status if complete and the current users job
-//            if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
-//            {
-//                jobListKeyComplete.add(ds5.getKey());
-//                jobListComplete.add(getJobInformation(ds5));
-//            }
+            if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
+            {
+                jobListKeyComplete.add(ds5.getKey());
+                jobListComplete.add(getJobInformation(ds5));
+            }
 
         }
 

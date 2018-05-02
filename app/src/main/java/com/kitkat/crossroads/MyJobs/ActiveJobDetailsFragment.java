@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -309,8 +310,16 @@ public class ActiveJobDetailsFragment extends Fragment
                     {
                         Toast.makeText(getActivity(), R.string.success, Toast.LENGTH_SHORT).show();
                         databaseReferenceJobsTable.child(jobId).child(getString(R.string.job_status_table)).setValue(getString(R.string.complete));
-                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack(null).commit();
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        Bundle newBundle = new Bundle();
+                        newBundle.putString("tabView", "Completed");
+                        MyJobsFragment myJobsFragment = new MyJobsFragment();
+                        myJobsFragment.setArguments(newBundle);
+                        fragmentTransaction.replace(R.id.content, myJobsFragment).addToBackStack("tag").commit();
+
+
+
                     }
                 });
             }

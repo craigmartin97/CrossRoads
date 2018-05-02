@@ -42,26 +42,39 @@ import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.R;
 
-import static android.app.Activity.RESULT_OK;
-import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
+/**
+ * Fragment for editing the profile.
+ */
 public class EditProfileFragment extends Fragment
 {
 
+    /**
+     * Variable list for the class.
+     */
     private static final String TAG = "EditProfileActivity";
-
     private OnFragmentInteractionListener mListener;
 
+    /**
+     * Variables that set information in views on page.
+     */
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
     private boolean advertiser, courier;
     private Button saveProfile;
     private String profileImage, userEmail;
-
     private String user;
+
+    /**
+     * Variable for the reference of the database.
+     */
     private DatabaseReference databaseReferenceUsersTable;
 
+    /**
+     * Progress Dialog that appears when a task is in progress.
+     */
     private ProgressDialog progressDialog;
+
 
     public EditProfileFragment()
     {
@@ -76,6 +89,10 @@ public class EditProfileFragment extends Fragment
         return fragment;
     }
 
+    /**
+     * Method that runs on first launch.
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -83,6 +100,14 @@ public class EditProfileFragment extends Fragment
         databaseConnections();
     }
 
+
+    /**
+     * Method that runs everytime the fragment is opened up.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -156,14 +181,15 @@ public class EditProfileFragment extends Fragment
         });
 
         saveProfile = view.findViewById(R.id.buttonSaveProfile);
-        this.profileImage = profileImage;
 
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setMessage("Saving Profile Please Wait...");
+                progressDialog.create();
                 saveUserInformation();
             }
         });
@@ -172,7 +198,7 @@ public class EditProfileFragment extends Fragment
     }
 
     /**
-     * Establishes connections to the firebase database
+     * Establishing connections to Firebase Database, getting current user Id
      */
     private void databaseConnections()
     {
@@ -228,6 +254,10 @@ public class EditProfileFragment extends Fragment
         void onFragmentInteraction(Uri uri);
     }
 
+
+    /**
+     *
+     */
     private void saveUserInformation()
     {
         progressDialog = new ProgressDialog(getActivity());

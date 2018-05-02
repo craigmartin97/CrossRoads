@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.DoneOnEditorActionListener;
 import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
+import com.kitkat.crossroads.MyJobs.MyJobsFragment;
 import com.kitkat.crossroads.R;
 
 import java.math.BigDecimal;
@@ -139,6 +143,7 @@ public class JobDetailsFragment extends Fragment
         jobFrom = view.findViewById(R.id.textViewJobFrom1);
         jobTo = view.findViewById(R.id.textViewJobTo1);
         editTextBid = view.findViewById(R.id.editTextBid);
+        editTextBid.setOnEditorActionListener(new DoneOnEditorActionListener());
         buttonBid = view.findViewById(R.id.buttonBid);
     }
 
@@ -232,7 +237,13 @@ public class JobDetailsFragment extends Fragment
                 String fullName = dataSnapshot.child(DatabaseEntryNames.fullName.name()).getValue(String.class);
                 UserBidInformation userBidInformation = new UserBidInformation(fullName, userBid, userID, true);
                 databaseReferenceBidsTable.child(jobID).child(userID).setValue(userBidInformation);
-                startActivity(new Intent(getActivity(), CrossRoadsMainActivity.class));
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Bundle newBundle = new Bundle();
+                newBundle.putString("tabView", "Bid On");
+                MyJobsFragment myJobsFragment = new MyJobsFragment();
+                myJobsFragment.setArguments(newBundle);
+                fragmentTransaction.replace(R.id.content, myJobsFragment).addToBackStack("tag").commit();
             }
 
             @Override
