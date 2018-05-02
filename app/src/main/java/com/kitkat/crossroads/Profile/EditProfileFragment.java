@@ -45,17 +45,46 @@ import com.kitkat.crossroads.R;
 import static android.app.Activity.RESULT_OK;
 import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
+/**
+ * The EditProfileFragment is used to edit the users personal information
+ * The user is displayed with all of their information that they entered about themselves.
+ * They can then edit this information and submit it.
+ */
 public class EditProfileFragment extends Fragment
 {
-
+    /**
+     * TAG is used for testing, to be displayed in the log
+     */
     private static final String TAG = "EditProfileActivity";
 
-    private OnFragmentInteractionListener mListener;
-
+    /**
+     * Edit texts are used to display the users information in and so the user
+     * can edit it
+     */
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
+
+    /**
+     * Checkboxes are used to display the users current preference on what they
+     * are most likely to be using the app for
+     */
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
+
+    /**
+     * Boolean values to store what the user is primarily using the app for
+     */
     private boolean advertiser, courier;
+
+    /**
+     * Button used to confirm the data that the user is submitting is correct
+     * and to be sent to the database
+     */
     private Button saveProfile;
+
+    /**
+     * Store the users profile image URL and the userEmail
+     * These cannot be edited on this page but they are stored to push
+     *
+     */
     private String profileImage, userEmail;
 
     private String user;
@@ -156,15 +185,14 @@ public class EditProfileFragment extends Fragment
         });
 
         saveProfile = view.findViewById(R.id.buttonSaveProfile);
+        this.profileImage = profileImage;
 
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setMessage("Saving Profile Please Wait...");
-                progressDialog.create();
                 saveUserInformation();
             }
         });
@@ -178,33 +206,6 @@ public class EditProfileFragment extends Fragment
         databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
         databaseReferenceUsersTable.keepSynced(true);
         user = databaseConnections.getCurrentUser();
-    }
-
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        } else
-        {
-        }
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
     }
 
     public interface OnFragmentInteractionListener
@@ -318,6 +319,18 @@ public class EditProfileFragment extends Fragment
     private void customToastMessage(String message)
     {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
     }
 
 }
