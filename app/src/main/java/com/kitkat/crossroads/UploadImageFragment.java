@@ -32,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
+import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -175,18 +176,12 @@ public class UploadImageFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                //ensure the permissions for out of app functions have been granted
-                if (verifyPermissions())
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
                 {
-
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, GALLERY_INTENT);
+                    createGalleryIntent();
                 } else
                 {
-                    //prompt the user for permissions
-                    Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-                    verifyPermissions();
+                    requestStoragePermission();
                 }
             }
         });
@@ -251,6 +246,13 @@ public class UploadImageFragment extends Fragment
         user = databaseConnections.getCurrentUser();
     }
 
+    private void createGalleryIntent()
+    {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, GALLERY_INTENT);
+    }
+
     /**
      * Setting all of the widgets in the layout
      * file to variables in the fragment
@@ -305,11 +307,9 @@ public class UploadImageFragment extends Fragment
         } else
         {
             //permissions were denied, so prompt the user again
-            Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-            verifyPermissions();
+            Toast.makeText(getContext(), getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
         }
     }
-
 
     /**
      * onAttach             onAttach is called when a fragment is first attached to its context
@@ -333,40 +333,24 @@ public class UploadImageFragment extends Fragment
         super.onDetach();
     }
 
-
-    /**
-     * Verify the user has given the app permissions to use out of app functions
-     *
-     * @return - returns true if permissions have been allowed
-     */
-    private boolean verifyPermissions()
+    private void requestStoragePermission()
     {
-        Log.d(TAG, "Verifying user Phone permissions");
-        String[] phonePermissions = {
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-        };
-
-        if (ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getContext(), phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
-        {
-            return true;
-        } else
-        {
-            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
-            return false;
-        }
-
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
     }
 
-    /**
-     * @param requestCode      The request code passed in requestPermissions(...)
-     * @param phonePermissions An array which stores the requested permissions (can never be null)
-     * @param grantResults     The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
-     */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        verifyPermissions();
+        if(requestCode == REQUEST_CODE)
+        {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                createGalleryIntent();
+            }
+            else
+            {
+                Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

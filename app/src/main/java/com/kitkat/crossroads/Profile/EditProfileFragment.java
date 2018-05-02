@@ -208,6 +208,10 @@ public class EditProfileFragment extends Fragment
         user = databaseConnections.getCurrentUser();
     }
 
+    /**
+     *
+     * todo 'unused' method?
+     */
     public void onButtonPressed(Uri uri)
     {
         if (mListener != null)
@@ -216,6 +220,12 @@ public class EditProfileFragment extends Fragment
         }
     }
 
+    /**onAttach             onAttach is called when a fragment is first attached to its context
+     *                      onCreate can be called only after the fragment is attached
+     *
+     * @param context       Allows access to application specific resources and classes, also
+     *                      supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
@@ -228,6 +238,9 @@ public class EditProfileFragment extends Fragment
         }
     }
 
+    /**
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
     @Override
     public void onDetach()
     {

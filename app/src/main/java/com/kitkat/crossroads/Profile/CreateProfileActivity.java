@@ -46,7 +46,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private StorageReference storageReference;
     private String user;
 
-    private final DatabaseConnections databaseConnections = new DatabaseConnections();
+    private DatabaseConnections databaseConnections = new DatabaseConnections();
 
     private static final int REQUEST_CODE = 200;
     private static final int GALLERY_INTENT = 2;
@@ -306,6 +306,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private void preferenceCheck(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, String userEmail)
     {
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
+
         {
 
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,

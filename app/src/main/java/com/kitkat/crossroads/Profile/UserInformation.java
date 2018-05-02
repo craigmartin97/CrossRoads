@@ -6,6 +6,7 @@ package com.kitkat.crossroads.Profile;
  */
 public class UserInformation
 {
+
     /**
      * Variables used for the users information.
      * Must be public for serializable.
@@ -20,7 +21,6 @@ public class UserInformation
     public boolean courier;
     public String profileImage;
     public String userEmail;
-
 
     /**
      * Blank constructor method.
