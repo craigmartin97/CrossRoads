@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
+import android.widget.CheckBox;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -146,5 +148,26 @@ public class GenericMethods
         Bundle bundle = new Bundle();
         bundle.putSerializable(tag, data);
         return bundle;
+    }
+
+    /**
+     * Checks whether the user is primarily going to be using the app as an advertiser
+     * or as a courier or both
+     */
+    public void checkUserPreference(boolean advertiser, boolean courier, CheckBox checkBoxAdvertiser, CheckBox checkBoxCourier)
+    {
+        if (advertiser && !courier)
+        {
+            checkBoxAdvertiser.setChecked(true);
+            checkBoxCourier.setChecked(false);
+        } else if (!advertiser && courier)
+        {
+            checkBoxAdvertiser.setChecked(false);
+            checkBoxCourier.setChecked(true);
+        } else if (advertiser && courier)
+        {
+            checkBoxAdvertiser.setChecked(true);
+            checkBoxCourier.setChecked(true);
+        }
     }
 }

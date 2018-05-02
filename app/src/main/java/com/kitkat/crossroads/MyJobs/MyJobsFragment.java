@@ -407,17 +407,15 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private void completeList()
     {
         // Go through the Jobs table
-        for (final DataSnapshot ds5 : getJobListChildren())
+        for(final DataSnapshot ds5 : getJobListChildren())
         {
-
-
-            // If the status if complete and the current users job
+            // If the status if active and the current users job
             if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
             {
+                // Add the key and information
                 jobListKeyComplete.add(ds5.getKey());
                 jobListComplete.add(getJobInformation(ds5));
             }
-
         }
 
         // Display in the ListView
