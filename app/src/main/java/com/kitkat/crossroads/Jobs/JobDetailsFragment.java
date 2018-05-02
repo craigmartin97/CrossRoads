@@ -21,8 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.ExternalClasses.DoneOnEditorActionListener;
-import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.MyJobs.MyJobsFragment;
 import com.kitkat.crossroads.R;
 
@@ -143,7 +141,6 @@ public class JobDetailsFragment extends Fragment
         jobFrom = view.findViewById(R.id.textViewJobFrom1);
         jobTo = view.findViewById(R.id.textViewJobTo1);
         editTextBid = view.findViewById(R.id.editTextBid);
-        editTextBid.setOnEditorActionListener(new DoneOnEditorActionListener());
         buttonBid = view.findViewById(R.id.buttonBid);
     }
 
