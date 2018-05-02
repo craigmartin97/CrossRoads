@@ -560,7 +560,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                             @Override
                             public void onClick(View v)
                             {
-                                if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
                                 {
                                     createCameraIntent();
                                 }
@@ -578,7 +578,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         @Override
                         public void onClick(View v)
                         {
-                            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                            if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
                             {
                                 createGalleryIntent();
                             }
@@ -1403,7 +1403,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             else
             {
                 Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-
             }
         }
     }

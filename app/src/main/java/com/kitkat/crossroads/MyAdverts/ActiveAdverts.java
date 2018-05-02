@@ -84,7 +84,7 @@ public class ActiveAdverts extends Fragment
     /**
      * Variable to store the current users Id
      */
-    private String user;
+    private String user, phoneNumber1;
 
     /**
      * Creating variable to store the connection to the Firebase Database
@@ -130,8 +130,8 @@ public class ActiveAdverts extends Fragment
         setJobInformationDetails(jobInformation);
 
         setButtonViewCourierProfile();
-        setButtonEmailCourier(courierId);
-        setButtonCallCourier(courierId);
+        setButtonEmailCourier();
+        setButtonCallCourier();
 
         addItemsCollection();
         addItemsDelivery();
@@ -221,17 +221,16 @@ public class ActiveAdverts extends Fragment
     /**
      * Sets on click listener for Email Courier Button
      *
-     * @param courierID     Used to retrieve the courier's email from the database
      */
 
-    private void setButtonEmailCourier(final String courierID)
+    private void setButtonEmailCourier()
     {
         buttonEmailCourier.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                databaseReference.child("Users").child(courierID).addValueEventListener(new ValueEventListener() {
+                databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot)
                     {
@@ -254,10 +253,9 @@ public class ActiveAdverts extends Fragment
     /**
      * Sets on click listener for Call Courier button
      *
-     * @param courierId     Used to retrieve the courier's phone number from the database
      */
 
-    private void setButtonCallCourier(final String courierId)
+    private void setButtonCallCourier()
     {
 
         buttonCallCourier.setOnClickListener(new View.OnClickListener() {
@@ -265,31 +263,29 @@ public class ActiveAdverts extends Fragment
             @Override
             public void onClick(View view)
             {
-                if(verifyPermissions()) {
-
                     databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
                     {
+
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
                         {
-                            String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
-                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                            callIntent.setData(Uri.parse("tel:" + phoneNumber));
-                            startActivity(callIntent);
+                            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
+                            {
+                                String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                                callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                                startActivity(callIntent);
+                            }
+                            else
+                            {
+                                requestPhonePermissions();
+                            }
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
 
                         }
                     });
-
-                }
-                else
-                {
-                    Toast.makeText(getActivity(), "Permissions Denied", Toast.LENGTH_SHORT).show();
-                    verifyPermissions();
-                }
             }
         });
 
@@ -408,37 +404,25 @@ public class ActiveAdverts extends Fragment
         listHashMap3.put(list3.get(0), jobInformation);
     }
 
-    /**
-     * Verifies the user has gave permissions to use out-of-app functions
-     *
-     * @return      Returns true or false based on the user's permission settings
-     */
-    private boolean verifyPermissions()
-    {
-        Log.d(TAG, "Verifying user Phone permissions");
-        String[] phonePermissions = {
-                Manifest.permission.CALL_PHONE
-        };
 
-        if(ContextCompat.checkSelfPermission(getContext(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED)
-        {
-            return true;
-        }
-        else
-        {
-            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
-            return false;
-        }
+    private void requestPhonePermissions()
+    {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CODE);
     }
 
-    /**
-     * @param requestCode           The request code passed in requestPermissions(...)
-     * @param phonePermissions      An array which stores the requested permissions (can never be null)
-     * @param grantResults          The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
-     */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        verifyPermissions();
+        if(requestCode == REQUEST_CODE)
+        {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                setButtonCallCourier();
+            }
+            else
+            {
+                Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

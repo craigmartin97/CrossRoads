@@ -351,19 +351,19 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
                 {
                     if(dataSnapshot.exists())
                     {
-                        boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
-                        boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
-
-                        if (advertiser == true && courier == false)
-                        {
-                            getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-                        } else if (advertiser == false && courier == true)
-                        {
-                            getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-                        } else if (advertiser == true && courier == true)
-                        {
-                            getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
-                        }
+//                        boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
+//                        boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
+//
+//                        if (advertiser == true && courier == false)
+//                        {
+//                            getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+//                        } else if (advertiser == false && courier == true)
+//                        {
+//                            getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+//                        } else if (advertiser == true && courier == true)
+//                        {
+//                            getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+//                        }
                     }
                     else
                     {
