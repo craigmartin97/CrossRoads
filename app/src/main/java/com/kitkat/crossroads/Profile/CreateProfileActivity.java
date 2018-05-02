@@ -313,7 +313,6 @@ public class CreateProfileActivity extends AppCompatActivity
     private void preferenceCheck(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, String userEmail)
     {
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
-
         {
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
                     addressTwo, town, postCode, true, false, null, userEmail);
