@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +25,8 @@ import com.kitkat.crossroads.EnumClasses.DatabaseEntryNames;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.MyJobs.MyJobsFragment;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -63,7 +67,10 @@ public class JobDetailsFragment extends Fragment
     /**
      * Storing the users Id and the jobId
      */
-    private String user, jobId;
+    private String user;
+
+    private ImageView jobImageDetails;
+    private ProgressBar progressBar;
 
     public JobDetailsFragment()
     {
@@ -107,7 +114,6 @@ public class JobDetailsFragment extends Fragment
         final JobInformation jobInformation = getBundleInformation();
         setJobInformationText(Objects.requireNonNull(jobInformation));
         setOnClickListeners();
-       // checkIfUserBidOn();
 
         return view;
     }
@@ -142,6 +148,8 @@ public class JobDetailsFragment extends Fragment
         jobTo = view.findViewById(R.id.textViewJobTo1);
         editTextBid = view.findViewById(R.id.editTextBid);
         buttonBid = view.findViewById(R.id.buttonBid);
+        jobImageDetails = view.findViewById(R.id.jobImageDetails);
+        progressBar = view.findViewById(R.id.progressBar2);
     }
 
     /**
@@ -200,7 +208,20 @@ public class JobDetailsFragment extends Fragment
         jobColTime.setText(jobInformation.getCollectionTime());
         jobFrom.setText(jobInformation.getColTown());
         jobTo.setText(jobInformation.getDelTown());
-        jobId = jobInformation.getJobID().trim();
+        Picasso.get().load(jobInformation.getJobImage()).into(jobImageDetails, new Callback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+
+            }
+        });
     }
 
     /**
@@ -250,29 +271,6 @@ public class JobDetailsFragment extends Fragment
             }
         });
     }
-
-//    /**
-//     * Checks if the user has already bid on the job, if they have they are unable to
-//     * enter another bid for that job and must edit their bid on MyJobs, Pending tab
-//     */
-//    private void checkIfUserBidOn()
-//    {
-//        databaseReferenceBidsTable.child(jobId).child(user).addValueEventListener(new ValueEventListener()
-//        {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot)
-//            {
-//                buttonBid.setVisibility(View.GONE);
-//                editTextBid.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError)
-//            {
-//
-//            }
-//        });
-//    }
 
     @Override
     public void onAttach(Context context)
