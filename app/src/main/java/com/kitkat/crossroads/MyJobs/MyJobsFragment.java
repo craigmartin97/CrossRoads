@@ -485,12 +485,6 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
-
-        if (id == R.id.action_settings)
-        {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }

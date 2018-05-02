@@ -1,5 +1,6 @@
 package com.kitkat.crossroads.Jobs;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -125,8 +126,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private ImageView profileImage;
     private Uri imageUri;
     private static byte[] compressData;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int GALLERY_INTENT = 2;
+    private static final int CAMERA_INTENT = 3;
     private ProgressDialog progressDialog;
 
     private DatePickerDialog.OnDateSetListener dateSetListener;
@@ -180,7 +181,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     /**
      * Code used to confirm phone permissions
      */
-    private static final int REQUEST_CODE = 3;
+    private static final int REQUEST_CODE_GALLERY = 4;
+    private static final int REQUEST_CODE_CAMERA = 5;
 
     /**
      *
@@ -536,8 +538,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             @Override
             public void onClick(View view)
             {
-                if (verifyPermissions())
-                {
+
                     final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                     View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
 
@@ -559,29 +560,35 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                             @Override
                             public void onClick(View v)
                             {
-                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-                                dialog.dismiss();
+                                if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                                {
+                                    createCameraIntent();
+                                }
+                                else
+                                {
+                                    requestCameraPermission();
+                                }
 
                             }
                         });
                     }
 
-                    gallery.setOnClickListener(new View.OnClickListener() {
+                    gallery.setOnClickListener(new View.OnClickListener()
+                    {
                         @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(Intent.ACTION_PICK);
-                            intent.setType("image/*");
-                            startActivityForResult(intent, GALLERY_INTENT);
-                            dialog.dismiss();
+                        public void onClick(View v)
+                        {
+                            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                            {
+                                createGalleryIntent();
+                            }
+                            else
+                            {
+                                requestStoragePermission();
+                            }
                         }
                     });
-                }
-                else
-                {
-                    Toast.makeText(getContext(), "Permissions Denied", Toast.LENGTH_SHORT).show();
-                    verifyPermissions();
-                }
+
             }
         });
 
@@ -1192,7 +1199,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             }
         }
         // Redirect them to the Camera
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
+        else if (requestCode == CAMERA_INTENT && resultCode == RESULT_OK)
         {
             Bundle extras = data.getExtras();
             imageUri = data.getData();
@@ -1347,39 +1354,57 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
-    /**
-     *Verify the user has given the app permissions to use out of app functions
-     *
-     * @return - returns true if permissions have been allowed
-     */
-    private boolean verifyPermissions()
+    private void createGalleryIntent()
     {
-        Log.d(TAG, "Verifying user Phone permissions");
-        String[] phonePermissions = {
-                android.Manifest.permission.CAMERA,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE
-        };
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, GALLERY_INTENT);
+    }
 
-        if(ContextCompat.checkSelfPermission(getActivity(), phonePermissions[0]) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getContext(), phonePermissions[1]) == PackageManager.PERMISSION_GRANTED)
-        {
-            return true;
-        }
-        else
-        {
-            ActivityCompat.requestPermissions(getActivity(), phonePermissions, REQUEST_CODE);
-            return false;
-        }
+    private void createCameraIntent()
+    {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA_INTENT);
     }
 
     /**
-     * @param requestCode           The request code passed in requestPermissions(...)
-     * @param phonePermissions      An array which stores the requested permissions (can never be null)
-     * @param grantResults          The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+     * Request gallery permision
      */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] phonePermissions, @NonNull int[] grantResults)
+    private void requestStoragePermission()
     {
-        verifyPermissions();
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
+    }
+
+    private void requestCameraPermission()
+    {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if(requestCode == REQUEST_CODE_GALLERY)
+        {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                createGalleryIntent();
+            }
+            else
+            {
+                Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == REQUEST_CODE_CAMERA)
+        {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                createCameraIntent();
+            }
+            else
+            {
+                Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+
+            }
+        }
     }
 }
