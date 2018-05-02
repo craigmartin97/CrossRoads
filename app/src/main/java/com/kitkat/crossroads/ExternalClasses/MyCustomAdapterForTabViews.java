@@ -42,6 +42,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     private FragmentActivity fragmentActivity;
     private LayoutInflater layoutInflater;
     private FragmentManager fragmentManager;
+    private final DatabaseConnections databaseConnections = new DatabaseConnections();
 
 
     public MyCustomAdapterForTabViews(FragmentActivity fragmentActivity, boolean isAdded, TabHost host, LayoutInflater layoutInflater, FragmentManager fragmentManager)
@@ -153,15 +154,26 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
 
                 holderBidOn.textViewJobName.setText(mData.get(position).getAdvertName());
                 holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
-                holderBidOn.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
-                holderBidOn.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelPostcode() + ", " + mData.get(position).getDelPostcode());
+
+                //my ads
+                if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+                {
+                    holderBidOn.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
+                    holderBidOn.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelTown() + ", " + mData.get(position).getDelPostcode());
+                }
+                // my jobs
+                else
+                {
+                    holderBidOn.textViewAddressFrom.setText(mData.get(position).getColTown());
+                    holderBidOn.textViewAddressTo.setText(mData.get(position).getDelTown());
+                }
+
 
                 holderBidOn.imageViewCross.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View view)
                     {
-                        final DatabaseConnections databaseConnections = new DatabaseConnections();
 
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
                         View mView = layoutInflater.inflate(R.layout.popup_creator, null);
@@ -254,8 +266,6 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                     }
                 });
 
-                DatabaseConnections databaseConnections = new DatabaseConnections();
-
                 // My Adverts
                 if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
                 {
@@ -298,8 +308,19 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
 
                 holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
                 holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
-                holderAccepted.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
-                holderAccepted.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelPostcode() + ", " + mData.get(position).getDelPostcode());
+
+                //my ads
+                if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+                {
+                    holderAccepted.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
+                    holderAccepted.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelTown() + ", " + mData.get(position).getDelPostcode());
+                }
+                // my jobs
+                else
+                {
+                    holderAccepted.textViewAddressFrom.setText(mData.get(position).getColTown());
+                    holderAccepted.textViewAddressTo.setText(mData.get(position).getDelTown());
+                }
 
                 DatabaseConnections databaseConnections = new DatabaseConnections();
                 databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position).getCourierID()).addValueEventListener(new ValueEventListener()
