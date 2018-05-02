@@ -2,49 +2,24 @@ package com.kitkat.crossroads.Profile;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-
-import android.Manifest;
-import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.ExifInterface;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.R;
-
-import static android.app.Activity.RESULT_OK;
-import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
 /**
  * The EditProfileFragment is used to edit the users personal information
@@ -53,10 +28,6 @@ import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
  */
 public class EditProfileFragment extends Fragment
 {
-    /**
-     * TAG is used for testing, to be displayed in the log
-     */
-    private static final String TAG = "EditProfileActivity";
 
     /**
      * Edit texts are used to display the users information in and so the user
@@ -69,11 +40,6 @@ public class EditProfileFragment extends Fragment
      * are most likely to be using the app for
      */
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
-
-    /**
-     * Boolean values to store what the user is primarily using the app for
-     */
-    private boolean advertiser, courier;
 
     /**
      * Button used to confirm the data that the user is submitting is correct
@@ -100,7 +66,7 @@ public class EditProfileFragment extends Fragment
     /**
      * Accessing the methods in class Generic Methods
      */
-    private GenericMethods genericMethods = new GenericMethods();
+    private final GenericMethods genericMethods = new GenericMethods();
 
     public EditProfileFragment()
     {
@@ -289,12 +255,17 @@ public class EditProfileFragment extends Fragment
             return;
         }
 
+        /*
+      Boolean values to store what the user is primarily using the app for
+     */
+        boolean advertiser;
+        boolean courier;
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
+                    addressTwo, town, postCode, true, false, profileImage, userEmail);
 
             setUserInformation(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -302,7 +273,7 @@ public class EditProfileFragment extends Fragment
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
+                    addressTwo, town, postCode, false, true, profileImage, userEmail);
 
             setUserInformation(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -310,7 +281,7 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
+                    addressTwo, town, postCode, true, true, profileImage, userEmail);
 
             setUserInformation(userInformation);
         }
