@@ -423,7 +423,6 @@ public class ViewProfileFragment extends Fragment
         postCode.setText(postalCode);
         textViewEmail.setText(email);
 
-
         GenericMethods genericMethods = new GenericMethods();
         genericMethods.checkUserPreference(advertiser, courier, checkBoxAdvertiser, checkBoxCourier);
 
