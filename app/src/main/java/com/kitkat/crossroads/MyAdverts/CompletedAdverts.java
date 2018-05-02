@@ -1,5 +1,6 @@
 package com.kitkat.crossroads.MyAdverts;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -322,7 +323,13 @@ public class CompletedAdverts extends Fragment
 
                 View mView = getLayoutInflater().inflate(R.layout.popup_leave_feedback, null);
 
-                alertDialog.setTitle(R.string.leave_feedback);
+                LayoutInflater inflater = getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Leave Feedback");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
+
                 alertDialog.setView(mView);
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();

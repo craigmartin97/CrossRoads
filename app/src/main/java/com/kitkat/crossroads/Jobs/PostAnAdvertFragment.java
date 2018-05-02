@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.MailTo;
@@ -540,55 +541,62 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             public void onClick(View view)
             {
 
-                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                    View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
 
-                    alertDialog.setTitle("Upload Image With");
-                    alertDialog.setView(mView);
-                    final AlertDialog dialog = alertDialog.create();
-                    dialog.show();
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Upload Image With");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
 
-                    Button gallery = mView.findViewById(R.id.gallery);
-                    Button camera = mView.findViewById(R.id.camera);
 
-                    if (!hasCamera())
-                    {
-                        camera.setEnabled(false);
-                    } else
-                    {
-                        camera.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-                                {
-                                    createCameraIntent();
-                                }
-                                else
-                                {
-                                    requestCameraPermission();
-                                }
+                alertDialog.setView(mView);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
 
-                            }
-                        });
-                    }
+                Button gallery = mView.findViewById(R.id.gallery);
+                Button camera = mView.findViewById(R.id.camera);
 
-                    gallery.setOnClickListener(new View.OnClickListener()
+                if (!hasCamera())
+                {
+                    camera.setEnabled(false);
+                } else
+                {
+                    camera.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View v)
                         {
-                            if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                            if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
                             {
-                                createGalleryIntent();
+                                createCameraIntent();
                             }
                             else
                             {
-                                requestStoragePermission();
+                                requestCameraPermission();
                             }
+
                         }
                     });
+                }
+
+                gallery.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                        {
+                            createGalleryIntent();
+                        }
+                        else
+                        {
+                            requestStoragePermission();
+                        }
+                    }
+                });
 
             }
         });
@@ -861,7 +869,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 noButton = viewPopup.findViewById(R.id.noButton);
 
                 // Show the dialog and edit info in it
-                alertDialog.setTitle("Choose Location?");
+                LayoutInflater inflater = getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Use This Location");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
+
                 alertDialog.setView(viewPopup);
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();
@@ -991,7 +1005,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 noButton = viewPopup.findViewById(R.id.noButton);
 
                 // Show the dialog and edit info in it
-                alertDialog.setTitle("Choose Location?");
+                LayoutInflater inflater = getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Use This Location");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
+
                 alertDialog.setView(viewPopup);
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();

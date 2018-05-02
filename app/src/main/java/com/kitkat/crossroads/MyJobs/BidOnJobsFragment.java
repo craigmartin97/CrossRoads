@@ -22,7 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
-import com.kitkat.crossroads.ExternalClasses.DoneOnEditorActionListener;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
@@ -139,7 +138,6 @@ public class BidOnJobsFragment extends Fragment
 
         createExpandableListViews();
 
-        buttonEditBid.setOnEditorActionListener(new DoneOnEditorActionListener());
         buttonEditBid.setOnClickListener(new View.OnClickListener()
         {
             @Override

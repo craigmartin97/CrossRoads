@@ -14,24 +14,22 @@
         android:padding="12dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#FFFFFFFF"
-                    android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:text="@string/text"
-                    android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:textSize="19sp"
                     android:textStyle="bold"
@@ -41,13 +39,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
@@ -55,7 +53,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#FFFFFFFF"
-                    android:textAlignment="center"
                     android:paddingLeft="10dp"
                     android:text="text"
                     android:textStyle="bold"
@@ -73,17 +70,15 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textDesc"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#FFFFFFFF"
-                    android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:text="@string/text"
-                    android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
             </LinearLayout>
@@ -97,17 +92,15 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textAddressFrom"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#FFFFFFFF"
-                    android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:text="@string/text"
-                    android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
             </LinearLayout>
@@ -121,17 +114,15 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textAddressTo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#FFFFFFFF"
-                    android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:text="@string/text"
-                    android:textAlignment="center"
                     android:textColor="#FF000000"
                     android:visibility="visible" />
             </LinearLayout>

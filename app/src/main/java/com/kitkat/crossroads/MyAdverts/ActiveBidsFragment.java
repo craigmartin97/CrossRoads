@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -211,7 +212,12 @@ public class ActiveBidsFragment extends Fragment
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                         final View mView = getLayoutInflater().inflate(R.layout.popup_accept_user_bid, null);
 
-                        alertDialog.setTitle(getString(R.string.accept_bid) + "?");
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+                        View titleView = inflater.inflate(R.layout.popup_style, null);
+                        TextView title = titleView.findViewById(R.id.title);
+                        title.setText("Accept Bid");
+                        title.setTypeface(null, Typeface.BOLD);
+                        alertDialog.setCustomTitle(titleView);
                         alertDialog.setView(mView);
                         final AlertDialog dialog = alertDialog.create();
                         dialog.show();
@@ -379,7 +385,13 @@ public class ActiveBidsFragment extends Fragment
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme);
                         View mView = getLayoutInflater().inflate(R.layout.popup_payment_successful, null);
 
-                        alertDialog.setTitle(R.string.payment_success);
+                        LayoutInflater inflater = getLayoutInflater();
+                        View titleView = inflater.inflate(R.layout.popup_style, null);
+                        TextView title = titleView.findViewById(R.id.title);
+                        title.setText("Payment Successful");
+                        title.setTypeface(null, Typeface.BOLD);
+                        alertDialog.setCustomTitle(titleView);
+
                         alertDialog.setNegativeButton(R.string.close, new DialogInterface.OnClickListener()
                         {
                             @Override

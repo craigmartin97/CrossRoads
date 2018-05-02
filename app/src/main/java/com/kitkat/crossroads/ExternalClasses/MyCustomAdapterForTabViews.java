@@ -1,8 +1,10 @@
 package com.kitkat.crossroads.ExternalClasses;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -176,9 +178,16 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                     {
 
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
+
+                        LayoutInflater inflater = fragmentActivity.getLayoutInflater();
+                        View titleView = inflater.inflate(R.layout.popup_style, null);
+                        TextView title = titleView.findViewById(R.id.title);
+                        title.setText("Logout");
+                        title.setTypeface(null, Typeface.BOLD);
+
                         View mView = layoutInflater.inflate(R.layout.popup_creator, null);
 
-                        alertDialog.setTitle("Delete Job");
+                        alertDialog.setCustomTitle(titleView);
                         alertDialog.setView(mView);
                         final AlertDialog dialog = alertDialog.create();
                         dialog.show();
@@ -359,24 +368,20 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                     {
                         final DatabaseConnections databaseConnections = new DatabaseConnections();
 
-                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
-                        View mView = layoutInflater.inflate(R.layout.popup_creator, null);
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity, R.style.datepicker);
 
-                        alertDialog.setTitle("Delete Job");
-                        alertDialog.setView(mView);
-                        final AlertDialog dialog = alertDialog.create();
-                        dialog.show();
+                        LayoutInflater inflater = fragmentActivity.getLayoutInflater();
+                        View titleView = inflater.inflate(R.layout.popup_style, null);
+                        TextView title = titleView.findViewById(R.id.title);
+                        title.setText("Delete");
+                        title.setTypeface(null, Typeface.BOLD);
 
-                        TextView customText = mView.findViewById(R.id.textViewCustomText);
-                        customText.setText("Are You Sure You Want To Delete " + mData.get(position).getAdvertName() + "?");
-
-                        Button yesButton = mView.findViewById(R.id.yesButton);
-                        Button noButton = mView.findViewById(R.id.noButton);
-
-                        yesButton.setOnClickListener(new View.OnClickListener()
+                        alertDialog.setCustomTitle(titleView);
+                        alertDialog.setMessage("Are You Sure You Want To Delete " + mData.get(position).getAdvertName() + "?");
+                        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener()
                         {
                             @Override
-                            public void onClick(View view)
+                            public void onClick(DialogInterface dialogInterface, int i)
                             {
                                 // My Adverts
                                 if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
@@ -417,18 +422,21 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                                     });
                                 }
                                 notifyDataSetChanged();
-                                dialog.dismiss();
+                                dialogInterface.dismiss();
                             }
                         });
 
-                        noButton.setOnClickListener(new View.OnClickListener()
+                        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener()
                         {
                             @Override
-                            public void onClick(View view)
+                            public void onClick(DialogInterface dialogInterface, int i)
                             {
-                                dialog.dismiss();
+                                dialogInterface.dismiss();
                             }
                         });
+
+                        final AlertDialog dialog = alertDialog.create();
+                        dialog.show();
                     }
                 });
 

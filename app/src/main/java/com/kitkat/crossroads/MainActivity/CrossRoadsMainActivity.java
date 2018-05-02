@@ -1,10 +1,12 @@
 package com.kitkat.crossroads.MainActivity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -153,7 +156,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         } else if (id == R.id.nav_myJobs)
         {
             fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack(getString(R.string.tag)).commit();
-        } else if(id == R.id.nav_askQuestion)
+        } else if (id == R.id.nav_askQuestion)
         {
             fragmentTransaction.replace(R.id.content, new EmailCrossRoads()).addToBackStack(getString(R.string.tag)).commit();
         }
@@ -230,10 +233,17 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             {
                 onBackPressed();
 
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoadsMainActivity.this);
-                alertDialog.setTitle(getString(R.string.logout));
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoadsMainActivity.this, R.style.datepicker);
+
+                LayoutInflater inflater = getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Logout");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
 
                 alertDialog.setMessage(R.string.sure_logout);
+
                 alertDialog.setPositiveButton(getString(R.string.logout), new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -252,10 +262,9 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
                     }
                 });
 
-
                 final AlertDialog dialog = alertDialog.create();
-                dialog.show();
 
+                dialog.show();
             }
         });
 
@@ -342,30 +351,29 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
         wifiCheck();
 
-        if(user != null)
+        if (user != null)
         {
             databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
-                    if(dataSnapshot.exists())
+                    if (dataSnapshot.exists())
                     {
-//                        boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
-//                        boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
-//
-//                        if (advertiser == true && courier == false)
-//                        {
-//                            getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-//                        } else if (advertiser == false && courier == true)
-//                        {
-//                            getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-//                        } else if (advertiser == true && courier == true)
-//                        {
-//                            getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
-//                        }
-                    }
-                    else
+                        boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
+                        boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
+
+                        if (advertiser == true && courier == false)
+                        {
+                            getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
+                        } else if (advertiser == false && courier == true)
+                        {
+                            getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
+                        } else if (advertiser == true && courier == true)
+                        {
+                            getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
+                        }
+                    } else
                     {
                         startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
                     }
@@ -377,8 +385,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
                 }
             });
-        }
-        else
+        } else
         {
             startActivity(new Intent(this, LoginActivity.class));
         }
@@ -398,8 +405,8 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
      */
     public void wifiCheck()
     {
-        WifiManager wifi = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if(!wifi.isWifiEnabled())
+        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!wifi.isWifiEnabled())
         {
             Toast.makeText(this, "Please Turn On Your Wifi.", Toast.LENGTH_LONG).show();
         }
