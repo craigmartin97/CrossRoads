@@ -540,55 +540,55 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             public void onClick(View view)
             {
 
-                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-                    View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
 
-                    alertDialog.setTitle("Upload Image With");
-                    alertDialog.setView(mView);
-                    final AlertDialog dialog = alertDialog.create();
-                    dialog.show();
+                alertDialog.setTitle("Upload Image With");
+                alertDialog.setView(mView);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
 
-                    Button gallery = mView.findViewById(R.id.gallery);
-                    Button camera = mView.findViewById(R.id.camera);
+                Button gallery = mView.findViewById(R.id.gallery);
+                Button camera = mView.findViewById(R.id.camera);
 
-                    if (!hasCamera())
-                    {
-                        camera.setEnabled(false);
-                    } else
-                    {
-                        camera.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-                                {
-                                    createCameraIntent();
-                                }
-                                else
-                                {
-                                    requestCameraPermission();
-                                }
-
-                            }
-                        });
-                    }
-
-                    gallery.setOnClickListener(new View.OnClickListener()
+                if (!hasCamera())
+                {
+                    camera.setEnabled(false);
+                } else
+                {
+                    camera.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View v)
                         {
-                            if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                            if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
                             {
-                                createGalleryIntent();
+                                createCameraIntent();
                             }
                             else
                             {
-                                requestStoragePermission();
+                                requestCameraPermission();
                             }
+
                         }
                     });
+                }
+
+                gallery.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                        {
+                            createGalleryIntent();
+                        }
+                        else
+                        {
+                            requestStoragePermission();
+                        }
+                    }
+                });
 
             }
         });

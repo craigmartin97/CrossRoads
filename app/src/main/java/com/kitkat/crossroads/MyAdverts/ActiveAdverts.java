@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -32,6 +33,7 @@ import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import android.content.Intent;
 
@@ -84,7 +86,7 @@ public class ActiveAdverts extends Fragment
     /**
      * Variable to store the current users Id
      */
-    private String user, phoneNumber1;
+    private ProgressBar progressBar;
 
     /**
      * Creating variable to store the connection to the Firebase Database
@@ -106,7 +108,6 @@ public class ActiveAdverts extends Fragment
         super.onCreate(savedInstanceState);
         DatabaseConnections databaseConnections = new DatabaseConnections();
         databaseReference = databaseConnections.getDatabaseReference();
-        user = databaseConnections.getCurrentUser();
     }
 
     /**
@@ -194,7 +195,7 @@ public class ActiveAdverts extends Fragment
         buttonViewCourierProfile = view.findViewById(R.id.buttonViewCourierProfile);
         buttonEmailCourier = view.findViewById(R.id.buttonEmailCourier);
         buttonCallCourier = view.findViewById(R.id.buttonCallCourier);
-
+        progressBar = view.findViewById(R.id.progressBar);
         expandableListView = view.findViewById(R.id.expandable_list_view);
         expandableListView2 = view.findViewById(R.id.expandable_list_view2);
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
@@ -302,7 +303,20 @@ public class ActiveAdverts extends Fragment
         // Setting text in the TextViews
         jobName.setText(jobInformation.getAdvertName());
         jobDescription.setText(jobInformation.getAdvertDescription());
-        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive);
+        Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageActive, new Callback()
+        {
+            @Override
+            public void onSuccess()
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e)
+            {
+
+            }
+        });
 
         // Set the users accepted bid
         databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()

@@ -1,13 +1,14 @@
 package com.kitkat.crossroads.ExternalClasses;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.widget.CheckBox;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -17,6 +18,8 @@ import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
 
 import java.util.ArrayList;
+
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 /**
  * Class stores lots of methods that other classes, activities and fragments
