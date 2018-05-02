@@ -2,60 +2,32 @@ package com.kitkat.crossroads.Profile;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-
-import android.Manifest;
-import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.ExifInterface;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.R;
 
-
-
 /**
- * Variables that set information in views on page.
  * The EditProfileFragment is used to edit the users personal information
  * The user is displayed with all of their information that they entered about themselves.
  * They can then edit this information and submit it.
  */
 public class EditProfileFragment extends Fragment
 {
-    /**
-     * TAG is used for testing, to be displayed in the log
-     */
-    private static final String TAG = "EditProfileActivity";
 
     /**
      * Edit texts are used to display the users information in and so the user
@@ -70,11 +42,6 @@ public class EditProfileFragment extends Fragment
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
 
     /**
-     * Boolean values to store what the user is primarily using the app for
-     */
-    private boolean advertiser, courier;
-
-    /**
      * Button used to confirm the data that the user is submitting is correct
      * and to be sent to the database
      */
@@ -83,38 +50,35 @@ public class EditProfileFragment extends Fragment
     /**
      * Store the users profile image URL and the userEmail
      * These cannot be edited on this page but they are stored to push
-     *
      */
     private String profileImage, userEmail;
+
+    /**
+     * Storing the current users unique id
+     */
     private String user;
 
     /**
-     * Variable for the reference of the database.
+     * Accessing the FireBase database under the Users table
      */
     private DatabaseReference databaseReferenceUsersTable;
 
     /**
-     * Progress Dialog that appears when a task is in progress.
+     * Accessing the methods in class Generic Methods
      */
-    private ProgressDialog progressDialog;
-
+    private final GenericMethods genericMethods = new GenericMethods();
 
     public EditProfileFragment()
     {
 
     }
 
-    public static EditProfileFragment newInstance()
-    {
-        EditProfileFragment fragment = new EditProfileFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     /**
-     * Method that runs on first launch.
-     * @param savedInstanceState
+     * This method is called when the upload image fragment is displayed. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState -If the fragment is being recreated from a previous saved state, this is the state.
+     *                           This value may be null.
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -123,31 +87,61 @@ public class EditProfileFragment extends Fragment
         databaseConnections();
     }
 
-
     /**
-     * Method that runs everytime the fragment is opened up.
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_upload_image
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        getViewByIds(view);
+        getUsersInformationFromDatabase();
+        createOnClickListnerSave();
+        return view;
+    }
 
-        saveProfile = view.findViewById(R.id.buttonSaveProfile);
+    /**
+     * Connecting to the FireBase database.
+     * Accessing the Users table and keeping it synced as well as getting and
+     * storing the users unique id
+     */
+    private void databaseConnections()
+    {
+        DatabaseConnections databaseConnections = new DatabaseConnections();
+        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
+        databaseReferenceUsersTable.keepSynced(true);
+        user = databaseConnections.getCurrentUser();
+    }
 
+    /**
+     * Storing all of the widgets in the layout file to variables in the fragment
+     *
+     * @param view - The layout file that is being accessed
+     */
+    private void getViewByIds(View view)
+    {
         fullName = view.findViewById(R.id.editTextFullName);
         phoneNumber = view.findViewById(R.id.editTextPhoneNumber);
         addressOne = view.findViewById(R.id.editTextAddress1);
         addressTwo = view.findViewById(R.id.editTextAddress2);
         town = view.findViewById(R.id.editTextTown);
         postCode = view.findViewById(R.id.editTextPostCode);
+        saveProfile = view.findViewById(R.id.buttonSaveProfile);
         checkBoxAdvertiser = view.findViewById(R.id.checkBoxAdvertiser);
         checkBoxCourier = view.findViewById(R.id.checkBoxCourier);
+    }
 
+    /**
+     * Reading from the FireBase database all of the current users personal information.
+     * Then displaying them in the edit text boxes for the user to edit.
+     */
+    private void getUsersInformationFromDatabase()
+    {
         databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -164,16 +158,6 @@ public class EditProfileFragment extends Fragment
                 boolean courier = dataSnapshot.child("courier").getValue(boolean.class);
                 userEmail = dataSnapshot.child("userEmail").getValue(String.class);
 
-                Log.d(TAG, "Full Name: " + name);
-                Log.d(TAG, "Phone Number: " + number);
-                Log.d(TAG, "Address Line One: " + address1);
-                Log.d(TAG, "Address Line Two: " + address2);
-                Log.d(TAG, "Town: " + usersTown);
-                Log.d(TAG, "PostCode: " + postalCode);
-                Log.d(TAG, "ProfileImage: " + profileImage);
-                Log.d(TAG, "Advertiser: " + advertiser);
-                Log.d(TAG, "Courier: " + courier);
-
                 fullName.setText(name);
                 phoneNumber.setText(number);
                 addressOne.setText(address1);
@@ -181,19 +165,7 @@ public class EditProfileFragment extends Fragment
                 town.setText(usersTown);
                 postCode.setText(postalCode);
 
-                if (advertiser && !courier)
-                {
-                    checkBoxAdvertiser.setChecked(true);
-                    checkBoxCourier.setChecked(false);
-                } else if (!advertiser && courier)
-                {
-                    checkBoxAdvertiser.setChecked(false);
-                    checkBoxCourier.setChecked(true);
-                } else if (advertiser && courier)
-                {
-                    checkBoxAdvertiser.setChecked(true);
-                    checkBoxCourier.setChecked(true);
-                }
+                genericMethods.checkUserPreference(advertiser, courier, checkBoxAdvertiser, checkBoxCourier);
             }
 
             @Override
@@ -202,48 +174,28 @@ public class EditProfileFragment extends Fragment
 
             }
         });
+    }
 
-        saveProfile = view.findViewById(R.id.buttonSaveProfile);
-        this.profileImage = profileImage;
-
+    private void createOnClickListnerSave()
+    {
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                progressDialog.setMessage("Saving Profile Please Wait...");
                 saveUserInformation();
             }
         });
-
-        return view;
     }
 
     /**
-     * Establishing connections to Firebase Database, getting current user Id
-     */
-    private void databaseConnections()
-    {
-        DatabaseConnections databaseConnections = new DatabaseConnections();
-        databaseReferenceUsersTable = databaseConnections.getDatabaseReferenceUsers();
-        databaseReferenceUsersTable.keepSynced(true);
-        user = databaseConnections.getCurrentUser();
-    }
-
-    public interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-
-    /**
-     *
+     * Checks if all of the fields have text in, the
      */
     private void saveUserInformation()
     {
-        progressDialog = new ProgressDialog(getActivity());
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Updating Information Please Wait...");
+        progressDialog.create();
         progressDialog.show();
 
         String fullName = this.fullName.getText().toString().trim();
@@ -256,59 +208,64 @@ public class EditProfileFragment extends Fragment
 
         if (TextUtils.isEmpty(fullName))
         {
-            customToastMessage("Please Enter Your Name");
+            genericMethods.customToastMessage("Please Enter Your Phone Number", getActivity());
             return;
         }
         if (TextUtils.isEmpty(phoneNumber))
         {
-            customToastMessage("Please Enter Your Phone Number");
+            genericMethods.customToastMessage("Please Enter A Phone Number", getActivity());
             return;
         }
         if (TextUtils.isEmpty(addressOne))
         {
-            customToastMessage("Please Enter Your House Number & Street");
+            genericMethods.customToastMessage("Please Enter Your House Number & Street", getActivity());
             return;
         }
         if (TextUtils.isEmpty(addressTwo))
         {
-            customToastMessage("Please Enter Your Second Address Line");
+            genericMethods.customToastMessage("Please Enter Your Second Address Line", getActivity());
             return;
         }
         if (TextUtils.isEmpty(town))
         {
-            customToastMessage("Please Enter Your Town");
+            genericMethods.customToastMessage("Please Enter Your Town", getActivity());
             return;
         }
         if (TextUtils.isEmpty(postCode))
         {
-            customToastMessage("Please Enter Your PostCode");
+            genericMethods.customToastMessage("Please Enter Your PostCode", getActivity());
             return;
         }
 
         if (fullName.length() < 4)
         {
-            customToastMessage("Your Full Name Must Be Greater Than Four Characters");
+            genericMethods.customToastMessage("Your Full Name Must Be Greater Than Four Characters", getActivity());
             return;
         }
 
         if (phoneNumber.length() != 11)
         {
-            customToastMessage("Your Phone Number Must Be 11 Numbers Long");
+            genericMethods.customToastMessage("Your Phone Number Must Be 11 Numbers Long", getActivity());
             return;
         }
 
         if (!postCode.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9 ]+$"))
         {
-            customToastMessage("Post Code Must Have Numbers and Letters");
+            genericMethods.customToastMessage("PostCode Must Have Numbers and Letters", getActivity());
             return;
         }
 
+        /*
+      Boolean values to store what the user is primarily using the app for
+     */
+        boolean advertiser;
+        boolean courier;
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
             advertiser = true;
             courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
+                    addressTwo, town, postCode, true, false, profileImage, userEmail);
 
             setUserInformation(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -316,7 +273,7 @@ public class EditProfileFragment extends Fragment
             advertiser = false;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
+                    addressTwo, town, postCode, false, true, profileImage, userEmail);
 
             setUserInformation(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
@@ -324,35 +281,46 @@ public class EditProfileFragment extends Fragment
             advertiser = true;
             courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, profileImage, userEmail);
+                    addressTwo, town, postCode, true, true, profileImage, userEmail);
 
             setUserInformation(userInformation);
         }
 
-        progressDialog.dismiss();
-        customToastMessage("Information Saved...");
+        genericMethods.dismissDialog(progressDialog);
+        genericMethods.customToastMessage("Information Saved...", getActivity());
 
         android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
     }
 
+    /**
+     * Post and send the user information to the database under the user table, under the current
+     * users unique id
+     *
+     * @param userInformation - UserInformation object with the user details stored in
+     */
     private void setUserInformation(UserInformation userInformation)
     {
         databaseReferenceUsersTable.child(user).setValue(userInformation);
     }
 
-    private void customToastMessage(String message)
-    {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
+    /**
+     * onAttach             onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
+     *
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
     }
 
+    /**
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
     @Override
     public void onDetach()
     {

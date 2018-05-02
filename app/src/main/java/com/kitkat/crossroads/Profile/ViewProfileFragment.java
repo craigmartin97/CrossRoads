@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.CircleTransformation;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
@@ -435,20 +436,8 @@ public class ViewProfileFragment extends Fragment
         postCode.setText(postalCode);
         textViewEmail.setText(email);
 
-        if (advertiser && !courier)
-        {
-            checkBoxAdvertiser.setChecked(true);
-            checkBoxCourier.setChecked(false);
-        } else if (!advertiser && courier)
-        {
-            checkBoxAdvertiser.setChecked(false);
-            checkBoxCourier.setChecked(true);
-
-        } else
-        {
-            checkBoxAdvertiser.setChecked(true);
-            checkBoxCourier.setChecked(true);
-        }
+        GenericMethods genericMethods = new GenericMethods();
+        genericMethods.checkUserPreference(advertiser, courier, checkBoxAdvertiser, checkBoxCourier);
         Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
     }
 
