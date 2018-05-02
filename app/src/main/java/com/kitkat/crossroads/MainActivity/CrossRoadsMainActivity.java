@@ -156,7 +156,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         } else if (id == R.id.nav_myJobs)
         {
             fragmentTransaction.replace(R.id.content, new MyJobsFragment()).addToBackStack(getString(R.string.tag)).commit();
-        } else if(id == R.id.nav_askQuestion)
+        } else if (id == R.id.nav_askQuestion)
         {
             fragmentTransaction.replace(R.id.content, new EmailCrossRoads()).addToBackStack(getString(R.string.tag)).commit();
         }
@@ -351,14 +351,14 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
         wifiCheck();
 
-        if(user != null)
+        if (user != null)
         {
             databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
                 {
-                    if(dataSnapshot.exists())
+                    if (dataSnapshot.exists())
                     {
                         boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
                         boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
@@ -373,8 +373,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
                         {
                             getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
                         }
-                    }
-                    else
+                    } else
                     {
                         startActivity(new Intent(getApplicationContext(), CreateProfileActivity.class));
                     }
@@ -386,8 +385,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
                 }
             });
-        }
-        else
+        } else
         {
             startActivity(new Intent(this, LoginActivity.class));
         }
@@ -407,8 +405,8 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
      */
     public void wifiCheck()
     {
-        WifiManager wifi = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if(!wifi.isWifiEnabled())
+        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!wifi.isWifiEnabled())
         {
             Toast.makeText(this, "Please Turn On Your Wifi.", Toast.LENGTH_LONG).show();
         }
