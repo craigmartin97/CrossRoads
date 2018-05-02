@@ -38,16 +38,15 @@ public class CreateProfileActivity extends AppCompatActivity
 {
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
-    private boolean advertiser, courier;
     private Button saveProfile, uploadProfileImage;
-    private static ImageView profileImage;
+    private ImageView profileImage;
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private String user;
 
-    private DatabaseConnections databaseConnections = new DatabaseConnections();
+    private final DatabaseConnections databaseConnections = new DatabaseConnections();
 
     private static final int REQUEST_CODE = 200;
     private static final int GALLERY_INTENT = 2;
@@ -188,6 +187,7 @@ public class CreateProfileActivity extends AppCompatActivity
             databaseVerification();
             startActivityToLogin();
         } else
+
         {
             preferenceCheck(fullName, phoneNumber, addressOne, addressTwo, town, postCode, userEmail);
             databaseVerification();
@@ -198,6 +198,7 @@ public class CreateProfileActivity extends AppCompatActivity
     private void databaseVerification()
     {
         FirebaseUser userEmail = FirebaseAuth.getInstance().getCurrentUser();
+        assert userEmail != null;
         userEmail.sendEmailVerification();
         FirebaseAuth.getInstance().signOut();
     }
@@ -242,6 +243,7 @@ public class CreateProfileActivity extends AppCompatActivity
                     dismissDialog();
                 }
             }).addOnFailureListener(new OnFailureListener()
+
             {
                 @Override
                 public void onFailure(@NonNull Exception e)
@@ -305,26 +307,23 @@ public class CreateProfileActivity extends AppCompatActivity
     {
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
-            advertiser = true;
-            courier = false;
+
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null, userEmail);
+                    addressTwo, town, postCode, true, false, null, userEmail);
 
             uploadUsersProfile(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
-            advertiser = false;
-            courier = true;
+
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null, userEmail);
+                    addressTwo, town, postCode, false, true, null, userEmail);
 
             uploadUsersProfile(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
-            advertiser = true;
-            courier = true;
+
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
-                    addressTwo, town, postCode, advertiser, courier, null, userEmail);
+                    addressTwo, town, postCode, true, true, null, userEmail);
 
             uploadUsersProfile(userInformation);
         }

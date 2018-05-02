@@ -80,6 +80,7 @@ import android.widget.Toast;
 import com.kitkat.crossroads.MapFeatures.PlaceAutocompleteAdapter;
 import com.kitkat.crossroads.MapFeatures.PlaceInformation;
 import com.kitkat.crossroads.MyAdverts.MyAdvertsFragment;
+import com.kitkat.crossroads.MyJobs.MyJobsFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Picasso;
 
@@ -526,7 +527,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 {
                     checkWidgetsContainText();
                     saveEditJob();
-                    newFragmentTransaction(new MyAdvertsFragment());
+                    newFragmentTransaction(new MyAdvertsFragment(), "Pending");
                 }
             }
         });
@@ -1075,10 +1076,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         scrollView.fullScroll(ScrollView.FOCUS_UP);
     }
 
-    private void newFragmentTransaction(Fragment fragmentToTransferTo)
+    private void newFragmentTransaction(Fragment fragmentToTransferTo, String tabView)
     {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Bundle newBundle = new Bundle();
+        newBundle.putString("tabView", tabView);
+        fragmentToTransferTo.setArguments(newBundle);
         fragmentTransaction.replace(R.id.content, fragmentToTransferTo).addToBackStack("tag").commit();
     }
 
@@ -1229,7 +1233,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                     databaseReferenceJobsTable.child(key).setValue(setJobInformation(jobStatus, downloadUri));
 
                     progressDialog.dismiss();
-                    newFragmentTransaction(new FindAJobFragment());
+                    newFragmentTransaction(new MyAdvertsFragment(), "Pending");
                     genericMethods.customToastMessage("Job Uploaded Successfully", getActivity());
 
                 }

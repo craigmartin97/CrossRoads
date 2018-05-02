@@ -7,7 +7,8 @@ package com.kitkat.crossroads.Profile;
 public class UserInformation
 {
     /**
-     * All strings to store the user information in.
+     * Variables used for the users information.
+     * Must be public for serializable.
      */
     public String fullName;
     public String phoneNumber;
@@ -20,6 +21,10 @@ public class UserInformation
     public String profileImage;
     public String userEmail;
 
+
+    /**
+     * Blank constructor method.
+     */
     public UserInformation()
     {
 
