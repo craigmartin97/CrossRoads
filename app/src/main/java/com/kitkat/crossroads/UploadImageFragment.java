@@ -185,7 +185,7 @@ public class UploadImageFragment extends Fragment
                 } else
                 {
                     //prompt the user for permissions
-                    Toast.makeText(getContext(), R.string.permission_denied, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
                     verifyPermissions();
                 }
             }
@@ -305,7 +305,7 @@ public class UploadImageFragment extends Fragment
         } else
         {
             //permissions were denied, so prompt the user again
-            Toast.makeText(getContext(), getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
             verifyPermissions();
         }
     }
