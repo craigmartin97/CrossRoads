@@ -357,16 +357,11 @@ public class ViewProfileFragment extends Fragment
         for (DataSnapshot ds : dataSnapshot.getChildren())
         {
             final String review = ds.child("review").getValue(String.class);
-            String key = dataSnapshot.getKey();
 
-            databaseReferenceUsersTable.child(key).addValueEventListener(new ValueEventListener()
-            {
-                @Override
-                public void onDataChange(DataSnapshot data)
-                {
+
                     // put all of the info in the list view
-                    String fullName = data.child("fullName").getValue(String.class);
-                    collectionInfo.add(review + " - " + fullName);
+
+                    collectionInfo.add(review);
                     listHashMap.put(list.get(0), collectionInfo);
 
                     if (listHashMap.size() != 0)
@@ -399,15 +394,7 @@ public class ViewProfileFragment extends Fragment
                         expandableListView.setVisibility(View.GONE);
                     }
                 }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError)
-                {
-
-                }
-            });
         }
-    }
 
     /**
      * Getting all of the data from the FireBase database and displaying in
