@@ -3,6 +3,7 @@ package com.kitkat.crossroads.ExternalClasses;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -176,9 +177,16 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                     {
 
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
+
+                        LayoutInflater inflater = fragmentActivity.getLayoutInflater();
+                        View titleView = inflater.inflate(R.layout.popup_style, null);
+                        TextView title = titleView.findViewById(R.id.title);
+                        title.setText("Logout");
+                        title.setTypeface(null, Typeface.BOLD);
+
                         View mView = layoutInflater.inflate(R.layout.popup_creator, null);
 
-                        alertDialog.setTitle("Delete Job");
+                        alertDialog.setCustomTitle(titleView);
                         alertDialog.setView(mView);
                         final AlertDialog dialog = alertDialog.create();
                         dialog.show();
@@ -360,9 +368,16 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                         final DatabaseConnections databaseConnections = new DatabaseConnections();
 
                         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
+
+                        LayoutInflater inflater = fragmentActivity.getLayoutInflater();
+                        View titleView = inflater.inflate(R.layout.popup_style, null);
+                        TextView title = titleView.findViewById(R.id.title);
+                        title.setText("Delete");
+                        title.setTypeface(null, Typeface.BOLD);
+
                         View mView = layoutInflater.inflate(R.layout.popup_creator, null);
 
-                        alertDialog.setTitle("Delete Job");
+                        alertDialog.setCustomTitle(titleView);
                         alertDialog.setView(mView);
                         final AlertDialog dialog = alertDialog.create();
                         dialog.show();

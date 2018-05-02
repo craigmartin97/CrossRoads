@@ -1,10 +1,12 @@
 package com.kitkat.crossroads.MainActivity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -230,10 +233,17 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             {
                 onBackPressed();
 
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoadsMainActivity.this);
-                alertDialog.setTitle(getString(R.string.logout));
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CrossRoadsMainActivity.this, R.style.datepicker);
+
+                LayoutInflater inflater = getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Logout");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
 
                 alertDialog.setMessage(R.string.sure_logout);
+
                 alertDialog.setPositiveButton(getString(R.string.logout), new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -252,10 +262,9 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
                     }
                 });
 
-
                 final AlertDialog dialog = alertDialog.create();
-                dialog.show();
 
+                dialog.show();
             }
         });
 

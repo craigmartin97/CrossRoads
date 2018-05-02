@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.MailTo;
@@ -543,7 +544,14 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                 View mView = getLayoutInflater().inflate(R.layout.popup_image_chooser, null);
 
-                alertDialog.setTitle("Upload Image With");
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Upload Image With");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
+
+
                 alertDialog.setView(mView);
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();
@@ -861,7 +869,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 noButton = viewPopup.findViewById(R.id.noButton);
 
                 // Show the dialog and edit info in it
-                alertDialog.setTitle("Choose Location?");
+                LayoutInflater inflater = getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Use This Location");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
+
                 alertDialog.setView(viewPopup);
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();
@@ -991,7 +1005,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 noButton = viewPopup.findViewById(R.id.noButton);
 
                 // Show the dialog and edit info in it
-                alertDialog.setTitle("Choose Location?");
+                LayoutInflater inflater = getLayoutInflater();
+                View titleView = inflater.inflate(R.layout.popup_style, null);
+                TextView title = titleView.findViewById(R.id.title);
+                title.setText("Use This Location");
+                title.setTypeface(null, Typeface.BOLD);
+                alertDialog.setCustomTitle(titleView);
+
                 alertDialog.setView(viewPopup);
                 final AlertDialog dialog = alertDialog.create();
                 dialog.show();
