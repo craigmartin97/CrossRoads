@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
+import com.kitkat.crossroads.ExternalClasses.DoneOnEditorActionListener;
 import com.kitkat.crossroads.ExternalClasses.ExpandableListAdapter;
 import com.kitkat.crossroads.ExternalClasses.ListViewHeight;
 import com.kitkat.crossroads.Jobs.JobInformation;
@@ -137,6 +139,7 @@ public class BidOnJobsFragment extends Fragment
 
         createExpandableListViews();
 
+        buttonEditBid.setOnEditorActionListener(new DoneOnEditorActionListener());
         buttonEditBid.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -149,6 +152,8 @@ public class BidOnJobsFragment extends Fragment
                 }
                 else
                 {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editTextEditBid.getWindowToken(), 0);
                     submitBid(jobId, user);
                 }
             }

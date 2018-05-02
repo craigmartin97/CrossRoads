@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -398,6 +399,15 @@ public class ActiveBidsFragment extends Fragment
                         textViewStatus.setText(jsonObject1.getString("state"));
                         textViewAmount.setText("£" + totalAmount);
                         textViewId.setText(jsonObject1.getString("id"));
+
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        Bundle newBundle = new Bundle();
+                        newBundle.putString("tabView", "Active");
+                        MyAdvertsFragment myAdvertsFragment = new MyAdvertsFragment();
+                        myAdvertsFragment.setArguments(newBundle);
+                        fragmentTransaction.replace(R.id.content, myAdvertsFragment).addToBackStack("tag").commit();
+
                     } catch (JSONException e)
                     {
                         e.printStackTrace();

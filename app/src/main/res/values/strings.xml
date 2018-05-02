@@ -125,7 +125,7 @@
     <string name="sure_logout">Are you sure you want to Logout?</string>
     <string name="full_name_table">fullName</string>
     <string name="profile_image_table">profileImage</string>
-    <string name="courier_id_table">courierId</string>
+    <string name="courier_id_table">courierID</string>
     <string name="user_email_table">userEmail</string>
     <string name="user_bid_table">userBid</string>
     <string name="job_id">JobId</string>
