@@ -425,6 +425,7 @@ public class ViewProfileFragment extends Fragment
 
         GenericMethods genericMethods = new GenericMethods();
         genericMethods.checkUserPreference(advertiser, courier, checkBoxAdvertiser, checkBoxCourier);
+
         Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
     }
 
