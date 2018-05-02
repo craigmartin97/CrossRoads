@@ -30,12 +30,20 @@ import com.kitkat.crossroads.Account.LoginActivity;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
 import com.kitkat.crossroads.R;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Class is used to create a new user profile. After the user has registered for an account
+ * they are displayed with the create profile activity.
+ * The user inputs all of their data such as their name, phone number etc and they can upload a profile
+ * picture as well if they choose. Otherwise a default profile outline will be used
+ */
 public class CreateProfileActivity extends AppCompatActivity
 {
+    /**
+     * 
+     */
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
     private Button saveProfile, uploadProfileImage;
@@ -52,7 +60,6 @@ public class CreateProfileActivity extends AppCompatActivity
     private static final int GALLERY_INTENT = 2;
     private ProgressDialog progressDialog;
     private Uri imageUri;
-    private String imageUrl;
     private static byte[] compressData;
 
     @Override
@@ -255,7 +262,7 @@ public class CreateProfileActivity extends AppCompatActivity
             });
         } else
         {
-            imageUrl = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/default_image.jpg?alt=media&token=4f5aff1d-ed72-4c18-80a7-4da71982730b";
+            String imageUrl = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/default_image.jpg?alt=media&token=4f5aff1d-ed72-4c18-80a7-4da71982730b";
             userInformation.setProfileImage(imageUrl);
             databaseReference.child("Users").child(user).setValue(userInformation);
         }
@@ -307,21 +314,18 @@ public class CreateProfileActivity extends AppCompatActivity
     {
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
-
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
                     addressTwo, town, postCode, true, false, null, userEmail);
 
             uploadUsersProfile(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
-
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
                     addressTwo, town, postCode, false, true, null, userEmail);
 
             uploadUsersProfile(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
-
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
                     addressTwo, town, postCode, true, true, null, userEmail);
 
