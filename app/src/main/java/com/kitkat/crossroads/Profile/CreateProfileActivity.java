@@ -42,7 +42,7 @@ import java.io.ByteArrayOutputStream;
 public class CreateProfileActivity extends AppCompatActivity
 {
     /**
-     * 
+     * Widgets used in the layout file
      */
     private EditText fullName, phoneNumber, addressOne, addressTwo, town, postCode;
     private CheckBox checkBoxAdvertiser, checkBoxCourier;
@@ -62,6 +62,15 @@ public class CreateProfileActivity extends AppCompatActivity
     private Uri imageUri;
     private static byte[] compressData;
 
+
+    /**
+     *
+     * This method is called when CreateProfile is displayed. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -97,6 +106,12 @@ public class CreateProfileActivity extends AppCompatActivity
         });
     }
 
+
+    /**
+     * @param requestCode The request code passed to startActivityForResult, in this case GALLERY_INTENT
+     * @param resultCode  The result code, either RESULT_OK or RESULT_CANCELED
+     * @param data        An intent that carries data, in this case its used to get the image Uri
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -123,6 +138,9 @@ public class CreateProfileActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Validates user entry and sets userInfo variables to the data entered by the user
+     */
     private void saveUserInformation()
     {
         String fullName = this.fullName.getText().toString().trim();
@@ -202,6 +220,9 @@ public class CreateProfileActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Send account verification email to user
+     */
     private void databaseVerification()
     {
         FirebaseUser userEmail = FirebaseAuth.getInstance().getCurrentUser();
@@ -210,6 +231,9 @@ public class CreateProfileActivity extends AppCompatActivity
         FirebaseAuth.getInstance().signOut();
     }
 
+    /**
+     * Set widgets in the inflated view to variables within this class
+     */
     private void getViewByIds()
     {
         profileImage = findViewById(R.id.profileImage);
@@ -225,6 +249,9 @@ public class CreateProfileActivity extends AppCompatActivity
         checkBoxCourier = findViewById(R.id.checkBoxCourier);
     }
 
+    /**
+     * Establishes connections to the FireBase database
+     */
     private void databaseConnections()
     {
         auth = databaseConnections.getAuth();
@@ -233,6 +260,9 @@ public class CreateProfileActivity extends AppCompatActivity
         storageReference = databaseConnections.getStorageReference();
     }
 
+    /**
+     * @param userInformation   instance of UserInformation with all the profile data ready to upload
+     */
     private void uploadUsersProfile(final UserInformation userInformation)
     {
         if (imageUri != null)
@@ -268,16 +298,26 @@ public class CreateProfileActivity extends AppCompatActivity
         }
     }
 
+    /**Allows us to display custom messages to the user
+     *
+     * @param message   String value of toast message
+     */
     private void customToastMessage(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * dismisses dialog
+     */
     private void dismissDialog()
     {
         progressDialog.dismiss();
     }
 
+    /**
+     * Builds gallery intent
+     */
     private void createGalleryIntent()
     {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -285,13 +325,16 @@ public class CreateProfileActivity extends AppCompatActivity
         startActivityForResult(intent, GALLERY_INTENT);
     }
 
+    /**
+     * Requests permission for external storage
+     */
     private void requestStoragePermission()
     {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
     }
 
     /**
-     * @param requestCode  The request code passed in requestPermissions(...)
+     * @param requestCode  The request code passed in requestPermissions
      * @param permissions  An array which stores the requested permissions (can never be null)
      * @param grantResults The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
      */
@@ -310,6 +353,18 @@ public class CreateProfileActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Changes startup pages based on whether user is predominantly an Advertiser or a Courier.
+     *
+     * The following are values that will be saved in the database as the user's Profile Data:
+     * @param fullName
+     * @param phoneNumber
+     * @param addressOne
+     * @param addressTwo
+     * @param town
+     * @param postCode
+     * @param userEmail
+     */
     private void preferenceCheck(String fullName, String phoneNumber, String addressOne, String addressTwo, String town, String postCode, String userEmail)
     {
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
@@ -333,6 +388,9 @@ public class CreateProfileActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Start a login activity
+     */
     private void startActivityToLogin()
     {
         startActivity(new Intent(CreateProfileActivity.this, LoginActivity.class));
