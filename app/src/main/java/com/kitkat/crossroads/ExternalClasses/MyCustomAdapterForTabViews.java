@@ -211,24 +211,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot)
                                         {
-                                            databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position))
-                                                    .child("jobStatus").setValue("Inactive");
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError)
-                                        {
-
-                                        }
-                                    });
-
-                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
-                                    {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot)
-                                        {
-                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position)
-                                                    .getCourierID()).child("active").setValue(false);
+                                            databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).child("jobStatus").setValue("Inactive");
                                         }
 
                                         @Override
@@ -406,6 +389,22 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                                 // My Jobs
                                 else
                                 {
+                                    databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                        {
+                                            databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position))
+                                                    .child("jobStatus").setValue("Inactive");
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError)
+                                        {
+
+                                        }
+                                    });
+
                                     databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
                                     {
                                         @Override

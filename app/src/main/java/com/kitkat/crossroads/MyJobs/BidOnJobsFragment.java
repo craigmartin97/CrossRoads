@@ -153,6 +153,7 @@ public class BidOnJobsFragment extends Fragment
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(editTextEditBid.getWindowToken(), 0);
                     submitBid(jobId, user);
+                    customToastMessage("Bid Successfully Changed");
                 }
             }
         });
@@ -316,7 +317,6 @@ public class BidOnJobsFragment extends Fragment
             {
                 String userBid = dataSnapshot.child("userBid").getValue(String.class);
                 editTextEditBid.setText("£" + userBid);
-                customToastMessage("Bid Successfully Changed");
             }
 
             @Override
