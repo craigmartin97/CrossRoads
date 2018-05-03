@@ -67,7 +67,7 @@ public class JobDetailsFragment extends Fragment
     /**
      * Storing the users Id and the jobId
      */
-    private String user;
+    private String user, jobId;
 
     private ImageView jobImageDetails;
     private ProgressBar progressBar;
@@ -112,7 +112,9 @@ public class JobDetailsFragment extends Fragment
 
         getViewsByIds(view);
         final JobInformation jobInformation = getBundleInformation();
+        jobId = jobInformation.getJobID();
         setJobInformationText(Objects.requireNonNull(jobInformation));
+        checkIfUserBidOn();
         setOnClickListeners();
 
         return view;
@@ -262,6 +264,33 @@ public class JobDetailsFragment extends Fragment
                 MyJobsFragment myJobsFragment = new MyJobsFragment();
                 myJobsFragment.setArguments(newBundle);
                 fragmentTransaction.replace(R.id.content, myJobsFragment).addToBackStack("tag").commit();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+    }
+
+
+        /**
+     * Checks if the user has already bid on the job, if they have they are unable to
+     * enter another bid for that job and must edit their bid on MyJobs, Pending tab
+     */
+    private void checkIfUserBidOn()
+    {
+        databaseReferenceBidsTable.child(jobId).child(user).addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                if(dataSnapshot.exists())
+                {
+                    buttonBid.setVisibility(View.GONE);
+                    editTextBid.setVisibility(View.GONE);
+                }
             }
 
             @Override

@@ -25,6 +25,7 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,6 +60,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
      * Database reference to the FireBase database, under the Jobs table
      */
     private DatabaseReference databaseReferenceJobTable;
+    private DatabaseReference databaseReferenceBidsTable;
 
     /**
      * Accessing class to gain access to methods
@@ -148,6 +150,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         user = databaseConnections.getCurrentUser();
         databaseReferenceJobTable = databaseConnections.getDatabaseReferenceJobs();
         databaseReferenceJobTable.keepSynced(true);
+        databaseReferenceBidsTable = databaseConnections.getDatabaseReferenceBids();
+        databaseReferenceBidsTable.keepSynced(true);
+        user = databaseConnections.getCurrentUser();
     }
 
     /**
