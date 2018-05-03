@@ -277,6 +277,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         };
     }
 
+    /**
+     * the following method populates a drop down list with options to sort Jobs in FindAJob feed
+     */
     private void createSortByDropDown()
     {
         final List<String> sortByList = new ArrayList<>(Arrays.asList(createTextForSortBy()));
@@ -332,6 +335,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         });
     }
 
+    /**
+     * createFilterOptions contains all the functionality for the job filter.
+     * the filter allows users to limit the search results to their preferences
+     */
     private void createFilterOptions()
     {
         filterButton.setOnClickListener(new View.OnClickListener()
@@ -428,6 +435,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         });
     }
 
+    /**
+     *
+     */
     private void setJobSearchQueries()
     {
         jobSearch.setIconified(false);
@@ -435,6 +445,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         jobSearch.setOnQueryTextListener(this);
     }
 
+    /**
+     * OnClick operations for the apply filter button.
+     * This applies the user's specified filter to the feed of Jobs
+     */
     private void applyFilter()
     {
         filterApplyButton.setOnClickListener(new View.OnClickListener()
@@ -464,6 +478,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         });
     }
 
+    /**
+     * Onclick operations for the Clear Filter button.
+     * Removes the previous filter and refreshes the feed.
+     */
     private void clearFilter()
     {
         filterClearButton.setOnClickListener(new View.OnClickListener()
@@ -498,6 +516,11 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         return false;
     }
 
+    /**
+     *TODO
+     * @param newText
+     * @return
+     */
     @Override
     public boolean onQueryTextChange(String newText)
     {
@@ -507,6 +530,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         return false;
     }
 
+    /**
+     *TODO
+     */
     class MyCustomAdapter extends BaseAdapter
     {
 
@@ -524,6 +550,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             }
         }
 
+        /**
+         * todo
+         * @param j
+         */
         void addArray(final ArrayList<JobInformation> j)
         {
             mData.clear();
@@ -570,6 +600,13 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             return false;
         }
 
+        /**
+         * TODO
+         * @param position
+         * @param convertView
+         * @param parent
+         * @return
+         */
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
@@ -615,6 +652,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             return false;
         }
 
+        /**
+         *todo
+         */
         class GroupViewHolder
         {
             TextView textViewName;
@@ -624,6 +664,10 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
             TextView textViewBid;
         }
 
+        /**
+         *todo
+         * @param charText      used in the search query, any Job containing the string charText will be displayed
+         */
         void filter(String charText)
         {
 
@@ -653,9 +697,16 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 mDataOrig = jA;
             }
 
+            /*
+             *todo
+             */
             notifyDataSetChanged();
         }
 
+        /**
+         *todo
+         * @param filterInfo
+         */
         void filterArray(JobInformation filterInfo)
         {
 

@@ -11,9 +11,6 @@ import com.kitkat.crossroads.R;
 
 import java.util.List;
 
-/**
- * Created by craig on 04/04/18.
- */
 
 public class UploadListAdapter extends RecyclerView.Adapter<UploadListAdapter.ViewHolder>
 {
@@ -26,6 +23,13 @@ public class UploadListAdapter extends RecyclerView.Adapter<UploadListAdapter.Vi
         this.fileDoneList = fileDoneList;
     }
 
+
+    /**
+     * todo
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
@@ -33,6 +37,11 @@ public class UploadListAdapter extends RecyclerView.Adapter<UploadListAdapter.Vi
         return new ViewHolder(view);
     }
 
+    /**
+     * todo
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
@@ -49,6 +58,10 @@ public class UploadListAdapter extends RecyclerView.Adapter<UploadListAdapter.Vi
         }
     }
 
+    /**
+     * todo
+     * @return
+     */
     @Override
     public int getItemCount()
     {

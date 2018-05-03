@@ -94,6 +94,13 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         return fragment;
     }
 
+    /**
+     * * This method is called when the MyAdverts tab is displayed. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -115,6 +122,13 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     }
 
+    /**
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_my_adverts
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -165,6 +179,10 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         return view;
     }
 
+
+    /**
+     * Establishes connections to the FireBase database
+     */
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -174,6 +192,10 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         user = databaseConnections.getCurrentUser();
     }
 
+    /**
+     * Set widgets in the inflated view to variables within this class
+     * @param view  gets the job Status tab (pending, active, completed)
+     */
     private void getViewByIds(View view)
     {
         host = view.findViewById(R.id.tabHost);
@@ -183,6 +205,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         jobSearch = view.findViewById(R.id.searchViewPendingJobs);
     }
 
+    /**
+     *Sets titles of Job Status tabs at bottom of the screen
+     */
     private void setTabHost()
     {
         //Tab 1
@@ -201,18 +226,27 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     /**
      * Assign class variables the Firebase tables
      *
-     * @param dataSnapshot
+     * @param dataSnapshot      dataSnapshot used to iterate through the database
      */
     private void createDataSnapShots(DataSnapshot dataSnapshot)
     {
         jobReference = databaseReferences.getTableReference(dataSnapshot, "Jobs");
     }
 
+    /**
+     *
+     * @return Returns all jobs in the database that match the specified jobReference
+     */
     private Iterable<DataSnapshot> getJobListChildren()
     {
         return databaseReferences.getTableChildren(jobReference);
     }
 
+    /**
+     * Retrieves all adverts the user has posted with the "Pending" job status
+     *
+     * @throws ParseException todo
+     */
     private void pendingList() throws ParseException
     {
         for (DataSnapshot ds : getJobListChildren())
@@ -245,6 +279,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         });
     }
 
+    /**
+     * Retrieves all adverts the user has posted with the "Active" job status
+     */
     private void activeList()
     {
         for (DataSnapshot ds : getJobListChildren())
@@ -272,6 +309,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         });
     }
 
+    /**
+     * Retrieves all adverts the user has posted with the "Pending" job status
+     */
     private void completedAdverts()
     {
         for (DataSnapshot ds : getJobListChildren())
@@ -309,6 +349,12 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         genericMethods.clearLists(jobListComplete);
     }
 
+    /**
+     *todo
+     * @param fragment
+     * @param adapter
+     * @param position
+     */
     public void createBundleToTransfer(Fragment fragment, MyCustomAdapterForTabViews adapter, int position)
     {
         // Creating bundle and adding information to transfer into it
@@ -321,6 +367,11 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         genericMethods.beginTransactionToFragment(getFragmentManager(), fragment);
     }
 
+    /**
+     * todo
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -338,6 +389,13 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         }
     }
 
+    /**
+     * onAttach             onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
+     *
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
@@ -350,6 +408,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         }
     }
 
+    /**onDetatch
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
     @Override
     public void onDetach()
     {
@@ -363,6 +424,11 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         return false;
     }
 
+    /**
+     *TODO
+     * @param newText
+     * @return
+     */
     @Override
     public boolean onQueryTextChange(String newText)
     {

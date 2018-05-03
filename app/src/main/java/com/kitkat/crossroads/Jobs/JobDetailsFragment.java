@@ -272,12 +272,22 @@ public class JobDetailsFragment extends Fragment
         });
     }
 
+    /**
+     * onAttach             onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
+     *
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
     }
 
+    /**
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
     @Override
     public void onDetach()
     {

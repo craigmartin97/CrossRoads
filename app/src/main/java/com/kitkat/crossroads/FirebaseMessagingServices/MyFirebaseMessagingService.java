@@ -16,9 +16,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.SplashScreen;
 
-/**
- * Created by q5063319 on 19/03/18.
- */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService implements Constants
 {
@@ -26,6 +23,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     private static final String TAG = "MyFirebaseMsgService";
     private static int count = 0;
 
+    /**
+     *
+     * @param remoteMessage
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage)
     {
@@ -41,6 +42,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     }
 
     //This method is only generating push notification
+
+    /**
+     *
+     * @param messageTitle
+     * @param messageBody
+     * @param tag
+     */
     private void sendNotification(String messageTitle, String messageBody, String tag)
     {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

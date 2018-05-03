@@ -102,6 +102,11 @@ public class ActiveAdverts extends Fragment
 
     private final static int REQUEST_CODE = 100;
 
+    /**
+     *
+     * @param savedInstanceState If the fragment is being recreated from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -112,11 +117,12 @@ public class ActiveAdverts extends Fragment
 
     /**
      * Method displays and renders the content to the user
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     /**
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_active_adverts
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -220,10 +226,9 @@ public class ActiveAdverts extends Fragment
     }
 
     /**
-     * Sets on click listener for Email Courier Button
+     * Sets onClick operations for Email Courier Button
      *
      */
-
     private void setButtonEmailCourier()
     {
         buttonEmailCourier.setOnClickListener(new View.OnClickListener()
@@ -252,10 +257,9 @@ public class ActiveAdverts extends Fragment
     }
 
     /**
-     * Sets on click listener for Call Courier button
+     * Sets onClick operations for Call Courier button
      *
      */
-
     private void setButtonCallCourier()
     {
 
@@ -270,6 +274,9 @@ public class ActiveAdverts extends Fragment
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
                         {
+                            /**
+                             * Ensure the app has the required permissions before we start a new Intent
+                             */
                             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
                             {
                                 String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
@@ -279,6 +286,9 @@ public class ActiveAdverts extends Fragment
                             }
                             else
                             {
+                                /**
+                                 * if permissions are denied, prompt the user again
+                                 */
                                 requestPhonePermissions();
                             }
                         }
@@ -318,7 +328,9 @@ public class ActiveAdverts extends Fragment
             }
         });
 
-        // Set the users accepted bid
+        /*
+         *Set the users accepted bid
+         */
         databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -418,12 +430,20 @@ public class ActiveAdverts extends Fragment
         listHashMap3.put(list3.get(0), jobInformation);
     }
 
-
+    /**
+     * request phone permissions
+     */
     private void requestPhonePermissions()
     {
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CODE);
     }
 
+    /**
+     * Called after permissions are requested.
+     * @param requestCode           the requested permissions, in this case we need CALL_PHONE
+     * @param permissions           the array in which the permissions are held
+     * @param grantResults          the result of the permission request, if equal to PERMISSION_GRANTED the corresponding intent will be constructed
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {

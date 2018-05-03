@@ -89,7 +89,7 @@ public class EditProfileFragment extends Fragment
 
     /**
      * @param inflater           Instantiates a layout XML file into its corresponding view Objects
-     * @param container          A view used to contain other views, in this case, the view fragment_upload_image
+     * @param container          A view used to contain other views, in this case, the view edit_profile
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
      *                           This value may be null.
      * @return Returns inflated view
@@ -176,6 +176,9 @@ public class EditProfileFragment extends Fragment
         });
     }
 
+    /**
+     * Onclick operations for Save Profile Button
+     */
     private void createOnClickListnerSave()
     {
         saveProfile.setOnClickListener(new View.OnClickListener()
@@ -189,7 +192,7 @@ public class EditProfileFragment extends Fragment
     }
 
     /**
-     * Checks if all of the fields have text in, the
+     * Checks if all of the fields have text in, then overwrites edited data in user profile
      */
     private void saveUserInformation()
     {
