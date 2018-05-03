@@ -2,6 +2,7 @@ package com.kitkat.crossroads.MainActivity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -410,5 +411,22 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         {
             Toast.makeText(this, "Please Turn On Your Wifi.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     * Create and display a new progress dialog
+     * @param progressDialog - the progress dialog that is to be created
+     * @param message - The message to be displayed on the progress dialog
+     */
+    public void displayNewProgressDialog(ProgressDialog progressDialog, String message)
+    {
+        progressDialog.setMessage(message);
+        progressDialog.create();
+        progressDialog.show();
+    }
+
+    public void dismissDialog(ProgressDialog progressDialog)
+    {
+        progressDialog.dismiss();
     }
 }
