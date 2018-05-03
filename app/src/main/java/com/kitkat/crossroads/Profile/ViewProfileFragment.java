@@ -33,6 +33,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The view profile fragment allows the user to view their own profile details.
+ * It shows the users phone number, email address, full name, address and profile image.
+ * This class can also show the user the couriers information that they have accepted minus their address information.
+ */
 public class ViewProfileFragment extends Fragment
 {
     /**
@@ -198,7 +203,6 @@ public class ViewProfileFragment extends Fragment
         Bundle bundle = getArguments();
         if (bundle != null)
         {
-            // Assign the courier Id to the String passed across
             courierId = (String) bundle.getSerializable("courierId");
         }
     }
@@ -209,6 +213,7 @@ public class ViewProfileFragment extends Fragment
      */
     private void getUsersStarRating()
     {
+        // Couriers stars
         if (courierId != null)
         {
             databaseReferenceRatingsTable.child(courierId).addValueEventListener(new ValueEventListener()
@@ -225,7 +230,9 @@ public class ViewProfileFragment extends Fragment
 
                 }
             });
-        } else
+        }
+        // Current users stars
+        else
         {
             databaseReferenceRatingsTable.child(user).addValueEventListener(new ValueEventListener()
             {
@@ -257,7 +264,6 @@ public class ViewProfileFragment extends Fragment
         long totalRating = 0;
         long counter = 0;
 
-        // Iterate through entire bids table
         if (dataSnapshot.hasChildren())
         {
             for (DataSnapshot ds : dataSnapshot.getChildren())
@@ -288,12 +294,11 @@ public class ViewProfileFragment extends Fragment
 
     /**
      * Adding information into Expandable list collection information for the users reviews
+     * this information is displayable to the user in a list
      */
     private void addReviews()
     {
-        DatabaseConnections databaseConnections = new DatabaseConnections();
-        String user = databaseConnections.getCurrentUser();
-        final DatabaseReference databaseReference = databaseConnections.getDatabaseReference();
+
 
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
@@ -301,9 +306,10 @@ public class ViewProfileFragment extends Fragment
 
         list.add("Reviews");
 
+        // Couriers information
         if (courierId != null)
         {
-            databaseReference.child("Ratings").child(courierId).addValueEventListener(new ValueEventListener()
+            databaseReferenceRatingsTable.child(courierId).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -326,9 +332,11 @@ public class ViewProfileFragment extends Fragment
 
                 }
             });
-        } else
+        }
+        // Current users information
+        else
         {
-            databaseReference.child("Ratings").child(user).addValueEventListener(new ValueEventListener()
+            databaseReferenceRatingsTable.child(user).addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot)
@@ -358,43 +366,40 @@ public class ViewProfileFragment extends Fragment
         {
             final String review = ds.child("review").getValue(String.class);
 
+            collectionInfo.add(review);
+            listHashMap.put(list.get(0), collectionInfo);
 
-                    // put all of the info in the list view
+            if (listHashMap.size() != 0)
+            {
+                try
+                {
+                    adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
+                    expandableListView.setAdapter(adapter);
 
-                    collectionInfo.add(review);
-                    listHashMap.put(list.get(0), collectionInfo);
+                    textViewNoRating.setVisibility(View.GONE);
+                    expandableListView.setVisibility(View.VISIBLE);
 
-                    if (listHashMap.size() != 0)
+                    expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
                     {
-                        try
+                        @Override
+                        public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
                         {
-                            adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
-                            expandableListView.setAdapter(adapter);
-
-                            textViewNoRating.setVisibility(View.GONE);
-                            expandableListView.setVisibility(View.VISIBLE);
-
-                            expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
-                            {
-                                @Override
-                                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
-                                {
-                                    ListViewHeight listViewHeight = new ListViewHeight();
-                                    listViewHeight.setExpandableListViewHeight(parent, groupPosition);
-                                    return false;
-                                }
-                            });
-                        } catch (NullPointerException e)
-                        {
-                            Toast.makeText(getActivity(), "Can't Display Reviews At This Time", Toast.LENGTH_SHORT).show();
-                            Log.d("ExpandListError: ", e.getMessage());
+                            ListViewHeight listViewHeight = new ListViewHeight();
+                            listViewHeight.setExpandableListViewHeight(parent, groupPosition);
+                            return false;
                         }
-                    } else
-                    {
-                        expandableListView.setVisibility(View.GONE);
-                    }
+                    });
+                } catch (NullPointerException e)
+                {
+                    Toast.makeText(getActivity(), "Can't Display Reviews At This Time", Toast.LENGTH_SHORT).show();
+                    Log.d("ExpandListError: ", e.getMessage());
                 }
+            } else
+            {
+                expandableListView.setVisibility(View.GONE);
+            }
         }
+    }
 
     /**
      * Getting all of the data from the FireBase database and displaying in
@@ -433,7 +438,7 @@ public class ViewProfileFragment extends Fragment
      * onAttach             onAttach is called when a fragment is first attached to its context
      * onCreate can be called only after the fragment is attached
      *
-     * @param context Allows access to application specific resources and classes, also
+     * @param context Context: Allows access to application specific resources and classes, also
      *                supports application-level operations such as receiving intents, launching activities
      */
     @Override

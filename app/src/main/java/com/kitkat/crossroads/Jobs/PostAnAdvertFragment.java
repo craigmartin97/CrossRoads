@@ -73,6 +73,7 @@ import com.kitkat.crossroads.ExternalClasses.Map;
 import com.kitkat.crossroads.ExternalClasses.WorkaroundMapFragment;
 import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
 import com.kitkat.crossroads.MainActivity.CrossRoads;
+
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.support.v4.app.ActivityCompat;
@@ -198,7 +199,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private static final int REQUEST_CODE_CAMERA = 5;
 
     /**
-     *
      * @param savedInstanceState Bundle: If the fragment is being re-created from a previous saved state, this is the state.
      *                           This value may be null.
      */
@@ -207,7 +207,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         super.onCreate(savedInstanceState);
         databaseConnections();
-        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
+        ((CrossRoadsMainActivity) getActivity()).wifiCheck();
     }
 
     /**
@@ -355,7 +355,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     *  Establishes the connections to the FireBase database
+     * Establishes the connections to the FireBase database
      */
     private void databaseConnections()
     {
@@ -377,8 +377,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     /**
      * Assign elements in the layout file to variables in the fragment
      *
-     * @param view  View: the layout that has been inflated
-     *
+     * @param view View: the layout that has been inflated
      */
     private void getViewsByIds(View view)
     {
@@ -435,7 +434,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
      * Creates an array filled with dropdown options
      *
      * @param arrayField
-     * @return          returns adapter
+     * @return returns adapter
      */
 
     private ArrayAdapter<CharSequence> createSpinnerAdapter(int arrayField)
@@ -446,7 +445,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     *Sets on click listeners for widgets in the inflated layout
+     * Sets on click listeners for widgets in the inflated layout
      */
     private void createOnClickListeners()
     {
@@ -539,7 +538,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 {
                     checkWidgetsContainText();
                     saveEditJob();
-                    newFragmentTransaction(new MyAdvertsFragment(), "Pending");
                 }
             }
         });
@@ -578,15 +576,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                         @Override
                         public void onClick(View v)
                         {
-                            if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
                             {
                                 createCameraIntent();
-                            }
-                            else
+                            } else
                             {
                                 requestCameraPermission();
                             }
-
                         }
                     });
                 }
@@ -596,17 +592,15 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                     @Override
                     public void onClick(View v)
                     {
-                        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
                         {
                             createGalleryIntent();
-                        }
-                        else
+                        } else
                         {
                             requestStoragePermission();
                         }
                     }
                 });
-
             }
         });
 
@@ -820,7 +814,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     *todo
+     * todo
      */
     private void getBundleInformation()
     {
@@ -1106,8 +1100,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     *
-     * @param message   Notify user of a required text field
+     * @param message Notify user of a required text field
      */
     private void ifWidgetTextIsNull(EditText text, String message)
     {
@@ -1119,6 +1112,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     /**
      * todo
+     *
      * @param fragmentToTransferTo
      * @param tabView
      */
@@ -1208,10 +1202,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     *
-     * @param requestCode   Can equal either GALLERY_INTENT or CAMERA_INTENT - Used to create intent
-     * @param resultCode    used to verify the operation was successful
-     * @param data          Image Uri
+     * @param requestCode Can equal either GALLERY_INTENT or CAMERA_INTENT - Used to create intent
+     * @param resultCode  used to verify the operation was successful
+     * @param data        Image Uri
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -1261,32 +1254,16 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     {
         final String key = databaseReferenceJobsTable.push().getKey();
 
-        /**
-         * check the user has uploaded an image of the package to be delivered
-         */
         if (imageUri != null)
         {
-            progressDialog.setMessage("Uploading Job Please Wait");
-            progressDialog.create();
-            progressDialog.show();
+            ((CrossRoadsMainActivity) getActivity()).displayNewProgressDialog(progressDialog, "Uploading Image Please Wait...");
             final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(key).child(imageUri.getLastPathSegment());
             filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
             {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                 {
-                    genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
-
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-                    String jobStatus = "Pending";
-
-                    assert (downloadUri) != null;
-                    databaseReferenceJobsTable.child(key).setValue(setJobInformation(jobStatus, downloadUri));
-
-                    progressDialog.dismiss();
-                    newFragmentTransaction(new MyAdvertsFragment(), "Pending");
-                    genericMethods.customToastMessage("Job Uploaded Successfully", getActivity());
-
+                    uploadImage(taskSnapshot, key);
                 }
             }).addOnFailureListener(new OnFailureListener()
             {
@@ -1294,49 +1271,42 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 public void onFailure(@NonNull Exception e)
                 {
                     genericMethods.customToastMessage("Failed To Upload!", getActivity());
-                    progressDialog.dismiss();
+                    ((CrossRoadsMainActivity) getActivity()).dismissDialog(progressDialog);
                 }
             });
         } else
         {
-            genericMethods.customToastMessage("You must upload an image", getActivity());
+            uploadDefaultImage(key);
         }
     }
 
     /**
-     *Update the job information in the database
+     * Update the job information in the database
      */
     private void saveEditJob()
     {
-        /**
-         * User must upload a new image to edit a job
-         */
-        if(imageUri != null)
+        if (imageUri != null)
         {
+            ((CrossRoadsMainActivity) getActivity()).displayNewProgressDialog(progressDialog, "Uploading Image Please Wait...");
             final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
-            filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+            {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-                    String jobStatus = "Pending";
-
-                    assert (downloadUri) != null;
-                    databaseReferenceJobsTable.child(jobIdKey).setValue(setJobInformation(jobStatus, downloadUri));
-                    genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                {
+                    uploadImage(taskSnapshot, jobIdKey);
                 }
             });
-        }
-        else
+        } else
         {
-            genericMethods.customToastMessage("You must upload an image", getActivity());
+            uploadDefaultImage(jobIdKey);
         }
     }
 
     /**
-     *
-     * @param jobStatus       jobStatus is set to "Pending" in saveEditJob, this ensures it appears in the FindAJob feed
-     * @param downloadUri     todo
-     * @return                returns all the jobInformation so that it can be stored in the database
+     * @param jobStatus   jobStatus is set to "Pending" in saveEditJob, this ensures it appears in the FindAJob feed
+     * @param downloadUri todo
+     * @return returns all the jobInformation so that it can be stored in the database
      */
     private JobInformation setJobInformation(String jobStatus, Uri downloadUri)
     {
@@ -1347,7 +1317,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     * @return  check that the Phone's google play services are up to date.
+     * @return check that the Phone's google play services are up to date.
      */
     private boolean isServicesOK()
     {
@@ -1470,34 +1440,51 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     /**
      * Called after permissions are requested.
-     * @param requestCode           the requested permissions, can be GALLERY or CAMERA
-     * @param permissions           the array in which the permissions are held
-     * @param grantResults          the result of the permission request, if equal to PERMISSION_GRANTED the corresponding intent will be constructed
+     *
+     * @param requestCode  the requested permissions, can be GALLERY or CAMERA
+     * @param permissions  the array in which the permissions are held
+     * @param grantResults the result of the permission request, if equal to PERMISSION_GRANTED the corresponding intent will be constructed
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        if(requestCode == REQUEST_CODE_GALLERY)
+        if (requestCode == REQUEST_CODE_GALLERY)
         {
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 createGalleryIntent();
-            }
-            else
+            } else
             {
                 Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (requestCode == REQUEST_CODE_CAMERA)
+        } else if (requestCode == REQUEST_CODE_CAMERA)
         {
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 createCameraIntent();
-            }
-            else
+            } else
             {
                 Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void uploadImage(UploadTask.TaskSnapshot taskSnapshot, String key)
+    {
+        Uri downloadUri = taskSnapshot.getDownloadUrl();
+        String jobStatus = "Pending";
+
+        assert (downloadUri) != null;
+        databaseReferenceJobsTable.child(key).setValue(setJobInformation(jobStatus, downloadUri));
+
+        ((CrossRoadsMainActivity) getActivity()).dismissDialog(progressDialog);
+        newFragmentTransaction(new MyAdvertsFragment(), "Pending");
+        genericMethods.customToastMessage("Job Uploaded Successfully", getActivity());
+    }
+
+    private void uploadDefaultImage(String key)
+    {
+        String imageUrl = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/default_image.jpg?alt=media&token=4f5aff1d-ed72-4c18-80a7-4da71982730b";
+        databaseReferenceJobsTable.child(key).child("jobImage").setValue(imageUrl);
     }
 }
