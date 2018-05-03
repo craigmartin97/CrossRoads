@@ -60,13 +60,20 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         this.host = host;
     }
 
+    /**
+     *
+     * @param item
+     */
     public void addItem(final JobInformation item)
     {
         mData.add(item);
         mDataOrig.add(item);
     }
 
-
+    /**
+     *
+     * @param j
+     */
     public void addArray(final ArrayList<JobInformation> j)
     {
         mData.clear();
@@ -75,6 +82,10 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         mDataOrig = j;
     }
 
+    /**
+     *
+     * @param k
+     */
     public void addKeyArray(final ArrayList<String> k)
     {
         mDataKeys.clear();
@@ -129,6 +140,13 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         return false;
     }
 
+    /**
+     * todo
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent)
     {
@@ -459,6 +477,9 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         return convertView;
     }
 
+    /**
+     * Group View for Bid On
+     */
     public class GroupViewHolderBidOn
     {
         public TextView textViewJobName;
@@ -469,6 +490,9 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         public ImageView imageViewEditPen;
     }
 
+    /**
+     * Group View for Accepted
+     */
     public class GroupViewHolderAccepted
     {
         public TextView textViewJobName;
@@ -478,12 +502,18 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         public TextView textViewBid;
     }
 
+    /**
+     * Group view for Completed
+     */
     public class GroupViewHolderCompleted
     {
         public TextView textViewJobName;
         public ImageView imageViewCross;
     }
 
+    /**
+     * @param charText  Filter results based on String charText
+     */
     public void filter(String charText)
     {
         ArrayList<JobInformation> jobs = new ArrayList<>();
