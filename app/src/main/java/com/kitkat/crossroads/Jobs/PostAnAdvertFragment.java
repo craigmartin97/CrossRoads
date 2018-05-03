@@ -128,18 +128,30 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private ImageView profileImage;
     private Uri imageUri;
     private static byte[] compressData;
+
+    /*
+     *Used to check the user has granted the necessary permissions
+     */
     private static final int GALLERY_INTENT = 2;
     private static final int CAMERA_INTENT = 3;
+
     private ProgressDialog progressDialog;
 
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private static final String TAG = "PostAnActivityFragment";
 
+    /**
+     * Text fields used in the PostAdvert form
+     * Needed so we can set widgets in the inflated view to variables within this class
+     */
     private EditText editTextAdName, editTextAdDescription, editTextColDate, editTextColTime;
     private EditText editTextColAddL1, editTextColAddL2, editTextColAddTown, editTextColAddPostcode;
     private EditText editTextDelAddL1, editTextDelAddL2, editTextDelAddTown, editTextDelAddPostcode;
     private Spinner editTextJobSize, editTextJobType;
     private ScrollView scrollView;
+
+    private CheckBox myAddressCheckBox1, myAddressCheckBox2;
+
 
     private Button buttonPostAd, buttonUploadImages, buttonMap1, buttonMap2;
     private LinearLayout linLayout1, linLayout2;
@@ -150,7 +162,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private JobInformation jobInformation;
     private String jobIdKey;
 
-    private CheckBox myAddressCheckBox1, myAddressCheckBox2;
 
     /**
      * Widgets that are found on the View, fragment_map
@@ -266,10 +277,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         boolean result = ((CrossRoadsMainActivity) getActivity()).getLocationPermissionGranted();
         if (result)
         {
-            // Create google api client, so user has pre-set options to select.
-            /*
-                The main entry point for Google Play services integration
-            */
+            /* Create google api client, so user has pre-set options to select
+             *  The main entry point for Google Play services integration
+             */
             mGoogleApiClient1 = new GoogleApiClient
                     .Builder(getActivity())
                     .addApi(Places.GEO_DATA_API)
@@ -811,6 +821,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
+    /**
+     *
+     */
     private void getBundleInformation()
     {
         Bundle bundle = getArguments();
@@ -821,6 +834,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
+    /**
+     * onClick operations for the Map view
+     */
     private void mapOnClickListeners()
     {
         editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
@@ -1190,11 +1206,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     /**
      *
-     * @param requestCode
-     * @param resultCode
+     * @param requestCode   Can equal either GALLERY_INTENT or CAMERA_INTENT - Used to create intent
+     * @param resultCode    used to verify the operation was successful
      * @param data          Image Uri
      */
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -1236,10 +1251,16 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         progressDialog.dismiss();
     }
 
+    /**
+     * Saves the new Job posting into the database
+     */
     private void saveJobInformation()
     {
         final String key = databaseReferenceJobsTable.push().getKey();
 
+        /**
+         * check the user has uploaded an image of the package to be delivered
+         */
         if (imageUri != null)
         {
             progressDialog.setMessage("Uploading Job Please Wait");
@@ -1279,23 +1300,32 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
+    /**
+     *
+     */
     private void saveEditJob()
     {
-        final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
-        filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+        if(imageUri != null)
         {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-            {
-                Uri downloadUri = taskSnapshot.getDownloadUrl();
-                String jobStatus = "Pending";
+            final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
+            filePath.putBytes(compressData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    String jobStatus = "Pending";
 
-                assert (downloadUri) != null;
-                databaseReferenceJobsTable.child(jobIdKey).setValue(setJobInformation(jobStatus, downloadUri));
-                genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
-            }
-        });
+                    assert (downloadUri) != null;
+                    databaseReferenceJobsTable.child(jobIdKey).setValue(setJobInformation(jobStatus, downloadUri));
+                    genericMethods.customToastMessage("Uploaded Successfully!", getActivity());
+                }
+            });
+        }
+        else
+        {
+            genericMethods.customToastMessage("You must upload an image", getActivity());
+        }
     }
+
 
     private JobInformation setJobInformation(String jobStatus, Uri downloadUri)
     {

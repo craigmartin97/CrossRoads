@@ -270,6 +270,9 @@ public class ActiveAdverts extends Fragment
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
                         {
+                            /**
+                             * Ensure the app has the required permissions before we start a new Intent
+                             */
                             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
                             {
                                 String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
@@ -279,6 +282,9 @@ public class ActiveAdverts extends Fragment
                             }
                             else
                             {
+                                /**
+                                 * if permissions are denied, prompt the user again
+                                 */
                                 requestPhonePermissions();
                             }
                         }
@@ -318,7 +324,9 @@ public class ActiveAdverts extends Fragment
             }
         });
 
-        // Set the users accepted bid
+        /*
+         *Set the users accepted bid
+         */
         databaseReference.child("Bids").child(jobId).child(courierId).addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -424,6 +432,12 @@ public class ActiveAdverts extends Fragment
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CODE);
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
