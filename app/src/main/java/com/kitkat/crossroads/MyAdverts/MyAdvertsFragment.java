@@ -276,7 +276,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     {
         for (DataSnapshot ds : getJobListChildren())
         {
-            if (genericMethods.getJobInformation(ds).getPosterID().equals(user) && genericMethods.getJobInformation(ds).getJobStatus().equals("Completed"))
+            if (genericMethods.getJobInformation(ds).getPosterID().equals(user) && genericMethods.getJobInformation(ds).getJobStatus().equals(getString(R.string.complete)))
             {
                 jobListKeyComplete.add(ds.getKey());
                 jobListComplete.add(genericMethods.getJobInformation(ds));
