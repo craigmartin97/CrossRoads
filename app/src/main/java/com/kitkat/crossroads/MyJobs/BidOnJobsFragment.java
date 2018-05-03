@@ -105,6 +105,14 @@ public class BidOnJobsFragment extends Fragment
      */
     private String jobId;
 
+
+    /**
+     * * This method is called when BidOnJobs is displayed. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -113,12 +121,11 @@ public class BidOnJobsFragment extends Fragment
     }
 
     /**
-     * Method displays and renders the content to the user
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_upload_image
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,7 +159,7 @@ public class BidOnJobsFragment extends Fragment
                 {
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(editTextEditBid.getWindowToken(), 0);
-                    submitBid(jobId, user);
+                    formatSubmittedBid(jobId, user);
                 }
             }
         });
@@ -160,6 +167,9 @@ public class BidOnJobsFragment extends Fragment
         return view;
     }
 
+    /**
+     * Establishes connections to the firebase database
+     */
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -188,10 +198,17 @@ public class BidOnJobsFragment extends Fragment
         expandableListView3 = view.findViewById(R.id.expandable_list_view3);
     }
 
-    private void submitBid(final String jobId, final String user)
+    /**
+     * checks inputted bid matches expected format
+     * @param jobId     ID of the job being bid on
+     * @param user      Current user bidding on the job
+     *                  Needed to store who's bid on which job in the database
+     */
+    private void formatSubmittedBid(final String jobId, final String user)
     {
         String userBid = editTextEditBid.getText().toString().trim();
 
+        //remove leading £ signs from bid
         if(userBid.contains("£"))
         {
             userBid = userBid.substring(userBid.lastIndexOf("£") + 1);
@@ -206,6 +223,39 @@ public class BidOnJobsFragment extends Fragment
         }
     }
 
+    /**
+     *
+     * @param jobId      ID of the job being bid on
+     *
+     * @param user      Current user bidding on the job
+     *                  Needed to store who's bid on which job in the database
+     *
+     * @param userBid   Value of the bid
+     */
+    private void submitBid(final String jobId, final String user, final String userBid)
+    {
+        databaseReferenceBidsTable.child(jobId).child(user).addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                String fullName = dataSnapshot.child(getString(R.string.full_name_table)).getValue(String.class);
+                enterBidIntoFirebase(fullName, userBid);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+    }
+
+    /**Formats the users' bid into a decimal value
+     *
+     * @param userBid   Passed in from Submit bid
+     * @return          Returns new formatted value
+     */
     private String checkUserBidDecimal(String userBid)
     {
         if(!userBid.contains("."))
@@ -215,6 +265,9 @@ public class BidOnJobsFragment extends Fragment
         return userBid;
     }
 
+    /**
+     *Creates all expandable views
+     */
     private void createExpandableListViews()
     {
         adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
@@ -258,25 +311,11 @@ public class BidOnJobsFragment extends Fragment
         });
     }
 
-    private void submitBid(final String jobId, final String user, final String userBid)
-    {
-        databaseReferenceBidsTable.child(jobId).child(user).addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                String fullName = dataSnapshot.child(getString(R.string.full_name_table)).getValue(String.class);
-                enterBidIntoFirebase(fullName, userBid);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
-    }
-
+    /**Saves the bid into the firebase database
+     *
+     * @param fullName      Bidders full name - Will appear in the Advertisers' list of bids
+     * @param userBid       value of bid
+     */
     private void enterBidIntoFirebase(String fullName, String userBid)
     {
         UserBidInformation bidInformation = new UserBidInformation(fullName, userBid, user, true);
@@ -327,6 +366,10 @@ public class BidOnJobsFragment extends Fragment
         });
     }
 
+    /**
+     *
+     * @param jobInformation    New instance of JobInformation - Used to retrieve all the job data
+     */
     private void getJobInformationFromBundle(JobInformation jobInformation)
     {
         // Storing information in variables for later use
@@ -409,17 +452,31 @@ public class BidOnJobsFragment extends Fragment
         listHashMap3.put(list3.get(0), jobInformation);
     }
 
+    /**
+     *
+     * @param message returns a toast message
+     */
     private void customToastMessage(String message)
     {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * onAttach             onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
+     *
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
         super.onAttach(context);
     }
 
+    /**onDetatch
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
     @Override
     public void onDetach()
     {

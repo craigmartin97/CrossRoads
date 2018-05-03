@@ -62,12 +62,27 @@ public class ActiveJobDetailsFragment extends Fragment
     private ImageView jobImageAccepted;
     private ProgressBar progressBar;
 
+    /**
+     *
+     * This method is called when ActiveJobDetails is displayed. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         databaseConnections();
     }
+
+    /**
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_active_job_details
+     *                           This value may be null.
+     * @return Returns inflated view
+     */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,6 +101,10 @@ public class ActiveJobDetailsFragment extends Fragment
         return view;
     }
 
+    /**
+     * Establishes connections to the FireBase database
+     */
+
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -94,6 +113,11 @@ public class ActiveJobDetailsFragment extends Fragment
         storageReference = databaseConnections.getStorageReference();
     }
 
+    /**
+     * Set widgets in the inflated view to variables within this class
+
+     * @param view - View to be inflated
+     */
     private void getViewsByIds(View view)
     {
         textViewJobName1 = view.findViewById(R.id.textViewJobName1);
@@ -108,6 +132,10 @@ public class ActiveJobDetailsFragment extends Fragment
         progressBar = view.findViewById(R.id.progressBar);
     }
 
+    /**Gets a bundle containing an instance of JobInformation
+     *
+     * @return  returns bundle containing jobInformation or null if the bundle is null
+     */
     private JobInformation getBundleInformation()
     {
         final Bundle bundle = this.getArguments();
@@ -122,6 +150,10 @@ public class ActiveJobDetailsFragment extends Fragment
         }
     }
 
+    /**Extracts job information from bundle and sets the pages fields to equal the specified job's data
+     *
+     * @param jobInformation    an instance of the class JobInformation
+     */
     private void getJobInformationFromBundle(JobInformation jobInformation)
     {
         Picasso.get().load(jobInformation.getJobImage()).fit().into(jobImageAccepted, new Callback()
@@ -152,6 +184,9 @@ public class ActiveJobDetailsFragment extends Fragment
         jobSize = jobInformation.getJobSize().toString();
     }
 
+    /**
+     * Adds collection info to the Collection drop down list
+     */
     private void addItemsCollection()
     {
         list = new ArrayList<>();
@@ -169,6 +204,9 @@ public class ActiveJobDetailsFragment extends Fragment
         listHashMap.put(list.get(0), collectionInfo);
     }
 
+    /**
+     * Adds collection info to the Delivery drop down list
+     */
     private void addItemsDelivery()
     {
         list2 = new ArrayList<>();
@@ -184,6 +222,9 @@ public class ActiveJobDetailsFragment extends Fragment
         listHashMap2.put(list2.get(0), deliveryInfo);
     }
 
+    /**
+     * Adds collection info to the JobInfo (Size/Type) drop down list
+     */
     private void addItemsJobInformation()
     {
         list3 = new ArrayList<>();
@@ -198,6 +239,9 @@ public class ActiveJobDetailsFragment extends Fragment
         listHashMap3.put(list3.get(0), jobInformation);
     }
 
+    /**
+     *Creates list views for the Active Job Details page
+     */
     private void createExpandableListViews()
     {
         adapter = new ExpandableListAdapter(getActivity(), list, listHashMap);
@@ -241,6 +285,9 @@ public class ActiveJobDetailsFragment extends Fragment
         });
     }
 
+    /**
+     * Setup for signature pad, including onClick operations
+     */
     private void setupSignaturePad()
     {
         mSignaturePad.setOnSignedListener(new SignaturePad.OnSignedListener()
