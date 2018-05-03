@@ -109,6 +109,10 @@ public class ActiveBidsFragment extends Fragment
         return fragment;
     }
 
+    /**
+     *
+     * @param savedInstanceState -If the fragment is being recreated from a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -116,6 +120,15 @@ public class ActiveBidsFragment extends Fragment
         databaseConnections();
     }
 
+    /**
+     *
+     /**
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_active_bids
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -131,6 +144,9 @@ public class ActiveBidsFragment extends Fragment
         return view;
     }
 
+    /**
+     * todo
+     */
     @Override
     public void onDestroyView()
     {
@@ -138,6 +154,9 @@ public class ActiveBidsFragment extends Fragment
         super.onDestroyView();
     }
 
+    /**
+     * todo
+     */
     @Override
     public void onDestroy()
     {
@@ -350,6 +369,9 @@ public class ActiveBidsFragment extends Fragment
         });
     }
 
+    /**
+     *handles functionality and creates intent for the in-app Paypal payment service
+     */
     private void processPayment()
     {
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalAmount), "GBP"
@@ -361,6 +383,11 @@ public class ActiveBidsFragment extends Fragment
         startActivityForResult(intent, PAYPAL_REQUEST_CODE);
     }
 
+    /**
+     * @param requestCode The request code passed to startActivityForResult. (PAYPAL_REQUEST_CODE)
+     * @param resultCode  The result code, either RESULT_OK or RESULT_CANCELED
+     * @param data        An intent that carries data, in this case its used to get the image Uri
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -435,6 +462,9 @@ public class ActiveBidsFragment extends Fragment
         }
     }
 
+    /**
+     * todo - oli's adapter
+     */
     public class MyCustomAdapter extends BaseAdapter
     {
 
@@ -633,6 +663,14 @@ public class ActiveBidsFragment extends Fragment
         }
     }
 
+
+    /**
+     * onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
+     *
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
@@ -644,6 +682,10 @@ public class ActiveBidsFragment extends Fragment
         {
         }
     }
+
+    /**onDetatch
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
 
     @Override
     public void onDetach()

@@ -202,7 +202,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
      * @param savedInstanceState Bundle: If the fragment is being re-created from a previous saved state, this is the state.
      *                           This value may be null.
      */
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -752,7 +751,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     /**
      * Ensures that no empty fields are accepted and passed into the database
      */
-
     private void checkWidgetsContainText()
     {
         String enterTown = "Please Enter A Town";
@@ -822,7 +820,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     *
+     *todo
      */
     private void getBundleInformation()
     {
@@ -1119,6 +1117,11 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         scrollView.fullScroll(ScrollView.FOCUS_UP);
     }
 
+    /**
+     * todo
+     * @param fragmentToTransferTo
+     * @param tabView
+     */
     private void newFragmentTransaction(Fragment fragmentToTransferTo, String tabView)
     {
         FragmentManager fragmentManager = getFragmentManager();
@@ -1301,10 +1304,13 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     *
+     *Update the job information in the database
      */
     private void saveEditJob()
     {
+        /**
+         * User must upload a new image to edit a job
+         */
         if(imageUri != null)
         {
             final StorageReference filePath = storageReference.child("JobImages").child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(jobIdKey).child(imageUri.getLastPathSegment());
@@ -1326,7 +1332,12 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
-
+    /**
+     *
+     * @param jobStatus       jobStatus is set to "Pending" in saveEditJob, this ensures it appears in the FindAJob feed
+     * @param downloadUri     todo
+     * @return                returns all the jobInformation so that it can be stored in the database
+     */
     private JobInformation setJobInformation(String jobStatus, Uri downloadUri)
     {
         return new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
@@ -1335,6 +1346,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, downloadUri.toString());
     }
 
+    /**
+     * @return  check that the Phone's google play services are up to date.
+     */
     private boolean isServicesOK()
     {
         Log.d(TAG, "IsServicesOK: checking google services version: ");
@@ -1363,12 +1377,17 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         return getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
     }
 
+    /**
+     * Make profile Image visible
+     */
     private void setJobImageHeight()
     {
         profileImage.setVisibility(View.VISIBLE);
-//        profileImage.getLayoutParams().height = 115;
     }
 
+    /**
+     * Compress image data
+     */
     private void compressBitMapForStorage()
     {
         profileImage.buildDrawingCache();
@@ -1386,6 +1405,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     }
 
+    /**
+     * todo
+     */
     @Override
     public void onStop()
     {
@@ -1397,6 +1419,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
+    /**
+     * todo - exactly the same as onStop?
+     */
     @Override
     public void onDetach()
     {
@@ -1408,6 +1433,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
     }
 
+    /**
+     * Creates intent for Gallery
+     */
     private void createGalleryIntent()
     {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -1415,6 +1443,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         startActivityForResult(intent, GALLERY_INTENT);
     }
 
+    /**
+     * Creates intent for Camera
+     */
     private void createCameraIntent()
     {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -1422,18 +1453,27 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     * Request gallery permision
+     * Request gallery permissions
      */
     private void requestStoragePermission()
     {
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_GALLERY);
     }
 
+    /**
+     * Request Camera permissions
+     */
     private void requestCameraPermission()
     {
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
     }
 
+    /**
+     * Called after permissions are requested.
+     * @param requestCode           the requested permissions, can be GALLERY or CAMERA
+     * @param permissions           the array in which the permissions are held
+     * @param grantResults          the result of the permission request, if equal to PERMISSION_GRANTED the corresponding intent will be constructed
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
