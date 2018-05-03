@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -407,9 +409,14 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
     public void wifiCheck()
     {
         WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (!wifi.isWifiEnabled())
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnected();
+        
+        if (!wifi.isWifiEnabled() && !isConnected)
         {
-            Toast.makeText(this, "Please Turn On Your Wifi.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Turn Wifi On Or Mobile Data.", Toast.LENGTH_LONG).show();
         }
     }
 
