@@ -61,7 +61,6 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     }
 
     /**
-     *
      * @param item
      */
     public void addItem(final JobInformation item)
@@ -71,7 +70,6 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     }
 
     /**
-     *
      * @param j
      */
     public void addArray(final ArrayList<JobInformation> j)
@@ -83,7 +81,6 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     }
 
     /**
-     *
      * @param k
      */
     public void addKeyArray(final ArrayList<String> k)
@@ -142,6 +139,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
 
     /**
      * todo
+     *
      * @param position
      * @param convertView
      * @param parent
@@ -157,322 +155,309 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         // Completed holder
         MyCustomAdapterForTabViews.GroupViewHolderCompleted holderCompleted;
 
-        if (convertView == null)
+
+        // Bid on
+        if (host.getCurrentTab() == 0)
         {
-            // Bid on
-            if (host.getCurrentTab() == 0)
+            convertView = mInflater.inflate(R.layout.job_info_bid_on, null);
+            holderBidOn = new MyCustomAdapterForTabViews.GroupViewHolderBidOn();
+
+            holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
+            holderBidOn.imageViewCross = convertView.findViewById(R.id.imageViewCross);
+            holderBidOn.imageViewEditPen = convertView.findViewById(R.id.imageViewEditPen);
+            holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
+            holderBidOn.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
+            holderBidOn.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
+
+            holderBidOn.textViewJobName.setText(mData.get(position).getAdvertName());
+            holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
+
+            //my ads
+            if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
             {
-                convertView = mInflater.inflate(R.layout.job_info_bid_on, null);
-                holderBidOn = new MyCustomAdapterForTabViews.GroupViewHolderBidOn();
+                holderBidOn.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
+                holderBidOn.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelTown() + ", " + mData.get(position).getDelPostcode());
+            }
+            // my jobs
+            else
+            {
+                holderBidOn.textViewAddressFrom.setText(mData.get(position).getColTown());
+                holderBidOn.textViewAddressTo.setText(mData.get(position).getDelTown());
+            }
 
-                holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
-                holderBidOn.imageViewCross = convertView.findViewById(R.id.imageViewCross);
-                holderBidOn.imageViewEditPen = convertView.findViewById(R.id.imageViewEditPen);
-                holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
-                holderBidOn.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
-                holderBidOn.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
 
-                holderBidOn.textViewJobName.setText(mData.get(position).getAdvertName());
-                holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
-
-                //my ads
-                if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+            holderBidOn.imageViewCross.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
                 {
-                    holderBidOn.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
-                    holderBidOn.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelTown() + ", " + mData.get(position).getDelPostcode());
-                }
-                // my jobs
-                else
-                {
-                    holderBidOn.textViewAddressFrom.setText(mData.get(position).getColTown());
-                    holderBidOn.textViewAddressTo.setText(mData.get(position).getDelTown());
-                }
 
+                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
 
-                holderBidOn.imageViewCross.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
+                    LayoutInflater inflater = fragmentActivity.getLayoutInflater();
+                    View titleView = inflater.inflate(R.layout.popup_style, null);
+                    TextView title = titleView.findViewById(R.id.title);
+                    title.setText("Logout");
+                    title.setTypeface(null, Typeface.BOLD);
 
-                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
+                    View mView = layoutInflater.inflate(R.layout.popup_creator, null);
 
-                        LayoutInflater inflater = fragmentActivity.getLayoutInflater();
-                        View titleView = inflater.inflate(R.layout.popup_style, null);
-                        TextView title = titleView.findViewById(R.id.title);
-                        title.setText("Logout");
-                        title.setTypeface(null, Typeface.BOLD);
+                    alertDialog.setCustomTitle(titleView);
+                    alertDialog.setView(mView);
+                    final AlertDialog dialog = alertDialog.create();
+                    dialog.show();
 
-                        View mView = layoutInflater.inflate(R.layout.popup_creator, null);
+                    TextView customText = mView.findViewById(R.id.textViewCustomText);
+                    customText.setText("Are You Sure You Want To Delete " + mData.get(position).getAdvertName() + "?");
 
-                        alertDialog.setCustomTitle(titleView);
-                        alertDialog.setView(mView);
-                        final AlertDialog dialog = alertDialog.create();
-                        dialog.show();
+                    Button yesButton = mView.findViewById(R.id.yesButton);
+                    Button noButton = mView.findViewById(R.id.noButton);
 
-                        TextView customText = mView.findViewById(R.id.textViewCustomText);
-                        customText.setText("Are You Sure You Want To Delete " + mData.get(position).getAdvertName() + "?");
-
-                        Button yesButton = mView.findViewById(R.id.yesButton);
-                        Button noButton = mView.findViewById(R.id.noButton);
-
-                        yesButton.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                // My Adverts
-                                if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
-                                {
-                                    databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
-                                    {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot)
-                                        {
-                                            databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position))
-                                                    .child("jobStatus").setValue("Inactive");
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError)
-                                        {
-
-                                        }
-                                    });
-
-                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
-                                    {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot)
-                                        {
-                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position)
-                                                    .getCourierID()).child("active").setValue(false);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError)
-                                        {
-
-                                        }
-                                    });
-                                }
-                                // My Jobs
-                                else
-                                {
-                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
-                                    {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot)
-                                        {
-                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(databaseConnections.getCurrentUser()).child("active").setValue(false);
-                                            mData.remove(position);
-                                            mDataKeys.remove(position);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError)
-                                        {
-
-                                        }
-                                    });
-                                }
-
-                                notifyDataSetChanged();
-                                dialog.dismiss();
-                            }
-                        });
-
-                        noButton.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                dialog.dismiss();
-                            }
-                        });
-                    }
-                });
-
-                // My Adverts
-                if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
-                {
-                    holderBidOn.imageViewEditPen.setOnClickListener(new View.OnClickListener()
+                    yesButton.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View view)
                         {
-                            GenericMethods genericMethods = new GenericMethods();
-                            PostAnAdvertFragment postAnAdvertFragment = new PostAnAdvertFragment();
+                            // My Adverts
+                            if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+                            {
+                                databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot)
+                                    {
+                                        databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position))
+                                                .child("jobStatus").setValue("Inactive");
+                                    }
 
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("JobInfo", mData.get(position));
-                            bundle.putSerializable("JobIdKey", mDataKeys.get(position));
-                            postAnAdvertFragment.setArguments(bundle);
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError)
+                                    {
 
-                            genericMethods.beginTransactionToFragment(fragmentManager, postAnAdvertFragment);
+                                    }
+                                });
+
+                                databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot)
+                                    {
+                                        databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position)
+                                                .getCourierID()).child("active").setValue(false);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError)
+                                    {
+
+                                    }
+                                });
+                            }
+                            // My Jobs
+                            else
+                            {
+                                databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot)
+                                    {
+                                        databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(databaseConnections.getCurrentUser()).child("active").setValue(false);
+                                        mData.remove(position);
+                                        mDataKeys.remove(position);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError)
+                                    {
+
+                                    }
+                                });
+                            }
+
+                            notifyDataSetChanged();
+                            dialog.dismiss();
+                        }
+                    });
+
+                    noButton.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            dialog.dismiss();
                         }
                     });
                 }
-                // My Jobs
-                else
-                {
-                    holderBidOn.imageViewEditPen.setVisibility(View.GONE);
-                }
+            });
 
-                convertView.setTag(holderBidOn);
-            }
-            // Accepted
-            else if (host.getCurrentTab() == 1)
+            // My Adverts
+            if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
             {
-                convertView = mInflater.inflate(R.layout.job_info_accepted, null);
-                holderAccepted = new MyCustomAdapterForTabViews.GroupViewHolderAccepted();
-
-                holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
-                holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
-                holderAccepted.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
-                holderAccepted.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
-                holderAccepted.textViewBid = convertView.findViewById(R.id.textBid);
-
-                holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
-                holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
-
-                //my ads
-                if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
-                {
-                    holderAccepted.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
-                    holderAccepted.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelTown() + ", " + mData.get(position).getDelPostcode());
-                }
-                // my jobs
-                else
-                {
-                    holderAccepted.textViewAddressFrom.setText(mData.get(position).getColTown());
-                    holderAccepted.textViewAddressTo.setText(mData.get(position).getDelTown());
-                }
-
-                DatabaseConnections databaseConnections = new DatabaseConnections();
-                databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position).getCourierID()).addValueEventListener(new ValueEventListener()
-                {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot)
-                    {
-                        String acceptedBid = dataSnapshot.child("userBid").getValue(String.class);
-                        holderAccepted.textViewBid.setText("£" + acceptedBid);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError)
-                    {
-
-                    }
-                });
-
-                convertView.setTag(holderAccepted);
-            }
-            // Completed
-            else if (host.getCurrentTab() == 2)
-            {
-                convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
-
-                holderCompleted = new MyCustomAdapterForTabViews.GroupViewHolderCompleted();
-
-                holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
-                holderCompleted.imageViewCross = convertView.findViewById(R.id.imageViewCross);
-
-                holderCompleted.textViewJobName.setText(mData.get(position).getAdvertName());
-                holderCompleted.imageViewCross.setOnClickListener(new View.OnClickListener()
+                holderBidOn.imageViewEditPen.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View view)
                     {
-                        final DatabaseConnections databaseConnections = new DatabaseConnections();
+                        GenericMethods genericMethods = new GenericMethods();
+                        PostAnAdvertFragment postAnAdvertFragment = new PostAnAdvertFragment();
 
-                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity, R.style.datepicker);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("JobInfo", mData.get(position));
+                        bundle.putSerializable("JobIdKey", mDataKeys.get(position));
+                        postAnAdvertFragment.setArguments(bundle);
 
-                        LayoutInflater inflater = fragmentActivity.getLayoutInflater();
-                        View titleView = inflater.inflate(R.layout.popup_style, null);
-                        TextView title = titleView.findViewById(R.id.title);
-                        title.setText("Delete");
-                        title.setTypeface(null, Typeface.BOLD);
-
-                        alertDialog.setCustomTitle(titleView);
-                        alertDialog.setMessage("Are You Sure You Want To Delete " + mData.get(position).getAdvertName() + "?");
-                        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i)
-                            {
-                                // My Adverts
-                                if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
-                                {
-                                    databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
-                                    {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot)
-                                        {
-                                            databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position))
-                                                    .child("jobStatus").setValue("Inactive");
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError)
-                                        {
-
-                                        }
-                                    });
-
-                                }
-                                // My Jobs
-                                else
-                                {
-                                    databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
-                                    {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot)
-                                        {
-                                            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(databaseConnections.getCurrentUser()).child("active").setValue(false);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError)
-                                        {
-
-                                        }
-                                    });
-                                }
-                                notifyDataSetChanged();
-                                dialogInterface.dismiss();
-                            }
-                        });
-
-                        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i)
-                            {
-                                dialogInterface.dismiss();
-                            }
-                        });
-
-                        final AlertDialog dialog = alertDialog.create();
-                        dialog.show();
+                        genericMethods.beginTransactionToFragment(fragmentManager, postAnAdvertFragment);
                     }
                 });
+            }
+            // My Jobs
+            else
+            {
+                holderBidOn.imageViewEditPen.setVisibility(View.GONE);
+            }
 
-                convertView.setTag(holderCompleted);
-            }
-        } else
-        {
-            if (host.getCurrentTab() == 0)
-            {
-                holderBidOn = (MyCustomAdapterForTabViews.GroupViewHolderBidOn) convertView.getTag();
-            } else if (host.getCurrentTab() == 1)
-            {
-                holderAccepted = (MyCustomAdapterForTabViews.GroupViewHolderAccepted) convertView.getTag();
-            } else if (host.getCurrentTab() == 2)
-            {
-                holderCompleted = (MyCustomAdapterForTabViews.GroupViewHolderCompleted) convertView.getTag();
-            }
+            convertView.setTag(holderBidOn);
         }
+        // Accepted
+        else if (host.getCurrentTab() == 1)
+        {
+            convertView = mInflater.inflate(R.layout.job_info_accepted, null);
+            holderAccepted = new MyCustomAdapterForTabViews.GroupViewHolderAccepted();
+
+            holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
+            holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
+            holderAccepted.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
+            holderAccepted.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
+            holderAccepted.textViewBid = convertView.findViewById(R.id.textBid);
+
+            holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
+            holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
+
+            //my ads
+            if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+            {
+                holderAccepted.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
+                holderAccepted.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelTown() + ", " + mData.get(position).getDelPostcode());
+            }
+            // my jobs
+            else
+            {
+                holderAccepted.textViewAddressFrom.setText(mData.get(position).getColTown());
+                holderAccepted.textViewAddressTo.setText(mData.get(position).getDelTown());
+            }
+
+            DatabaseConnections databaseConnections = new DatabaseConnections();
+            databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(mData.get(position).getCourierID()).addValueEventListener(new ValueEventListener()
+            {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
+                {
+                    String acceptedBid = dataSnapshot.child("userBid").getValue(String.class);
+                    holderAccepted.textViewBid.setText("£" + acceptedBid);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError)
+                {
+
+                }
+            });
+
+            convertView.setTag(holderAccepted);
+        }
+        // Completed
+        else if (host.getCurrentTab() == 2)
+        {
+            convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
+
+            holderCompleted = new MyCustomAdapterForTabViews.GroupViewHolderCompleted();
+
+            holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
+            holderCompleted.imageViewCross = convertView.findViewById(R.id.imageViewCross);
+
+            holderCompleted.textViewJobName.setText(mData.get(position).getAdvertName());
+            holderCompleted.imageViewCross.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    final DatabaseConnections databaseConnections = new DatabaseConnections();
+
+                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity, R.style.datepicker);
+
+                    LayoutInflater inflater = fragmentActivity.getLayoutInflater();
+                    View titleView = inflater.inflate(R.layout.popup_style, null);
+                    TextView title = titleView.findViewById(R.id.title);
+                    title.setText("Delete");
+                    title.setTypeface(null, Typeface.BOLD);
+
+                    alertDialog.setCustomTitle(titleView);
+                    alertDialog.setMessage("Are You Sure You Want To Delete " + mData.get(position).getAdvertName() + "?");
+                    alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            // My Adverts
+                            if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+                            {
+                                databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot)
+                                    {
+                                        databaseConnections.getDatabaseReference().child("Jobs").child(mDataKeys.get(position))
+                                                .child("jobStatus").setValue("Inactive");
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError)
+                                    {
+
+                                    }
+                                });
+
+                            }
+                            // My Jobs
+                            else
+                            {
+                                databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).addListenerForSingleValueEvent(new ValueEventListener()
+                                {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot)
+                                    {
+                                        databaseConnections.getDatabaseReference().child("Bids").child(mDataKeys.get(position)).child(databaseConnections.getCurrentUser()).child("active").setValue(false);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError)
+                                    {
+
+                                    }
+                                });
+                            }
+                            notifyDataSetChanged();
+                            dialogInterface.dismiss();
+                        }
+                    });
+
+                    alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            dialogInterface.dismiss();
+                        }
+                    });
+
+                    final AlertDialog dialog = alertDialog.create();
+                    dialog.show();
+                }
+            });
+
+            convertView.setTag(holderCompleted);
+        }
+
 
         return convertView;
     }
@@ -512,7 +497,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     }
 
     /**
-     * @param charText  Filter results based on String charText
+     * @param charText Filter results based on String charText
      */
     public void filter(String charText)
     {
