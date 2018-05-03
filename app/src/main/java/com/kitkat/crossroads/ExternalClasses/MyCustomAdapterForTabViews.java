@@ -90,12 +90,15 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     @Override
     public Object getItem(int position)
     {
+        System.out.println("getItem-P:" + position);
+
         return mData.get(position);
     }
 
     @Override
     public long getItemId(int position)
     {
+        System.out.println("getItemId-P:" + position);
         return 0;
     }
 
@@ -132,6 +135,9 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
     @Override
     public View getView(final int position, View convertView, ViewGroup parent)
     {
+        System.out.println("P:" + position);
+
+        View row = null;
         // Bid on holder
         MyCustomAdapterForTabViews.GroupViewHolderBidOn holderBidOn;
         // Accepted holder
@@ -139,21 +145,36 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         // Completed holder
         MyCustomAdapterForTabViews.GroupViewHolderCompleted holderCompleted;
 
-        if (convertView == null)
-        {
+
             // Bid on
             if (host.getCurrentTab() == 0)
             {
-                convertView = mInflater.inflate(R.layout.job_info_bid_on, null);
-                holderBidOn = new MyCustomAdapterForTabViews.GroupViewHolderBidOn();
 
-                holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
-                holderBidOn.imageViewCross = convertView.findViewById(R.id.imageViewCross);
-                holderBidOn.imageViewEditPen = convertView.findViewById(R.id.imageViewEditPen);
-                holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
-                holderBidOn.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
-                holderBidOn.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
 
+
+                if (convertView == null)
+                {
+
+                    convertView = mInflater.inflate(R.layout.job_info_bid_on, null);
+                    holderBidOn = new MyCustomAdapterForTabViews.GroupViewHolderBidOn();
+
+                    holderBidOn.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderBidOn.imageViewCross = convertView.findViewById(R.id.imageViewCross);
+                    holderBidOn.imageViewEditPen = convertView.findViewById(R.id.imageViewEditPen);
+                    holderBidOn.textViewJobDescription = convertView.findViewById(R.id.textDesc);
+                    holderBidOn.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
+                    holderBidOn.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
+
+                    convertView.setTag(holderBidOn);
+
+                }
+                else
+                {
+                    holderBidOn = (MyCustomAdapterForTabViews.GroupViewHolderBidOn) convertView.getTag();
+                }
+
+
+                System.out.println("P:" + position + "=" + mData.get(position).getAdvertName());
                 holderBidOn.textViewJobName.setText(mData.get(position).getAdvertName());
                 holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
 
@@ -289,14 +310,24 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
             // Accepted
             else if (host.getCurrentTab() == 1)
             {
-                convertView = mInflater.inflate(R.layout.job_info_accepted, null);
-                holderAccepted = new MyCustomAdapterForTabViews.GroupViewHolderAccepted();
 
-                holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
-                holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
-                holderAccepted.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
-                holderAccepted.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
-                holderAccepted.textViewBid = convertView.findViewById(R.id.textBid);
+                if(convertView == null)
+                {
+                    convertView = mInflater.inflate(R.layout.job_info_accepted, null);
+                    holderAccepted = new MyCustomAdapterForTabViews.GroupViewHolderAccepted();
+
+                    holderAccepted.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderAccepted.textViewDescription = convertView.findViewById(R.id.textDesc);
+                    holderAccepted.textViewAddressFrom = convertView.findViewById(R.id.textAddressFrom);
+                    holderAccepted.textViewAddressTo = convertView.findViewById(R.id.textAddressTo);
+                    holderAccepted.textViewBid = convertView.findViewById(R.id.textBid);
+
+                    convertView.setTag(holderAccepted);
+                }
+                else
+                {
+                    holderAccepted = (MyCustomAdapterForTabViews.GroupViewHolderAccepted) convertView.getTag();
+                }
 
                 holderAccepted.textViewJobName.setText(mData.get(position).getAdvertName());
                 holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
@@ -336,13 +367,22 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
             // Completed
             else if (host.getCurrentTab() == 2)
             {
-                convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
 
-                holderCompleted = new MyCustomAdapterForTabViews.GroupViewHolderCompleted();
+                if(convertView == null)
+                {
+                    convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
 
-                holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
-                holderCompleted.imageViewCross = convertView.findViewById(R.id.imageViewCross);
+                    holderCompleted = new MyCustomAdapterForTabViews.GroupViewHolderCompleted();
 
+                    holderCompleted.textViewJobName = convertView.findViewById(R.id.textName);
+                    holderCompleted.imageViewCross = convertView.findViewById(R.id.imageViewCross);
+
+                    convertView.setTag(holderCompleted);
+                }
+                else
+                {
+                    holderCompleted = (MyCustomAdapterForTabViews.GroupViewHolderCompleted) convertView.getTag();
+                }
                 holderCompleted.textViewJobName.setText(mData.get(position).getAdvertName());
                 holderCompleted.imageViewCross.setOnClickListener(new View.OnClickListener()
                 {
@@ -441,19 +481,19 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
 
                 convertView.setTag(holderCompleted);
             }
-        } else
-        {
-            if (host.getCurrentTab() == 0)
-            {
-                holderBidOn = (MyCustomAdapterForTabViews.GroupViewHolderBidOn) convertView.getTag();
-            } else if (host.getCurrentTab() == 1)
-            {
-                holderAccepted = (MyCustomAdapterForTabViews.GroupViewHolderAccepted) convertView.getTag();
-            } else if (host.getCurrentTab() == 2)
-            {
-                holderCompleted = (MyCustomAdapterForTabViews.GroupViewHolderCompleted) convertView.getTag();
-            }
-        }
+//        } else
+//        {
+//            if (host.getCurrentTab() == 0)
+//            {
+//                row = convertView;
+//            } else if (host.getCurrentTab() == 1)
+//            {
+//                holderAccepted = (MyCustomAdapterForTabViews.GroupViewHolderAccepted) convertView.getTag();
+//            } else if (host.getCurrentTab() == 2)
+//            {
+//                holderCompleted = (MyCustomAdapterForTabViews.GroupViewHolderCompleted) convertView.getTag();
+//            }
+//        }
 
         return convertView;
     }
