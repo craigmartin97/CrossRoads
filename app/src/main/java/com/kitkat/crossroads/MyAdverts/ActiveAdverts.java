@@ -105,7 +105,7 @@ public class ActiveAdverts extends Fragment
      * the couriers id who is completing the job
      */
     private String courierId;
-    
+
     private final static int REQUEST_CODE = 100;
 
     /**

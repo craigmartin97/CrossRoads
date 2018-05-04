@@ -11,19 +11,31 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.kitkat.crossroads.R;
 
-
+/**
+ * A custom window, so when the user presses on the marker on the map, it will bring up all of the
+ * information about that location
+ */
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 {
     private final View window;
     private Context context;
     private static final String TAG = "CustomInfoWindowAdaper";
 
+    /**
+     * Create a new window and get the context from where the map was called from
+     * @param context
+     */
     public CustomInfoWindowAdapter(Context context)
     {
         this.context = context;
         window = LayoutInflater.from(context).inflate(R.layout.custom_info_window_map, null);
     }
 
+    /**
+     * Add the text to the window
+     * @param marker - the marker that has been pressed
+     * @param view - the view that the marker is in
+     */
     private void renderWindowText(Marker marker, View view)
     {
         try
@@ -57,6 +69,11 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
         }
     }
 
+    /**
+     * Get the info about the marker
+     * @param marker
+     * @return
+     */
     @Override
     public View getInfoWindow(Marker marker)
     {
@@ -64,6 +81,11 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
         return window;
     }
 
+    /**
+     * Get the contents of the marker
+     * @param marker
+     * @return
+     */
     @Override
     public View getInfoContents(Marker marker)
     {
