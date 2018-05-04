@@ -145,7 +145,10 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     * todo
+     * Called when the view previously created by onCreateView(LayoutInflater, ViewGroup, Bundle) has been detached from the fragment.
+     * The next time the fragment needs to be displayed, a new view will be created. This is called after onStop() and before onDestroy().
+     * It is called regardless of whether onCreateView(LayoutInflater, ViewGroup, Bundle)
+     * returned a non-null view. Internally it is called after the view's state has been saved but before it has been removed from its parent.
      */
     @Override
     public void onDestroyView()
@@ -155,7 +158,7 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     * todo
+     * Called when the fragment is no longer in use. This is called after onStop() and before onDetach()
      */
     @Override
     public void onDestroy()
@@ -463,7 +466,7 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     * todo - oli's adapter
+     * Adapter to populate a view from an ArrayList is the ArrayAdapter
      */
     public class MyCustomAdapter extends BaseAdapter
     {

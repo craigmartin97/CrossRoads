@@ -245,7 +245,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     /**
      * Retrieves all adverts the user has posted with the "Pending" job status
      *
-     * @throws ParseException todo
+     * @throws ParseException Signals that an error has been reached unexpectedly while parsing.
      */
     private void pendingList() throws ParseException
     {
@@ -350,10 +350,10 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     *todo
-     * @param fragment
-     * @param adapter
-     * @param position
+     * Creates a new bundle to transfer onto another fragment
+     * @param fragment - fragment that the user is transferring to
+     * @param adapter - the array list data that is being transferred
+     * @param position - the position of the data that is to be transferred
      */
     public void createBundleToTransfer(Fragment fragment, MyCustomAdapterForTabViews adapter, int position)
     {
@@ -368,7 +368,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     * todo
+     * Find which item has been selected
      * @param item
      * @return
      */
@@ -377,16 +377,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
-    }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     /**
@@ -425,9 +415,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     *TODO
-     * @param newText
-     * @return
+     * Called when the query text is changed by the user.
+     * @param newText String: the new content of the query text field.
+     * @return boolean onQueryTextChange (String newText)
      */
     @Override
     public boolean onQueryTextChange(String newText)
@@ -442,7 +432,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     public interface OnFragmentInteractionListener
     {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
