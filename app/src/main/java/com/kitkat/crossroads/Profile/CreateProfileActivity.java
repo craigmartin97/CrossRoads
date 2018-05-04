@@ -49,27 +49,62 @@ public class CreateProfileActivity extends AppCompatActivity
     private Button saveProfile, uploadProfileImage;
     private ImageView profileImage;
 
+    /**
+     * Storing the current authenticated user
+     */
     private FirebaseAuth auth;
+
+    /**
+     * Storing connection to the FireBase database
+     */
     private DatabaseReference databaseReference;
+
+    /**
+     * Storing connection to the FireBase Storage area
+     */
     private StorageReference storageReference;
+
+    /**
+     * Storing the current users unique id
+     */
     private String user;
 
+    /**
+     * Accessing methods from DatabaseConnections class to access the database connections
+     */
     private final DatabaseConnections databaseConnections = new DatabaseConnections();
 
+    /**
+     * Request code to check it was the gallery selected
+     */
     private static final int REQUEST_CODE = 200;
+
+    /**
+     * Code to move to the gallery intent
+     */
     private static final int GALLERY_INTENT = 2;
+
+    /**
+     * Creating a new progress dialog, to indicate the progress of the submission
+     */
     private ProgressDialog progressDialog;
+
+    /**
+     * Storing the imageUri, which is the image selected
+     */
     private Uri imageUri;
+
+    /**
+     * Storing the compressed version of the image to push to the FireBase storage area
+     */
     private static byte[] compressData;
 
 
     /**
-     *
      * This method is called when CreateProfile is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
-     *
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -80,6 +115,7 @@ public class CreateProfileActivity extends AppCompatActivity
         getViewByIds();
         databaseConnections();
 
+        //When pressed saved users profile
         saveProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -89,6 +125,7 @@ public class CreateProfileActivity extends AppCompatActivity
             }
         });
 
+        // Sends user to gallery after accepting permissions
         uploadProfileImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -106,7 +143,6 @@ public class CreateProfileActivity extends AppCompatActivity
         });
     }
 
-
     /**
      * @param requestCode The request code passed to startActivityForResult, in this case GALLERY_INTENT
      * @param resultCode  The result code, either RESULT_OK or RESULT_CANCELED
@@ -117,6 +153,7 @@ public class CreateProfileActivity extends AppCompatActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // If request code is the gallery and request is ok
         if (requestCode == GALLERY_INTENT && resultCode == RESULT_OK)
         {
             progressDialog = new ProgressDialog(this);
@@ -126,6 +163,7 @@ public class CreateProfileActivity extends AppCompatActivity
             imageUri = data.getData();
             final Uri uri = data.getData();
 
+            // Rotating the image, and displaying
             ExifInterfaceImageRotate exifInterfaceImageRotate = new ExifInterfaceImageRotate();
             profileImage.setImageBitmap(exifInterfaceImageRotate.setUpImageTransfer(uri, getContentResolver()));
             profileImage.buildDrawingCache();
@@ -151,6 +189,7 @@ public class CreateProfileActivity extends AppCompatActivity
         String postCode = this.postCode.getText().toString().trim().toUpperCase();
         String userEmail = auth.getCurrentUser().getEmail();
 
+        // all checks below to see if user information is correct
         if (TextUtils.isEmpty(fullName))
         {
             customToastMessage("Please Enter Your Name");
@@ -200,6 +239,7 @@ public class CreateProfileActivity extends AppCompatActivity
             return;
         }
 
+        // check is actually postcode
         if (!postCode.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9 ]+$"))
         {
             customToastMessage("Post Code Must Have Numbers and Letters");
@@ -261,7 +301,7 @@ public class CreateProfileActivity extends AppCompatActivity
     }
 
     /**
-     * @param userInformation   instance of UserInformation with all the profile data ready to upload
+     * @param userInformation instance of UserInformation with all the profile data ready to upload
      */
     private void uploadUsersProfile(final UserInformation userInformation)
     {
@@ -298,9 +338,10 @@ public class CreateProfileActivity extends AppCompatActivity
         }
     }
 
-    /**Allows us to display custom messages to the user
+    /**
+     * Allows us to display custom messages to the user
      *
-     * @param message   String value of toast message
+     * @param message String value of toast message
      */
     private void customToastMessage(String message)
     {
@@ -316,7 +357,7 @@ public class CreateProfileActivity extends AppCompatActivity
     }
 
     /**
-     * Builds gallery intent
+     * Builds gallery intent to send user to the gallery of phone
      */
     private void createGalleryIntent()
     {
@@ -355,8 +396,9 @@ public class CreateProfileActivity extends AppCompatActivity
 
     /**
      * Changes startup pages based on whether user is predominantly an Advertiser or a Courier.
-     *
+     * <p>
      * The following are values that will be saved in the database as the user's Profile Data:
+     *
      * @param fullName
      * @param phoneNumber
      * @param addressOne

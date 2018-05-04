@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +75,7 @@ public class EditProfileFragment extends Fragment
      * This method is called when the upload image fragment is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
      *
-     * @param savedInstanceState -If the fragment is being recreated from a previous saved state, this is the state.
+     * @param savedInstanceState Bundle: If the fragment is being recreated from a previous saved state, this is the state.
      *                           This value may be null.
      */
     @Override
@@ -120,7 +119,7 @@ public class EditProfileFragment extends Fragment
     /**
      * Storing all of the widgets in the layout file to variables in the fragment
      *
-     * @param view - The layout file that is being accessed
+     * @param view View: The layout file that is being accessed
      */
     private void getViewByIds(View view)
     {
@@ -291,7 +290,7 @@ public class EditProfileFragment extends Fragment
      * Post and send the user information to the database under the user table, under the current
      * users unique id
      *
-     * @param userInformation - UserInformation object with the user details stored in
+     * @param userInformation UserInformation: UserInformation object with the user details stored in
      */
     private void setUserInformation(UserInformation userInformation)
     {
