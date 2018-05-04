@@ -11,9 +11,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.kitkat.crossroads.R;
 
-/**
- * Created by craig on 02/04/18.
- */
 
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 {

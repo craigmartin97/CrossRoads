@@ -468,9 +468,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     /**
-     * todo
-     * @param newText
-     * @return
+     *
+     * @param newText       the filter applied to the search Query
+     * @return              Search results with filter applied
      */
     @Override
     public boolean onQueryTextChange(String newText)

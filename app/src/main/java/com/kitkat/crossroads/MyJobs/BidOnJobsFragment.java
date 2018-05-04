@@ -122,7 +122,7 @@ public class BidOnJobsFragment extends Fragment
 
     /**
      * @param inflater           Instantiates a layout XML file into its corresponding view Objects
-     * @param container          A view used to contain other views, in this case, the view fragment_upload_image
+     * @param container          A view used to contain other views, in this case, the view fragment_my_jobs_bid_on
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
      *                           This value may be null.
      * @return Returns inflated view

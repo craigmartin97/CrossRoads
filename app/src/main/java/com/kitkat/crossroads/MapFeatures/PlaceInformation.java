@@ -2,9 +2,6 @@ package com.kitkat.crossroads.MapFeatures;
 
 import java.io.Serializable;
 
-/**
- * Created by craig on 03/04/18.
- */
 
 public class PlaceInformation implements Serializable
 {

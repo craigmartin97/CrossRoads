@@ -10,8 +10,6 @@ import com.kitkat.crossroads.EnumClasses.TableNames;
 import java.util.Objects;
 
 /**
- * Created by q5031372 on 22/03/18.
- * <p>
  * Database connections is used to create a single repository to gain access to the FireBase
  * Database, Authentication and Storage area as well as other methods to get information about the user.
  */
