@@ -39,17 +39,24 @@ public class WorkaroundMapFragment extends SupportMapFragment {
         return layout;
     }
 
-    //todo
+    /**
+     * Sets the listener to equal the listener passed in
+     * @param listener - check to see if the user has pressed the map
+     */
     public void setListener(OnTouchListener listener) {
         mListener = listener;
     }
 
-    //todo
+    /**
+     * Check to see if the user hsa touched the map
+     */
     public interface OnTouchListener {
         public abstract void onTouch();
     }
 
-    //todo
+    /**
+     * Make the map scrollable whilst its in the scrollview of the page
+     */
     public class TouchableWrapper extends FrameLayout {
 
         public TouchableWrapper(Context context) {

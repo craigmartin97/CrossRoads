@@ -869,80 +869,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         });
     }
 
-//    /**
-//     * Ensures that no empty fields are accepted and passed into the database
-//     */
-//    private void checkWidgetsContainText()
-//    {
-//        String enterTown = "Please Enter A Town";
-//        String enterAddress1 = "Please Enter An Address Line 1";
-//        String enterAddress2 = "Please Enter An Address Line 2";
-//        String enterPostCode = "Please Enter A Valid PostCode";
-//
-//        if (TextUtils.isEmpty(getTextInAdNameWidget()))
-//        {
-//            ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInAdDescWidget()))
-//        {
-//            ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
-//        {
-//            ifWidgetTextIsNull(editTextColDate, "Please Enter Collection Date!");
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
-//        {
-//            ifWidgetTextIsNull(editTextColTime, "Please Enter Collection Time!");
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInColAd1Widget()))
-//        {
-//            ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInColAd2Widget()))
-//        {
-//            ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInColTownWidget()))
-//        {
-//            ifWidgetTextIsNull(editTextColAddTown, enterTown);
-//            return;
-//        }
-//        if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
-//        {
-//            ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInDelAd1Widget()))
-//        {
-//            ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInDelAd2Widget()))
-//        {
-//            ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(getTextInDelTownWidget()))
-//        {
-//            ifWidgetTextIsNull(editTextDelAddTown, enterTown);
-//            return;
-//        }
-//        if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
-//        {
-//            ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
-//            return;
-//        }
-//    }
-
     /**
-     * todo
+     * Checks if information has been passed into the fragment via a bundle
+     * If information has, it sets the jobInformation and jobIdKey accordingly.
+     * Otherwise, it is a brand new job post and all fields will be blank.
      */
     private void getBundleInformation()
     {
