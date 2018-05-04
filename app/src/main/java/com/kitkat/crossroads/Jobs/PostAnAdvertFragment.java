@@ -219,11 +219,9 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
      * The fragment's view hierarchy is not however attached to its parent at this point.
      *
      * @param inflater           LayoutInflater: The LayoutInflater object that can be used to inflate any views in the fragment
-     *
      * @param container          ViewGroup: If non-null, this is the parent view that the fragment's
      *                           UI should be attached to. The fragment should not add the view itself,
      *                           but this can be used to generate the LayoutParams of the view.
-     *
      * @param savedInstanceState Bundle: If non-null, this fragment is being re-constructed from a previous saved state as given here
      * @return - Return the View for the fragment's UI, or null.
      */
@@ -1126,19 +1124,19 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                             {
                                 if (pInfo.getPlaceName() != null)
                                 {
-                                    editTextColAddL1.setText(pInfo.getPlaceName());
+                                    editTextDelAddL1.setText(pInfo.getPlaceName());
                                 }
                                 if (pInfo.getPlaceAddressLineOne() != null)
                                 {
-                                    editTextColAddL2.setText(pInfo.getPlaceAddressLineOne());
+                                    editTextDelAddL2.setText(pInfo.getPlaceAddressLineOne());
                                 }
                                 if (pInfo.getPlaceAddressLineTwo() != null)
                                 {
-                                    editTextColAddTown.setText(pInfo.getPlaceAddressLineTwo());
+                                    editTextDelAddTown.setText(pInfo.getPlaceAddressLineTwo());
                                 }
                                 if (pInfo.getPlacePostCode() != null)
                                 {
-                                    editTextColAddPostcode.setText(pInfo.getPlacePostCode());
+                                    editTextDelAddPostcode.setText(pInfo.getPlacePostCode());
                                 }
                                 dialog.dismiss();
                             }
@@ -1339,6 +1337,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             });
         } else
         {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("Uploading Image...");
+            progressDialog.show();
+            progressDialog.create();
             uploadDefaultImage(key);
         }
     }
@@ -1362,6 +1364,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
             });
         } else
         {
+            ((CrossRoadsMainActivity) getActivity()).displayNewProgressDialog(progressDialog, "Uploading Job Please Wait...");
             uploadDefaultImage(jobIdKey);
         }
     }
@@ -1377,6 +1380,21 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Widget()
                 , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
                 , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, downloadUri.toString());
+    }
+
+    /**
+     * Upload job with a deafult image if the user hasnt selected an image to upload
+     *
+     * @param jobStatus - Status of the job, pending complete active
+     * @param imageURL  - URL address of the default image to use
+     * @return
+     */
+    private JobInformation setJobInformationNoImage(String jobStatus, String imageURL)
+    {
+        return new JobInformation(getTextInAdNameWidget(), getTextInAdDescWidget(), getTextInJobSizeWidget(), getTextInJobTypeWidget(), user.trim(),
+                " ", getTextInCollectionDateWidget(), getTextInCollectionTimeWidget(), getTextInColAd1Widget()
+                , getTextInColAd2Widget(), getTextInColTownWidget(), getTextInColPostCodeWidget()
+                , getTextInDelAd1Widget(), getTextInDelAd2Widget(), getTextInDelTownWidget(), getTextInDelPostCodeWidget(), jobStatus, imageURL);
     }
 
     /**
@@ -1547,7 +1565,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     private void uploadDefaultImage(String key)
     {
+        ((CrossRoadsMainActivity) getActivity()).dismissDialog(progressDialog);
         String imageUrl = "https://firebasestorage.googleapis.com/v0/b/crossroads-b1198.appspot.com/o/default_image.jpg?alt=media&token=4f5aff1d-ed72-4c18-80a7-4da71982730b";
-        databaseReferenceJobsTable.child(key).child("jobImage").setValue(imageUrl);
+        databaseReferenceJobsTable.child(key).setValue(setJobInformationNoImage("Pending", imageUrl));
+        genericMethods.customToastMessage("Job Uploaded Successfully", getActivity());
+
     }
 }
