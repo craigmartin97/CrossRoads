@@ -285,7 +285,7 @@ public class JobDetailsFragment extends Fragment
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                if(dataSnapshot.exists())
+                if (dataSnapshot.exists())
                 {
                     buttonBid.setVisibility(View.GONE);
                     editTextBid.setVisibility(View.GONE);

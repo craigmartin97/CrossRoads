@@ -53,7 +53,8 @@ import java.util.concurrent.TimeUnit;
  * connection states. The API client must be connected with the {@link Places#GEO_DATA_API} API.
  */
 public class PlaceAutocompleteAdapter
-        extends ArrayAdapter<AutocompletePrediction> implements Filterable {
+        extends ArrayAdapter<AutocompletePrediction> implements Filterable
+{
 
     private static final String TAG = "PlaceAutoCompleteAd";
     private static final CharacterStyle STYLE_BOLD = new StyleSpan(Typeface.BOLD);
@@ -83,7 +84,8 @@ public class PlaceAutocompleteAdapter
      * @see android.widget.ArrayAdapter#ArrayAdapter(android.content.Context, int)
      */
     public PlaceAutocompleteAdapter(Context context, GoogleApiClient googleApiClient,
-                                    LatLngBounds bounds, AutocompleteFilter filter) {
+                                    LatLngBounds bounds, AutocompleteFilter filter)
+    {
         super(context, android.R.layout.simple_expandable_list_item_2, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
@@ -93,7 +95,8 @@ public class PlaceAutocompleteAdapter
     /**
      * Sets the bounds for all subsequent queries.
      */
-    public void setBounds(LatLngBounds bounds) {
+    public void setBounds(LatLngBounds bounds)
+    {
         mBounds = bounds;
     }
 
@@ -101,7 +104,8 @@ public class PlaceAutocompleteAdapter
      * Returns the number of results received in the last autocomplete query.
      */
     @Override
-    public int getCount() {
+    public int getCount()
+    {
         return mResultList.size();
     }
 
@@ -109,12 +113,14 @@ public class PlaceAutocompleteAdapter
      * Returns an item from the last autocomplete query.
      */
     @Override
-    public AutocompletePrediction getItem(int position) {
+    public AutocompletePrediction getItem(int position)
+    {
         return mResultList.get(position);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
         View row = super.getView(position, convertView, parent);
 
         // Sets the primary and secondary text for a row.
@@ -135,10 +141,13 @@ public class PlaceAutocompleteAdapter
      * Returns the filter for the current set of autocomplete results.
      */
     @Override
-    public Filter getFilter() {
-        return new Filter() {
+    public Filter getFilter()
+    {
+        return new Filter()
+        {
             @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
+            protected FilterResults performFiltering(CharSequence constraint)
+            {
                 FilterResults results = new FilterResults();
 
                 // We need a separate list to store the results, since
@@ -146,15 +155,18 @@ public class PlaceAutocompleteAdapter
                 ArrayList<AutocompletePrediction> filterData = new ArrayList<>();
 
                 // Skip the autocomplete query if no constraints are given.
-                if (constraint != null) {
+                if (constraint != null)
+                {
                     // Query the autocomplete API for the (constraint) search string.
                     filterData = getAutocomplete(constraint);
                 }
 
                 results.values = filterData;
-                if (filterData != null) {
+                if (filterData != null)
+                {
                     results.count = filterData.size();
-                } else {
+                } else
+                {
                     results.count = 0;
                 }
 
@@ -162,25 +174,31 @@ public class PlaceAutocompleteAdapter
             }
 
             @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
+            protected void publishResults(CharSequence constraint, FilterResults results)
+            {
 
-                if (results != null && results.count > 0) {
+                if (results != null && results.count > 0)
+                {
                     // The API returned at least one result, update the data.
                     mResultList = (ArrayList<AutocompletePrediction>) results.values;
                     notifyDataSetChanged();
-                } else {
+                } else
+                {
                     // The API did not return any results, invalidate the data set.
                     notifyDataSetInvalidated();
                 }
             }
 
             @Override
-            public CharSequence convertResultToString(Object resultValue) {
+            public CharSequence convertResultToString(Object resultValue)
+            {
                 // Override this method to display a readable result in the AutocompleteTextView
                 // when clicked.
-                if (resultValue instanceof AutocompletePrediction) {
+                if (resultValue instanceof AutocompletePrediction)
+                {
                     return ((AutocompletePrediction) resultValue).getFullText(null);
-                } else {
+                } else
+                {
                     return super.convertResultToString(resultValue);
                 }
             }
@@ -202,8 +220,10 @@ public class PlaceAutocompleteAdapter
      * @see Places#GEO_DATA_API#getAutocomplete(CharSequence)
      * @see AutocompletePrediction#freeze()
      */
-    private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint) {
-        if (mGoogleApiClient.isConnected()) {
+    private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint)
+    {
+        if (mGoogleApiClient.isConnected())
+        {
             Log.i(TAG, "Starting autocomplete query for: " + constraint);
 
             // Submit the query to the autocomplete API and retrieve a PendingResult that will
@@ -220,7 +240,8 @@ public class PlaceAutocompleteAdapter
 
             // Confirm that the query completed successfully, otherwise return null
             final Status status = autocompletePredictions.getStatus();
-            if (!status.isSuccess()) {
+            if (!status.isSuccess())
+            {
                 Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
                         Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
