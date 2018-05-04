@@ -62,7 +62,7 @@ public class PendingAdverts extends Fragment
     private ExpandableListView expandableListView, expandableListView2, expandableListView3;
 
     /**
-     * Adaptres to create the expandable list views
+     * Adapters to create the expandable list views
      */
     private ExpandableListAdapter adapter, adapter2, adapter3;
 
