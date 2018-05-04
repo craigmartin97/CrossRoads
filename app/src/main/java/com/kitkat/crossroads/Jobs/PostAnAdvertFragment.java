@@ -117,11 +117,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private DatabaseReference databaseReferenceJobsTable;
 
     /**
-     * Store the jobReference
-     */
-    private DataSnapshot jobReference;
-
-    /**
      * Get the reference to the FireBase Storage area to store the Jobs Image In
      */
     private StorageReference storageReference;
@@ -130,7 +125,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private Uri imageUri;
     private static byte[] compressData;
 
-    /*
+    /**
      *Used to check the user has granted the necessary permissions
      */
     private static final int GALLERY_INTENT = 2;
@@ -197,6 +192,8 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
      */
     private static final int REQUEST_CODE_GALLERY = 4;
     private static final int REQUEST_CODE_CAMERA = 5;
+
+    private AlertDialog dialog;
 
     /**
      * @param savedInstanceState Bundle: If the fragment is being re-created from a previous saved state, this is the state.
@@ -532,13 +529,141 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
                 // Posting a new ad
                 if (jobIdKey == null)
                 {
-                    checkWidgetsContainText();
+                    String enterTown = "Please Enter A Town";
+                    String enterAddress1 = "Please Enter An Address Line 1";
+                    String enterAddress2 = "Please Enter An Address Line 2";
+                    String enterPostCode = "Please Enter A Valid PostCode";
+
+                    if (TextUtils.isEmpty(getTextInAdNameWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInAdDescWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextColDate, "Please Enter Collection Date!");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextColTime, "Please Enter Collection Time!");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInColAd1Widget()))
+                    {
+                        ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInColAd2Widget()))
+                    {
+                        ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInColTownWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextColAddTown, enterTown);
+                        return;
+                    }
+                    if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
+                    {
+                        ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInDelAd1Widget()))
+                    {
+                        ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInDelAd2Widget()))
+                    {
+                        ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInDelTownWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextDelAddTown, enterTown);
+                        return;
+                    }
+                    if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
+                    {
+                        ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
+                        return;
+                    }
                     saveJobInformation();
                 }
                 // Editing an ad
                 else
                 {
-                    checkWidgetsContainText();
+                    String enterTown = "Please Enter A Town";
+                    String enterAddress1 = "Please Enter An Address Line 1";
+                    String enterAddress2 = "Please Enter An Address Line 2";
+                    String enterPostCode = "Please Enter A Valid PostCode";
+
+                    if (TextUtils.isEmpty(getTextInAdNameWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInAdDescWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextColDate, "Please Enter Collection Date!");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextColTime, "Please Enter Collection Time!");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInColAd1Widget()))
+                    {
+                        ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInColAd2Widget()))
+                    {
+                        ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInColTownWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextColAddTown, enterTown);
+                        return;
+                    }
+                    if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
+                    {
+                        ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInDelAd1Widget()))
+                    {
+                        ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInDelAd2Widget()))
+                    {
+                        ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
+                        return;
+                    }
+                    if (TextUtils.isEmpty(getTextInDelTownWidget()))
+                    {
+                        ifWidgetTextIsNull(editTextDelAddTown, enterTown);
+                        return;
+                    }
+                    if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
+                    {
+                        ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
+                        return;
+                    }
                     saveEditJob();
                 }
             }
@@ -562,7 +687,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
 
                 alertDialog.setView(mView);
-                final AlertDialog dialog = alertDialog.create();
+                dialog = alertDialog.create();
                 dialog.show();
 
                 Button gallery = mView.findViewById(R.id.gallery);
@@ -744,76 +869,77 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         });
     }
 
-    /**
-     * Ensures that no empty fields are accepted and passed into the database
-     */
-    private void checkWidgetsContainText()
-    {
-        String enterTown = "Please Enter A Town";
-        String enterAddress1 = "Please Enter An Address Line 1";
-        String enterAddress2 = "Please Enter An Address Line 2";
-        String enterPostCode = "Please Enter A Valid PostCode";
-
-        if (TextUtils.isEmpty(getTextInAdNameWidget()))
-        {
-            ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInAdDescWidget()))
-        {
-            ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
-        {
-            ifWidgetTextIsNull(editTextColDate, "Please Enter Collection Date!");
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
-        {
-            ifWidgetTextIsNull(editTextColTime, "Please Enter Collection Time!");
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInColAd1Widget()))
-        {
-            ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInColAd2Widget()))
-        {
-            ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInColTownWidget()))
-        {
-            ifWidgetTextIsNull(editTextColAddTown, enterTown);
-            return;
-        }
-        if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
-        {
-            ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInDelAd1Widget()))
-        {
-            ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInDelAd2Widget()))
-        {
-            ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
-            return;
-        }
-        if (TextUtils.isEmpty(getTextInDelTownWidget()))
-        {
-            ifWidgetTextIsNull(editTextDelAddTown, enterTown);
-            return;
-        }
-        if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
-        {
-            ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
-        }
-    }
+//    /**
+//     * Ensures that no empty fields are accepted and passed into the database
+//     */
+//    private void checkWidgetsContainText()
+//    {
+//        String enterTown = "Please Enter A Town";
+//        String enterAddress1 = "Please Enter An Address Line 1";
+//        String enterAddress2 = "Please Enter An Address Line 2";
+//        String enterPostCode = "Please Enter A Valid PostCode";
+//
+//        if (TextUtils.isEmpty(getTextInAdNameWidget()))
+//        {
+//            ifWidgetTextIsNull(editTextAdName, "Please Enter Advert Name!");
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInAdDescWidget()))
+//        {
+//            ifWidgetTextIsNull(editTextAdDescription, "Please Enter Advert Description!");
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
+//        {
+//            ifWidgetTextIsNull(editTextColDate, "Please Enter Collection Date!");
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInCollectionDateWidget()))
+//        {
+//            ifWidgetTextIsNull(editTextColTime, "Please Enter Collection Time!");
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInColAd1Widget()))
+//        {
+//            ifWidgetTextIsNull(editTextColAddL1, enterAddress1);
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInColAd2Widget()))
+//        {
+//            ifWidgetTextIsNull(editTextColAddL2, enterAddress2);
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInColTownWidget()))
+//        {
+//            ifWidgetTextIsNull(editTextColAddTown, enterTown);
+//            return;
+//        }
+//        if ((!(getTextInColPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInColPostCodeWidget())))
+//        {
+//            ifWidgetTextIsNull(editTextColAddPostcode, enterPostCode);
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInDelAd1Widget()))
+//        {
+//            ifWidgetTextIsNull(editTextDelAddL1, enterAddress1);
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInDelAd2Widget()))
+//        {
+//            ifWidgetTextIsNull(editTextDelAddL1, enterAddress2);
+//            return;
+//        }
+//        if (TextUtils.isEmpty(getTextInDelTownWidget()))
+//        {
+//            ifWidgetTextIsNull(editTextDelAddTown, enterTown);
+//            return;
+//        }
+//        if ((!(getTextInDelPostCodeWidget().matches(getPostCodeRegex()))) || (TextUtils.isEmpty(getTextInDelPostCodeWidget())))
+//        {
+//            ifWidgetTextIsNull(editTextDelAddPostcode, enterPostCode);
+//            return;
+//        }
+//    }
 
     /**
      * todo
@@ -1211,8 +1337,6 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        super.onActivityResult(requestCode, resultCode, data);
-
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Displaying Image...");
         progressDialog.show();
@@ -1247,6 +1371,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
         }
 
         progressDialog.dismiss();
+        dialog.dismiss();
     }
 
     /**
