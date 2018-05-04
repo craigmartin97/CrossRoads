@@ -32,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.ExifInterfaceImageRotate;
+import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.Profile.CreateProfileActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -108,6 +109,11 @@ public class UploadImageFragment extends Fragment
      */
     private Button saveProfileImage, uploadProfileImage;
 
+    /**
+     * Accessing methods in the generic methods class
+     */
+    private GenericMethods genericMethods = new GenericMethods();
+
     public UploadImageFragment()
     {
         // Required empty public constructor
@@ -141,11 +147,13 @@ public class UploadImageFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_upload_image, container, false);
         getViewsByIds(view);
 
+        // Getting the users current profile image from the database
         databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
+                // Display the image
                 final String profileImageURL = dataSnapshot.child(getString(R.string.profile_image_table)).getValue(String.class);
                 Picasso.get().load(profileImageURL).into(profileImage, new Callback()
                 {
@@ -208,7 +216,7 @@ public class UploadImageFragment extends Fragment
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
                         {
                             //notify user upload was successful
-                            Toast.makeText(getActivity(), "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                            genericMethods.customToastMessage("Uploaded Successfully", getActivity());
                             Uri downloadUri = taskSnapshot.getDownloadUrl();
                             assert downloadUri != null;
                             databaseReferenceUsersTable.child(user).child("profileImage").setValue(downloadUri.toString());
@@ -221,12 +229,12 @@ public class UploadImageFragment extends Fragment
                         {
                             //notify user upload failed
                             progressDialog.dismiss();
-                            Toast.makeText(getActivity(), "Failed To Upload!", Toast.LENGTH_SHORT).show();
+                            genericMethods.customToastMessage("Failed To Upload", getActivity());
                         }
                     });
                 } else
                 {
-                    Toast.makeText(getActivity(), "Can't Upload Same Image", Toast.LENGTH_SHORT).show();
+                    genericMethods.customToastMessage("Can't Upload The Same Image", getActivity());
                 }
             }
         });
@@ -266,7 +274,6 @@ public class UploadImageFragment extends Fragment
         uploadProfileImage = view.findViewById(R.id.buttonUploadProfileImage);
         saveProfileImage = view.findViewById(R.id.buttonSaveProfileImage);
         progressBar = view.findViewById(R.id.progressBar);
-
     }
 
     /**
@@ -310,7 +317,7 @@ public class UploadImageFragment extends Fragment
         } else
         {
             //permissions were denied, so prompt the user again
-            Toast.makeText(getContext(), getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
+            customToastDenied();
         }
     }
 
@@ -344,23 +351,28 @@ public class UploadImageFragment extends Fragment
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
     }
 
-    /* @param requestCode       The request code passed in
-     * @param permissions       An array which stores the requested permissions (can never be null)
-     * @param grantResults      The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+    /**
+     * @param requestCode  The request code passed in
+     * @param permissions  An array which stores the requested permissions (can never be null)
+     * @param grantResults The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        if(requestCode == REQUEST_CODE)
+        if (requestCode == REQUEST_CODE)
         {
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 createGalleryIntent();
-            }
-            else
+            } else
             {
-                Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                customToastDenied();
             }
         }
+    }
+
+    private void customToastDenied()
+    {
+        genericMethods.customToastMessage("Permission Denied", getActivity());
     }
 }
