@@ -81,7 +81,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
     /**
      * Google map
      */
-    private GoogleMap gMap, gMap2;
+    private GoogleMap gMap;
     /**
      * Get the users current location their device is in
      */
@@ -164,27 +164,26 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
             Address address = list.get(0);
             Log.d(TAG, "Found A Location");
 
-            if(address.getAddressLine(0) != null)
+            if (address.getAddressLine(0) != null)
             {
                 String addressLine = address.getAddressLine(0).substring(0, address.getAddressLine(0).indexOf(","));
                 placeInfo.setPlaceName(addressLine);
             }
 
-            if(address.getSubAdminArea() != null)
+            if (address.getSubAdminArea() != null)
             {
                 placeInfo.setPlaceAddressLineOne(address.getSubAdminArea());
             }
 
-            if(address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
+            if (address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
             {
                 placeInfo.setPlaceAddressLineTwo(address.getLocality());
-            }
-            else
+            } else
             {
                 placeInfo.setPlaceAddressLineTwo("");
             }
 
-            if(address.getPostalCode() != null)
+            if (address.getPostalCode() != null)
             {
                 placeInfo.setPlacePostCode(address.getPostalCode());
             }
@@ -230,7 +229,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
                                     list = geocoder.getFromLocation(devicesCurrentLocation.getLatitude(), devicesCurrentLocation.getLongitude(), 1);
                                 } else
                                 {
-                                    Toast.makeText(fragmentActivity, "Unable To Get Location", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(fragmentActivity, "Unable To Get Location At This Time", Toast.LENGTH_SHORT).show();
                                 }
                             } catch (IOException io)
                             {
@@ -241,27 +240,26 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
                             {
                                 Address address = list.get(0);
 
-                                if(address.getAddressLine(0) != null)
+                                if (address.getAddressLine(0) != null)
                                 {
                                     String addressLine = address.getAddressLine(0).substring(0, address.getAddressLine(0).indexOf(","));
                                     placeInfo.setPlaceName(addressLine);
                                 }
 
-                                if(address.getSubAdminArea() != null)
+                                if (address.getSubAdminArea() != null)
                                 {
                                     placeInfo.setPlaceAddressLineOne(address.getSubAdminArea());
                                 }
 
-                                if(address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
+                                if (address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
                                 {
                                     placeInfo.setPlaceAddressLineTwo(address.getLocality());
-                                }
-                                else
+                                } else
                                 {
                                     placeInfo.setPlaceAddressLineTwo("");
                                 }
 
-                                if(address.getPostalCode() != null)
+                                if (address.getPostalCode() != null)
                                 {
                                     placeInfo.setPlacePostCode(address.getPostalCode());
                                 }
@@ -427,7 +425,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
     }
 
     /**
-       Auto Complete API AutoComplete Suggestions
+     * Auto Complete API AutoComplete Suggestions
      */
     public void setPlaceAutocompleteAdapter(PlaceAutocompleteAdapter placeAutocompleteAdapter)
     {
@@ -486,27 +484,26 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
                     {
                         Address address = list.get(0);
 
-                        if(address.getAddressLine(0) != null)
+                        if (address.getAddressLine(0) != null)
                         {
                             String addressLine = address.getAddressLine(0).substring(0, address.getAddressLine(0).indexOf(","));
                             placeInfo.setPlaceName(addressLine);
                         }
 
-                        if(address.getSubAdminArea() != null)
+                        if (address.getSubAdminArea() != null)
                         {
                             placeInfo.setPlaceAddressLineOne(address.getSubAdminArea());
                         }
 
-                        if(address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
+                        if (address.getLocality() != null && !address.getSubAdminArea().equals(address.getLocality()))
                         {
                             placeInfo.setPlaceAddressLineTwo(address.getLocality());
-                        }
-                        else
+                        } else
                         {
                             placeInfo.setPlaceAddressLineTwo("");
                         }
 
-                        if(address.getPostalCode() != null)
+                        if (address.getPostalCode() != null)
                         {
                             placeInfo.setPlacePostCode(address.getPostalCode());
                         }
