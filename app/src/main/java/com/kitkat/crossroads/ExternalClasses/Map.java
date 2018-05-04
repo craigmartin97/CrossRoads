@@ -416,6 +416,9 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
         }
     }
 
+    /**
+     *
+     */
     private void hideKeyboard()
     {
         fragmentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -525,6 +528,10 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
         }
     };
 
+    /**
+     *
+     * @return
+     */
     public PlaceInformation getPlaceInfo()
     {
         if (placeInfo != null)

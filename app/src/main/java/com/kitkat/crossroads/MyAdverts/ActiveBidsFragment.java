@@ -145,7 +145,7 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     * todo
+     * Called when the view previously created by onCreateView has been detached from the fragment.
      */
     @Override
     public void onDestroyView()
@@ -155,7 +155,7 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     * todo
+     * Called when the fragment is no longer in use
      */
     @Override
     public void onDestroy()
@@ -179,6 +179,10 @@ public class ActiveBidsFragment extends Fragment
         user = databaseConnections.getCurrentUser();
     }
 
+    /**
+     *
+     * @param view
+     */
     private void getViewByIds(View view)
     {
         jobListView = view.findViewById(R.id.jobListView1);
@@ -531,6 +535,13 @@ public class ActiveBidsFragment extends Fragment
             return false;
         }
 
+        /**
+         *Get a view that displays the data at the specified position in the data set
+         * @param position      specified position
+         * @param convertView
+         * @param parent
+         * @return              Returns view
+         */
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
@@ -622,6 +633,10 @@ public class ActiveBidsFragment extends Fragment
             public TextView ratingNoFeedback;
         }
 
+        /**
+         *
+         * @param charText  Filters the results based on the string entered.
+         */
         public void filter(String charText)
         {
 
@@ -662,7 +677,6 @@ public class ActiveBidsFragment extends Fragment
             mListener.onFragmentInteraction(uri);
         }
     }
-
 
     /**
      * onAttach is called when a fragment is first attached to its context

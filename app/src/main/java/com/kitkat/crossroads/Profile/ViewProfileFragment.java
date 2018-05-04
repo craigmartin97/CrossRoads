@@ -108,7 +108,7 @@ public class ViewProfileFragment extends Fragment
      * This gives subclasses a chance to initialize themselves once they know their view hierarchy has been completely created.
      * The fragment's view hierarchy is not however attached to its parent at this point.
      *
-     * @param inflater           LayoutInflater: The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param inflater           LayoutInflater: The LayoutInflater object that can be used to inflate any views in the fragment
      * @param container          ViewGroup: If non-null, this is the parent view that the fragment's
      *                           UI should be attached to. The fragment should not add the view itself,
      *                           but this can be used to generate the LayoutParams of the view.

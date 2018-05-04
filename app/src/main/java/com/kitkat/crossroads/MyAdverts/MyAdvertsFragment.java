@@ -179,7 +179,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         return view;
     }
 
-
     /**
      * Establishes connections to the FireBase database
      */
@@ -245,7 +244,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     /**
      * Retrieves all adverts the user has posted with the "Pending" job status
      *
-     * @throws ParseException todo
+     * @throws ParseException signals an error has been reached unexpectedly while parsing
      */
     private void pendingList() throws ParseException
     {
@@ -379,8 +378,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         return super.onOptionsItemSelected(item);
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri)
     {
         if (mListener != null)
@@ -425,9 +422,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     *TODO
-     * @param newText
-     * @return
+     *
+     * @param newText       Filters search based on new text
+     * @return              returns search results
      */
     @Override
     public boolean onQueryTextChange(String newText)
@@ -442,7 +439,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     public interface OnFragmentInteractionListener
     {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

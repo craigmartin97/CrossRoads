@@ -344,7 +344,6 @@ public class PendingAdverts extends Fragment
         }
     }
 
-
     /**onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
@@ -355,10 +354,8 @@ public class PendingAdverts extends Fragment
         mListener = null;
     }
 
-    //todo ?
     interface OnFragmentInteractionListener
     {
         void onFragmentInteraction(Uri uri);
     }
-
 }
