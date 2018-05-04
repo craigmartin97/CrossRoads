@@ -321,12 +321,13 @@ public class EditProfileFragment extends Fragment
         super.onDetach();
     }
 
+    /**
+     * Send user to view profile after submitting their details
+     */
     private void sendToViewProfile()
     {
         android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
     }
-
-
 }
