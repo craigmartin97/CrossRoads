@@ -31,11 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * My adverts fragment sets up the tab host for pending, active and completed adverts.
- * All of the pending, active and completed adverts for the user are read from the database and
- * added into each tab view.
- */
 public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTextListener
 {
     /**
