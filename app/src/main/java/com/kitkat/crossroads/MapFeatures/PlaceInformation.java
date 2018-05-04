@@ -3,10 +3,6 @@ package com.kitkat.crossroads.MapFeatures;
 import java.io.Serializable;
 
 /**
- * Created by craig on 03/04/18.
- */
-
-/**
  * PlaceInformation creates a new object to store all of the information about
  * the current location that has been selected
  */
