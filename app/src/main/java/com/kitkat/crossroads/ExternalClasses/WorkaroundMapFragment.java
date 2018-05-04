@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
+/**
+ * Allows the user to scroll on the inside the scroll view.
+ */
 public class WorkaroundMapFragment extends SupportMapFragment
 {
 
