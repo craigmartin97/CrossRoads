@@ -355,7 +355,6 @@ public class PendingAdverts extends Fragment
         mListener = null;
     }
 
-    //todo ?
     interface OnFragmentInteractionListener
     {
         void onFragmentInteraction(Uri uri);
