@@ -44,7 +44,10 @@ import java.util.List;
 
 import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
-
+/**
+ * Active adverts allows user to view all of the details for their active adverts.
+ * They can press on an item in the ListView and it will bring up all of the details for that job
+ */
 public class ActiveAdverts extends Fragment
 {
     /**
@@ -98,8 +101,11 @@ public class ActiveAdverts extends Fragment
      */
     private String jobId;
 
+    /**
+     * the couriers id who is completing the job
+     */
     private String courierId;
-
+    
     private final static int REQUEST_CODE = 100;
 
     /**
