@@ -23,6 +23,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 
     /**
      * Create a new window and get the context from where the map was called from
+     *
      * @param context
      */
     public CustomInfoWindowAdapter(Context context)
@@ -33,8 +34,9 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 
     /**
      * Add the text to the window
+     *
      * @param marker - the marker that has been pressed
-     * @param view - the view that the marker is in
+     * @param view   - the view that the marker is in
      */
     private void renderWindowText(Marker marker, View view)
     {
@@ -43,11 +45,11 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
             String title = marker.getSnippet();
             TextView textViewTitle = view.findViewById(R.id.title);
 
-            if(!title.equals(""))
+            if (!title.equals(""))
             {
                 textViewTitle.setText(title);
             }
-        } catch(NullPointerException e)
+        } catch (NullPointerException e)
         {
             Log.e(TAG, "NullPointerException: " + e.getMessage());
             Toast.makeText(context, "Can't get the information for this location at this time", Toast.LENGTH_SHORT).show();
@@ -58,7 +60,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
             String snippet = marker.getSnippet();
             TextView textViewSnippet = view.findViewById(R.id.snippet);
 
-            if(!snippet.equals(""))
+            if (!snippet.equals(""))
             {
                 textViewSnippet.setText(snippet);
             }
@@ -71,6 +73,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 
     /**
      * Get the info about the marker
+     *
      * @param marker
      * @return
      */
@@ -83,6 +86,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
 
     /**
      * Get the contents of the marker
+     *
      * @param marker
      * @return
      */

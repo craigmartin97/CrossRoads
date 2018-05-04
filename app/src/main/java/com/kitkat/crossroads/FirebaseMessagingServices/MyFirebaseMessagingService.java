@@ -24,7 +24,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     private static int count = 0;
 
     /**
-     *
      * @param remoteMessage
      */
     @Override
@@ -44,7 +43,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     //This method is only generating push notification
 
     /**
-     *
      * @param messageTitle
      * @param messageBody
      * @param tag

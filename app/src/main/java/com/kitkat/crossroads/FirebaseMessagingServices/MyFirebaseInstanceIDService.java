@@ -35,7 +35,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
     }
 
     /**
-     *
      * @param refreshedToken
      */
     private void sendRegistrationToServer(String refreshedToken)

@@ -21,10 +21,11 @@ public class PlaceInformation implements Serializable
 
     /**
      * Create a new PlaceInformation object
-     * @param placeName String: name of the current location
+     *
+     * @param placeName           String: name of the current location
      * @param placeAddressLineOne String: First address line of the current location
      * @param placeAddressLineTwo String: Second address line of the current location
-     * @param placePostCode String: PostCode of the selected location
+     * @param placePostCode       String: PostCode of the selected location
      */
     public PlaceInformation(String placeName, String placeAddressLineOne, String placeAddressLineTwo, String placePostCode)
     {
@@ -36,6 +37,7 @@ public class PlaceInformation implements Serializable
 
     /**
      * Get the name of the location
+     *
      * @return String: name of location
      */
     public String getPlaceName()
@@ -45,6 +47,7 @@ public class PlaceInformation implements Serializable
 
     /**
      * Change the name of the current location
+     *
      * @param placeName String: name of location
      */
     public void setPlaceName(String placeName)
@@ -54,6 +57,7 @@ public class PlaceInformation implements Serializable
 
     /**
      * Get the name of the first part of the address line
+     *
      * @return String: name of first part of address
      */
     public String getPlaceAddressLineOne()
@@ -63,6 +67,7 @@ public class PlaceInformation implements Serializable
 
     /**
      * Assign a new value to the address line one
+     *
      * @param placeAddressLineOne String: address line name
      */
     public void setPlaceAddressLineOne(String placeAddressLineOne)
@@ -72,6 +77,7 @@ public class PlaceInformation implements Serializable
 
     /**
      * Get the address line of place two
+     *
      * @return String: address line two
      */
     public String getPlaceAddressLineTwo()
@@ -81,6 +87,7 @@ public class PlaceInformation implements Serializable
 
     /**
      * Assign a new value to the address line two
+     *
      * @param placeAddressLineTwo String: address line two
      */
     public void setPlaceAddressLineTwo(String placeAddressLineTwo)
@@ -90,6 +97,7 @@ public class PlaceInformation implements Serializable
 
     /**
      * Get the postcode of the address
+     *
      * @return String: postcode
      */
     public String getPlacePostCode()
@@ -99,6 +107,7 @@ public class PlaceInformation implements Serializable
 
     /**
      * Assign a value to the postCode
+     *
      * @param placePostCode String: postCode name
      */
     public void setPlacePostCode(String placePostCode)

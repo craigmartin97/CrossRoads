@@ -126,7 +126,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     private static byte[] compressData;
 
     /**
-     *Used to check the user has granted the necessary permissions
+     * Used to check the user has granted the necessary permissions
      */
     private static final int GALLERY_INTENT = 2;
     private static final int CAMERA_INTENT = 3;
@@ -1172,7 +1172,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
      * Start a transaction to a new fragment
      *
      * @param fragmentToTransferTo - fragment that the user is transferring to
-     * @param tabView - the tab view that the user has transferred from
+     * @param tabView              - the tab view that the user has transferred from
      */
     private void newFragmentTransaction(Fragment fragmentToTransferTo, String tabView)
     {
