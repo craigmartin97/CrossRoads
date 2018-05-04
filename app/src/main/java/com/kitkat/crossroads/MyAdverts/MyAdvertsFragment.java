@@ -113,17 +113,19 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         databaseConnections();
         Bundle bundle = getArguments();
 
-        if(bundle != null) {
+        if (bundle != null)
+        {
             String tag = bundle.getString("tabView");
-            if (tag != null) {
+            if (tag != null)
+            {
                 tabTag = tag;
             }
-        }
-        else {
+        } else
+        {
             tabTag = "Active";
         }
 
-        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
+        ((CrossRoadsMainActivity) getActivity()).wifiCheck();
 
     }
 
@@ -142,9 +144,11 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
         Bundle bundle = getArguments();
 
-        if(bundle != null) {
+        if (bundle != null)
+        {
             String tag = bundle.getString("tabView");
-            if (tag != null) {
+            if (tag != null)
+            {
                 tabTag = tag;
             }
         }
@@ -199,7 +203,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     /**
      * Set widgets in the inflated view to variables within this class
-     * @param view  gets the job Status tab (pending, active, completed)
+     *
+     * @param view gets the job Status tab (pending, active, completed)
      */
     private void getViewByIds(View view)
     {
@@ -211,7 +216,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     *Sets titles of Job Status tabs at bottom of the screen
+     * Sets titles of Job Status tabs at bottom of the screen
      */
     private void setTabHost()
     {
@@ -231,7 +236,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     /**
      * Assign class variables the Firebase tables
      *
-     * @param dataSnapshot      dataSnapshot used to iterate through the database
+     * @param dataSnapshot dataSnapshot used to iterate through the database
      */
     private void createDataSnapShots(DataSnapshot dataSnapshot)
     {
@@ -239,7 +244,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     *
      * @return Returns all jobs in the database that match the specified jobReference
      */
     private Iterable<DataSnapshot> getJobListChildren()
@@ -356,8 +360,9 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     /**
      * Creates a new bundle to transfer onto another fragment
+     *
      * @param fragment - fragment that the user is transferring to
-     * @param adapter - the array list data that is being transferred
+     * @param adapter  - the array list data that is being transferred
      * @param position - the position of the data that is to be transferred
      */
     public void createBundleToTransfer(Fragment fragment, MyCustomAdapterForTabViews adapter, int position)
@@ -374,6 +379,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     /**
      * Find which item has been selected
+     *
      * @param item
      * @return
      */
@@ -403,7 +409,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         }
     }
 
-    /**onDetatch
+    /**
+     * onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
     @Override
@@ -421,6 +428,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     /**
      * Called when the query text is changed by the user.
+     *
      * @param newText String: the new content of the query text field.
      * @return boolean onQueryTextChange (String newText)
      */

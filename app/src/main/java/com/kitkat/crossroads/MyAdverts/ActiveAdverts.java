@@ -35,6 +35,7 @@ import com.kitkat.crossroads.Profile.ViewProfileFragment;
 import com.kitkat.crossroads.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
 import android.content.Intent;
 
 import java.net.URI;
@@ -109,7 +110,6 @@ public class ActiveAdverts extends Fragment
     private final static int REQUEST_CODE = 100;
 
     /**
-     *
      * @param savedInstanceState If the fragment is being recreated from a previous saved state, this is the state.
      *                           This value may be null.
      */
@@ -123,7 +123,8 @@ public class ActiveAdverts extends Fragment
 
     /**
      * Method displays and renders the content to the user
-     /**
+     * /**
+     *
      * @param inflater           Instantiates a layout XML file into its corresponding view Objects
      * @param container          A view used to contain other views, in this case, the view fragment_active_adverts
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
@@ -233,7 +234,6 @@ public class ActiveAdverts extends Fragment
 
     /**
      * Sets onClick operations for Email Courier Button
-     *
      */
     private void setButtonEmailCourier()
     {
@@ -242,7 +242,8 @@ public class ActiveAdverts extends Fragment
             @Override
             public void onClick(View view)
             {
-                databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener() {
+                databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
+                {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot)
                     {
@@ -254,7 +255,8 @@ public class ActiveAdverts extends Fragment
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(DatabaseError databaseError)
+                    {
 
                     }
                 });
@@ -264,45 +266,46 @@ public class ActiveAdverts extends Fragment
 
     /**
      * Sets onClick operations for Call Courier button
-     *
      */
     private void setButtonCallCourier()
     {
 
-        buttonCallCourier.setOnClickListener(new View.OnClickListener() {
+        buttonCallCourier.setOnClickListener(new View.OnClickListener()
+        {
 
             @Override
             public void onClick(View view)
             {
-                    databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
-                    {
+                databaseReference.child("Users").child(courierId).addValueEventListener(new ValueEventListener()
+                {
 
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot)
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        /**
+                         * Ensure the app has the required permissions before we start a new Intent
+                         */
+                        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
+                        {
+                            String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                            startActivity(callIntent);
+                        } else
                         {
                             /**
-                             * Ensure the app has the required permissions before we start a new Intent
+                             * if permissions are denied, prompt the user again
                              */
-                            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
-                            {
-                                String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
-                                Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                                callIntent.setData(Uri.parse("tel:" + phoneNumber));
-                                startActivity(callIntent);
-                            }
-                            else
-                            {
-                                /**
-                                 * if permissions are denied, prompt the user again
-                                 */
-                                requestPhonePermissions();
-                            }
+                            requestPhonePermissions();
                         }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                    }
 
-                        }
-                    });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError)
+                    {
+
+                    }
+                });
             }
         });
 
@@ -446,20 +449,20 @@ public class ActiveAdverts extends Fragment
 
     /**
      * Called after permissions are requested.
-     * @param requestCode           the requested permissions, in this case we need CALL_PHONE
-     * @param permissions           the array in which the permissions are held
-     * @param grantResults          the result of the permission request, if equal to PERMISSION_GRANTED the corresponding intent will be constructed
+     *
+     * @param requestCode  the requested permissions, in this case we need CALL_PHONE
+     * @param permissions  the array in which the permissions are held
+     * @param grantResults the result of the permission request, if equal to PERMISSION_GRANTED the corresponding intent will be constructed
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        if(requestCode == REQUEST_CODE)
+        if (requestCode == REQUEST_CODE)
         {
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 setButtonCallCourier();
-            }
-            else
+            } else
             {
                 Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
             }

@@ -99,7 +99,8 @@ public class PendingAdverts extends Fragment
     /**
      * * This method is called when [...] is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
-     * @param savedInstanceState     If the fragment is being re-created from a previous saved state, this is the state.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -349,7 +350,8 @@ public class PendingAdverts extends Fragment
     }
 
 
-    /**onDetatch
+    /**
+     * onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
     @Override

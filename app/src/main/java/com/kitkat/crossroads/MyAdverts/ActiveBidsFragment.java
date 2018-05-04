@@ -114,7 +114,6 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     *
      * @param savedInstanceState -If the fragment is being recreated from a previous saved state, this is the state.
      */
     @Override
@@ -125,8 +124,8 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
+     * /**
      *
-     /**
      * @param inflater           Instantiates a layout XML file into its corresponding view Objects
      * @param container          A view used to contain other views, in this case, the view fragment_active_bids
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
@@ -377,7 +376,7 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     *handles functionality and creates intent for the in-app Paypal payment service
+     * handles functionality and creates intent for the in-app Paypal payment service
      */
     private void processPayment()
     {
@@ -690,7 +689,8 @@ public class ActiveBidsFragment extends Fragment
         }
     }
 
-    /**onDetatch
+    /**
+     * onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
 
