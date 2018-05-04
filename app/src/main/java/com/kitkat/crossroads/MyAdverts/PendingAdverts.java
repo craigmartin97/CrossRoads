@@ -28,6 +28,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Pending adverts fragment shows the current user all of the active, pending adverts they have.
+ * These are jobs they have uploaded and are waiting to receive bids, or accept a bid
+ */
 public class PendingAdverts extends Fragment
 {
     /**
