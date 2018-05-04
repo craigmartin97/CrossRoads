@@ -204,7 +204,7 @@ public class UploadImageFragment extends Fragment
                 if (imageUri != null)
                 {
                     //notify user upload is in progress
-                    progressDialog = new ProgressDialog(getActivity());
+                    progressDialog = new ProgressDialog(getActivity(), R.style.datepicker);
                     progressDialog.setMessage("Uploading Image Please Wait...");
                     progressDialog.show();
 
