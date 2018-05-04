@@ -44,6 +44,10 @@ public class ViewProfileFragment extends Fragment
      * Assigning database connection to Firebase database
      */
     private DatabaseReference databaseReferenceUsersTable;
+
+    /**
+     * Accessing the database ratings table
+     */
     private DatabaseReference databaseReferenceRatingsTable;
 
     /**
@@ -86,6 +90,12 @@ public class ViewProfileFragment extends Fragment
 
     }
 
+    /**
+     * This method is called when the activity login is displayed to the user. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState - if the activity needs to be recreated it can be passed back
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -160,6 +170,7 @@ public class ViewProfileFragment extends Fragment
 
     /**
      * Establishing connections to FireBase Database, and getting current user Id
+     * Connects to the users table and the ratings table
      */
     private void databaseConnections()
     {
@@ -264,6 +275,7 @@ public class ViewProfileFragment extends Fragment
         long totalRating = 0;
         long counter = 0;
 
+        // If the user has a review
         if (dataSnapshot.hasChildren())
         {
             for (DataSnapshot ds : dataSnapshot.getChildren())
@@ -278,12 +290,14 @@ public class ViewProfileFragment extends Fragment
                 }
             }
 
+            // Round the star ratings, display and make gold
             int usersRating = Math.round(totalRating);
             userRatingBar.setNumStars(usersRating);
             Drawable drawable = userRatingBar.getProgressDrawable();
             drawable.setColorFilter(Color.parseColor("#cece63"), PorterDuff.Mode.SRC_ATOP);
-        } else
-
+        }
+        // Otherwise, display so there are no stars visible and text saying no ratings
+        else
         {
             textViewNoRating.setText(R.string.no_ratings);
             textViewNoRating.setVisibility(View.VISIBLE);
@@ -298,8 +312,6 @@ public class ViewProfileFragment extends Fragment
      */
     private void addReviews()
     {
-
-
         list = new ArrayList<>();
         listHashMap = new HashMap<>();
         final List<String> collectionInfo = new ArrayList<>();
@@ -445,7 +457,6 @@ public class ViewProfileFragment extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
-
     }
 
     /**
