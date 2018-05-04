@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.R;
@@ -30,7 +31,7 @@ public class GenericMethods
     /**
      * Creating a custom toast message for all Fragments to Access
      *
-     * @param message String: message to be displayed to the user
+     * @param message          String: message to be displayed to the user
      * @param fragmentActivity FragmentActivity: The fragment that method has been called from and to display the message in
      */
     public void customToastMessage(String message, FragmentActivity fragmentActivity)
@@ -49,9 +50,8 @@ public class GenericMethods
     }
 
     /**
-     *
-     * @param host String: The host that is to be used
-     * @param item : The item to be added to the tab
+     * @param host    String: The host that is to be used
+     * @param item    : The item to be added to the tab
      * @param tabName : The name of the tab to be displayed
      */
     public void setupTabHost(TabHost host, int item, String tabName)
@@ -66,9 +66,7 @@ public class GenericMethods
     }
 
     /**
-     *
-     *
-     * @param host TabHost: Creates a new tab host
+     * @param host   TabHost: Creates a new tab host
      * @param tabTag String: Text to be displayed on the tab
      */
     public void createTabHost(final TabHost host, String tabTag)
@@ -142,7 +140,8 @@ public class GenericMethods
     /**
      * Create new bundle for strings.
      * This is used for transferring data between two fragments and we need to transfer a string
-     * @param tag : The reference key of the String being transferred
+     *
+     * @param tag  : The reference key of the String being transferred
      * @param data : The data element that is being transferred to another fragment
      * @return bundle : The information that has been added to the bundle
      */
