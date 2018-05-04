@@ -1,21 +1,15 @@
 package com.kitkat.crossroads.MyJobs;
 
-import android.content.Context;
-import android.database.DataSetObserver;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +20,6 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.DatabaseReferences;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
-import com.kitkat.crossroads.Jobs.FindAJobFragment;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
@@ -36,7 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * MyJobsFragment displays all of the jobs associated with the current user signed in
@@ -87,10 +79,16 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private final ArrayList<String> jobListKeyActive = new ArrayList<>();
     private final ArrayList<String> jobListKeyComplete = new ArrayList<>();
 
+    /**
+     * Search options to search for a job
+     */
     private SearchView jobSearchBidOn, jobSearchAccepted, jobSearchCompleted;
     private TabHost host;
     private String tabTag;
 
+    /**
+     * CustomAdapter to allow
+     */
     private MyCustomAdapterForTabViews mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
 
     private DatabaseReferences databaseReferences = new DatabaseReferences();
