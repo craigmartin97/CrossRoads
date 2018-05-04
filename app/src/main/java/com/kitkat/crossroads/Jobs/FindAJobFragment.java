@@ -109,7 +109,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     {
         super.onCreate(savedInstanceState);
         databaseConnections();
-        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
+        ((CrossRoadsMainActivity) getActivity()).wifiCheck();
     }
 
     /**
@@ -522,7 +522,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     }
 
     /**
-     *TODO
+     * Apply a filter to allow users to search for items in the list view
+     *
      * @param newText
      * @return
      */
@@ -536,7 +537,9 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
     }
 
     /**
-     *TODO
+     * Custom adapter allows for items to be displayed in a list view.
+     * It adds all of the passed elements from an arraylist into a linear layout
+     * into a list for the users to select
      */
     class MyCustomAdapter extends BaseAdapter
     {
@@ -556,7 +559,8 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         }
 
         /**
-         * todo
+         * sets the items from the passed array into the mData, a global array list
+         *
          * @param j
          */
         void addArray(final ArrayList<JobInformation> j)
@@ -606,10 +610,17 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         }
 
         /**
-         * TODO
-         * @param position
-         * @param convertView
-         * @param parent
+         * Get a View that displays the data at the specified position in the data set. You can either create a View manually or
+         * inflate it from an XML layout file. When the View is inflated, the parent View (GridView, ListView...)
+         * will apply default layout parameters unless you use inflate(int, android.view.ViewGroup, boolean)
+         * to specify a root view and to prevent attachment to the root.
+         *
+         * @param position    int: The position of the item within the adapter's data set of the item whose view we want.
+         * @param convertView View: The old view to reuse, if possible. Note: You should check that this view is non-null and of an appropriate type before using.
+         *                    If it is not possible to convert this view to display the correct data, this method can create a new view. Heterogeneous
+         *                    lists can specify their number of view types,
+         *                    so that this View is always of the right type (see getViewTypeCount() and getItemViewType(int)).
+         * @param parent      ViewGroup: The parent that this view will eventually be attached to
          * @return
          */
         @RequiresApi(api = Build.VERSION_CODES.O)
@@ -658,7 +669,7 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         }
 
         /**
-         *todo
+         * Holds all of the widgets for the ListView
          */
         class GroupViewHolder
         {
@@ -670,12 +681,12 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
         }
 
         /**
-         *todo
-         * @param charText      used in the search query, any Job containing the string charText will be displayed
+         * Applies a filter across the entire ListView to allow users to search for items
+         *
+         * @param charText used in the search query, any Job containing the string charText will be displayed
          */
         void filter(String charText)
         {
-
             ArrayList<JobInformation> jobs = new ArrayList<>();
             ArrayList<JobInformation> jA = new ArrayList<>();
             charText = charText.toLowerCase(Locale.getDefault());
@@ -702,14 +713,13 @@ public class FindAJobFragment extends Fragment implements SearchView.OnQueryText
                 mDataOrig = jA;
             }
 
-            /*
-             *todo
-             */
+            // Notify that the array list has been changed
             notifyDataSetChanged();
         }
 
         /**
-         *todo
+         * Apply a filter to the list view
+         *
          * @param filterInfo
          */
         void filterArray(JobInformation filterInfo)

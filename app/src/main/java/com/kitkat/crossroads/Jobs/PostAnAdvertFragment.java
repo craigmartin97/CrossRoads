@@ -1167,10 +1167,10 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     * todo
+     * Start a transaction to a new fragment
      *
-     * @param fragmentToTransferTo
-     * @param tabView
+     * @param fragmentToTransferTo - fragment that the user is transferring to
+     * @param tabView - the tab view that the user has transferred from
      */
     private void newFragmentTransaction(Fragment fragmentToTransferTo, String tabView)
     {
@@ -1360,7 +1360,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
 
     /**
      * @param jobStatus   jobStatus is set to "Pending" in saveEditJob, this ensures it appears in the FindAJob feed
-     * @param downloadUri todo
+     * @param downloadUri The uri of the image that the user has uploaded
      * @return returns all the jobInformation so that it can be stored in the database
      */
     private JobInformation setJobInformation(String jobStatus, Uri downloadUri)
@@ -1431,7 +1431,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     * todo
+     * Called when the class is no longer in use
      */
     @Override
     public void onStop()
@@ -1445,7 +1445,7 @@ public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.On
     }
 
     /**
-     * todo - exactly the same as onStop?
+     * Called when the class is no longer in use
      */
     @Override
     public void onDetach()
