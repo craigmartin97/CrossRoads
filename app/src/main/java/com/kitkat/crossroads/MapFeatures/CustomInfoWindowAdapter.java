@@ -11,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.kitkat.crossroads.R;
 
+
 /**
  * A custom window, so when the user presses on the marker on the map, it will bring up all of the
  * information about that location
