@@ -28,7 +28,6 @@ import com.kitkat.crossroads.R;
  */
 public class EditProfileFragment extends Fragment
 {
-
     /**
      * Edit texts are used to display the users information in and so the user
      * can edit it
@@ -286,10 +285,6 @@ public class EditProfileFragment extends Fragment
 
         genericMethods.dismissDialog(progressDialog);
         genericMethods.customToastMessage("Information Saved...", getActivity());
-
-        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
     }
 
     /**
@@ -301,6 +296,7 @@ public class EditProfileFragment extends Fragment
     private void setUserInformation(UserInformation userInformation)
     {
         databaseReferenceUsersTable.child(user).setValue(userInformation);
+        sendToViewProfile();
     }
 
     /**
@@ -324,5 +320,13 @@ public class EditProfileFragment extends Fragment
     {
         super.onDetach();
     }
+
+    private void sendToViewProfile()
+    {
+        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, new ViewProfileFragment()).addToBackStack("tag").commit();
+    }
+
 
 }
