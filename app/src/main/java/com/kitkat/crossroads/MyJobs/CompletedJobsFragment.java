@@ -78,6 +78,13 @@ public class CompletedJobsFragment extends Fragment
 
     private String jobId;
 
+    /**
+     * * This method is called when CompletedJobsFragment is displayed. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
+     *                              This value may be null.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -86,12 +93,11 @@ public class CompletedJobsFragment extends Fragment
     }
 
     /**
-     * Method displays and renders the content to the user
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_my_completed_jobs
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

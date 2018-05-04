@@ -92,12 +92,25 @@ public class PendingAdverts extends Fragment
         return fragment;
     }
 
+    /**
+     * * This method is called when [...] is displayed. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     * @param savedInstanceState     If the fragment is being re-created from a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
     }
 
+
+    /**
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_job_bids
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -175,7 +188,7 @@ public class PendingAdverts extends Fragment
     }
 
     /**
-     * Setting all of the weidgets on the layout page to variables for future use and be able to access them
+     * Setting all of the widgets on the layout page to variables for future use and be able to access them
      *
      * @param view
      */
@@ -294,8 +307,9 @@ public class PendingAdverts extends Fragment
         });
     }
 
-
-
+    /**
+     * onClick operations for viewActiveBids
+     */
     private void setBidsOnClickListener()
     {
         viewActiveBids.setOnClickListener(new View.OnClickListener()
@@ -311,6 +325,13 @@ public class PendingAdverts extends Fragment
         });
     }
 
+    /**
+     * onAttach             onAttach is called when a fragment is first attached to its context
+     * onCreate can be called only after the fragment is attached
+     *
+     * @param context Allows access to application specific resources and classes, also
+     *                supports application-level operations such as receiving intents, launching activities
+     */
     @Override
     public void onAttach(Context context)
     {
@@ -323,6 +344,10 @@ public class PendingAdverts extends Fragment
         }
     }
 
+
+    /**onDetatch
+     * When the fragment is no longer attached to the activity, set the listener to null
+     */
     @Override
     public void onDetach()
     {
@@ -330,6 +355,7 @@ public class PendingAdverts extends Fragment
         mListener = null;
     }
 
+    //todo ?
     interface OnFragmentInteractionListener
     {
         void onFragmentInteraction(Uri uri);

@@ -246,6 +246,9 @@ public class UploadImageFragment extends Fragment
         user = databaseConnections.getCurrentUser();
     }
 
+    /**
+     * Creates the gallery intent, this is called if a user has accepted permissions
+     */
     private void createGalleryIntent()
     {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -333,11 +336,18 @@ public class UploadImageFragment extends Fragment
         super.onDetach();
     }
 
+    /**
+     * Prompts the user to accept or deny out-of-app permissions (External Storage/Gallery)
+     */
     private void requestStoragePermission()
     {
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
     }
 
+    /* @param requestCode       The request code passed in
+     * @param permissions       An array which stores the requested permissions (can never be null)
+     * @param grantResults      The results of the corresponding permissions, either PERMISSION_GRANTED or PERMISSION_DENIED
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {

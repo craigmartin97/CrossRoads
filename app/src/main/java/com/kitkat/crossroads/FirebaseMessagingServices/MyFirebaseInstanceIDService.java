@@ -11,10 +11,6 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import android.util.Log;
 
 
-/**
- * Created by q5063319 on 19/03/18.
- */
-
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
 {
 
@@ -22,6 +18,9 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
     private DatabaseReference databaseReferenceUsersTable;
     private FirebaseAuth auth;
 
+    /**
+     *
+     */
     @Override
     public void onTokenRefresh()
     {
@@ -35,6 +34,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
         sendRegistrationToServer(refreshedToken);
     }
 
+    /**
+     *
+     * @param refreshedToken
+     */
     private void sendRegistrationToServer(String refreshedToken)
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();

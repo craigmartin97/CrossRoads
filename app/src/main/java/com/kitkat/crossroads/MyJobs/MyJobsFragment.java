@@ -101,7 +101,8 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      * OnCreate is called on the creation of Fragment to create a new
      * fragment.
      *
-     * @param savedInstanceState
+     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
+     *                              This value may be null.
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -123,6 +124,13 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         ((CrossRoadsMainActivity)getActivity()).wifiCheck();
     }
 
+    /**
+     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
+     * @param container          A view used to contain other views, in this case, the view fragment_my_jobs
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
+     * @return Returns inflated view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -175,7 +183,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     /**
      * Method sets all of the fragments View elements to class variables
      *
-     * @param view
+     * @param view   page to be inflated
      */
     private void getViewsByIds(View view)
     {
@@ -242,7 +250,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     /**
      * Get the Bid Information
      *
-     * @param dataSnapshot
+     * @param dataSnapshot  required to retrieve data from the database
      * @return UserBidInformation
      */
     private UserBidInformation getBidInformation(DataSnapshot dataSnapshot)
@@ -251,10 +259,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     /**
-     * Get the Job Information
      *
-     * @param dataSnapshot
-     * @return JobInformation
+     * @param dataSnapshot          required to retrieve data from the database
+     * @return JobInformation       Get the Job Information
      */
     private JobInformation getJobInformation(DataSnapshot dataSnapshot)
     {
@@ -282,7 +289,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     /**
      * Assign class variables the Firebase tables
      *
-     * @param dataSnapshot
+     * @param dataSnapshot  required to retrieve data from the database
      */
     private void createDataSnapShots(DataSnapshot dataSnapshot)
     {
@@ -449,12 +456,22 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         });
     }
 
+    /**
+     * todo
+     * @param query
+     * @return
+     */
     @Override
     public boolean onQueryTextSubmit(String query)
     {
         return false;
     }
 
+    /**
+     * todo
+     * @param newText
+     * @return
+     */
     @Override
     public boolean onQueryTextChange(String newText)
     {
@@ -464,6 +481,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         return false;
     }
 
+    /**
+     * todo
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {

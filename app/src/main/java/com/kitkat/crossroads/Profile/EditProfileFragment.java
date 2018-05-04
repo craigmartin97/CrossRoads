@@ -89,7 +89,7 @@ public class EditProfileFragment extends Fragment
 
     /**
      * @param inflater           Instantiates a layout XML file into its corresponding view Objects
-     * @param container          A view used to contain other views, in this case, the view fragment_upload_image
+     * @param container          A view used to contain other views, in this case, the view edit_profile
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
      *                           This value may be null.
      * @return Returns inflated view
@@ -176,6 +176,10 @@ public class EditProfileFragment extends Fragment
         });
     }
 
+    /**
+     * Onclick operations for Save Profile Button
+     * Calls the method to store the users information in the database
+     */
     private void createOnClickListnerSave()
     {
         saveProfile.setOnClickListener(new View.OnClickListener()
@@ -189,15 +193,18 @@ public class EditProfileFragment extends Fragment
     }
 
     /**
-     * Checks if all of the fields have text in, the
+     * Checks if all of the fields have text in, then creates a new user information object
+     * and overrides it in the FireBase database
      */
     private void saveUserInformation()
     {
+        // new progress dialog
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Updating Information Please Wait...");
         progressDialog.create();
         progressDialog.show();
 
+        // get all text
         String fullName = this.fullName.getText().toString().trim();
         String phoneNumber = this.phoneNumber.getText().toString().trim();
         String addressOne = this.addressOne.getText().toString().trim();
@@ -255,31 +262,22 @@ public class EditProfileFragment extends Fragment
             return;
         }
 
-        /*
-      Boolean values to store what the user is primarily using the app for
-     */
-        boolean advertiser;
-        boolean courier;
+
+        // check which boxes have been ticked
         if (checkBoxAdvertiser.isChecked() && !checkBoxCourier.isChecked())
         {
-            advertiser = true;
-            courier = false;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
                     addressTwo, town, postCode, true, false, profileImage, userEmail);
 
             setUserInformation(userInformation);
         } else if (!checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
-            advertiser = false;
-            courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
                     addressTwo, town, postCode, false, true, profileImage, userEmail);
 
             setUserInformation(userInformation);
         } else if (checkBoxAdvertiser.isChecked() && checkBoxCourier.isChecked())
         {
-            advertiser = true;
-            courier = true;
             UserInformation userInformation = new UserInformation(fullName, phoneNumber, addressOne,
                     addressTwo, town, postCode, true, true, profileImage, userEmail);
 

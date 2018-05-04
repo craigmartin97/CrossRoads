@@ -295,6 +295,18 @@ public class JobInformation implements Serializable
     }
 
     /**
+     * Set the job image to be pushed up into the database if the
+     * user hasent selected an image
+     *
+     * @param jobImage String: URL address of of the image
+     */
+    public void setJobImage(String jobImage)
+    {
+        this.jobImage = jobImage;
+    }
+
+
+    /**
      * Concatenates the wholeObject together to be printed
      * Used so we can see each element that has been successfully added to the Job Information class
      *
