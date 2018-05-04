@@ -517,6 +517,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
     /**
      * Dismiss the dialog, remove from the screen
+     *
      * @param progressDialog - The progress dialog that is to be dismissed
      */
     public void dismissDialog(ProgressDialog progressDialog)
