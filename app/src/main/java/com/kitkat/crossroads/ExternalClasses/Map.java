@@ -55,9 +55,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by craig on 08/04/18.
+ * Gets the users current location and displays a map.
+ * Accesses users device current location
  */
-
 public class Map implements GoogleApiClient.OnConnectionFailedListener
 {
 
@@ -79,7 +79,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
 
     /**
-     * Google map
+     * Google map creation
      */
     private GoogleMap gMap;
     /**
@@ -414,11 +414,17 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
         }
     }
 
+    /**
+     * Hides the user keyboard
+     */
     private void hideKeyboard()
     {
         fragmentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    /**
+     * Hides the user keyboard
+     */
     public void hideKeyboard(FragmentActivity fragmentActivity)
     {
         fragmentActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
