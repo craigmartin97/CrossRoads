@@ -91,8 +91,14 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
      */
     private MyCustomAdapterForTabViews mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
 
+    /**
+     * Establish database connection to the FireBase database tables
+     */
     private DatabaseReferences databaseReferences = new DatabaseReferences();
 
+    /**
+     * Accessing the generic methods
+     */
     private GenericMethods genericMethods = new GenericMethods();
 
     /**
@@ -152,6 +158,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         getViewsByIds(view);
         setTabHosts();
 
+        // Get data from database
         databaseReference.addValueEventListener(new ValueEventListener()
         {
             @Override
