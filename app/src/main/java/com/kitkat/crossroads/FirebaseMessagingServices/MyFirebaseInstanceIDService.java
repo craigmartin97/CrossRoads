@@ -10,7 +10,10 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 
 import android.util.Log;
 
-
+/**
+ * Every time the user logs into their account a new notification token is created.
+ * This token then allows notifications to be sent to the users device.
+ */
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
 {
 
@@ -19,7 +22,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
     private FirebaseAuth auth;
 
     /**
-     *
+     * Gets the token that is registered to the device, this is called when ever the token is updated and whenever the user logs in.
      */
     @Override
     public void onTokenRefresh()
@@ -35,7 +38,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
     }
 
     /**
-     * @param refreshedToken
+     * Sends the current token to the server so it is stored and can be accessed.
+     * @param refreshedToken The token registered to the current device.
      */
     private void sendRegistrationToServer(String refreshedToken)
     {

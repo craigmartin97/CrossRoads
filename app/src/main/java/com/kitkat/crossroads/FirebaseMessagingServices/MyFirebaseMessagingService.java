@@ -16,7 +16,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.SplashScreen;
 
-
+/**
+ * This class deals with the message received from a notification.
+ */
 public class MyFirebaseMessagingService extends FirebaseMessagingService implements Constants
 {
 
@@ -24,7 +26,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     private static int count = 0;
 
     /**
-     * @param remoteMessage
+     * This method runs whenever a notification is received.
+     * @param remoteMessage The message received from the notification.
      */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage)
@@ -43,9 +46,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     //This method is only generating push notification
 
     /**
-     * @param messageTitle
-     * @param messageBody
-     * @param tag
+     * This method styles the notification and then displays it to the users device.
+     * @param messageTitle Notification Title
+     * @param messageBody Notification Body
+     * @param tag data from the notification
      */
     private void sendNotification(String messageTitle, String messageBody, String tag)
     {

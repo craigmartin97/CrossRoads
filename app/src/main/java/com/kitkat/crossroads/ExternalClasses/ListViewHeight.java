@@ -5,7 +5,8 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 /**
- *
+ * ListViewHeight, changes the height of each expandable list view
+ * to match the height of the content
  */
 public class ListViewHeight
 {
