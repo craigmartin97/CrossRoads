@@ -94,6 +94,12 @@ import java.util.Objects;
 import static android.app.Activity.RESULT_OK;
 import static com.felipecsl.gifimageview.library.GifHeaderParser.TAG;
 
+/**
+ * Post an advert allows users to post a new advert into the database.
+ * They must input all fields, name, description full addresses and the date and time of the job.
+ * Users can also use the map to find a location, or use there home location by pressing a button
+ * Users can also upload images from the camera or gallery of their device
+ */
 public class PostAnAdvertFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener
 {
     /**
