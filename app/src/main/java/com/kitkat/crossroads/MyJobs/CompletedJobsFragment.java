@@ -82,8 +82,8 @@ public class CompletedJobsFragment extends Fragment
      * * This method is called when CompletedJobsFragment is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
      *
-     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
-     *                              This value may be null.
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -193,6 +193,7 @@ public class CompletedJobsFragment extends Fragment
 
     /**
      * Assigning all the data from the passed bundle into variables for later use
+     *
      * @param jobInformation JobInformation: Object that contains all data about a job
      */
     private void getJobInformationFromBundle(JobInformation jobInformation)

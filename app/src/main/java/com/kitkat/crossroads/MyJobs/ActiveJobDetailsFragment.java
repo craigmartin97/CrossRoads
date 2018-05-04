@@ -100,12 +100,10 @@ public class ActiveJobDetailsFragment extends Fragment
     private ProgressBar progressBar;
 
     /**
-     *
      * This method is called when ActiveJobDetails is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
-     *
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -115,9 +113,9 @@ public class ActiveJobDetailsFragment extends Fragment
     }
 
     /**
-     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
-     * @param container          A view used to contain other views, in this case, the view fragment_active_job_details
-     *                           This value may be null.
+     * @param inflater  Instantiates a layout XML file into its corresponding view Objects
+     * @param container A view used to contain other views, in this case, the view fragment_active_job_details
+     *                  This value may be null.
      * @return Returns inflated view
      */
 
@@ -151,7 +149,7 @@ public class ActiveJobDetailsFragment extends Fragment
 
     /**
      * Set widgets in the inflated view to variables within this class
-
+     *
      * @param view - View to be inflated
      */
     private void getViewsByIds(View view)
@@ -168,27 +166,28 @@ public class ActiveJobDetailsFragment extends Fragment
         progressBar = view.findViewById(R.id.progressBar);
     }
 
-    /**Gets a bundle containing an instance of JobInformation
+    /**
+     * Gets a bundle containing an instance of JobInformation
      *
-     * @return  returns bundle containing jobInformation or null if the bundle is null
+     * @return returns bundle containing jobInformation or null if the bundle is null
      */
     private JobInformation getBundleInformation()
     {
         final Bundle bundle = this.getArguments();
-        if(bundle != null)
+        if (bundle != null)
         {
             jobId = (String) bundle.getSerializable(getString(R.string.job_id));
             return (JobInformation) bundle.getSerializable(getString(R.string.job_key));
-        }
-        else
+        } else
         {
             return null;
         }
     }
 
-    /**Extracts job information from bundle and sets the pages fields to equal the specified job's data
+    /**
+     * Extracts job information from bundle and sets the pages fields to equal the specified job's data
      *
-     * @param jobInformation    an instance of the class JobInformation
+     * @param jobInformation an instance of the class JobInformation
      */
     private void getJobInformationFromBundle(JobInformation jobInformation)
     {
@@ -276,7 +275,7 @@ public class ActiveJobDetailsFragment extends Fragment
     }
 
     /**
-     *Creates list views for the Active Job Details page
+     * Creates list views for the Active Job Details page
      */
     private void createExpandableListViews()
     {

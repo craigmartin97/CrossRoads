@@ -110,7 +110,7 @@ public class BidOnJobsFragment extends Fragment
      * * This method is called when BidOnJobs is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
      *
-     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
      *                           This value may be null.
      */
     @Override
@@ -150,12 +150,11 @@ public class BidOnJobsFragment extends Fragment
             @Override
             public void onClick(View view)
             {
-                if(TextUtils.isEmpty(editTextEditBid.getText()))
+                if (TextUtils.isEmpty(editTextEditBid.getText()))
                 {
                     customToastMessage("Enter A Bid!");
                     return;
-                }
-                else
+                } else
                 {
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(editTextEditBid.getWindowToken(), 0);
@@ -201,23 +200,23 @@ public class BidOnJobsFragment extends Fragment
 
     /**
      * checks inputted bid matches expected format
-     * @param jobId     ID of the job being bid on
-     * @param user      Current user bidding on the job
-     *                  Needed to store who's bid on which job in the database
+     *
+     * @param jobId ID of the job being bid on
+     * @param user  Current user bidding on the job
+     *              Needed to store who's bid on which job in the database
      */
     private void formatSubmittedBid(final String jobId, final String user)
     {
         String userBid = editTextEditBid.getText().toString().trim();
 
         //remove leading £ signs from bid
-        if(userBid.contains("£"))
+        if (userBid.contains("£"))
         {
             userBid = userBid.substring(userBid.lastIndexOf("£") + 1);
 
             userBid = checkUserBidDecimal(userBid);
             submitBid(jobId, user, userBid);
-        }
-        else
+        } else
         {
             userBid = checkUserBidDecimal(userBid);
             submitBid(jobId, user, userBid);
@@ -225,13 +224,10 @@ public class BidOnJobsFragment extends Fragment
     }
 
     /**
-     *
-     * @param jobId      ID of the job being bid on
-     *
-     * @param user      Current user bidding on the job
-     *                  Needed to store who's bid on which job in the database
-     *
-     * @param userBid   Value of the bid
+     * @param jobId   ID of the job being bid on
+     * @param user    Current user bidding on the job
+     *                Needed to store who's bid on which job in the database
+     * @param userBid Value of the bid
      */
     private void submitBid(final String jobId, final String user, final String userBid)
     {
@@ -252,14 +248,15 @@ public class BidOnJobsFragment extends Fragment
         });
     }
 
-    /**Formats the users' bid into a decimal value
+    /**
+     * Formats the users' bid into a decimal value
      *
-     * @param userBid   Passed in from Submit bid
-     * @return          Returns new formatted value
+     * @param userBid Passed in from Submit bid
+     * @return Returns new formatted value
      */
     private String checkUserBidDecimal(String userBid)
     {
-        if(!userBid.contains("."))
+        if (!userBid.contains("."))
         {
             userBid = userBid + ".00";
         }
@@ -267,7 +264,7 @@ public class BidOnJobsFragment extends Fragment
     }
 
     /**
-     *Creates all expandable views
+     * Creates all expandable views
      */
     private void createExpandableListViews()
     {
@@ -312,10 +309,11 @@ public class BidOnJobsFragment extends Fragment
         });
     }
 
-    /**Saves the bid into the firebase database
+    /**
+     * Saves the bid into the firebase database
      *
-     * @param fullName      Bidders full name - Will appear in the Advertisers' list of bids
-     * @param userBid       value of bid
+     * @param fullName Bidders full name - Will appear in the Advertisers' list of bids
+     * @param userBid  value of bid
      */
     private void enterBidIntoFirebase(String fullName, String userBid)
     {
@@ -367,8 +365,7 @@ public class BidOnJobsFragment extends Fragment
     }
 
     /**
-     *
-     * @param jobInformation    New instance of JobInformation - Used to retrieve all the job data
+     * @param jobInformation New instance of JobInformation - Used to retrieve all the job data
      */
     private void getJobInformationFromBundle(JobInformation jobInformation)
     {
@@ -453,7 +450,6 @@ public class BidOnJobsFragment extends Fragment
     }
 
     /**
-     *
      * @param message returns a toast message
      */
     private void customToastMessage(String message)
@@ -474,7 +470,8 @@ public class BidOnJobsFragment extends Fragment
         super.onAttach(context);
     }
 
-    /**onDetatch
+    /**
+     * onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
     @Override
