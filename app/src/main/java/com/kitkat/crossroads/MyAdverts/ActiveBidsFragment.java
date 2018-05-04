@@ -54,7 +54,11 @@ import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
-
+/**
+ * Active Jobs Details displays all of the active bids that the user has received on their job advert
+ * The user can see all bids, which include the bidders name, average rating and fee.
+ * The user can go to accept the bid and pay through paypal to complete the transaction.
+ */
 public class ActiveBidsFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
