@@ -109,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity
      */
     private void getViewByIds()
     {
-        progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this, R.style.datepicker);
         buttonRegister = findViewById(R.id.buttonRegister);
         editTextEmail = findViewById(R.id.editTextEmailLogin);
         editTextPassword = findViewById(R.id.editTextPasswordLogin);

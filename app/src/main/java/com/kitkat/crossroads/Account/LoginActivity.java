@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity
      */
     private void getViewByIds()
     {
-        progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this, R.style.datepicker);
         inputEmail = findViewById(R.id.editTextEmailLogin);
         inputPassword = findViewById(R.id.editTextPasswordLogin);
         signUp = findViewById(R.id.textViewSignUp);
@@ -155,7 +155,20 @@ public class LoginActivity extends AppCompatActivity
         {
             public void onClick(View v)
             {
-                checkIfWidgetsAreEmpty();
+                // Check email box if its empty, return back to page
+                if (TextUtils.isEmpty(getTextFromEmailWidget()))
+                {
+                    customToastMessage("Please enter an email address!");
+                    return;
+                }
+
+                // Check password is empty, if so, return to page
+                if (TextUtils.isEmpty(getTextFromPasswordWidget()))
+                {
+                    customToastMessage("Please Enter A Password");
+                    return;
+                }
+
                 progressDialog.setMessage("Logging In Please Wait...");
                 progressDialog.show();
 
@@ -181,11 +194,15 @@ public class LoginActivity extends AppCompatActivity
                                 databaseReferenceUsers.child(Objects.requireNonNull(auth.getCurrentUser()).getUid()).child(DatabaseEntryNames.notifToken.name()).setValue(FirebaseInstanceId.getInstance().getToken());
                                 startActivity(new Intent(getApplicationContext(), CrossRoadsMainActivity.class));
                                 finish();
-                            } else if (!(user != null && user.isEmailVerified()))
+                            }
+                            // email not verified, must login to their email and accept
+                            else if (!(user != null && user.isEmailVerified()))
                             {
                                 genericMethods.dismissDialog(progressDialog);
                                 customToastMessage("You Must Verify Your Email Address Before Logging In. Please Check Your Email.");
-                            } else
+                            }
+                            // Unexpected error happened
+                            else
                             {
                                 genericMethods.dismissDialog(progressDialog);
                                 customToastMessage("Please Re-enter Your Details And Try Again");
@@ -215,23 +232,6 @@ public class LoginActivity extends AppCompatActivity
     private String getTextFromPasswordWidget()
     {
         return inputPassword.getText().toString().trim();
-    }
-
-    /**
-     * Used to check that the email and password fields contain text
-     */
-    private void checkIfWidgetsAreEmpty()
-    {
-        if (TextUtils.isEmpty(getTextFromEmailWidget()))
-        {
-            customToastMessage("Please enter an email address!");
-            return;
-        }
-
-        if (TextUtils.isEmpty(getTextFromPasswordWidget()))
-        {
-            customToastMessage("Please Enter A Password");
-        }
     }
 
     /**
