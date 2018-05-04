@@ -697,7 +697,7 @@ public class ActiveBidsFragment extends Fragment
         }
     }
 
-    /**onDetatch
+    /** onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
 
