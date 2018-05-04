@@ -55,9 +55,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by craig on 08/04/18.
+ * Map class gets the current location of the user, displays a map on the page
+ * The user is able to view their current location and find other locations anywhere in the world
  */
-
 public class Map implements GoogleApiClient.OnConnectionFailedListener
 {
 
@@ -528,10 +528,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
         }
     };
 
-    /**
-     *
-     * @return
-     */
+
     public PlaceInformation getPlaceInfo()
     {
         if (placeInfo != null)
