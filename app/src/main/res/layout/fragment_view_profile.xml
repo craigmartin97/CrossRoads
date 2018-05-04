@@ -93,169 +93,133 @@
                         android:layout_below="@+id/expandable_list_view"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/customborder"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <ImageView
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/phone"
-                            android:layout_marginTop="-26dp"
-                            android:contentDescription="@null"/>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/HeadingForPhoneNumber"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/bebasneueregular"
-                            android:text="@string/phone_number"
-                            android:textAlignment="center"
-                            android:textSize="24sp" />
 
-                        <TextView
-                            android:id="@+id/textViewPhoneNumber"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:text="@string/viewphonenumber"
-                            android:textAlignment="center" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginVertical="5dp">
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@mipmap/ic_launcher_phone"
+                                    android:contentDescription="@null"
+                                    />
+
+                                <TextView
+                                    android:id="@+id/textViewPhoneNumber"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:paddingTop="10dp"
+                                    android:text="@string/viewphonenumber"
+                                    android:textAlignment="center" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginVertical="5dp">
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_margin="5dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:contentDescription="@null"
+                                    android:layout_gravity="center"
+                                    android:src="@mipmap/ic_launcher_mail" />
+
+                                <TextView
+                                    android:id="@+id/textViewEmail"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:paddingTop="10dp"
+                                    android:text="@string/viewphonenumber"
+                                    android:textAlignment="center" />
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginVertical="5dp">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_margin="5dp"
+                                    android:src="@mipmap/ic_launcher_home"
+                                    android:layout_gravity="top"
+                                    android:contentDescription="@null"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/textViewAddressOne"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingTop="10dp"
+                                        android:text="@string/viewaddressone"
+                                        android:textAlignment="center" />
+
+                                    <TextView
+                                        android:id="@+id/textViewAddressTwo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingTop="10dp"
+                                        android:text="@string/viewaddresstwo"
+                                        android:textAlignment="center" />
+
+                                    <TextView
+                                        android:id="@+id/textViewTown"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingTop="10dp"
+                                        android:text="@string/viewtown"
+                                        android:textAlignment="center" />
+
+                                    <TextView
+                                        android:id="@+id/textViewPostCode"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:paddingTop="10dp"
+                                        android:text="@string/viewpostcode"
+                                        android:textAlignment="center" />
+
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
+
+
+                        </LinearLayout>
+
+
                     </LinearLayout>
 
 
-                    <LinearLayout
-                        android:id="@+id/adLEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/adL1"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/customborder"
-                        android:orientation="vertical">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_width="162px"
-                                android:layout_height="162px"
-                                android:layout_centerHorizontal="true"
-                                android:contentDescription="@null"
-                                android:src="@drawable/ic_action_name" />
-
-                        </RelativeLayout>
-
-                        <TextView
-                            android:id="@+id/HeadingForEmail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/bebasneueregular"
-                            android:text="@string/email_address"
-                            android:textAlignment="center"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/textViewEmail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:text="@string/viewphonenumber"
-                            android:textAlignment="center" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/adL2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/adLEmail"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/customborder"
-                        android:gravity="right"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/home"
-                            android:layout_marginTop="-26dp"
-                            android:contentDescription="@null"/>
-
-                        <TextView
-                            android:id="@+id/HeadingForAddressOne"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/bebasneueregular"
-                            android:text="@string/address_line_1"
-                            android:textAlignment="center"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/textViewAddressOne"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:text="@string/viewaddressone"
-                            android:textAlignment="center" />
 
 
-                        <TextView
-                            android:id="@+id/HeadingForAddressTwo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/bebasneueregular"
-                            android:paddingTop="10dp"
-                            android:text="@string/address_line_2"
-                            android:textAlignment="center"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/textViewAddressTwo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:text="@string/viewaddresstwo"
-                            android:textAlignment="center" />
-
-                        <TextView
-                            android:id="@+id/HeadingForTown"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/bebasneueregular"
-                            android:paddingTop="10dp"
-                            android:text="@string/town"
-                            android:textAlignment="center"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/textViewTown"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:text="@string/viewtown"
-                            android:textAlignment="center" />
-
-                        <TextView
-                            android:id="@+id/HeadingForPostCode"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/bebasneueregular"
-                            android:paddingTop="10dp"
-                            android:text="@string/postcode"
-                            android:textAlignment="center"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/textViewPostCode"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:text="@string/viewpostcode"
-                            android:textAlignment="center" />
-                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/linLayout1"
-                        android:layout_below="@+id/adL2"
+                        android:layout_below="@+id/adL1"
                         android:background="@drawable/customborder"
                         android:layout_centerHorizontal="true">
 
@@ -279,30 +243,11 @@
                                 android:layout_below="@+id/textViewCheckbox"
                                 android:layout_centerHorizontal="true">
 
-                            <CheckBox
-                                android:id="@+id/checkBoxAdvertiser"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:buttonTint="#2bbc9b"
-                                android:clickable="false"
-                                android:ems="10"
-                                android:fontFamily="@font/applegaramond"
-                                android:padding="10dp"
-                                android:text="@string/advertiser"
-                                android:textColor="#2bbc9b"
-                                android:enabled="false"
-                                android:visibility="visible" />
-
-                            <CheckBox
-                                android:id="@+id/checkBoxCourier"
+                            <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:buttonTint="#2bbc9b"
-                                android:clickable="false"
-                                android:fontFamily="@font/applegaramond"
-                                android:text="@string/courier"
-                                android:textColor="#2bbc9b"
-                                android:visibility="visible" />
+                                android:id="@+id/userPreference"/>
+
                             </LinearLayout>
 
                         </RelativeLayout>
