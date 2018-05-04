@@ -151,7 +151,6 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         {
 
 
-
             if (convertView == null)
             {
 
@@ -167,8 +166,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
 
                 convertView.setTag(holderBidOn);
 
-            }
-            else
+            } else
             {
                 holderBidOn = (MyCustomAdapterForTabViews.GroupViewHolderBidOn) convertView.getTag();
             }
@@ -179,7 +177,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
             holderBidOn.textViewJobDescription.setText(mData.get(position).getAdvertDescription());
 
             //my ads
-            if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+            if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
             {
                 holderBidOn.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
                 holderBidOn.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelTown() + ", " + mData.get(position).getDelPostcode());
@@ -311,7 +309,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         else if (host.getCurrentTab() == 1)
         {
 
-            if(convertView == null)
+            if (convertView == null)
             {
                 convertView = mInflater.inflate(R.layout.job_info_accepted, null);
                 holderAccepted = new MyCustomAdapterForTabViews.GroupViewHolderAccepted();
@@ -323,8 +321,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                 holderAccepted.textViewBid = convertView.findViewById(R.id.textBid);
 
                 convertView.setTag(holderAccepted);
-            }
-            else
+            } else
             {
                 holderAccepted = (MyCustomAdapterForTabViews.GroupViewHolderAccepted) convertView.getTag();
             }
@@ -333,7 +330,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
             holderAccepted.textViewDescription.setText(mData.get(position).getAdvertDescription());
 
             //my ads
-            if(mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
+            if (mData.get(position).getPosterID().equals(databaseConnections.getCurrentUser()))
             {
                 holderAccepted.textViewAddressFrom.setText(mData.get(position).getColL1() + ", " + mData.get(position).getColTown() + ", " + mData.get(position).getColPostcode());
                 holderAccepted.textViewAddressTo.setText(mData.get(position).getDelL1() + ", " + mData.get(position).getDelTown() + ", " + mData.get(position).getDelPostcode());
@@ -368,7 +365,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
         else if (host.getCurrentTab() == 2)
         {
 
-            if(convertView == null)
+            if (convertView == null)
             {
                 convertView = mInflater.inflate(R.layout.job_info_list_completed, null);
 
@@ -378,8 +375,7 @@ public class MyCustomAdapterForTabViews extends BaseAdapter
                 holderCompleted.imageViewCross = convertView.findViewById(R.id.imageViewCross);
 
                 convertView.setTag(holderCompleted);
-            }
-            else
+            } else
             {
                 holderCompleted = (MyCustomAdapterForTabViews.GroupViewHolderCompleted) convertView.getTag();
             }
