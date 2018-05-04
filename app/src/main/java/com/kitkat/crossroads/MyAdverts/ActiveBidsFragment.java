@@ -54,7 +54,11 @@ import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
-
+/**
+ * Active Jobs Details displays all of the active bids that the user has received on their job advert
+ * The user can see all bids, which include the bidders name, average rating and fee.
+ * The user can go to accept the bid and pay through paypal to complete the transaction.
+ */
 public class ActiveBidsFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
@@ -110,7 +114,6 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     *
      * @param savedInstanceState -If the fragment is being recreated from a previous saved state, this is the state.
      */
     @Override
@@ -121,8 +124,8 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
+     * /**
      *
-     /**
      * @param inflater           Instantiates a layout XML file into its corresponding view Objects
      * @param container          A view used to contain other views, in this case, the view fragment_active_bids
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
@@ -145,7 +148,10 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     * Called when the view previously created by onCreateView has been detached from the fragment.
+     * Called when the view previously created by onCreateView(LayoutInflater, ViewGroup, Bundle) has been detached from the fragment.
+     * The next time the fragment needs to be displayed, a new view will be created. This is called after onStop() and before onDestroy().
+     * It is called regardless of whether onCreateView(LayoutInflater, ViewGroup, Bundle)
+     * returned a non-null view. Internally it is called after the view's state has been saved but before it has been removed from its parent.
      */
     @Override
     public void onDestroyView()
@@ -155,7 +161,7 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     * Called when the fragment is no longer in use
+     * Called when the fragment is no longer in use. This is called after onStop() and before onDetach()
      */
     @Override
     public void onDestroy()
@@ -179,10 +185,6 @@ public class ActiveBidsFragment extends Fragment
         user = databaseConnections.getCurrentUser();
     }
 
-    /**
-     *
-     * @param view
-     */
     private void getViewByIds(View view)
     {
         jobListView = view.findViewById(R.id.jobListView1);
@@ -374,7 +376,7 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     *handles functionality and creates intent for the in-app Paypal payment service
+     * handles functionality and creates intent for the in-app Paypal payment service
      */
     private void processPayment()
     {
@@ -467,7 +469,7 @@ public class ActiveBidsFragment extends Fragment
     }
 
     /**
-     * todo - oli's adapter
+     * Adapter to populate a view from an ArrayList is the ArrayAdapter
      */
     public class MyCustomAdapter extends BaseAdapter
     {
@@ -535,13 +537,6 @@ public class ActiveBidsFragment extends Fragment
             return false;
         }
 
-        /**
-         *Get a view that displays the data at the specified position in the data set
-         * @param position      specified position
-         * @param convertView
-         * @param parent
-         * @return              Returns view
-         */
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
@@ -633,10 +628,6 @@ public class ActiveBidsFragment extends Fragment
             public TextView ratingNoFeedback;
         }
 
-        /**
-         *
-         * @param charText  Filters the results based on the string entered.
-         */
         public void filter(String charText)
         {
 
@@ -678,6 +669,7 @@ public class ActiveBidsFragment extends Fragment
         }
     }
 
+
     /**
      * onAttach is called when a fragment is first attached to its context
      * onCreate can be called only after the fragment is attached
@@ -697,7 +689,8 @@ public class ActiveBidsFragment extends Fragment
         }
     }
 
-    /**onDetatch
+    /**
+     * onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
 

@@ -1,21 +1,15 @@
 package com.kitkat.crossroads.MyJobs;
 
-import android.content.Context;
-import android.database.DataSetObserver;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TabHost;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +20,6 @@ import com.kitkat.crossroads.ExternalClasses.DatabaseConnections;
 import com.kitkat.crossroads.ExternalClasses.DatabaseReferences;
 import com.kitkat.crossroads.ExternalClasses.GenericMethods;
 import com.kitkat.crossroads.ExternalClasses.MyCustomAdapterForTabViews;
-import com.kitkat.crossroads.Jobs.FindAJobFragment;
 import com.kitkat.crossroads.Jobs.JobInformation;
 import com.kitkat.crossroads.Jobs.UserBidInformation;
 import com.kitkat.crossroads.MainActivity.CrossRoadsMainActivity;
@@ -36,7 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * MyJobsFragment displays all of the jobs associated with the current user signed in
@@ -87,22 +79,34 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private final ArrayList<String> jobListKeyActive = new ArrayList<>();
     private final ArrayList<String> jobListKeyComplete = new ArrayList<>();
 
+    /**
+     * Search options to search for a job
+     */
     private SearchView jobSearchBidOn, jobSearchAccepted, jobSearchCompleted;
     private TabHost host;
     private String tabTag;
 
+    /**
+     * CustomAdapter to allow
+     */
     private MyCustomAdapterForTabViews mAdapterBidOn, mAdapterAccepted, mAdapterCompleted;
 
+    /**
+     * Establish database connection to the FireBase database tables
+     */
     private DatabaseReferences databaseReferences = new DatabaseReferences();
 
+    /**
+     * Accessing the generic methods
+     */
     private GenericMethods genericMethods = new GenericMethods();
 
     /**
      * OnCreate is called on the creation of Fragment to create a new
      * fragment.
      *
-     * @param savedInstanceState    If the fragment is being re-created from a previous saved state, this is the state.
-     *                              This value may be null.
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                           This value may be null.
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -111,17 +115,19 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         setDatabaseConnections();
         Bundle bundle = getArguments();
 
-        if(bundle != null) {
+        if (bundle != null)
+        {
             String tag = bundle.getString("tabView");
-            if (tag != null) {
+            if (tag != null)
+            {
                 tabTag = tag;
             }
-        }
-        else {
+        } else
+        {
             tabTag = "Active";
         }
 
-        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
+        ((CrossRoadsMainActivity) getActivity()).wifiCheck();
     }
 
     /**
@@ -139,9 +145,11 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
 
         Bundle bundle = getArguments();
 
-        if(bundle != null) {
+        if (bundle != null)
+        {
             String tag = bundle.getString("tabView");
-            if (tag != null) {
+            if (tag != null)
+            {
                 tabTag = tag;
             }
         }
@@ -150,6 +158,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
         getViewsByIds(view);
         setTabHosts();
 
+        // Get data from database
         databaseReference.addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -183,7 +192,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     /**
      * Method sets all of the fragments View elements to class variables
      *
-     * @param view   page to be inflated
+     * @param view page to be inflated
      */
     private void getViewsByIds(View view)
     {
@@ -250,7 +259,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     /**
      * Get the Bid Information
      *
-     * @param dataSnapshot  required to retrieve data from the database
+     * @param dataSnapshot required to retrieve data from the database
      * @return UserBidInformation
      */
     private UserBidInformation getBidInformation(DataSnapshot dataSnapshot)
@@ -259,8 +268,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     /**
-     *
-     * @param dataSnapshot          required to retrieve data from the database
+     * @param dataSnapshot required to retrieve data from the database
      * @return JobInformation       Get the Job Information
      */
     private JobInformation getJobInformation(DataSnapshot dataSnapshot)
@@ -289,7 +297,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     /**
      * Assign class variables the Firebase tables
      *
-     * @param dataSnapshot  required to retrieve data from the database
+     * @param dataSnapshot required to retrieve data from the database
      */
     private void createDataSnapShots(DataSnapshot dataSnapshot)
     {
@@ -423,7 +431,7 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     private void completeList()
     {
         // Go through the Jobs table
-        for(final DataSnapshot ds5 : getJobListChildren())
+        for (final DataSnapshot ds5 : getJobListChildren())
         {
             // If the status if active and the current users job
             if (getJobInformation(ds5).getJobStatus().equals("Complete") && getJobInformation(ds5).getCourierID().equals(auth.getCurrentUser().getUid()))
@@ -457,9 +465,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     /**
-     * todo
-     * @param query
-     * @return
+     * Called when the user submits the query.
+     *
+     * @param query String: the query text that is to be submitted
+     * @return boolean onQueryTextSubmit (String query)
      */
     @Override
     public boolean onQueryTextSubmit(String query)
@@ -468,9 +477,10 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     /**
+     * Called when the query text is changed by the user.
      *
-     * @param newText       the filter applied to the search Query
-     * @return              Search results with filter applied
+     * @param newText String: the new content of the query text field.
+     * @return boolean onQueryTextChange (String newText)
      */
     @Override
     public boolean onQueryTextChange(String newText)
@@ -482,8 +492,9 @@ public class MyJobsFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     /**
-     * todo
-     * @param item
+     * Finds which item has been selected
+     *
+     * @param item - the item that has been selected
      * @return
      */
     @Override
