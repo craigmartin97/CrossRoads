@@ -59,8 +59,7 @@ public class ViewProfileFragment extends Fragment
      * Creating variables to store the widgets
      */
     private RatingBar userRatingBar;
-    private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode, textViewNoRating, textViewEmail;
-    private CheckBox checkBoxAdvertiser, checkBoxCourier;
+    private TextView fullName, phoneNumber, addressOne, addressTwo, town, postCode, textViewNoRating, textViewEmail, textViewUserPreference;
     private ImageView profileImageUri;
 
     /**
@@ -195,8 +194,7 @@ public class ViewProfileFragment extends Fragment
         addressTwo = view.findViewById(R.id.textViewAddressTwo);
         town = view.findViewById(R.id.textViewTown);
         postCode = view.findViewById(R.id.textViewPostCode);
-        checkBoxAdvertiser = view.findViewById(R.id.checkBoxAdvertiser);
-        checkBoxCourier = view.findViewById(R.id.checkBoxCourier);
+        textViewUserPreference = view.findViewById(R.id.userPreference);
         profileImageUri = view.findViewById(R.id.profileImage);
         expandableListView = view.findViewById(R.id.expandable_list_view);
         userRatingBar = view.findViewById(R.id.UserRatingsBar);
@@ -330,12 +328,7 @@ public class ViewProfileFragment extends Fragment
                     addressOne.setVisibility(View.GONE);
                     addressTwo.setVisibility(View.GONE);
                     postCode.setVisibility(View.GONE);
-                    TextView headerAddressOne = getView().findViewById(R.id.HeadingForAddressOne);
-                    TextView headerAddressTwo = getView().findViewById(R.id.HeadingForAddressTwo);
-                    TextView headerPostCode = getView().findViewById(R.id.HeadingForPostCode);
-                    headerAddressOne.setVisibility(View.GONE);
-                    headerAddressTwo.setVisibility(View.GONE);
-                    headerPostCode.setVisibility(View.GONE);
+
                 }
 
                 @Override
@@ -440,9 +433,17 @@ public class ViewProfileFragment extends Fragment
         postCode.setText(postalCode);
         textViewEmail.setText(email);
 
-        GenericMethods genericMethods = new GenericMethods();
-        genericMethods.checkUserPreference(advertiser, courier, checkBoxAdvertiser, checkBoxCourier);
 
+        if (advertiser && !courier)
+        {
+            textViewUserPreference.setText("Advertiser!");
+        } else if (!advertiser && courier)
+        {
+            textViewUserPreference.setText("Courier!");
+        } else
+        {
+            textViewUserPreference.setText("Advertiser and Courier!");
+        }
         Picasso.get().load(profileImage).resize(350, 350).transform(new CircleTransformation()).into(profileImageUri);
     }
 
