@@ -24,7 +24,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     private static int count = 0;
 
     /**
-     *
      * @param remoteMessage
      */
     @Override
@@ -44,13 +43,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     //This method is only generating push notification
 
     /**
-     *
      * @param messageTitle
      * @param messageBody
      * @param tag
      */
     private void sendNotification(String messageTitle, String messageBody, String tag)
     {
+        PendingIntent contentIntent = null;
+
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.iconcrossroadscwhite))
@@ -58,31 +58,32 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri);
+                .setSound(defaultSoundUri)
+                .setContentIntent(contentIntent);
 
 
-        Intent notificationIntent = null;
+//        Intent notificationIntent = null;
+//
+//        if (tag.equals("acceptBidNotification"))
+//        {
+//            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
+//            notificationIntent.putExtra("menuFragment", "myJobsFragment");
+//            notificationIntent.putExtra("tabView", "Active");
+//        } else if (tag.equals("newBidNotification"))
+//        {
+//            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
+//            notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
+//            notificationIntent.putExtra("tabView", "Pending");
+//        } else if (tag.equals("jobCompletedNotification"))
+//        {
+//            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
+//            notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
+//            notificationIntent.putExtra("tabView", "Completed");
+//        }
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (tag.equals("acceptBidNotification"))
-        {
-            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
-            notificationIntent.putExtra("menuFragment", "myJobsFragment");
-            notificationIntent.putExtra("tabView", "Active");
-        } else if (tag.equals("newBidNotification"))
-        {
-            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
-            notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
-            notificationIntent.putExtra("tabView", "Pending");
-        } else if (tag.equals("jobCompletedNotification"))
-        {
-            notificationIntent = new Intent(MyFirebaseMessagingService.this, SplashScreen.class);
-            notificationIntent.putExtra("menuFragment", "myAdvertsFragment");
-            notificationIntent.putExtra("tabView", "Completed");
-        }
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        notificationBuilder.setContentIntent(pendingIntent);
+//        notificationBuilder.setContentIntent(pendingIntent);
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 

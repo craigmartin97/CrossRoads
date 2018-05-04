@@ -1,7 +1,6 @@
 package com.kitkat.crossroads.MainActivity;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -407,7 +405,8 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
     }
 
     /**
-     *
+     * Displays the content to the user and navigates them to the correct
+     * page dependant on the options they have selected, if advertiser, courier or both
      */
     private void displayContent()
     {
@@ -426,6 +425,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
         if (user != null)
         {
+            // Send the user to the relevant page dependant upon their settings.
             databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
             {
                 @Override
@@ -436,13 +436,18 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
                         boolean advertiser = dataSnapshot.child(getString(R.string.advertiser_lower)).getValue(boolean.class);
                         boolean courier = dataSnapshot.child(getString(R.string.courier_lower)).getValue(boolean.class);
 
+                        // Selected advertiser
                         if (advertiser == true && courier == false)
                         {
                             getFragmentTransaction().replace(R.id.content, new PostAnAdvertFragment()).commit();
-                        } else if (advertiser == false && courier == true)
+                        }
+                        // Selected courier
+                        else if (advertiser == false && courier == true)
                         {
                             getFragmentTransaction().replace(R.id.content, new FindAJobFragment()).commit();
-                        } else if (advertiser == true && courier == true)
+                        }
+                        // Selected both
+                        else if (advertiser == true && courier == true)
                         {
                             getFragmentTransaction().replace(R.id.content, new ViewProfileFragment()).commit();
                         }
@@ -468,13 +473,18 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         navigationButtonActions(navigationView);
     }
 
+    /**
+     * Return if the users location permission has been accepted or denied
+     *
+     * @return
+     */
     public boolean getLocationPermissionGranted()
     {
         return locationPermissionGranted;
     }
 
     /**
-     * Checks user is connected to Wifi
+     * Checks user is connected to Wifi or Mobile data, they are then prompted to turn them on
      */
     public void wifiCheck()
     {
@@ -503,6 +513,11 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         progressDialog.show();
     }
 
+    /**
+     * Dismiss the dialog, remove from the screen
+     *
+     * @param progressDialog - The progress dialog that is to be dismissed
+     */
     public void dismissDialog(ProgressDialog progressDialog)
     {
         progressDialog.dismiss();

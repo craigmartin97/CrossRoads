@@ -185,7 +185,7 @@ public class ViewProfileFragment extends Fragment
     /**
      * Assigning variables to the relevant widgets in the layout
      *
-     * @param view - the layout page associated with the Fragment
+     * @param view View: the layout page associated with the Fragment
      */
     private void getViewsByIds(View view)
     {
@@ -268,7 +268,7 @@ public class ViewProfileFragment extends Fragment
      * then divides by the amount of reviews that have been left.
      * If their is no reviews the ratings bar is removed
      *
-     * @param dataSnapshot - Snapshot of the database table Ratings, with an id
+     * @param dataSnapshot DataSnapShot: Snapshot of the database table Ratings, with an id
      */
     private void assignStars(DataSnapshot dataSnapshot)
     {
@@ -369,8 +369,8 @@ public class ViewProfileFragment extends Fragment
      * Logic for the reviews that are to be added, displays all of the
      * reviews in a list view
      *
-     * @param dataSnapshot   - Snapshot of the Ratings table, with an id
-     * @param collectionInfo - List that the information is to be added to
+     * @param dataSnapshot   DataSnapShot: Snapshot of the Ratings table, with an id
+     * @param collectionInfo List<String>: List that the information is to be added to
      */
     private void assignReviews(DataSnapshot dataSnapshot, final List<String> collectionInfo)
     {
@@ -417,7 +417,7 @@ public class ViewProfileFragment extends Fragment
      * Getting all of the data from the FireBase database and displaying in
      * the fragment. Gets all data such as the fullName, address etc to be displayed.
      *
-     * @param dataSnapshot - snapshot of the database
+     * @param dataSnapshot DataSnapShot: snapshot of the database
      */
     private void addUserInformation(DataSnapshot dataSnapshot)
     {

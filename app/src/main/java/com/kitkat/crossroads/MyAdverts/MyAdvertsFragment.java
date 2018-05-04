@@ -31,6 +31,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * My adverts fragment sets up the tab host for pending, active and completed adverts.
+ * All of the pending, active and completed adverts for the user are read from the database and
+ * added into each tab view.
+ */
 public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTextListener
 {
     /**
@@ -108,17 +113,19 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         databaseConnections();
         Bundle bundle = getArguments();
 
-        if(bundle != null) {
+        if (bundle != null)
+        {
             String tag = bundle.getString("tabView");
-            if (tag != null) {
+            if (tag != null)
+            {
                 tabTag = tag;
             }
-        }
-        else {
+        } else
+        {
             tabTag = "Active";
         }
 
-        ((CrossRoadsMainActivity)getActivity()).wifiCheck();
+        ((CrossRoadsMainActivity) getActivity()).wifiCheck();
 
     }
 
@@ -137,9 +144,11 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
         Bundle bundle = getArguments();
 
-        if(bundle != null) {
+        if (bundle != null)
+        {
             String tag = bundle.getString("tabView");
-            if (tag != null) {
+            if (tag != null)
+            {
                 tabTag = tag;
             }
         }
@@ -179,6 +188,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         return view;
     }
 
+
     /**
      * Establishes connections to the FireBase database
      */
@@ -193,7 +203,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
 
     /**
      * Set widgets in the inflated view to variables within this class
-     * @param view  gets the job Status tab (pending, active, completed)
+     *
+     * @param view gets the job Status tab (pending, active, completed)
      */
     private void getViewByIds(View view)
     {
@@ -205,7 +216,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     *Sets titles of Job Status tabs at bottom of the screen
+     * Sets titles of Job Status tabs at bottom of the screen
      */
     private void setTabHost()
     {
@@ -225,7 +236,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     /**
      * Assign class variables the Firebase tables
      *
-     * @param dataSnapshot      dataSnapshot used to iterate through the database
+     * @param dataSnapshot dataSnapshot used to iterate through the database
      */
     private void createDataSnapShots(DataSnapshot dataSnapshot)
     {
@@ -233,7 +244,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     *
      * @return Returns all jobs in the database that match the specified jobReference
      */
     private Iterable<DataSnapshot> getJobListChildren()
@@ -244,7 +254,7 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     /**
      * Retrieves all adverts the user has posted with the "Pending" job status
      *
-     * @throws ParseException signals an error has been reached unexpectedly while parsing
+     * @throws ParseException Signals that an error has been reached unexpectedly while parsing.
      */
     private void pendingList() throws ParseException
     {
@@ -349,10 +359,11 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     *todo
-     * @param fragment
-     * @param adapter
-     * @param position
+     * Creates a new bundle to transfer onto another fragment
+     *
+     * @param fragment - fragment that the user is transferring to
+     * @param adapter  - the array list data that is being transferred
+     * @param position - the position of the data that is to be transferred
      */
     public void createBundleToTransfer(Fragment fragment, MyCustomAdapterForTabViews adapter, int position)
     {
@@ -367,7 +378,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
-     * todo
+     * Find which item has been selected
+     *
      * @param item
      * @return
      */
@@ -376,14 +388,6 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     /**
@@ -405,7 +409,8 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
         }
     }
 
-    /**onDetatch
+    /**
+     * onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
     @Override
@@ -422,9 +427,10 @@ public class MyAdvertsFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     /**
+     * Called when the query text is changed by the user.
      *
-     * @param newText       Filters search based on new text
-     * @return              returns search results
+     * @param newText String: the new content of the query text field.
+     * @return boolean onQueryTextChange (String newText)
      */
     @Override
     public boolean onQueryTextChange(String newText)

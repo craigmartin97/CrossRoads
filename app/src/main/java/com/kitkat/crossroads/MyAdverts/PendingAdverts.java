@@ -28,6 +28,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Pending adverts fragment shows the current user all of the active, pending adverts they have.
+ * These are jobs they have uploaded and are waiting to receive bids, or accept a bid
+ */
 public class PendingAdverts extends Fragment
 {
     /**
@@ -62,7 +66,7 @@ public class PendingAdverts extends Fragment
     private ExpandableListView expandableListView, expandableListView2, expandableListView3;
 
     /**
-     * Adapters to create the expandable list views
+     * Adaptres to create the expandable list views
      */
     private ExpandableListAdapter adapter, adapter2, adapter3;
 
@@ -95,7 +99,8 @@ public class PendingAdverts extends Fragment
     /**
      * * This method is called when [...] is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
-     * @param savedInstanceState     If the fragment is being re-created from a previous saved state, this is the state.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -344,7 +349,9 @@ public class PendingAdverts extends Fragment
         }
     }
 
-    /**onDetatch
+
+    /**
+     * onDetatch
      * When the fragment is no longer attached to the activity, set the listener to null
      */
     @Override
@@ -358,4 +365,5 @@ public class PendingAdverts extends Fragment
     {
         void onFragmentInteraction(Uri uri);
     }
+
 }

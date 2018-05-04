@@ -89,7 +89,7 @@ public class CompletedAdverts extends Fragment
      * This method is called when completedAdverts is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
      *
-     * @param savedInstanceState  the fragment is being re-created from a previous saved state, this is the state.
+     * @param savedInstanceState the fragment is being re-created from a previous saved state, this is the state.
      *                           This value may be null.
      */
     @Override

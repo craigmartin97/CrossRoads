@@ -430,7 +430,7 @@ public class Map implements GoogleApiClient.OnConnectionFailedListener
     }
 
     /**
-       Auto Complete API AutoComplete Suggestions
+     Auto Complete API AutoComplete Suggestions
      */
     public void setPlaceAutocompleteAdapter(PlaceAutocompleteAdapter placeAutocompleteAdapter)
     {

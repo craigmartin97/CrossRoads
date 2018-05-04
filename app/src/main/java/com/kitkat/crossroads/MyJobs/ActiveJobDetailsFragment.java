@@ -1,7 +1,6 @@
 package com.kitkat.crossroads.MyJobs;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -37,38 +36,74 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This fragment displays the active jobs details. All of the details of the users accepted job
+ * This includes name, description etc. The courier can also sign of the job via a signature pad.
+ * Once the courier has signed it of the job is listed as completed
+ */
 public class ActiveJobDetailsFragment extends Fragment
 {
+    /**
+     * Connecting to the Firebase Jobs table
+     */
     private DatabaseReference databaseReferenceJobsTable;
 
+    /**
+     * Creating reference to the FireBase storage area
+     */
     private StorageReference storageReference;
 
+    /**
+     * All strings regarding the jobs information
+     */
     private String colDate, colTime, colAddress, colTown, colPostcode, delAddress, delTown, delPostcode, jobType, jobSize, jobId;
 
+    /**
+     * Expandable list view to store all of the job information
+     */
     private ExpandableListView expandableListView, expandableListView2, expandableListView3;
 
+    /**
+     * Adapters to handle the data inside the expandable list views
+     */
     private ExpandableListAdapter adapter, adapter2, adapter3;
 
+    /**
+     * Stores all of the job information to be stored in the expandable list views
+     */
     private List<String> list, list2, list3;
-
     private HashMap<String, List<String>> listHashMap, listHashMap2, listHashMap3;
 
+    /**
+     * Signature box, used for the courier to sign the job off the job
+     */
     private SignaturePad mSignaturePad;
 
+    /**
+     * Job used to submit the signature and clear the signature box
+     */
     private Button mJobCompleteButton, mClearButton;
 
+    /**
+     * Job names and descriptions
+     */
     private TextView textViewJobName1, textViewDescription1;
 
+    /**
+     * Job Image to be displayed
+     */
     private ImageView jobImageAccepted;
+
+    /**
+     * Progress bar, to indicate image is loading
+     */
     private ProgressBar progressBar;
 
     /**
-     *
      * This method is called when ActiveJobDetails is displayed. It creates all of the
      * widgets and functionality that the user can do in the activity.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
-     *
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -78,9 +113,9 @@ public class ActiveJobDetailsFragment extends Fragment
     }
 
     /**
-     * @param inflater           Instantiates a layout XML file into its corresponding view Objects
-     * @param container          A view used to contain other views, in this case, the view fragment_active_job_details
-     *                           This value may be null.
+     * @param inflater  Instantiates a layout XML file into its corresponding view Objects
+     * @param container A view used to contain other views, in this case, the view fragment_active_job_details
+     *                  This value may be null.
      * @return Returns inflated view
      */
 
@@ -104,7 +139,6 @@ public class ActiveJobDetailsFragment extends Fragment
     /**
      * Establishes connections to the FireBase database
      */
-
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -115,7 +149,7 @@ public class ActiveJobDetailsFragment extends Fragment
 
     /**
      * Set widgets in the inflated view to variables within this class
-
+     *
      * @param view - View to be inflated
      */
     private void getViewsByIds(View view)
@@ -132,27 +166,28 @@ public class ActiveJobDetailsFragment extends Fragment
         progressBar = view.findViewById(R.id.progressBar);
     }
 
-    /**Gets a bundle containing an instance of JobInformation
+    /**
+     * Gets a bundle containing an instance of JobInformation
      *
-     * @return  returns bundle containing jobInformation or null if the bundle is null
+     * @return returns bundle containing jobInformation or null if the bundle is null
      */
     private JobInformation getBundleInformation()
     {
         final Bundle bundle = this.getArguments();
-        if(bundle != null)
+        if (bundle != null)
         {
             jobId = (String) bundle.getSerializable(getString(R.string.job_id));
             return (JobInformation) bundle.getSerializable(getString(R.string.job_key));
-        }
-        else
+        } else
         {
             return null;
         }
     }
 
-    /**Extracts job information from bundle and sets the pages fields to equal the specified job's data
+    /**
+     * Extracts job information from bundle and sets the pages fields to equal the specified job's data
      *
-     * @param jobInformation    an instance of the class JobInformation
+     * @param jobInformation an instance of the class JobInformation
      */
     private void getJobInformationFromBundle(JobInformation jobInformation)
     {
@@ -240,7 +275,7 @@ public class ActiveJobDetailsFragment extends Fragment
     }
 
     /**
-     *Creates list views for the Active Job Details page
+     * Creates list views for the Active Job Details page
      */
     private void createExpandableListViews()
     {
@@ -333,16 +368,15 @@ public class ActiveJobDetailsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                // Get text from signature pad to be displayed
                 Bitmap signatureBitmap = mSignaturePad.getSignatureBitmap();
-
                 final StorageReference filePath = storageReference.child("Jobs").child(jobId).child("Signature/collectionSignature.jpg");
-
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 signatureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
-
                 UploadTask uploadTask = filePath.putBytes(data);
 
+                //Submit signature into FireBase storage area
                 uploadTask.addOnFailureListener(new OnFailureListener()
                 {
                     @Override
@@ -364,9 +398,6 @@ public class ActiveJobDetailsFragment extends Fragment
                         MyJobsFragment myJobsFragment = new MyJobsFragment();
                         myJobsFragment.setArguments(newBundle);
                         fragmentTransaction.replace(R.id.content, myJobsFragment).addToBackStack("tag").commit();
-
-
-
                     }
                 });
             }
