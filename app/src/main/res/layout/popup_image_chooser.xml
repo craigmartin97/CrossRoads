@@ -14,14 +14,23 @@
 
     <Button
         android:id="@+id/camera"
-        android:layout_width="match_parent"
+        android:layout_width="300sp"
         android:layout_height="wrap_content"
-        android:text="@string/take_picture_with_camera"/>
+        android:layout_below="@+id/linearLayoutPassword"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="#2bbc9b"
+        android:text="@string/take_picture_with_camera"
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/gallery"
-        android:layout_width="match_parent"
+        android:layout_width="300sp"
         android:layout_height="wrap_content"
-        android:text="@string/use_image_from_gallery"/>
+        android:layout_below="@+id/linearLayoutPassword"
+        android:layout_centerHorizontal="true"
+        android:background="#2bbc9b"
+        android:text="@string/use_image_from_gallery"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

@@ -53,8 +53,17 @@ import com.kitkat.crossroads.R;
 import com.kitkat.crossroads.UploadImageFragment;
 import com.squareup.picasso.Picasso;
 
+/**
+ * This is the main activity that fragments run from. Its key in the navigation of the application
+ * as it determines where users go dependant upon their preferences. It hosts the navigation side bar
+ * for users to navigate around the app. Holds other functions that other fragments can access to
+ * make code more efficient.
+ */
 public class CrossRoadsMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
+    /**
+     * Tag is used for debug purposes. It is displayed in the LogCat as a reference name
+     */
     private static final String TAG = "ViewProfileActivity";
 
     /**
@@ -77,17 +86,34 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
      * Widget to display the users profile image
      */
     private ImageView profileImage;
+
+    /**
+     * If the user has accepted the permission
+     */
     private boolean locationPermissionGranted = false;
+
+    /**
+     * Request code to identify the location permission has been asked
+     */
     private final static int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     /**
      * Accessing the users locations, after they have gave permission
      */
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+
+    /**
+     * Accessing the users current location, after they have accepted the permission
+     */
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
 
     private String profileImageUrl;
 
-
+    /**
+     * This method is called when the activity login is displayed to the user. It creates all of the
+     * widgets and functionality that the user can do in the activity.
+     *
+     * @param savedInstanceState - if the activity needs to be recreated it can be passed back
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -100,8 +126,8 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
     /**
      * Establish connections to the fireBase database
+     * Connecting to the users table and storing the current users unique Id
      */
-
     private void databaseConnections()
     {
         DatabaseConnections databaseConnections = new DatabaseConnections();
@@ -111,6 +137,9 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         user = databaseConnections.getCurrentUser();
     }
 
+    /**
+     * When the back button is pressed close the navigation drawer.
+     */
     @Override
     public void onBackPressed()
     {
@@ -124,6 +153,13 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         }
     }
 
+    /**
+     * Initialize the contents of the Activity's standard options menu. You should place your menu items in to menu.
+     * This is only called once, the first time the options menu is displayed. To update the menu every time it is displayed, see onPrepareOptionsMenu(Menu).
+     *
+     * @param menu The options menu in which you place your items.
+     * @return boolean - true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -131,13 +167,28 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         return true;
     }
 
+    /**
+     * This hook is called whenever an item in your options menu is selected. The default implementation simply returns false to have
+     * the normal processing happen (calling the item's Runnable or sending a message to its Handler as appropriate).
+     * You can use this method for any items for which you would like to do processing without those other facilities.
+     * Derived classes should call through to the base class for it to perform the default menu handling.
+     *
+     * @param item The menu item that was selected.
+     * @return menuItem
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Listens to which item the user has selected, then it moves to that
+     * fragment once pressed
+     *
+     * @param item - Which item the user has pressed
+     * @return boolean true
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item)
@@ -169,6 +220,11 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         return true;
     }
 
+    /**
+     * Creating one fragment transaction that allows the user to transfer to a new fragment
+     *
+     * @return fragmentTransaction
+     */
     private FragmentTransaction getFragmentTransaction()
     {
         final android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
@@ -177,16 +233,24 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
         return fragmentTransaction;
     }
 
+    /**
+     * Setting all of the images and widgets in the top header of the navigation bar
+     * These include, the profile image, name, email, logout, view profile and edit profile buttons.
+     *
+     * @param navigationView - The navigation bar that is being activated, where the widgets belong
+     */
     private void navigationButtonActions(NavigationView navigationView)
     {
-        View headerview = navigationView.getHeaderView(0);
-        final TextView navigationName = headerview.findViewById(R.id.navigationName);
-        TextView navigationEmail = headerview.findViewById(R.id.navigationEmail);
-        ImageView viewProfile = headerview.findViewById(R.id.imageViewProfile);
-        ImageView editProfile = headerview.findViewById(R.id.imageEditPen);
-        ImageView logout = headerview.findViewById(R.id.imageLogout);
-        profileImage = headerview.findViewById(R.id.navigationImage);
+        // Getting all of the widget ids
+        View headerView = navigationView.getHeaderView(0);
+        final TextView navigationName = headerView.findViewById(R.id.navigationName);
+        TextView navigationEmail = headerView.findViewById(R.id.navigationEmail);
+        ImageView viewProfile = headerView.findViewById(R.id.imageViewProfile);
+        ImageView editProfile = headerView.findViewById(R.id.imageEditPen);
+        ImageView logout = headerView.findViewById(R.id.imageLogout);
+        profileImage = headerView.findViewById(R.id.navigationImage);
 
+        // Reading from the users table to get the current users details
         databaseReferenceUsersTable.child(user).addValueEventListener(new ValueEventListener()
         {
             @Override
@@ -206,9 +270,10 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             }
         });
 
-
+        // Set email
         navigationEmail.setText(auth.getCurrentUser().getEmail());
 
+        // View profile button
         viewProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -219,6 +284,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             }
         });
 
+        // Edit profile button
         editProfile.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -229,6 +295,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             }
         });
 
+        // Logout button
         logout.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -271,6 +338,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             }
         });
 
+        // Change profile picture
         profileImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -283,7 +351,8 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
     }
 
     /**
-     * Checking the users permission that they selected, accept or deny
+     * Checking the users permission that they selected, accept or deny to access the users current
+     * location
      */
     public void getLocationPermission()
     {
@@ -297,6 +366,7 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
             if (ContextCompat.checkSelfPermission(this,
                     COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             {
+                // Set the location granted to true
                 locationPermissionGranted = true;
                 ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
             } else
@@ -409,11 +479,11 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
     public void wifiCheck()
     {
         WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnected();
-        
+
         if (!wifi.isWifiEnabled() && !isConnected)
         {
             Toast.makeText(this, "Please Turn Wifi On Or Mobile Data.", Toast.LENGTH_LONG).show();
@@ -422,8 +492,9 @@ public class CrossRoadsMainActivity extends AppCompatActivity implements Navigat
 
     /**
      * Create and display a new progress dialog
+     *
      * @param progressDialog - the progress dialog that is to be created
-     * @param message - The message to be displayed on the progress dialog
+     * @param message        - The message to be displayed on the progress dialog
      */
     public void displayNewProgressDialog(ProgressDialog progressDialog, String message)
     {

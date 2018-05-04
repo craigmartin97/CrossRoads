@@ -109,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity
      */
     private void getViewByIds()
     {
-        progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this, R.style.datepicker);
         buttonRegister = findViewById(R.id.buttonRegister);
         editTextEmail = findViewById(R.id.editTextEmailLogin);
         editTextPassword = findViewById(R.id.editTextPasswordLogin);
@@ -121,6 +121,9 @@ public class RegisterActivity extends AppCompatActivity
 
     /**
      * Setting the on click listeners for the widgets in the activity.
+     * Button register allows the user to confirm there details.
+     * TextView sign up allows the user to go to the login screen.
+     * TextViewT&C's allows the user to download a pdf of the terms and conditions.
      */
     private void setOnClickListeners()
     {
@@ -163,7 +166,44 @@ public class RegisterActivity extends AppCompatActivity
      */
     private void registerUser()
     {
-        userInformationValidation();
+        String email = editTextEmail.getText().toString().trim();
+        String password = editTextPassword.getText().toString().trim();
+        final String confirmPassword = editTextConfirmPassword.getText().toString().trim();
+
+        // email is too short or empty
+        if (TextUtils.isEmpty(email))
+        {
+            customToastMessage("Please Enter An Email Address");
+            return;
+        }
+
+        // password to short or empty
+        if (TextUtils.isEmpty(password) || password.length() < 8)
+        {
+            customToastMessage("Please Enter A Password With 6 Or More Characters");
+            return;
+        }
+
+        // confirm password to short or empty
+        if (TextUtils.isEmpty(confirmPassword) || confirmPassword.length() < 8)
+        {
+            customToastMessage("Please Confirm Your Password With 8 Or More Characters");
+            return;
+        }
+
+        // Passwords don't contain number, letter and capital
+        if (!password.matches(checkPasswordCombo()) && !confirmPassword.matches(checkPasswordCombo()))
+        {
+            customToastMessage("Passwords Must Have Numbers, Upper and Lowercase's");
+            return;
+        }
+
+        // Passwords don't match each other
+        if (!password.matches(confirmPassword) && !confirmPassword.matches(password))
+        {
+            customToastMessage("Passwords Do Not Match");
+            return;
+        }
 
         // If user has agreed to T&C's
         if (checkBox.isChecked())
@@ -227,43 +267,7 @@ public class RegisterActivity extends AppCompatActivity
      */
     private void userInformationValidation()
     {
-        email = editTextEmail.getText().toString().trim();
-        password = editTextPassword.getText().toString().trim();
-        final String confirmPassword = editTextConfirmPassword.getText().toString().trim();
 
-        // email is too short or empty
-        if (TextUtils.isEmpty(email))
-        {
-            customToastMessage("Please Enter An Email Address");
-            return;
-        }
-
-        // password to short or empty
-        if (TextUtils.isEmpty(password) || password.length() < 8)
-        {
-            customToastMessage("Please Enter A Password With 6 Or More Characters");
-            return;
-        }
-
-        // confirm password to short or empty
-        if (TextUtils.isEmpty(confirmPassword) || confirmPassword.length() < 8)
-        {
-            customToastMessage("Please Confirm Your Password With 8 Or More Characters");
-            return;
-        }
-
-        // Passwords don't contain number, letter and capital
-        if (!password.matches(checkPasswordCombo()) && !confirmPassword.matches(checkPasswordCombo()))
-        {
-            customToastMessage("Passwords Must Have Numbers, Upper and Lowercase's");
-            return;
-        }
-
-        // Passwords don't match each other
-        if (!password.matches(confirmPassword) && !confirmPassword.matches(password))
-        {
-            customToastMessage("Passwords Do Not Match");
-        }
     }
 
     /**
